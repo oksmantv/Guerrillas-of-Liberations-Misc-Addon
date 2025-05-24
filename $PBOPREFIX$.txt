@@ -1,0 +1,4 @@
+//<'OKS_GOL_Misc.pbo' properties via Mikero's dos tools, dll version 9.10>
+prefix=OKS_GOL_Misc;
+//PboType=Arma Addon;
+//</properties>
