@@ -74,7 +74,7 @@
 		    if ( ((ToLower _Selection) find "rotor") == -1 ) exitWith {};
 
 		    // Variables
-		    _Multiplier = 0.3;
+		    _Multiplier = 0.05;
 
 		    // Added Damage
 		    _OldDamage = _Unit getVariable ["NEKY_OldDamage",0];

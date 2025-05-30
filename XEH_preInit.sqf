@@ -1,5 +1,15 @@
 diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
+/// CORE
+[
+    "OKS_CORE_Enabled",
+    "CHECKBOX",
+    ["Enables features from FW Version 2.7", "Enables all features added in the GOL Misc Addon."],
+    "GOL_CORE",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
 // CBA Settings for Dynamic
 [
     "GOL_Dynamic_Faction",

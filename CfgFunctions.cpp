@@ -189,7 +189,7 @@ class CfgFunctions // Defines a function
 		class OKS_Hunt_Function {
 			file = "\OKS_GOL_Misc\functions\hunt\functions";
 			class hunting {};
-			class huntrepeat {};
+			class repeat {};
 			class scanzone {};
 			class selectplayer {};
 			class setSkill {};
@@ -281,16 +281,11 @@ class CfgFunctions // Defines a function
 			class medicalMessage {};
 		};		
 
-		class BLUFUNC
+		class Radio_Channel_Init
 		{
-			class Radios
-			{
-				class Radio_Channel_Init
-				{
-					file = "\OKS_GOL_Misc\functions\playersetup\fn_BLU_SetChannel.sqf";
-					preInit = 1;
-				};
-			};
-		};
+			file = "\OKS_GOL_Misc\functions\playersetup";
+			preInit = 1;
+			class BLU_SetChannel {};
+		};	
 	};
 };
