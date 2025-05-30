@@ -1,12 +1,12 @@
-	// OKS_EnablePath
-	// [_Group,0.3,10] spawn OKS_EnablePath;
+	// OKS_fnc_EnablePath
+	// [_Group,0.3,10] spawn OKS_fnc_EnablePath;
 
 	Params ["_Group","_Chance","_Sleep"];
 	Private ["_Units","_Unit"];
  	Private _Debug_Variable = true;
 
 	if(_Debug_Variable) then {
-		systemChat format["%1 ran code for OKS_EnablePath, Chance: %2, Time: %3",_Group,_Chance,_Sleep];
+		systemChat format["%1 ran code for OKS_fnc_EnablePath, Chance: %2, Time: %3",_Group,_Chance,_Sleep];
 	};
 	
 	while{{Alive _X} count units _Group > 0} do {

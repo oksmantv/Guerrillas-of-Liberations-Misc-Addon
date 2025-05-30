@@ -3,6 +3,7 @@
 #include "CfgVehicles.cpp"
 #include "CfgFunctions.cpp"
 #include "CfgSounds.cpp"
+#include "CfgUnitInsignia.cpp"
 #include "CfgOrbat.cfg"
 
 class CfgPatches

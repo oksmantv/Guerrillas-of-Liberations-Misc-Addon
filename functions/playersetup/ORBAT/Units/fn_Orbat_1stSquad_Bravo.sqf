@@ -1,7 +1,7 @@
 
 // Set Platoon Leader
 // [] spawn OKS_Fnc_Orbat_1stSquad_Bravo;
-Private _OrbatPath = missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "BravoTeam";
+Private _OrbatPath = configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "BravoTeam";
 
 private _CustomCallsign = objNull;
 private _Composition = "Infantry";

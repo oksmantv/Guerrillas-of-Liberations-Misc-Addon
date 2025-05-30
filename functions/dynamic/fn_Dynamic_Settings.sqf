@@ -12,11 +12,12 @@ Private ["_Units","_SideMarker","_SideColor","_Vehicles","_Wheeled","_APC","_Tan
 	* = Not updated with 3CB thus broken <<< Important!
 
 BLUFOR FACTIONS:       CDF LDF TANOA
-OPFOR FACTIONS:        ARDISTAN CHEDAKI COMMUNIST_REBELS DESERT_INSURGENTS DESERT_MILITIA RUSSIA_MODERN SOVIET TKA
+OPFOR FACTIONS:        CSAT ARDISTAN CHEDAKI COMMUNIST_REBELS DESERT_INSURGENTS DESERT_MILITIA RUSSIA_MODERN SOVIET TKA
 INDEPENDENT FACTIONS:  NAPA
 
 */
-Private _Faction = "CSAT";
+
+Private _Faction = missionNamespace getVariable ["GOL_Dynamic_Faction","CSAT"];
 Switch (_Faction) do {
 	case "CSAT": {
 		// CSAT - OPFOR

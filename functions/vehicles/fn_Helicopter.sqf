@@ -18,7 +18,7 @@ _Vehicle enableSimulationGlobal false;
 _Vehicle hideObjectGlobal true;
 _Vehicle allowDamage false;
 _Vehicle setFuelConsumptionCoef 1.5;
-sleep 5;
+sleep 1;
 [_Vehicle,_ShouldDisableThermal,_shouldDisableNVG] spawn OKS_fnc_Helicopter_Code;
 [_Vehicle,_ShouldReplaceDoorguns,_DoorgunClasses,_DoorgunAmmo] spawn OKS_Fnc_DAP_Config;
 [_Vehicle] remoteExec ["OKS_fnc_HeliActions",0];

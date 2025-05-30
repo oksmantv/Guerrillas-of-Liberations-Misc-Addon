@@ -152,6 +152,31 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\dynamic";
 			class Dynamic_Settings {};
 			class AddVehicleCrew {};
+			class Check_Waypoints {};
+			class CheckIfTarmac {};
+			class CheckRoadConnections {};
+			class Civilians {};
+			class CreateMarker {};
+			class CreateObjectives {};
+			class CreateTrigger {};
+			class CreateUnitMarker {};
+			class CreateZone {};
+			class Dynamic_Hunt_Settings {};
+			class Finale {};
+			class Find_HuntBase {};
+			class Find_Mortars {};
+			class Find_Roadblocks {};
+			class Garrison {};
+			class Garrison_Compound {};
+			class Patrol_Spawn {};
+			class Populate_Bunkers {};
+			class Populate_Sandbag {};
+			class Populate_StaticWeapons {};
+			class Populate_Strongpoints {};
+			class RoadConnected {};
+			class SetStatic {};
+			class Vehicle_Patrol {};
+			class Vehicle_Waypoints {};
 		};	
 
 		class OKS_Hunt {
@@ -248,6 +273,24 @@ class CfgFunctions // Defines a function
 			class AirDrop {};
 			class AirDrop_Settings {};
 			class AirDropAISkill {};
-		};				
+		};		
+
+		class BLU_Medical {
+			file = "\OKS_GOL_Misc\functions\medical";
+			class displayText {};
+			class medicalMessage {};
+		};		
+
+		class BLUFUNC
+		{
+			class Radios
+			{
+				class Radio_Channel_Init
+				{
+					file = "\OKS_GOL_Misc\functions\playersetup\fn_BLU_SetChannel.sqf";
+					preInit = 1;
+				};
+			};
+		};
 	};
 };

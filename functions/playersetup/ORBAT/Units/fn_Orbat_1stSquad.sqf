@@ -1,7 +1,7 @@
 
 // Set Platoon Leader
 // [] spawn OKS_Fnc_Orbat_Platoon;
-Private _OrbatPath = missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad";
+Private _OrbatPath = configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad";
 
 /// Change Commander name if applicable
 if(!isNil "w1a") exitWith {

@@ -1,7 +1,7 @@
 
 // Set FAC
 // [] spawn OKS_Fnc_Orbat_Hammer;
-Private _OrbatPath = missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "Echo1";
+Private _OrbatPath = configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "Echo1";
 
 /// Change Commander name if applicable
 if(!isNil "wecho1") exitWith {

@@ -11,10 +11,7 @@ Params ["_Veh","_SS","_FullService"];
 
 if !(_FullService) then {NEKY_ServiceStationActive PushBack _SS; PublicVariable "NEKY_ServiceStationActive"};
 ScopeName "Main";
-_FuelLimit = 0.75;
-if(_Veh isKindOf "LandVehicle") then {
-	_FuelLimit = 0.4;
-};
+_FuelLimit = 1;
 
 if (fuel _Veh < _FuelLimit) then
 {

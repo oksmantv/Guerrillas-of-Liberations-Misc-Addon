@@ -16,9 +16,9 @@
 		Refresh Rate - Time in seconds you want the script to refresh their knowledge of Players inside the hunt zone, quickens the response with shorter refresh, but increases slightly in the performance cost.
 
 		Examples on code:
-		[Object_1, Spawn_1, HuntTrigger_1, 10,300,EAST,6,60] spawn OKS_fnc_HuntBase;
-		[Object_1, Spawn_1, HuntTrigger_1, 10,450,EAST,"CUP_O_BTR40_MG_TKM",30] spawn OKS_fnc_HuntBase;
-		[Object_1, Spawn_1, HuntTrigger_1, 10,450,EAST,["CUP_O_MTLB_pk_TK_MILITIA","CUP_O_BTR40_MG_TKM","CUP_O_Ural_ZU23_TKM","CUP_O_BTR90_RU"],30] spawn OKS_fnc_HuntBase;
+		[Object_1, Spawn_1, HuntTrigger_1, 10, 300,EAST,6,60] spawn OKS_fnc_HuntBase;
+		[Object_1, Spawn_1, HuntTrigger_1, 10, 450,EAST,"CUP_O_BTR40_MG_TKM",30] spawn OKS_fnc_HuntBase;
+		[Object_1, Spawn_1, HuntTrigger_1, 10, 450,EAST,["CUP_O_MTLB_pk_TK_MILITIA","CUP_O_BTR40_MG_TKM","CUP_O_Ural_ZU23_TKM","CUP_O_BTR90_RU"],30] spawn OKS_fnc_HuntBase;
 
 		Step-by-Step Guide:
 		You need two objects, you need a base object and a spawn object. Place down a destructible object and name it 'Object_1'
@@ -66,6 +66,8 @@ _Settings Params ["_MinDistance","_UpdateFreqSettings","_SkillVariables","_Skill
 
 private _ForceMultiplier = missionNameSpace getVariable ["OKS_ForceMultiplier",1];
 private _ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];
+private _MaxCount = missionNameSpace getVariable ["OKS_Hunt_MaxCount",1];
+private _ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];
 
 _Trigger = createTrigger ["EmptyDetector", getPosWorld _SpawnPos, false];
 _Trigger setTriggerActivation ["ANYPLAYER", "PRESENT", true];
@@ -78,6 +80,11 @@ _EyeCheck enableSimulation false;
 
 while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 {
+	_ForceMultiplier = missionNameSpace getVariable ["OKS_ForceMultiplier",1];
+	_ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];
+	_MaxCount = missionNameSpace getVariable ["OKS_Hunt_MaxCount",1];
+	_ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];	
+	
 	if ((dayTime > 04.30) and (dayTime < 19.30)) then {_KnowsAboutValue = 3.975} else {_KnowsAboutValue = 3.975; _IsNight = true;};
 	SystemChat format["Looking for Players in %1..",_HuntZone];
 	if( {(_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)} count list _HuntZone > 0) then {
@@ -144,7 +151,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 
 					_AliveNumber  = count (NEKY_Hunt_CurrentCount select {alive _X});
 
-					if((NEKY_Hunt_MaxCount * _ForceMultiplier) >= _AliveNumber) then {
+					if((_MaxCount * _ForceMultiplier) >= _AliveNumber) then {
 						_Waves = _Waves - 1;
 						if(typeName _Soldiers == "ARRAY") then {
 							_VehicleClass = _Soldiers call BIS_fnc_selectRandom;
@@ -165,7 +172,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 							_AliveCurrentCount = NEKY_Hunt_CurrentCount select {alive _X};
 							_AliveNumber = count _AliveCurrentCount;
 
-							if((_AliveNumber + (_CargoSeats + 1)) <= NEKY_Hunt_MaxCount && _Vehicle emptyPositions "cargo" > 0) then {
+							if((_AliveNumber + (_CargoSeats + 1)) <= _MaxCount && _Vehicle emptyPositions "cargo" > 0) then {
 									_Group = [_Vehicle,_Side] call OKS_fnc_AddVehicleCrew;
 
 									SystemChat "Creating Transport Cargo...";
@@ -184,7 +191,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 									_Unit MoveInCargo _Vehicle;
 								};
 								_Group setVariable ["GW_Performance_autoDelete", false, true];
-								[_Group, _SkillVariables, _Skill] Spawn NEKY_Hunt_SetSkill;
+								[_Group, _SkillVariables, _Skill] spawn OKS_fnc_SetSkill;
 								_Group AllowFleeing 0;
 							};
 						}

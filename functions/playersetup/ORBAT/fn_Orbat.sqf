@@ -1,4 +1,4 @@
-// [1] execVM "Scripts\GOL_PlayerSetup\ORBAT\OKS_Orbat.sqf";
+// [1] spawn OKS_fnc_Orbat;
 /*
 
 		[
