@@ -432,6 +432,16 @@ if (hasInterface) then {
         };
     }] call CBA_fnc_addEventHandler;
 
+    /* Add Fallback Exit if killed during unconscious camera */
+    player addEventHandler ["Killed", {
+        private _camera = player getVariable ["GOL_SpectatorCamera", objNull];
+        if (!isNull _camera) then {
+            _camera cameraEffect ["terminate", "back"];
+            camDestroy _camera;
+            player setVariable ["GOL_SpectatorCamera", nil, true];
+        };
+    }];
+
     /*
         Add Medical Messages to Players.
     */
