@@ -18,6 +18,7 @@ INDEPENDENT FACTIONS:  NAPA
 */
 
 Private _Faction = missionNamespace getVariable ["GOL_Dynamic_Faction","CSAT"];
+systemChat format["[DEBUG] Dynamic Faction Selected - %1",_Faction];
 Switch (_Faction) do {
 	case "CSAT": {
 		// CSAT - OPFOR
@@ -208,7 +209,18 @@ Switch (_Faction) do {
 		_Vehicles = [_Wheeled,_APC,_Tank,_Artillery,_Helicopter,_Transport,_Supply,_AntiAir];
 	};
 
-	Default {};
+	Default {
+		// Middle Eastern Insurgents 3CB - OPFOR
+		_Wheeled = ["UK3CB_ADE_O_BTR40", "UK3CB_ADE_O_Hilux_Pkm", "UK3CB_ADE_O_V3S_Closed", "UK3CB_ADE_O_Datsun_Pkm", "UK3CB_ADE_O_Datsun_Open", "UK3CB_ADE_O_Hilux_Dshkm", "UK3CB_ADE_O_Offroad_M2", "UK3CB_ADE_O_Hilux_M2", "UK3CB_ADE_O_LR_M2"];
+		_APC = ["UK3CB_ADE_O_BTR40_MG", "UK3CB_ADE_O_MTLB_PKT", "UK3CB_ADE_O_BRDM2"];
+		_Tank = ["UK3CB_ADE_O_T34"];
+		_Artillery = ["UK3CB_ADE_O_Hilux_Mortar", "UK3CB_ADE_O_D30", "UK3CB_ADE_O_2b14_82mm"];
+		_AntiAir = ["UK3CB_ADE_O_V3S_Zu23", "UK3CB_ADE_O_ZU23"];
+		_Helicopter = ["UK3CB_ARD_O_Mi8"];
+		_Transport = ["UK3CB_ADE_O_V3S_Closed"];
+		_Supply = ["UK3CB_ADE_O_V3S_Reammo", "UK3CB_ADE_O_V3S_Refuel", "UK3CB_ADE_O_V3S_Repair", "UK3CB_ADE_O_Van_Fuel"];
+		_Vehicles = [_Wheeled,_APC,_Tank,_Artillery,_Helicopter,_Transport,_Supply,_AntiAir];
+	};
 };
 
 Switch (_Side) do
@@ -317,11 +329,22 @@ Switch (_Side) do
 	// DO NOT EDIT ANYTHING BELOW \\
 	default
 	{
-		_SkillVariables = "";
-		_Skill = "";
-		_Leaders = "";
-		_Units = "";
-		_UnitArray = "";
+		_Leaders = ["O_Soldier_SL_F","O_Soldier_TL_F"];
+		_Units = [
+			"O_Soldier_LAT_F",
+			"O_Soldier_AR_F",
+			"O_medic_F",
+			"O_Soldier_GL_F",
+			"O_HeavyGunner_F",
+			"O_soldier_M_F",
+			"O_Soldier_F",
+			"O_Soldier_F",
+			"O_Soldier_F"
+		];
+		_Officer = ["O_officer_F"];
+		_SideMarker = "o_inf";
+		_SideColor = "ColorOpfor";
+		_UnitArray = [_Leaders,_Units,_Officer];
 	};
 };
 

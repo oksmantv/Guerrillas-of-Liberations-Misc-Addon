@@ -2,7 +2,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 /// CORE
 [
-    "OKS_CORE_Enabled",
+    "GOL_CORE_Enabled",
     "CHECKBOX",
     ["Enables features from FW Version 2.7", "Enables all features added in the GOL Misc Addon."],
     "GOL_CORE",
@@ -60,7 +60,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // CBA Settings for MHQ
 [
-    "GOL_MhqSafeZone",
+    "MHQSAFEZONE",
     "SLIDER",
     ["MHQ Safe Zone Radius", "Radius (in meters) of the MHQ safe zone."],
     "GOL_MHQ",
@@ -70,7 +70,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // CBA Settings for GOL Gear
 [
-    "GOL_MAGNIFIED_OPTICS",
+    "MAGNIFIED_OPTICS_ALLOW",
     "CHECKBOX",
     ["Allow Magnified 2x Sights", "Allows magnified 2x sights to be selected from the Arsenal."],
     "GOL_Gear",
@@ -81,7 +81,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_OPTICS",
+    "OPTICS_ALLOW",
     "CHECKBOX",
     ["Allow Optics", "Allows sights to be selected from the Arsenal."],
     "GOL_Gear",
@@ -90,7 +90,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_WEAPONS",
+    "WEAPONS_ALLOW",
     "CHECKBOX",
     ["Allow Weapon Variations", "Allows weapon variations to be selected from Arsenal."],
     "GOL_Gear",
@@ -99,7 +99,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_ARSENAL_ALLOWED",
+    "ARSENAL_ALLOW",
     "CHECKBOX",
     ["Allow Attachment Menu", "Allows Attachment Menu in Arsenal."],
     "GOL_Gear",
@@ -108,7 +108,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_AllowSpecialistGroundRoles",
+    "GroundRoles_ALLOW",
     "CHECKBOX",
     ["Allow Specialist Ground Roles", "Allows specialist ground roles (Dragon, Light Rifleman, Ammo Bearer, Anti-Air, Heavy AT)"],
     "GOL_Gear",
@@ -117,7 +117,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_AllowSpecialistAirRoles",
+    "AirRoles_ALLOW",
     "CHECKBOX",
     ["Allow Specialist Air Roles", "Allows specialist air roles (Para-Rescueman, Jet Pilot, Marksman)."],
     "GOL_Gear",
@@ -126,7 +126,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_ENTRENCH",
+    "ENTRENCH_ALLOW",
     "CHECKBOX",
     ["Allow Entrenching Tools", "Adds Entrenching Tools to certain roles."],
     "GOL_Gear",
@@ -135,7 +135,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_WIRECUTTER",
+    "WIRECUTTER_ALLOW",
     "CHECKBOX",
     ["Allow Wirecutters", "Adds Wirecutters to Riflemen."],
     "GOL_Gear",
@@ -144,7 +144,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_ForceNVG",
+    "ForceNVG",
     "CHECKBOX",
     ["Force NVGs", "Forces addition of NVGs."],
     "GOL_Gear",
@@ -153,7 +153,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_ForceNVGClassname",
+    "ForceNVGClassname",
     "EDITBOX",
     ["Force NVG Classname", "Forces change of NVGs."],
     "GOL_Gear",
@@ -208,7 +208,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_AIForceNVG",
+    "AIForceNVG",
     "CHECKBOX",
     ["Force NVGs for AI", "Forces addition of NVGs for AI."],
     "GOL_Gear_AI",
@@ -217,7 +217,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_AIForceNVGClassname",
+    "AIForceNVGClassname",
     "EDITBOX",
     ["AI NVG Classname", "Classname to be used as NVG for AI. Leave blank for none."],
     "GOL_Gear_AI",
@@ -225,9 +225,8 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
     1
 ] call CBA_fnc_addSetting;
 
-// CBA Settings for OKS ORBAT
 [
-    "GOL_Composition",
+    "GOL_SelectedComposition",
     "LIST",
     ["ORBAT Composition", "Set the ORBAT Composition."],
     "GOL_ORBAT",
@@ -241,7 +240,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Settings for NEKY Hunt
 [
-    "OKS_Hunt_MaxCount",
+    "GOL_Hunt_MaxCount",
     "SLIDER",
     ["Max count of Hunters", "The maximum allowed enemy hunters at any given time."],
     "GOL_Hunt",
@@ -251,7 +250,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 // Settings for OKS Remove Vehicle HE
 // CheckBox: Enable OKS Remove Vehicle HE.
 [
-    "OKS_RemoveVehicleHE_Enabled",
+    "GOL_RemoveVehicleHE_Enabled",
     "CHECKBOX",
     ["Remove HE Rounds from Vehicles", "When enabled, Russian/Soviet vehicles variants will have their HE rounds removed."],
     "GOL_RemoveVehicleHE",
@@ -262,7 +261,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 // CheckBox: Enable OKS Remove ATGM.
 [
-    "OKS_RemoveVehicleATGM_Enabled",
+    "GOL_RemoveVehicleATGM_Enabled",
     "CHECKBOX",
     ["Remove ATGM Rounds from Vehicles", "When enabled, Russian/Soviet vehicles variants will have their ATGM rounds removed."],
     "GOL_RemoveVehicleHE",
@@ -275,7 +274,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 // Settings for OKS Suppression
 // CheckBox: Enable OKS Suppression.
 [
-    "OKS_Suppression_Enabled",
+    "GOL_Suppression_Enabled",
     "CHECKBOX",
     ["Enable Suppression", "When enabled, AI will be able to be suppressed."],
     "GOL_Suppression",
@@ -287,7 +286,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // CheckBox: Enable OKS Suppression Debug.
 [
-    "OKS_Suppression_Debug",
+    "GOL_Suppression_Debug",
     "CHECKBOX",
     ["Enable Suppression Debug", "When enabled, DEBUG messages will play in the SystemChat."],
     "GOL_Suppression",
@@ -298,7 +297,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "OKS_Suppressed_Threshold",
+    "GOL_Suppressed_Threshold",
     "SLIDER",
     ["Suppression Threshold", "For every friendly below 10 in the vicinity (this value) of the candidate, chance to surrender will increase."],
     "GOL_Suppression",
@@ -306,7 +305,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "OKS_Suppressed_MinimumTime",
+    "GOL_Suppressed_MinimumTime",
     "SLIDER",
     ["Minimum Suppressed Time", "Sets the minimum suppressed time for a unit to recover from suppression."],
     "GOL_Suppression",
@@ -314,17 +313,17 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "OKS_Suppressed_MaximumTime",
+    "GOL_Suppressed_MaximumTime",
     "SLIDER",
     ["Maximum Suppressed Time", "Sets the maximum suppressed time for a unit to recover from suppression."],
     "GOL_Suppression",
     [2, 15, 10, 0]
 ] call CBA_fnc_addSetting;
 
-// CBA Settings for OKS_Surrender
+// CBA Settings for GOL_Surrender
 // Checkbox: Enable Surrender
 [
-    "OKS_Surrender_Enabled",
+    "GOL_Surrender_Enabled",
     "CHECKBOX",
     ["Enable Surrender", "When enabled, AI can surrender when threatened, suppressed, shot, flashbanged."],
     "GOL_Surrender",
@@ -336,7 +335,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Checkbox: Enable Surrender Debug
 [
-    "OKS_Surrender_Debug",
+    "GOL_Surrender_Debug",
     "CHECKBOX",
     ["Enable Surrender Debug", "When enabled, DEBUG messages will play in the SystemChat."],
     "GOL_Surrender",
@@ -348,7 +347,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Checkbox: Allow Surrender by Shot
 [
-    "OKS_Surrender_Shot",
+    "GOL_Surrender_Shot",
     "CHECKBOX",
     ["Allow Surrender by Shot", "When enabled, AI can surrender when shot at."],
     "GOL_Surrender",
@@ -360,7 +359,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Checkbox: Allow Surrender by Flashbang
 [
-    "OKS_Surrender_Flashbang",
+    "GOL_Surrender_Flashbang",
     "CHECKBOX",
     ["Allow Surrender by Flashbang", "When enabled, AI can surrender when flashbanged."],
     "GOL_Surrender",
@@ -372,7 +371,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Slider: Near Friendly Distance (20 to 300, default 200, 2 decimals)
 [
-    "OKS_Surrender_FriendlyDistance",
+    "GOL_Surrender_FriendlyDistance",
     "SLIDER",
     ["Check Friendly Distance", "For every friendly below 10 in the vicinity (this value) of the candidate, chance to surrender will increase."],
     "GOL_Surrender",
@@ -381,7 +380,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Slider: Surrender Chance (0.0 to 1.0, default 0.1, 2 decimals)
 [
-    "OKS_Surrender_Chance",
+    "GOL_Surrender_Chance",
     "SLIDER",
     ["Surrender Chance", "Probability (0 = never, 0.3 = very likely) that AI will surrender."],
     "GOL_Surrender",
@@ -390,7 +389,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Slider: Surrender Chance Weapon Aim (0.0 to 1.0, default 0.1, 2 decimals)
 [
-    "OKS_Surrender_ChanceWeaponAim",
+    "GOL_Surrender_ChanceWeaponAim",
     "SLIDER",
     ["Surrender Chance Weapon Aim", "Probability (0 = never, 0.3 = very likely) that AI will surrender when aimed at."],
     "GOL_Surrender",
@@ -399,7 +398,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Slider: Surrender Distance (10 to 300 meters, default 30, 0 decimals)
 [
-    "OKS_Surrender_Distance",
+    "GOL_Surrender_Distance",
     "SLIDER",
     ["Surrender Distance", "Maximum distance (in meters) for surrender checks."],
     "GOL_Surrender",
@@ -408,7 +407,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Slider: Surrender Distance for Aiming (10 to 100 meters, default 50, 0 decimals)
 [
-    "OKS_Surrender_DistanceWeaponAim",
+    "GOL_Surrender_DistanceWeaponAim",
     "SLIDER",
     ["Surrender Distance Weapon Aim", "Maximum distance (in meters) for surrender checks by player aiming at unit."],
     "GOL_Surrender",
@@ -418,7 +417,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 // Settings for OKS FaceSwap
 // CheckBox: Enable OKS Face Swap.
 [
-    "OKS_FaceSwap_Enabled",
+    "GOL_FaceSwap_Enabled",
     "CHECKBOX",
     ["Allow FaceSwap", "When enabled, AI will change faces based on your choices on mission start and when spawned."],
     "GOL_FaceSwap",
@@ -430,7 +429,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // Checkbox: Enable Surrender Debug
 [
-    "OKS_FaceSwap_Debug",
+    "GOL_FaceSwap_Debug",
     "CHECKBOX",
     ["Enable FaceSwap Debug", "When enabled, DEBUG messages will play in the SystemChat."],
     "GOL_FaceSwap",
@@ -442,7 +441,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // CBA Settings for OKS FaceSwap
 [
-    "OKS_FaceSwap_BLUFOR",
+    "GOL_FaceSwap_BLUFOR",
     "LIST",
     ["BLUFOR Ethnicity", "Set ethnic appearance for spawned BLUFOR units"],
     "GOL_FaceSwap",
@@ -455,7 +454,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_settings_fnc_init;
 
 [
-    "OKS_FaceSwap_OPFOR",
+    "GOL_FaceSwap_OPFOR",
     "LIST",
     ["OPFOR Ethnicity", "Set ethnic appearance for spawned OPFOR units"],
     "GOL_FaceSwap",
@@ -468,7 +467,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_settings_fnc_init;
 
 [
-    "OKS_FaceSwap_INDEPENDENT",
+    "GOL_FaceSwap_INDEPENDENT",
     "LIST",
     ["INDEPENDENT Ethnicity", "Set ethnic appearance for spawned INDEPENDENT units"],
     "GOL_FaceSwap",
@@ -481,7 +480,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_settings_fnc_init;
 
 [
-    "OKS_FaceSwap_CIVILIAN",
+    "GOL_FaceSwap_CIVILIAN",
     "LIST",
     ["CIVILIAN Ethnicity", "Set ethnic appearance for spawned CIVILIAN units"],
     "GOL_FaceSwap",
@@ -495,7 +494,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
 // CBA Settings for OKS Packing
 [
-    "OKS_PackedDroneAPClass", // Unique setting variable name
+    "GOL_PackedDroneAPClass", // Unique setting variable name
     "EDITBOX",                           // Setting type (string input)
     ["Packed AP Drone Class", "Classname for the packed AP drone."], // Display name & tooltip
     "GOL_Packing",                    // Category in Addon Options
@@ -504,7 +503,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call cba_settings_fnc_init;
 
 [
-    "OKS_PackedDroneATClass",
+    "GOL_PackedDroneATClass",
     "EDITBOX",
     ["Packed AT Drone Class", "Classname for the packed AT drone."],
     "GOL_Packing",
@@ -513,7 +512,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call cba_settings_fnc_init;
 
 [
-    "OKS_PackedDroneReconClass",
+    "GOL_PackedDroneReconClass",
     "EDITBOX",
     ["Packed Recon Drone Class", "Classname for the packed Recon drone."],
     "GOL_Packing",
@@ -522,7 +521,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call cba_settings_fnc_init;
 
 [
-    "OKS_PackedDroneSupplyClass",
+    "GOL_PackedDroneSupplyClass",
     "EDITBOX",
     ["Packed Supply Drone Class", "Classname for the packed Supply drone."],
     "GOL_Packing",
@@ -531,7 +530,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call cba_settings_fnc_init;
 
 [
-    "OKS_PackedHMGClass", // Unique setting variable name
+    "GOL_PackedHMGClass", // Unique setting variable name
     "EDITBOX",                           // Setting type (string input)
     ["Packed Static HMG Class", "Classname for the Static HMG."], // Display name & tooltip
     "GOL_Packing",                    // Category in Addon Options
@@ -540,7 +539,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call cba_settings_fnc_init;
 
 [
-    "OKS_PackedGMGClass",
+    "GOL_PackedGMGClass",
     "EDITBOX",
     ["Packed Static GMG Class", "Classname for the packed Static GMG."],
     "GOL_Packing",
@@ -549,7 +548,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call cba_settings_fnc_init;
 
 [
-    "OKS_PackedATClass",
+    "GOL_PackedATClass",
     "EDITBOX",
     ["Packed Static AT Class", "Classname for the packed Static AT."],
     "GOL_Packing",
@@ -558,7 +557,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call cba_settings_fnc_init;
 
 [
-    "OKS_PackedMortarClass",
+    "GOL_PackedMortarClass",
     "EDITBOX",
     ["Packed Static Mortar Class", "Classname for the packed Static Mortar."],
     "GOL_Packing",

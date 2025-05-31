@@ -5,7 +5,7 @@
 params ["_player"];	
 
 private _item = "GOL_Packed_AT";
-private _type = missionNamespace getVariable ["GOL_MISC_ADDON_PackedATClass", "RHS_TOW_TriPod_USMC_D"];
+private _type = missionNamespace getVariable ["GOL_PackedATClass", "RHS_TOW_TriPod_USMC_D"];
 
 if (primaryWeapon _player != "") then {
     _player playMoveNow "AmovPknlMstpSlowWrflDnon";

@@ -11,11 +11,11 @@ if (hasInterface) then {
 			Private _Callsign = "Raven 1";
 			if(player == wecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -23,11 +23,11 @@ if (hasInterface) then {
 			Private _Callsign = "Raven 2";
 			if(player == wecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -35,11 +35,11 @@ if (hasInterface) then {
 			Private _Callsign = "Raven 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};	
@@ -47,11 +47,11 @@ if (hasInterface) then {
 			Private _Callsign = "Raven 1";
 			if(player == eecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -59,11 +59,11 @@ if (hasInterface) then {
 			Private _Callsign = "Raven 2";
 			if(player == eecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -71,11 +71,11 @@ if (hasInterface) then {
 			Private _Callsign = "Raven 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};			
@@ -86,11 +86,11 @@ if (hasInterface) then {
 			Private _Callsign = "Giant 1";
 			if(player == wecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -98,11 +98,11 @@ if (hasInterface) then {
 			Private _Callsign = "Giant 2";
 			if(player == wecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -110,11 +110,11 @@ if (hasInterface) then {
 			Private _Callsign = "Giant 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};	
@@ -122,11 +122,11 @@ if (hasInterface) then {
 			Private _Callsign = "Giant 1";
 			if(player == eecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -134,11 +134,11 @@ if (hasInterface) then {
 			Private _Callsign = "Giant 2";
 			if(player == eecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -146,11 +146,11 @@ if (hasInterface) then {
 			Private _Callsign = "Giant 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};			
@@ -161,11 +161,11 @@ if (hasInterface) then {
 			Private _Callsign = "Angel 1";
 			if(player == wecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -173,11 +173,11 @@ if (hasInterface) then {
 			Private _Callsign = "Angel 2";
 			if(player == wecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -185,11 +185,11 @@ if (hasInterface) then {
 			Private _Callsign = "Angel 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};	
@@ -197,11 +197,11 @@ if (hasInterface) then {
 			Private _Callsign = "Angel 1";
 			if(player == eecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -209,11 +209,11 @@ if (hasInterface) then {
 			Private _Callsign = "Angel 2";
 			if(player == eecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -221,11 +221,11 @@ if (hasInterface) then {
 			Private _Callsign = "Angel 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Helicopter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Helicopter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};			
@@ -236,11 +236,11 @@ if (hasInterface) then {
 			Private _Callsign = "Phantom 1";
 			if(player == wecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -248,11 +248,11 @@ if (hasInterface) then {
 			Private _Callsign = "Phantom 2";
 			if(player == wecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 				
 			};
@@ -261,11 +261,11 @@ if (hasInterface) then {
 			Private _Callsign = "Phantom 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};	
@@ -273,11 +273,11 @@ if (hasInterface) then {
 			Private _Callsign = "Phantom 1";
 			if(player == eecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -285,11 +285,11 @@ if (hasInterface) then {
 			Private _Callsign = "Phantom 2";
 			if(player == eecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -297,11 +297,11 @@ if (hasInterface) then {
 			Private _Callsign = "Phantom 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};			
@@ -312,11 +312,11 @@ if (hasInterface) then {
 			Private _Callsign = "Banshee 1";
 			if(player == wecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -324,11 +324,11 @@ if (hasInterface) then {
 			Private _Callsign = "Banshee 2";
 			if(player == wecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -336,11 +336,11 @@ if (hasInterface) then {
 			Private _Callsign = "Banshee 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};	
@@ -348,11 +348,11 @@ if (hasInterface) then {
 			Private _Callsign = "Banshee 1";
 			if(player == eecho1) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -360,11 +360,11 @@ if (hasInterface) then {
 			Private _Callsign = "Banshee 2";
 			if(player == eecho2) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
 		};
@@ -372,14 +372,16 @@ if (hasInterface) then {
 			Private _Callsign = "Banshee 3";
 			if(player == eecho3) then {
 				[
-					missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+					configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 					nil, nil, nil, str side player, _Callsign, _Callsign, nil, nil, nil, nil, (name player), (rank player), nil, [[(typeof (vehicle player)), 1]]
 				] call BIS_fnc_ORBATSetGroupParams;
-				player setVariable ["OKS_Callsign",_Callsign,true];
-				player setVariable ["OKS_Composition","Fighter",true];
+				player setVariable ["GOL_Callsign",_Callsign,true];
+				player setVariable ["GOL_Composition","Fighter",true];
 				[group player, _Callsign] call ace_interaction_fnc_renameGroup;
 			};
-		};			
+		} else {
+			
+		}		
 	};
 
 	_actionCallsign = ["Set_Callsign", "Set Callsign/ORBAT","\A3\ui_f\data\map\Markers\NATO\b_uav.paa", {}, _condition] call ace_interact_menu_fnc_createAction;

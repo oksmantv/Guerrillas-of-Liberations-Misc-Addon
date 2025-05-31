@@ -12,21 +12,21 @@ sleep 1;
        
 _unit addMPEventHandler ["MPKilled", {
     params ["_unit", "_killer"];
-    if(_unit getVariable ["OKS_CaptiveKilled",false]) exitWith {};
+    if(_unit getVariable ["GOL_CaptiveKilled",false]) exitWith {};
     if (isPlayer _killer) then {
-        _unit setVariable ["OKS_CaptiveKilled",true,true];
+        _unit setVariable ["GOL_CaptiveKilled",true,true];
 
         // Get current values from mission namespace
-        private _forceMultiplier = missionNamespace getVariable ["OKS_ForceMultiplier", 1];
-        private _responseMultiplier = missionNamespace getVariable ["OKS_ResponseMultiplier", 1];
+        private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
+        private _responseMultiplier = missionNamespace getVariable ["GOL_ResponseMultiplier", 1];
         
         // Increase values by 10%
         _forceMultiplier = _forceMultiplier * 1.1;
         _responseMultiplier = _responseMultiplier * 0.9;
         
         // Update global variables
-        missionNamespace setVariable ["OKS_ForceMultiplier", _forceMultiplier, true];
-        missionNamespace setVariable ["OKS_ResponseMultiplier", _responseMultiplier, true];
+        missionNamespace setVariable ["GOL_ForceMultiplier", _forceMultiplier, true];
+        missionNamespace setVariable ["GOL_ResponseMultiplier", _responseMultiplier, true];
 
         systemChat format[
             "[DEBUG] Captive Killed - Increasing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",
@@ -71,15 +71,15 @@ private _flags = [];
     };
 
     if (alive _unit) then {
-        private _forceMultiplier = missionNamespace getVariable ["OKS_ForceMultiplier", 1];
-        private _responseMultiplier = missionNamespace getVariable ["OKS_ResponseMultiplier", 1];
+        private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
+        private _responseMultiplier = missionNamespace getVariable ["GOL_ResponseMultiplier", 1];
         
 
         _forceMultiplier = 1 max (_forceMultiplier * 0.9);
         _responseMultiplier = 1 max (_responseMultiplier * 1.1);
 
-        missionNamespace setVariable ["OKS_ForceMultiplier", _forceMultiplier, true];
-        missionNamespace setVariable ["OKS_ResponseMultiplier", _responseMultiplier, true];
+        missionNamespace setVariable ["GOL_ForceMultiplier", _forceMultiplier, true];
+        missionNamespace setVariable ["GOL_ResponseMultiplier", _responseMultiplier, true];
 
         systemChat format[
             "[DEBUG] Captive Captured - Reducing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",

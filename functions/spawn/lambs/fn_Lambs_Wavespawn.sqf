@@ -36,7 +36,7 @@
 		};
 		
 		if(_i != _AmountOfWaves) then {
-			private _ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];
+			private _ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];
 			sleep (_DelayPerWave * _ResponseMultiplier);
 		};	
 		SystemChat format ["Wavespawn Current Count: %1",count _AllSpawnedUnits];

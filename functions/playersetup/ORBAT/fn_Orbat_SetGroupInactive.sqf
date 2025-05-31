@@ -3,7 +3,7 @@
 
 	[
 		_PlatoonLeader,
-		missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon"
+		configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon"
 	] execVM "Scripts\GOL_PlayerSetup\OKS_DynamicOrbat_SetGroupInactive.sqf";
 
 */

@@ -57,7 +57,7 @@ if(!isServer) exitWith {};
 			systemChat format["%1 set to hostile HVT.", name _X];
 			_X disableAI "PATH";
 			if(!isNil "OKS_fnc_Surrender") then {
-				[_X,0.5,50,true,true] spawn OKS_fnc_Surrender;
+				[_X, 0.5, 0.2, 100, 50, true, true, 30] spawn OKS_fnc_Surrender;
 			};
 		};
 		_X setVariable ["GOL_IsStatic",true,true];

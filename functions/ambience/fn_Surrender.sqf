@@ -1,10 +1,19 @@
 /*
     [_this, 0.4, 50, true, true] spawn OKS_fnc_Surrender;
-    [_unit, _chance, _ChanceWeaponAim _distance, _DistanceWeaponAim, _byShot, _byFlashbang] spawn OKS_fnc_Surrender;
+    [_unit, _chance, _ChanceWeaponAim, _distance, _DistanceWeaponAim, _byShot, _byFlashbang, _NearFriendliesDistance] spawn OKS_fnc_Surrender;
 */
-params ["_Unit", "_Chance", "_ChanceWeaponAim", "_Distance", "_DistanceWeaponAim" ,"_SurrenderByShot", "_SurrenderByFlashbang", "_NearFriendliesDistance"];
+params [
+    "_Unit",
+    ["_Chance",0.05,[0]],
+    ["_ChanceWeaponAim",0.05,[0]],
+    ["_Distance",150,[0]],
+    ["_DistanceWeaponAim",50,[0]],
+    ["_SurrenderByShot",true,[false]],
+    ["_SurrenderByFlashbang",true,[false]],
+    ["_NearFriendliesDistance",150,[0]]
+];
 
-private _surrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", false];
+private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 private ["_NearPlayers"];
 
 if(_surrenderDebug) then {
@@ -16,17 +25,17 @@ if(_surrenderDebug) then {
 
 _Unit setVariable ["GOL_Surrender",true,true];
 _Unit setVariable ["GOL_SurrenderDistance",_Distance,true];
-_Unit setVariable ["OKS_ChanceSurrender",_Chance,true];
-_Unit setVariable ["OKS_NearFriendliesDistance",_NearFriendliesDistance,true];
+_Unit setVariable ["GOL_ChanceSurrender",_Chance,true];
+_Unit setVariable ["GOL_NearFriendliesDistance",_NearFriendliesDistance,true];
 
 if (_SurrenderByShot) then {
     _Unit addEventHandler ["Hit", {
         params ["_unit", "_source", "_damage", "_instigator"];
-        private _surrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", false];
+        private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
         private _surrenderDistance = _Unit getVariable ["GOL_SurrenderDistance",50];
-        private _nearFriendliesDistance = _Unit getVariable ["OKS_NearFriendliesDistance",200];
+        private _nearFriendliesDistance = _Unit getVariable ["GOL_NearFriendliesDistance",200];
         if (isPlayer _instigator && (_instigator distance _unit < _surrenderDistance) && vehicle _unit == _unit) then {
-            private _baseChance = _unit getVariable ["OKS_ChanceSurrender", 0];
+            private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
             private _side = side (group _unit);
             private _nearbyFriendlies = (_unit nearEntities [["Man"], _nearFriendliesDistance]) select {
                 side (group _x) isEqualTo _side && alive _x && _x != _unit
@@ -95,7 +104,7 @@ if (_SurrenderByShot) then {
                     _unit spawn {
                         params ["_unit"];
                         sleep 1;
-                        private _surrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", false];
+                        private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
                         if(_surrenderDebug) then {
                             systemChat "[DEBUG] Surrender triggered by shot!";
                         };
@@ -118,10 +127,10 @@ if (_SurrenderByFlashbang) then {
     ["ace_grenades_flashbangedAI", {
         _unit = _this select 0;
         if (_unit getVariable ["GOL_Surrender", false] && vehicle _unit == _unit) then {
-            private _surrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", false];
-            private _baseChance = _unit getVariable ["OKS_ChanceSurrender", 0];
+            private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
+            private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
             private _side = side (group _unit);
-            private _nearFriendliesDistance = _Unit getVariable ["OKS_NearFriendliesDistance",200];
+            private _nearFriendliesDistance = _Unit getVariable ["GOL_NearFriendliesDistance",200];
             private _nearbyFriendlies = (_unit nearEntities [["Man"], _NearFriendliesDistance]) select {
                 side (group _x) isEqualTo _side && alive _x && _x != _unit
             };
@@ -204,15 +213,15 @@ if (_SurrenderByFlashbang) then {
 _Unit addEventHandler ["Suppressed", {
     params ["_unit", "_distance", "_firer", "_instigator", "_ammoObject", "_ammoClassname", "_ammoConfig"];
 
-    private _surrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", false];
+    private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
     private _cooldown = 3; // seconds
-    private _lastCheck = _unit getVariable ["OKS_SurrenderCooldown", -_cooldown];
+    private _lastCheck = _unit getVariable ["GOL_SurrenderCooldown", -_cooldown];
     if (CBA_missionTime - _lastCheck < _cooldown) exitWith {}; // Skip if still on cooldown
     if (_distance > 50) exitWith {}; // Skip if round is far from the unit.
 
-    _unit setVariable ["OKS_SurrenderCooldown", CBA_missionTime];
+    _unit setVariable ["GOL_SurrenderCooldown", CBA_missionTime];
     
-    _nearFriendliesDistance = _Unit getVariable ["OKS_NearFriendliesDistance",200];
+    _nearFriendliesDistance = _Unit getVariable ["GOL_NearFriendliesDistance",200];
     private _nearbyFriendliesClose = (_unit nearEntities [["Man"], _nearFriendliesDistance * 0.5]) select {
         side (group _x) isEqualTo _side && alive _x && _x != _unit
     };
@@ -221,7 +230,7 @@ _Unit addEventHandler ["Suppressed", {
 
     _surrenderDistance = _unit getVariable ["GOL_SurrenderDistance",50];
     if (isPlayer _firer && _distance < _surrenderDistance && vehicle _unit == _unit) then {
-        private _baseChance = _unit getVariable ["OKS_ChanceSurrender", 0];
+        private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
         private _side = side (group _unit);
         private _nearbyFriendlies = (_unit nearEntities [["Man"], _NearFriendliesDistance]) select {
             side (group _x) isEqualTo _side && alive _x && _x != _unit
@@ -308,7 +317,7 @@ private _pfhId = [
         params ["_args", "_pfhId"];
         _args params ["_unit", "_chance", "_distance"];
         private _threatTolerance = 100; // degrees
-        private _surrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", false];
+        private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 
 
         // Debug: Handler running
@@ -320,7 +329,7 @@ private _pfhId = [
         };
 
         // Skip surrender check if unit is inside any vehicle (but keep handler running)
-        if (vehicle _unit != _unit || _unit getVariable ["OKS_Threatened",false]) exitWith {};
+        if (vehicle _unit != _unit || _unit getVariable ["GOL_Threatened",false]) exitWith {};
 
         // "Aimed at" check
         private _players = (_unit nearEntities [["Man"], _distance]) select {isPlayer _x && alive _x};
@@ -356,11 +365,11 @@ private _pfhId = [
                     if(_surrenderDebug) then { systemChat format ["[DEBUG] Unarmed increased chance to %1%%", round(_chance * 100)]; };
                 };
 
-                _unit setVariable ["OKS_Threatened",true,true];
+                _unit setVariable ["GOL_Threatened",true,true];
                 _unit spawn {
                     params ["_unit"];
                     sleep 5;
-                    _unit setVariable ["OKS_Threatened",false,true];
+                    _unit setVariable ["GOL_Threatened",false,true];
                 };
 
                 private _dice = random 1;
@@ -368,7 +377,7 @@ private _pfhId = [
                     if(_unit getVariable ["GOL_Surrender",false]) then {
                         [_unit,_X] spawn {
                             params ["_unit","_player"];
-                            private _surrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", false];
+                            private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
                             sleep 1;
                             [_unit] call OKS_fnc_SetSurrendered;
                             [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;

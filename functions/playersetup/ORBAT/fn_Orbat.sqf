@@ -2,7 +2,7 @@
 /*
 
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon", // Target
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon", // Target
 			nil, // IdTypenil, // Size
 			_PlatoonType, // Type
 			nil, // Side
@@ -209,7 +209,7 @@ if(!isNil "_PlatoonLeaderString") then {
 	systemChat str _PlatoonLeaderString;
 	if((alive _PlatoonLeader)) then {	
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon",
 			nil, nil, _PlatoonType, _Side, nil, nil, nil, nil, nil, nil, (name _PlatoonLeader), (rank _PlatoonLeader), nil, 
 			[
 				typeof (vehicle _PlatoonLeader),
@@ -230,7 +230,7 @@ if(!isNil "_PlatoonLeaderString") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_PlatoonLeader setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -238,7 +238,7 @@ if(!isNil "_PlatoonLeaderString") then {
 if(!isNil "_1SquadLeaderString") then {
 	if((alive _1SquadLeader)) then {
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad",
 			nil, nil, _SquadType, _Side, nil, nil, nil, nil, nil, nil, (name _1SquadLeader), (rank _1SquadLeader), nil, [[(typeof (vehicle _1SquadLeader)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _1SquadLeader getVariable ["ORBATOverlayId",-1];	
@@ -246,7 +246,7 @@ if(!isNil "_1SquadLeaderString") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_1SquadLeader setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -254,7 +254,7 @@ if(!isNil "_1SquadLeaderString") then {
 if(!isNil "_2SquadLeaderString") then {
 	if((alive _2SquadLeader)) then {
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad",
 			nil, nil, _SquadType, _Side, nil, nil, nil, nil, nil, nil, (name _2SquadLeader), (rank _2SquadLeader), nil, [[(typeof (vehicle _2SquadLeader)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _2SquadLeader getVariable ["ORBATOverlayId",-1];	
@@ -262,7 +262,7 @@ if(!isNil "_2SquadLeaderString") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_2SquadLeader setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -271,7 +271,7 @@ if(!isNil "_2SquadLeaderString") then {
 if(!isNil "_1SquadAlphaLeaderString") then {
 	if((alive _1SquadAlphaLeader)) then {
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "AlphaTeam",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "AlphaTeam",
 			nil, nil, nil, _Side, _1stSquadAlphaName, _1stSquadAlphaName, nil, nil, nil, nil, (name _1SquadAlphaLeader), (rank _1SquadAlphaLeader), nil, [[(typeof (vehicle _1SquadAlphaLeader)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _1SquadAlphaLeader getVariable ["ORBATOverlayId",-1];	
@@ -279,7 +279,7 @@ if(!isNil "_1SquadAlphaLeaderString") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "AlphaTeam", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "AlphaTeam", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "AlphaTeam", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_1SquadAlphaLeader setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -287,7 +287,7 @@ if(!isNil "_1SquadAlphaLeaderString") then {
 if(!isNil "_2SquadAlphaLeaderString") then {
 	if((alive _2SquadAlphaLeader)) then {
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "AlphaTeam",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "AlphaTeam",
 			nil, nil, nil, _Side, _2ndSquadAlphaName, _2ndSquadAlphaName, nil, nil, nil, nil, (name _2SquadAlphaLeader), (rank _2SquadAlphaLeader), nil, [[(typeof (vehicle _2SquadAlphaLeader)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _2SquadAlphaLeader getVariable ["ORBATOverlayId",-1];	
@@ -295,7 +295,7 @@ if(!isNil "_2SquadAlphaLeaderString") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "AlphaTeam", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "AlphaTeam", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "AlphaTeam", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_2SquadAlphaLeader setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -304,7 +304,7 @@ if(!isNil "_2SquadAlphaLeaderString") then {
 if(!isNil "_1SquadBravoLeaderString") then {
 	if((alive _1SquadBravoLeader)) then {
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "BravoTeam",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "BravoTeam",
 			nil, nil, _BravoType, _Side, _1stSquadBravoName, _1stSquadBravoName, nil, nil, nil, nil, name _1SquadBravoLeader, name _1SquadBravoLeader, nil, [[(typeof (vehicle _1SquadBravoLeader)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _1SquadBravoLeader getVariable ["ORBATOverlayId",-1];
@@ -312,7 +312,7 @@ if(!isNil "_1SquadBravoLeaderString") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "BravoTeam", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "BravoTeam", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad" >> "BravoTeam", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_1SquadBravoLeader setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -320,7 +320,7 @@ if(!isNil "_1SquadBravoLeaderString") then {
 if(!isNil "_2SquadBravoLeaderString") then {
 	if((alive _2SquadBravoLeader)) then {
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "BravoTeam",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "BravoTeam",
 			nil, nil, _BravoType, _Side, _2ndSquadBravoName, _2ndSquadBravoName, nil, nil, nil, nil, (name _2SquadBravoLeader), (rank _2SquadBravoLeader), nil, [[(typeof (vehicle _2SquadBravoLeader)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _2SquadBravoLeader getVariable ["ORBATOverlayId",-1];	
@@ -328,7 +328,7 @@ if(!isNil "_2SquadBravoLeaderString") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "BravoTeam", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "BravoTeam", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "BravoTeam", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_2SquadBravoLeader setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -337,7 +337,7 @@ if(!isNil "_2SquadBravoLeaderString") then {
 if(!isNil "_PlatoonFACString") then {
 	if((alive _PlatoonFAC)) then {
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer",
 			nil, nil, nil, _Side, nil, nil, nil, nil, nil, nil, (name _PlatoonFAC), (rank _PlatoonFAC), nil, [[(typeof (vehicle _PlatoonFAC)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _PlatoonFAC getVariable ["ORBATOverlayId",-1];
@@ -345,7 +345,7 @@ if(!isNil "_PlatoonFACString") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_PlatoonFAC setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -355,7 +355,7 @@ if(!isNil "_Echo1String") then {
 	if((alive _Echo1)) then {
 		_Callsign = _Echo1 getVariable ["OKS_Callsign","Echo 1"];
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1",
 			nil, nil, nil, _Side, _Callsign, _Callsign, nil, nil, nil, nil, (name _Echo1), (rank _Echo1), nil, [[(typeof (vehicle _Echo1)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _Echo1 getVariable ["ORBATOverlayId",-1];
@@ -363,7 +363,7 @@ if(!isNil "_Echo1String") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo1", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_Echo1 setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -372,7 +372,7 @@ if(!isNil "_Echo2String") then {
 	if((alive _Echo2)) then {
 		_Callsign = _Echo3 getVariable ["OKS_Callsign","Echo 2"];
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2",
 			nil, nil, nil, _Side, _Callsign, _Callsign, nil, nil, nil, nil, (name _Echo2), (rank _Echo2), nil, [[(typeof (vehicle _Echo2)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _Echo2 getVariable ["ORBATOverlayId",-1];
@@ -380,7 +380,7 @@ if(!isNil "_Echo2String") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo2", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_Echo3 setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };
@@ -389,7 +389,7 @@ if(!isNil "_Echo3String") then {
 	if((alive _Echo3)) then {
 		_Callsign = _Echo3 getVariable ["OKS_Callsign","Echo 3"];
 		[
-			missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
+			configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3",
 			nil, nil, nil, _Side, _Callsign, _Callsign, nil, nil, nil, nil, (name _Echo3), (rank _Echo3), nil, [[(typeof (vehicle _Echo3)), 1]]
 		] call BIS_fnc_ORBATSetGroupParams;
 		_ORBATOverlayId = _Echo3 getVariable ["ORBATOverlayId",-1];
@@ -397,7 +397,7 @@ if(!isNil "_Echo3String") then {
 			[configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3", _ORBATOverlayId] call BIS_fnc_ORBATRemoveGroupOverlay;
 		};	
 	} else {
-		_ORBATOverlayId = [missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
+		_ORBATOverlayId = [configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "Hammer" >> "echo3", "mil_destroy", [1,0,0,1], 1.2,1.2,45] call BIS_fnc_ORBATAddGroupOverlay;
 		_Echo3 setVariable ["ORBATOverlayId",_ORBATOverlayId,true];
 	};
 };

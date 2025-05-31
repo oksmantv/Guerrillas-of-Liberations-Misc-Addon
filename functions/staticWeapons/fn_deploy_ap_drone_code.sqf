@@ -8,7 +8,7 @@ params ["_player"];
     {
         _player = _this select 0;
         private _item = "GOL_Packed_Drone_AP";
-        private _type = missionNamespace getVariable ["GOL_MISC_ADDON_PackedDroneAPClass", "B_UAFPV_RKG_AP"];
+        private _type = missionNamespace getVariable ["GOL_PackedDroneAPClass", "B_UAFPV_RKG_AP"];
         if (primaryWeapon _player != "") then {
             _player playMoveNow "AmovPknlMstpSlowWrflDnon";
         };

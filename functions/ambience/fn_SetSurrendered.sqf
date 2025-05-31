@@ -3,7 +3,7 @@
     [_unit, _chance, _ChanceWeaponAim _distance, _DistanceWeaponAim, _byShot, _byFlashbang] spawn OKS_fnc_SetSurrendered;
 */
 params ["_Unit", "_Chance", "_ChanceWeaponAim", "_Distance", "_DistanceWeaponAim" ,"_SurrenderByShot", "_SurrenderByFlashbang", "_NearFriendliesDistance"];
-private _surrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", false];
+private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 
 _random = random 1;
 if(_surrenderDebug) then {

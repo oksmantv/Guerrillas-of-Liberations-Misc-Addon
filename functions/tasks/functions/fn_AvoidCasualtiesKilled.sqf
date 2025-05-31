@@ -16,16 +16,16 @@ Params ["_Var"];
 _Kills = ((MissionNameSpace getVariable _Var) + 1); // +1 to count add this kill
 
 // Get current values from mission namespace
-private _forceMultiplier = missionNamespace getVariable ["OKS_ForceMultiplier", 1];
-private _responseMultiplier = missionNamespace getVariable ["OKS_ResponseMultiplier", 1];
+private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
+private _responseMultiplier = missionNamespace getVariable ["GOL_ResponseMultiplier", 1];
 
 // Increase values by 10%
 _forceMultiplier = _forceMultiplier * 1.25;
 _responseMultiplier = _responseMultiplier * 0.8;
 
 // Update global variables
-missionNamespace setVariable ["OKS_ForceMultiplier", _forceMultiplier, true];
-missionNamespace setVariable ["OKS_ResponseMultiplier", _responseMultiplier, true];
+missionNamespace setVariable ["GOL_ForceMultiplier", _forceMultiplier, true];
+missionNamespace setVariable ["GOL_ResponseMultiplier", _responseMultiplier, true];
 
 MissionNameSpace setVariable [_Var, _Kills];
 _SettingsVar = (Format ["%1_Settings",_Var]);

@@ -47,5 +47,5 @@ Switch (_Side) do
 };
 
 // DO NOT EDIT ANYTHING BELOW \\
-private _forceMultiplier = missionNamespace getVariable ["OKS_ForceMultiplier", 1];
+private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
 [_MinDistance, _UpdateFreq, _SkillVariables, _Skill, _Leaders, _Units,(_MaxCargoSeats * _forceMultiplier)];

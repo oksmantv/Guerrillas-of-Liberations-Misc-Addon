@@ -8,7 +8,7 @@ params ["_player"];
     {
         _player = _this select 0;
         private _item = "GOL_Packed_HMG";
-        private _type = missionNamespace getVariable ["GOL_MISC_ADDON_PackedHMGClass", "B_G_HMG_01_F"];
+        private _type = missionNamespace getVariable ["GOL_PackedHMGClass", "B_G_HMG_01_F"];
 
         if (primaryWeapon _player != "") then {
             _player playMoveNow "AmovPknlMstpSlowWrflDnon";

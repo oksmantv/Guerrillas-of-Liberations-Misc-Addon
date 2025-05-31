@@ -1,8 +1,6 @@
 
 /*
-
-	[_PlatoonLeader,"Infantry",missionconfigfile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon"] execVM "Scripts\GOL_PlayerSetup\OKS_Orbat_SetGroupParams.sqf";
-
+	[_PlatoonLeader,"Infantry",configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon"] execVM "Scripts\GOL_PlayerSetup\OKS_Orbat_SetGroupParams.sqf";
 */
 Params [
 	"_Unit",
@@ -10,7 +8,7 @@ Params [
 	["_CustomCallsign",nil,["",objNull]],
 	["_Composition",nil,[""]]
 ];
-private _Side = (str OKS_FRIENDLY_SIDE);
+private _Side = (str side group _unit);
 private ["_CustomName","_CustomRank"];
 if(isNil "_Unit") then {
 	_CustomName = "Unassigned";
@@ -20,11 +18,11 @@ if(isNil "_Unit") then {
 	_CustomRank = (rank _Unit);
 };
 
-_AssignedCallsign = _Unit getVariable ["OKS_Callsign",nil];
+_AssignedCallsign = _Unit getVariable ["GOL_Callsign",nil];
 if(!isNil "_AssignedCallsign") then {
 	_CustomCallsign = _AssignedCallsign;
 };
-_AssignedComposition = _Unit getVariable ["OKS_Composition",nil];
+_AssignedComposition = _Unit getVariable ["GOL_Composition",nil];
 if(!isNil "_AssignedComposition") then {
 	_Composition = _AssignedComposition;
 };

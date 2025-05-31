@@ -1,40 +1,26 @@
 
 diag_log "OKS_GOL_Misc: XEH_postInit.sqf executed";
 
-OKS_Core_Enabled = missionNamespace getVariable ["OKS_CORE_Enabled",false];
-if(OKS_Core_Enabled isEqualTo true) then {
+GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
+if(GOL_Core_Enabled isEqualTo true) then {
     /*
         OKS Force & Response Multiplier Values
         Used for increasing hunt intensity
     */
-    missionNamespace setVariable ["OKS_ForceMultiplier", 1, true];
-    missionNamespace setVariable ["OKS_ResponseMultiplier", 1, true];
-    OKS_Entrench = missionNamespace getVariable ["GOL_ENTRENCH",false];
-    OKS_WireCutter = missionNamespace getVariable ["GOL_Wirecutter",false];
-    OKS_ForceNVG = missionNamespace getVariable ["GOL_ForceNVG",false];
-    OKS_AIForceNVG = missionNamespace getVariable ["GOL_AIForceNVG",false]; 
-    OKS_ForceNVGClassname = missionNamespace getVariable ["GOL_ForceNVGClassname",""];
-    OKS_AIForceNVGClassname = missionNamespace getVariable ["GOL_AIForceNVGClassname",""];  
-    OKS_Weapons = missionNamespace getVariable ["GOL_WEAPONS",false];
-    OKS_MagnifiedOptics = missionNamespace getVariable ["GOL_MAGNIFIED_OPTICS",false];
-    OKS_Optics = missionNamespace getVariable ["GOL_OPTICS",true];
-    OKS_GroundRoles = missionNamespace getVariable ["GOL_AllowSpecialistGroundRoles",false];
-    OKS_AirRoles = missionNamespace getVariable ["GOL_AllowSpecialistAirRoles",false];
-    OKS_Arsenal = missionNamespace getVariable ["GOL_ARSENAL_ALLOWED",false];
+    missionNamespace setVariable ["GOL_ForceMultiplier", 1, true];
+    missionNamespace setVariable ["GOL_ResponseMultiplier", 1, true];
 
-    // Make all variables public for multiplayer
-    publicVariable "OKS_Entrench";
-    publicVariable "OKS_WireCutter";
-    publicVariable "OKS_ForceNVG";
-    publicVariable "OKS_AIForceNVG";
-    publicVariable "OKS_ForceNVGClassname";
-    publicVariable "OKS_AIForceNVGClassname";
-    publicVariable "OKS_Weapons";
-    publicVariable "OKS_MagnifiedOptics";
-    publicVariable "OKS_Optics";
-    publicVariable "OKS_GroundRoles";
-    publicVariable "OKS_AirRoles";
-    publicVariable "OKS_Arsenal";
+    /*
+        Create Arsenal for Grenadiers & Automatic Riflemen
+    */
+    if (isNil "GOL_Arsenal_LMG") then {
+        GOL_Arsenal_LMG = "Logic" createVehicle [5000,5000,0];
+        publicVariable "GOL_Arsenal_LMG";
+    };   
+    if (isNil "GOL_Arsenal_G") then {
+        GOL_Arsenal_GL = "Logic" createVehicle [5000,5000,0];
+        publicVariable "GOL_Arsenal_GL";
+    };   
 
     if(isServer) then {
         NEKY_Hunt_CurrentCount = [];
@@ -42,7 +28,7 @@ if(OKS_Core_Enabled isEqualTo true) then {
     };
 
     /* Define Player Side for Scripts */
-    missionNameSpace setVariable ["OKS_Friendly_Side",(side group player),true];
+    missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 
     /* Setup Support & Tent MHQ */
     _condition = {leader group player == player};
@@ -62,20 +48,20 @@ if(OKS_Core_Enabled isEqualTo true) then {
     private _handler = [
         {
             // Condition: Either both variables are defined, or timeout reached
-            (!isNil "ORBAT_GROUP" && !isNil "GOL_Composition") || {time > _timeout}
+            (!isNil "ORBAT_GROUP" && !isNil "GOL_SelectedComposition") || {time > _timeout}
         },
         {
             // Execution: Check which case triggered
-            if (!isNil "ORBAT_GROUP" && !isNil "GOL_Composition") then {
-                private _composition = missionNamespace getVariable "GOL_Composition";
+            if (!isNil "ORBAT_GROUP" && !isNil "GOL_SelectedComposition") then {
+                private _composition = missionNamespace getVariable "GOL_SelectedComposition";
                 [_composition] spawn OKS_fnc_Orbat_Setup;
             } else {
                 if (isServer) then {
                     if (isNil "ORBAT_GROUP") then {
                         systemChat "[DEBUG] The ORBAT Group module is missing.";
                     };
-                    if (isNil "GOL_Composition") then {
-                        systemChat "[DEBUG] GOL_Composition variable is undefined. If you want to use the ORBAT, make sure to assign it in missionSettings.sqf.";
+                    if (isNil "GOL_SelectedComposition") then {
+                        systemChat "[DEBUG] GOL_SelectedComposition variable is undefined. If you want to use the ORBAT, make sure to assign it in missionSettings.sqf.";
                     };
                 };
             };
@@ -127,8 +113,6 @@ if(OKS_Core_Enabled isEqualTo true) then {
         }
     ] call CBA_fnc_waitUntilAndExecute;
 
-
-
     /*
         Set Civilians to Friendly to all sides.
     */
@@ -147,7 +131,7 @@ if(OKS_Core_Enabled isEqualTo true) then {
     /*
         RemoveVehicleHE from Current Vehicles.
     */
-    private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["OKS_RemoveVehicleHE_Enabled",true];
+    private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
     if (_RemoveVehicleHE_Enabled) then {
         // Process existing vehicles immediately
         {
@@ -178,27 +162,27 @@ if(OKS_Core_Enabled isEqualTo true) then {
     ["CAManBase", "init", {
         params ["_unit"];
         if (local _unit && {!isPlayer _unit}) then {
-            private _SuppressionEnabled = missionNamespace getVariable ["OKS_Suppression_Enabled", true];
+            private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
             if(_SuppressionEnabled) then {
                 [_unit] spawn OKS_fnc_Suppressed;
             };
 
-            private _SurrenderEnabled = missionNamespace getVariable ["OKS_Surrender_Enabled", true];
+            private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
             if(_SurrenderEnabled) then {
                 // Get current CBA settings
-                private _surrenderByShot               = missionNamespace getVariable ["OKS_Surrender_Shot", true];
-                private _surrenderByFlashbang          = missionNamespace getVariable ["OKS_Surrender_Flashbang", true];
-                private _surrenderChance               = missionNamespace getVariable ["OKS_Surrender_Chance", 0.2];
-                private _surrenderChanceWeaponAim      = missionNamespace getVariable ["OKS_Surrender_ChanceWeaponAim", 0.2];           
-                private _surrenderDistance             = missionNamespace getVariable ["OKS_Surrender_Distance", 30];
-                private _surrenderDistanceWeaponAim    = missionNamespace getVariable ["OKS_Surrender_DistanceWeaponAim", 50];
-                private _surrenderFriendlyDistance     = missionNamespace getVariable ["OKS_Surrender_FriendlyDistance", 200];
+                private _surrenderByShot               = missionNamespace getVariable ["GOL_Surrender_Shot", true];
+                private _surrenderByFlashbang          = missionNamespace getVariable ["GOL_Surrender_Flashbang", true];
+                private _surrenderChance               = missionNamespace getVariable ["GOL_Surrender_Chance", 0.2];
+                private _surrenderChanceWeaponAim      = missionNamespace getVariable ["GOL_Surrender_ChanceWeaponAim", 0.2];           
+                private _surrenderDistance             = missionNamespace getVariable ["GOL_Surrender_Distance", 30];
+                private _surrenderDistanceWeaponAim    = missionNamespace getVariable ["GOL_Surrender_DistanceWeaponAim", 50];
+                private _surrenderFriendlyDistance     = missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200];
             
                 // Call your Surrender function with these settings
                 [_unit, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] spawn OKS_fnc_Surrender;
             };
 
-            private _FaceSwapEnabled = missionNamespace getVariable ["OKS_FaceSwap_Enabled", true];
+            private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
             if(_FaceSwapEnabled) then {
                 // Apply ethnicity and face swap
                 _unit spawn {
@@ -207,58 +191,96 @@ if(OKS_Core_Enabled isEqualTo true) then {
                     private _ethnicity = [_unit] call OKS_fnc_GetEthnicity;
                     [_unit, _ethnicity] call OKS_fnc_FaceSwap;
                 };
-            };           
+            };
+
+            _unit spawn {
+                params ["_unit"];
+                private ["_group"];
+                sleep 5;
+
+                if(_group getVariable ["OKS_EnablePath_Active"],false) exitWith {
+                    // Exit if already enabled on Group level.
+                };
+  
+                if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {
+                    _group = group _unit;
+                    _group setVariable ["OKS_EnablePath_Active",true,true];
+                    private _MoveChance = missionNamespace getVariable ["Static_Enable_Chance", 0.4];
+                    private _DelayCheck = missionNamespace getVariable ["Static_Enable_Refresh", 60];
+                    [_group,_MoveChance,_DelayCheck] spawn OKS_fnc_EnablePath;
+                };
+            }
         };
     }] call CBA_fnc_addClassEventHandler;
 
     if (isServer) then {
-        // Get all player units (for side comparison)
-        private _players = allPlayers select {alive _x};
-        if (_players isEqualTo []) exitWith {
-            private _SurrenderDebug = missionNamespace getVariable ["OKS_Surrender_Debug", true];  
-            if(_SurrenderDebug) then {
-                systemChat "[OKS] No players found for enemy check!";
+        _unit spawn {
+            params ["_unit"];
+            sleep 5;
+
+            // Get all player units (for side comparison)
+            private _players = allPlayers select {alive _x};
+            if (_players isEqualTo []) exitWith {
+                private _SurrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", true];  
+                if(_SurrenderDebug) then {
+                    systemChat "[OKS] No players found for enemy check!";
+                };
             };
+
+            // Assume first player as reference for "enemy" side
+            private _playerSide = side (group (_players select 0));
+            {
+                if (
+                    _x isKindOf "CAManBase" &&
+                    !isPlayer _x &&
+                    side _x getFriend _playerSide < 0.6 // 0.6 = hostile, see https://community.bistudio.com/wiki/side_relations
+                ) then {
+                    private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+                    if(_SurrenderEnabled) then {
+                        private _surrenderByShot               = missionNamespace getVariable ["GOL_Surrender_Shot", true];
+                        private _surrenderByFlashbang          = missionNamespace getVariable ["GOL_Surrender_Flashbang", true];
+                        private _surrenderChance               = missionNamespace getVariable ["GOL_Surrender_Chance", 0.2];
+                        private _surrenderChanceWeaponAim      = missionNamespace getVariable ["GOL_Surrender_ChanceWeaponAim", 0.2];           
+                        private _surrenderDistance             = missionNamespace getVariable ["GOL_Surrender_Distance", 30];
+                        private _surrenderDistanceWeaponAim    = missionNamespace getVariable ["GOL_Surrender_DistanceWeaponAim", 50];
+                        private _surrenderFriendlyDistance     = missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200];               
+                        [_x, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] spawn OKS_fnc_Surrender;
+                    };
+                };
+
+                if(_X isKindOf "CAManBase" && !isPlayer _X) then {
+                    private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
+                    if(_SuppressionEnabled) then {
+                        [_unit] spawn OKS_fnc_Suppressed;
+                    };
+
+                    private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+                    if(_FaceSwapEnabled) then {
+                        // Apply ethnicity and face swap
+                        private _ethnicity = [_x] call OKS_fnc_GetEthnicity;
+                        [_x, _ethnicity] call OKS_fnc_FaceSwap;
+                    };
+
+                    _unit spawn {
+                        params ["_unit"];
+                        private ["_group"];
+                        sleep 5;
+
+                        if(_group getVariable ["OKS_EnablePath_Active"],false) exitWith {
+                            // Exit if already enabled on Group level.
+                        };
+        
+                        if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {
+                            _group = group _unit;
+                            _group setVariable ["OKS_EnablePath_Active",true,true];
+                            private _MoveChance = missionNamespace getVariable ["Static_Enable_Chance", 0.4];
+                            private _DelayCheck = missionNamespace getVariable ["Static_Enable_Refresh", 60];
+                            [_group,_MoveChance,_DelayCheck] spawn OKS_fnc_EnablePath;
+                        };
+                    }   
+                };
+            } forEach allUnits;
         };
-
-        // Assume first player as reference for "enemy" side
-        private _playerSide = side (group (_players select 0));
-        {
-            if (
-                _x isKindOf "CAManBase" &&
-                !isPlayer _x &&
-                side _x getFriend _playerSide < 0.6 // 0.6 = hostile, see https://community.bistudio.com/wiki/side_relations
-            ) then {
-                private _SurrenderEnabled = missionNamespace getVariable ["OKS_Surrender_Enabled", true];
-                if(_SurrenderEnabled) then {
-                    // Get current CBA settings
-                    private _surrenderByShot               = missionNamespace getVariable ["OKS_Surrender_Shot", true];
-                    private _surrenderByFlashbang          = missionNamespace getVariable ["OKS_Surrender_Flashbang", true];
-                    private _surrenderChance               = missionNamespace getVariable ["OKS_Surrender_Chance", 0.2];
-                    private _surrenderChanceWeaponAim      = missionNamespace getVariable ["OKS_Surrender_ChanceWeaponAim", 0.2];           
-                    private _surrenderDistance             = missionNamespace getVariable ["OKS_Surrender_Distance", 30];
-                    private _surrenderDistanceWeaponAim    = missionNamespace getVariable ["OKS_Surrender_DistanceWeaponAim", 50];
-                    private _surrenderFriendlyDistance     = missionNamespace getVariable ["OKS_Surrender_FriendlyDistance", 200];               
-                
-                    // Call your Surrender function with these settings
-                    [_x, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] spawn OKS_fnc_Surrender;
-                };
-            };
-
-            if(_X isKindOf "CAManBase" && !isPlayer _X) then {
-                private _SuppressionEnabled = missionNamespace getVariable ["OKS_Suppression_Enabled", true];
-                if(_SuppressionEnabled) then {
-                    [_unit] spawn OKS_fnc_Suppressed;
-                };
-
-                private _FaceSwapEnabled = missionNamespace getVariable ["OKS_FaceSwap_Enabled", true];
-                if(_FaceSwapEnabled) then {
-                    // Apply ethnicity and face swap
-                    private _ethnicity = [_x] call OKS_fnc_GetEthnicity;
-                    [_x, _ethnicity] call OKS_fnc_FaceSwap;
-                };
-            };
-        } forEach allUnits;
     };
 
     /*
@@ -273,7 +295,7 @@ if(OKS_Core_Enabled isEqualTo true) then {
             _Vehicle call GOL_NEKY_VEHICLEDROP_APPEARANCE;
 
             sleep 5;
-            [_Vehicle] execVM "Scripts\OKS_Vehicles\OKS_Mechanized.sqf";	
+            [_Vehicle] spawn OKS_fnc_Mechanized;	
         };
     };
 
@@ -286,11 +308,10 @@ if(OKS_Core_Enabled isEqualTo true) then {
             _Vehicle call GOL_NEKY_MHQDROP_APPEARANCE;
 
             [_Vehicle, "medium"] call GW_MHQ_Fnc_Handler;
-            [_Vehicle,25,true] ExecVM "Scripts\NEKY_ServiceStation\MobileSS.sqf";
+            [_Vehicle,25,true] spawn OKS_fnc_MobileSS;
 
             sleep 5;	
-            [_Vehicle] execVM "Scripts\OKS_Vehicles\OKS_Mechanized.sqf";	
-
+            [_Vehicle] spawn OKS_fnc_Mechanized;	
         };
     };
 
@@ -325,6 +346,10 @@ if(OKS_Core_Enabled isEqualTo true) then {
     if (hasInterface) then {
         player addEventHandler ["InventoryOpened", {
             params ["_unit", "_container"];
+
+            if(isNil "medical_box_west" || isNil "medical_box_east") exitWith {};
+            if(isNil "flag_west_1" || isNil "flag_east_1") exitWith {};
+            if(isNil "flag_west_2" || isNil "flag_east_2") exitWith {};
 
             // Medical crate check
             if (_container in [medical_box_west, medical_box_east]) then {
@@ -441,6 +466,7 @@ if(OKS_Core_Enabled isEqualTo true) then {
                 _camera cameraEffect ["terminate", "back"];
                 camDestroy _camera;
                 player setVariable ["GOL_SpectatorCamera", nil, true];
+                ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
             };
         }];
 
@@ -468,5 +494,4 @@ if(OKS_Core_Enabled isEqualTo true) then {
     OKS_Mortar_Positions = [];
     OKS_Objective_Positions = [];
     OKS_Hunt_Positions = [];
-
 };

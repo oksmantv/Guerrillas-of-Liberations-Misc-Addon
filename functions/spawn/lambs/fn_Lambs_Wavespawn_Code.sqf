@@ -1,7 +1,7 @@
 Params ["_SpawnPos","_Side","_UnitsPerWave","_UnitArray","_AllSpawnedUnits","_Range","_LambsType"];
 
 _UnitArray Params ["_Leaders","_Units","_Officer"];
-private _ForceMultiplier = missionNameSpace getVariable ["OKS_ForceMultiplier",1];
+private _ForceMultiplier = missionNameSpace getVariable ["GOL_ForceMultiplier",1];
 _Group = CreateGroup _Side;
 _Group setVariable ["acex_headless_blacklist",true,true];
 for "_i" from 1 to round(_UnitsPerWave * _ForceMultiplier) do
@@ -26,11 +26,6 @@ for "_i" from 1 to round(_UnitsPerWave * _ForceMultiplier) do
 	[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill"];
 	_AllSpawnedUnits pushBackUnique _X;
 } foreach units _Group;
-
-private _Suppression = missionNamespace getVariable ["OKS_Suppression_Enabled",false];
-if(_Suppression) then {
-	{[_X] remoteExec ["OKS_fnc_Suppressed",_X]} foreach units _group;
-};	
 
 sleep 5;
 switch (toLower _LambsType) do {

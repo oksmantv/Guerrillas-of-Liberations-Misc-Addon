@@ -8,23 +8,11 @@
 //		a. Any number (meters) from center of object chosen above.
 //		b. Nil, will make it default to what is defined in NEKY_Settings.
 //	3. OPTIONAL: If it is a Mobile Service Station. True/False.
-//		a. Defaults to false, Always use false. If you want to use a Mobile Service Station use the extension NEKY_MobileSS.sqf.
-//		b. True, when this script is being executed via NEKY_MobileSS.sqf.
+//		a. Defaults to false, Always use false. If you want to use a Mobile Service Station use the extension OKS_fnc_MobileSS.
+//		b. True, when this script is being executed via OKS_fnc_MobileSS.
 //	4. OPTIONAL: Objects to scan for, an array of strings that will scan for types of vehicles ( https://community.bistudio.com/wiki/nearestObjects ).
 //		a. This decides what "TYPES" of vehicles the Service Station will look for/work with. ["CAR","AIR","PLANE","HELICOPTER","TANK"] are some examples.
 //		b. Defaults to all land vehicles and all aerial vehicles.
-//
-//////////////
-//	How To
-//////////////
-//
-//	1. Place this file accompanied by NEKY_MobileSS.sqf and NEKY_Settings.sqf in: yourmissionfolder\Scripts\NEKY_ServiceStation\
-//	2. Place an object or vehicle that you want to be the Mobile Service Station (Vehicle Ammo Crate for slingloading or any truck for a vehicle).
-//	3. Modify the code to your liking.
-//	4. Place the code in the init line of the object or vehicle you want to be the Mobile Service Station.
-//
-//	Note: If you want to make a stationary Service Station look in to NEKY_ServiceStation.sqf.
-//
 ///////////////
 //	Examples:
 ///////////////

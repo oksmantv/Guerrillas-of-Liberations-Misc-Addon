@@ -24,7 +24,7 @@
 	};
 
 	Private ["_Group"];
-	waitUntil {sleep 1; !isNil "OKS_fnc_Dynamic_Settings"};
+	waitUntil {sleep 1; !isNil "GOL_fnc_Dynamic_Settings"};
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 	_Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian","_Trigger"];
 	_UnitArray Params ["_Leaders","_Units","_Officer"];
@@ -45,9 +45,9 @@
 			sleep 0.5;
 		};
 
-		private _Suppression_Enabled = missionNamespace getVariable ["OKS_Suppression_Enabled",true];
+		private _Suppression_Enabled = missionNamespace getVariable ["GOL_Suppression_Enabled",true];
 		if(_Suppression_Enabled) then {
-			{[_X] remoteExec ["OKS_Suppressed",0]} foreach units _group;
+			{[_X] remoteExec ["GOL_Suppressed",0]} foreach units _group;
 		};	
 	};
 	if(typeName _ClassnameOrNumber == "STRING") then {

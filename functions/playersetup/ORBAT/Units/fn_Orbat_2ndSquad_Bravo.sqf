@@ -2,10 +2,11 @@
 // Set Platoon Leader
 // [] spawn OKS_Fnc_Orbat_1stSquad_Bravo;
 Private _OrbatPath = configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "2ndSquad" >> "BravoTeam";
+Private _CompositionValue = missionNamespace getVariable ["GOL_SelectedComposition",0];
 
 private _CustomCallsign = objNull;
 private _Composition = "Infantry";
-switch (GOL_Composition) do {
+switch (_CompositionValue) do {
 	case 1: {
 		_CustomCallsign = "1-2 Golf";
 		_Composition = "MechanizedInfantry";

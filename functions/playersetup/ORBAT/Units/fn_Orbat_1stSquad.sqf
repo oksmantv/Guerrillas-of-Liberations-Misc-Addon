@@ -2,6 +2,7 @@
 // Set Platoon Leader
 // [] spawn OKS_Fnc_Orbat_Platoon;
 Private _OrbatPath = configFile >> "CfgORBAT" >> "GuerrillasOfLiberation" >> "1stPlatoon" >> "1stSquad";
+Private _CompositionValue = missionNamespace getVariable ["GOL_SelectedComposition",0];
 
 /// Change Commander name if applicable
 if(!isNil "w1a") exitWith {
@@ -19,7 +20,7 @@ if(!isNil "e1a") exitWith {
 	};
 };
 
-if(GOL_Composition isEqualTo 1) exitWith {
+if(_CompositionValue isEqualTo 1) exitWith {
 	if(!isNil "w1a1") exitWith {
 		if((alive w1a1)) then {	
 			[w1a1,_OrbatPath] spawn OKS_Fnc_Orbat_SetGroupParams;

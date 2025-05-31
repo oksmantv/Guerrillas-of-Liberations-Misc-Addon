@@ -7,11 +7,15 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 
 	// Soviet Vehicles and Weapons
 	if(["BMP", typeOf _Vehicle, false] call BIS_fnc_inString) then {
-		_RemoveATGM = missionNamespace getVariable ["OKS_RemoveVehicleATGM_Enabled",true];
+		_RemoveATGM = missionNamespace getVariable ["GOL_RemoveVehicleATGM_Enabled",true];
 		if(_RemoveATGM) then {
 			_Vehicle removeMagazinesTurret ["rhs_mag_9m14m",[0]];
-			_Vehicle removeMagazinesTurret ["rhs_mag_9m113M",[0]];	
-			[_Vehicle,nil,["maljutka_hide_source",1,"9p135_hide_source",1,"konkurs_hide_source",1]] call BIS_fnc_initVehicle;
+			_Vehicle removeMagazinesTurret ["rhs_mag_9m113M",[0]];
+			_Vehicle spawn {
+				Params ["_Vehicle"];
+				sleep 5;	
+				[_Vehicle,nil,["maljutka_hide_source",1,"9p135_hide_source",1,"konkurs_hide_source",1]] call BIS_fnc_initVehicle;
+			};
 		};
 		_Vehicle removeMagazinesTurret ["rhs_mag_og15v_16",[0]]; // 3CB BMP1
 		_Vehicle removeMagazinesTurret ["rhs_mag_og15v_16",[1]]; // 3CB MTLB BMP1

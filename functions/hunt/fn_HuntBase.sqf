@@ -64,10 +64,10 @@ _IsNight = false;
 _Settings = [] call OKS_fnc_Hunt_Settings;
 _Settings Params ["_MinDistance","_UpdateFreqSettings","_SkillVariables","_Skill","_Leaders","_Units","_MaxCargoSeats"];
 
-private _ForceMultiplier = missionNameSpace getVariable ["OKS_ForceMultiplier",1];
-private _ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];
-private _MaxCount = missionNameSpace getVariable ["OKS_Hunt_MaxCount",1];
-private _ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];
+private _ForceMultiplier = missionNameSpace getVariable ["GOL_ForceMultiplier",1];
+private _ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];
+private _MaxCount = missionNameSpace getVariable ["GOL_Hunt_MaxCount",1];
+private _ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];
 
 _Trigger = createTrigger ["EmptyDetector", getPosWorld _SpawnPos, false];
 _Trigger setTriggerActivation ["ANYPLAYER", "PRESENT", true];
@@ -80,10 +80,10 @@ _EyeCheck enableSimulation false;
 
 while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 {
-	_ForceMultiplier = missionNameSpace getVariable ["OKS_ForceMultiplier",1];
-	_ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];
-	_MaxCount = missionNameSpace getVariable ["OKS_Hunt_MaxCount",1];
-	_ResponseMultiplier = missionNameSpace getVariable ["OKS_ResponseMultiplier",1];	
+	_ForceMultiplier = missionNameSpace getVariable ["GOL_ForceMultiplier",1];
+	_ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];
+	_MaxCount = missionNameSpace getVariable ["GOL_Hunt_MaxCount",1];
+	_ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];	
 	
 	if ((dayTime > 04.30) and (dayTime < 19.30)) then {_KnowsAboutValue = 3.975} else {_KnowsAboutValue = 3.975; _IsNight = true;};
 	SystemChat format["Looking for Players in %1..",_HuntZone];
@@ -115,7 +115,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 						_AliveCurrentCount = 0
 					};
 					_AliveNumber = count _AliveCurrentCount;
-					private _MaxCount = missionNameSpace getVariable ["OKS_Hunt_MaxCount",40];
+					private _MaxCount = missionNameSpace getVariable ["GOL_Hunt_MaxCount",40];
 					if(_MaxCount >= (_AliveNumber + _Soldiers)) then {
 
 						_Group = CreateGroup _Side;

@@ -8,7 +8,7 @@ params [
     ["_unit", objNull, [objNull]],
     ["_faceType", nil, [""]]
 ];
-private _faceswapDebug = missionNamespace getVariable ["OKS_FaceSwap_Debug", false];
+private _faceswapDebug = missionNamespace getVariable ["GOL_FaceSwap_Debug", false];
 
 if (isNull _unit) exitWith {
     if(_faceswapDebug) then {
@@ -93,11 +93,11 @@ switch (_faceType) do {
     default {
         _faces = ["AsianHead_A3_01","AsianHead_A3_07","AsianHead_A3_03","AsianHead_A3_04","AsianHead_A3_02","AsianHead_A3_05"];
         _speakers = ["Male01CHI","Male02CHI","Male03CHI"];
-        systemChat "OKS_FACESWAP - No face type found - Default";
+        systemChat "GOL_FACESWAP - No face type found - Default";
     };
 };
 
-_unit setVariable ["OKS_FaceSwap", true, true];
+_unit setVariable ["GOL_FaceSwap", true, true];
 
 private _face = selectRandom _faces;
 private _voice = selectRandom _speakers;

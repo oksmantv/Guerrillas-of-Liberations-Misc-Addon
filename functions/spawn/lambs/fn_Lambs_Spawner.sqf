@@ -20,7 +20,7 @@
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 	_Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian","_Trigger"];
 	_UnitArray Params ["_Leaders","_Units","_Officer"];
-	private _forceMultiplier = missionNamespace getVariable ["OKS_ForceMultiplier", 1];
+	private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
 
 	while {true} do {
 
@@ -67,9 +67,9 @@
 				5: Only Players, default true <BOOL>
 			*/
 			sleep 15;
-			private _Suppression = missionNameSpace getVariable ["OKS_Suppression_Enabled",true];
+			private _Suppression = missionNameSpace getVariable ["GOL_Suppression_Enabled",true];
 			if(_Suppression) then {
-				{[_X] remoteExec ["OKS_fnc_Suppressed",0]} foreach units _group;
+				{[_X] remoteExec ["GOL_fnc_Suppressed",0]} foreach units _group;
 			};	
 
 			waitUntil {sleep 1; !isNil "lambs_wp_fnc_moduleRush"};

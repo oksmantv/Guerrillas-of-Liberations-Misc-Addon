@@ -8,7 +8,7 @@ params ["_player"];
     {
         _player = _this select 0;
         private _item = "GOL_Packed_Mortar";
-        private _type = missionNamespace getVariable ["GOL_MISC_ADDON_PackedMortarClass", "B_G_Mortar_01_F"];
+        private _type = missionNamespace getVariable ["GOL_PackedMortarClass", "B_G_Mortar_01_F"];
 
         if (primaryWeapon _player != "") then {
             _player playMoveNow "AmovPknlMstpSlowWrflDnon";

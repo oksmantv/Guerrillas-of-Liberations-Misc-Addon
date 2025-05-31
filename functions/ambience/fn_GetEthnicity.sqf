@@ -8,7 +8,7 @@ params [
 ];
 
 private _ethnicity = "middleeast"; // Default fallback
-private _faceswapDebug = missionNamespace getVariable ["OKS_FaceSwap_Debug", false];
+private _faceswapDebug = missionNamespace getVariable ["GOL_FaceSwap_Debug", false];
 
 // Check if unit is valid and has a group
 if (isNull _unit || isNull (group _unit)) exitWith {
@@ -20,16 +20,16 @@ if (isNull _unit || isNull (group _unit)) exitWith {
 
 switch (side (group _unit)) do {
     case west: { 
-        _ethnicity = ["OKS_FaceSwap_BLUFOR"] call CBA_settings_fnc_get;
+        _ethnicity = ["GOL_FaceSwap_BLUFOR"] call CBA_settings_fnc_get;
     };
     case east: { 
-        _ethnicity = ["OKS_FaceSwap_OPFOR"] call CBA_settings_fnc_get;    
+        _ethnicity = ["GOL_FaceSwap_OPFOR"] call CBA_settings_fnc_get;    
     };
     case independent: { 
-        _ethnicity = ["OKS_FaceSwap_INDEPENDENT"] call CBA_settings_fnc_get;
+        _ethnicity = ["GOL_FaceSwap_INDEPENDENT"] call CBA_settings_fnc_get;
     };
     case civilian: { 
-        _ethnicity = ["OKS_FaceSwap_CIVILIAN"] call CBA_settings_fnc_get;
+        _ethnicity = ["GOL_FaceSwap_CIVILIAN"] call CBA_settings_fnc_get;
     };                           
     default {
         if(_faceswapDebug) then {

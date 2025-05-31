@@ -41,9 +41,9 @@
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill"]; _Array pushBackUnique _X } foreach units _Group;
 	Call Compile Format ["PublicVariable '%1'",_Array];
 
-	private _Suppression = missionNameSpace getVariable ["OKS_Suppression_Enabled",true];
+	private _Suppression = missionNameSpace getVariable ["GOL_Suppression_Enabled",true];
 	if(_Suppression) then {
-		{[_X] remoteExec ["OKS_fnc_Suppressed",0]} foreach units _group;
+		{[_X] remoteExec ["GOL_fnc_Suppressed",0]} foreach units _group;
 	};	
 
 	sleep 5;

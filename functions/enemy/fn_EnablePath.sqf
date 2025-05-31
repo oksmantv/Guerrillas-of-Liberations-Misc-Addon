@@ -1,7 +1,7 @@
 	// OKS_fnc_EnablePath
 	// [_Group,0.3,10] spawn OKS_fnc_EnablePath;
 
-	Params ["_Group","_Chance","_Sleep"];
+	Params ["_Group",["_Chance",0.4,[0]],["_Sleep",60,[0]]];
 	Private ["_Units","_Unit"];
  	Private _Debug_Variable = true;
 
