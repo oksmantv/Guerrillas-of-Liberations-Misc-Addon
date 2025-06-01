@@ -3,7 +3,7 @@
     <br/>
     <br/>
     <a href="https://gol-clan.com/home">
-        <img src="https://github.com/oksmantv/Guerrillas-of-Liberations-Misc-Addon/blob/main/AnimatedGOLlogo.png?raw=true#gh-dark-mode-only" alt="GOL Logo" height="300">
+        <img src="https://github.com/Bluwolf00/GOL_Framework_2021/blob/main/AnimatedGOLlogo.png?raw=true#gh-dark-mode-only" alt="GOL Logo" height="300">
 		<!-- <img src="https://github.com/oksmantv/GOL_Addon/blob/master/img/GWLogo_DK.png?raw=true#gh-light-mode-only" alt="GOL Logo" height="300"> -->
     </a>
     </h1>
