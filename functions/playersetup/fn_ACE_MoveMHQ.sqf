@@ -4,7 +4,8 @@ if (hasInterface) then {
 	// NEKY EDIT START
 	_code =
 	{
-		_EnemyNearUnits = (player nearEntities ["Man", GOL_OKS_MhqSafeZone]) select {(side _X) getFriend (side player) < 0.6 && side _X != civilian};
+		_MhqSafeZone = missionNamespace getVariable ["MHQSAFEZONE",50];
+		_EnemyNearUnits = (player nearEntities ["Man", _MhqSafeZone]) select {(side group _X) getFriend (side group player) < 0.6 && side group _X != civilian};
 		if(count _EnemyNearUnits == 0) then {
 			[Tent_MHQ,(player getPos [3,getDir player])] remoteExec ["setPos",2];
 
@@ -19,13 +20,12 @@ if (hasInterface) then {
 				["The MHQ has been moved to a new safe location."] remoteExec ["systemChat",_Players];
 			};
 		} else {
-			systemChat format["Enemies are nearby. You cannot move the MHQ until the immediate area is secure (%1m).",GOL_OKS_MhqSafeZone];
+			systemChat format["Enemies are nearby. You cannot move the MHQ until the immediate area is secure (%1m).",_MhqSafeZone];
 		};	
 	};
 
 	// NEKY EDIT END
 	_action = ["DeployMHQTent", "Deploy Tent MHQ","\A3\ui_f\data\map\mapcontrol\Tourism_CA.paa", _code, _condition] call ace_interact_menu_fnc_createAction;
 	[typeOf player, 1, ["ACE_SelfActions","Request_Support"], _action] call ace_interact_menu_fnc_addActionToClass;
-
 };
 
