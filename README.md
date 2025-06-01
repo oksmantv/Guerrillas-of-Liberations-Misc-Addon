@@ -1,5 +1,5 @@
 <div align="center">
-    <h1 align="center">GOL Misc Addon
+    <h1 align="center">GOL Miscellaneous Addon
     <br/>
     <br/>
     <a href="https://gol-clan.com/home">
