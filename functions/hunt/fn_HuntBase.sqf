@@ -143,7 +143,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 						_Group AllowFleeing 0;
 
 						sleep 1;
-						[_Group, nil, _HuntZone, 0, 30, 0, {}] spawn OKS_fnc_Hunt_Run;
+						[_Group, nil, _HuntZone, 0, 30, 0, {}] spawn OKS_fnc_HuntRun;
 					};
 				};
 
