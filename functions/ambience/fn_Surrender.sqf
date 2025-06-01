@@ -17,10 +17,10 @@ private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", f
 private ["_NearPlayers"];
 
 if(_surrenderDebug) then {
-    systemChat format [
+    format [
         "[DEBUG] Surrender Script Activated for %1 - %2",
         _Unit, name _Unit
-    ];
+    ] remoteExec ["systemChat",0];;
 };
 
 _Unit setVariable ["GOL_Surrender",true,true];
@@ -54,10 +54,10 @@ if (_SurrenderByShot) then {
                 private _inc = 0.025 * (10 - _numFriendlies);
                 _adjustedChance = _adjustedChance + _inc;
                 if(_surrenderDebug) then {
-                    systemChat format [
+                    format [
                         "[DEBUG] Surrender chance increased by %1 %% (few friendlies nearby: %2). New chance: %3%%",
                         (_inc * 100), _numFriendlies, (_adjustedChance * 100)
-                    ];
+                    ] remoteExec ["systemChat",0];;
                 };
             } else {
                 _adjustedChance = _adjustedChance * 0.3;
@@ -68,53 +68,53 @@ if (_SurrenderByShot) then {
             if (_suppression > 0.7) then {
                 _adjustedChance = _adjustedChance + 0.1;
                 if(_surrenderDebug) then {
-                    systemChat format [
+                    format [
                         "[DEBUG] Surrender chance increased by 10%% (suppression: %1). New chance: %2%%",
                         round(_suppression * 100), round(_adjustedChance * 100)
-                    ];
+                    ]  remoteExec ["systemChat",0];
                 };
             };
 
             // Increase for being shot
             _adjustedChance = _adjustedChance + 0.1;
             if(_surrenderDebug) then {
-                systemChat format [
+                format [
                     "[DEBUG] Surrender chance increased by 10%% (shot). New chance: %1%%",
                     round(_adjustedChance * 100)
-                ];
+                ] remoteExec ["systemChat",0];
             };
             // Set to surrendered if unarmed.
             if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
                 _adjustedChance = 0.5;
                 if(_surrenderDebug) then {
-                    systemChat format ["[DEBUG] Unarmed increased chance to %1%%", round(_adjustedChance * 100)];
+                    format ["[DEBUG] Unarmed increased chance to %1%%", round(_adjustedChance * 100)] remoteExec ["systemChat",0];;
                 };
             };
 
             _adjustedChance = _adjustedChance min 1;
             if(_surrenderDebug) then {
-                systemChat format ["[DEBUG] Final surrender chance: %1%%", round(_adjustedChance * 100)];
+                format ["[DEBUG] Final surrender chance: %1%%", round(_adjustedChance * 100)] remoteExec ["systemChat",0];;
             };
             private _dice = random 1;
             if(_surrenderDebug) then {
-                systemChat format ["[DEBUG] Dice rolled: %1 (must be less than %2 to surrender)", round(_dice * 100), round(_adjustedChance * 100)];
+                format ["[DEBUG] Dice rolled: %1 (must be less than %2 to surrender)", round(_dice * 100), round(_adjustedChance * 100)] remoteExec ["systemChat",0];;
             };
             if (_dice < _adjustedChance) then {
                 if(_unit getVariable ["GOL_Surrender",false]) then {
                     _unit spawn {
                         params ["_unit"];
-                        sleep 1;
                         private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
                         if(_surrenderDebug) then {
-                            systemChat "[DEBUG] Surrender triggered by shot!";
+                            "[DEBUG] Surrender triggered by shot!" remoteExec ["systemChat",0];
                         };
-                        [_unit] call OKS_fnc_SetSurrendered;
                         [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;
+                        sleep 3;
+                        [_unit] call OKS_fnc_SetSurrendered;
                     };
                 };
                 _unit removeAllEventHandlers "Hit";
             } else {
-                if(_surrenderDebug) then {systemChat "[DEBUG] Surrender not triggered by shot.";}
+                if(_surrenderDebug) then {"[DEBUG] Surrender not triggered by shot." remoteExec ["systemChat",0];;}
             };
 
         };

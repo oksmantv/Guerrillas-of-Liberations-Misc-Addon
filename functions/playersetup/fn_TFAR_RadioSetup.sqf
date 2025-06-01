@@ -4,7 +4,7 @@
 	Player - Player Variable
 */
 
-Params ["_Player"];
+_Player = player;
 
 if (isMultiplayer || isDedicated) then
 {

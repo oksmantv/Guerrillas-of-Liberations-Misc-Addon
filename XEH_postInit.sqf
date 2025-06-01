@@ -116,7 +116,10 @@ if(GOL_Core_Enabled isEqualTo true) then {
                 ] call CBA_fnc_addPerFrameHandler;
             } else {
                 // Timeout reached, show debug message
-                systemChat "[DEBUG] DeathScore disabled - Can't find scoreboards";
+                private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
+                if(_Debug) then {
+                    "[DEBUG] DeathScore disabled - Can't find scoreboards" remoteExec ["systemChat",0];
+                };
             };
         }
     ] call CBA_fnc_waitUntilAndExecute;
@@ -230,7 +233,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
             if (_players isEqualTo []) exitWith {
                 private _SurrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", true];  
                 if(_SurrenderDebug) then {
-                    systemChat "[OKS] No players found for enemy check!";
+                    "[OKS] No players found for enemy check!" remoteExec ["systemChat",0];
                 };
             };
 
@@ -387,13 +390,8 @@ if(GOL_Core_Enabled isEqualTo true) then {
             if (_unit isNotEqualTo player) exitWith {};
             if(_unconscious) then {
                 private _camera = nil;
-                //systemChat format["%1 is unconscious",name _unit];
                 _playerbloodVolume = _unit getVariable ["ace_medical_bloodVolume", 6];
-
-                //systemChat str _playerbloodVolume;
                 if(_playerbloodVolume <= 5.1) then {
-                    //systemChat "Player is Tier 2";
-                    //[false, 0] call ace_medical_feedback_fnc_effectUnconscious;
                     [_unit] spawn {
                         params ["_unit"];
                         private _dir = 0;
@@ -402,14 +400,12 @@ if(GOL_Core_Enabled isEqualTo true) then {
 
                         _camera = _unit getVariable ["GOL_SpectatorCamera",nil];
                         if(isNil "_camera") then {
-                            //systemChat "Creating Camera";
                             _Position = (getPosATL _unit) getPos [_distance,_Dir];
                             _camera = "camera" camCreate [_Position select 0,_Position select 1,_height];     
                         };
                         _camera camSetTarget player;
                         _unit setVariable ["GOL_SpectatorCamera",_camera,true];	
                         cutText ["", "BLACK OUT",1]; sleep 1;
-                        //systemChat "BLACK OUT";
                         
                         waitUntil {!isNil "ace_medical_feedback_ppUnconsciousBlur"};
                         ppEffectDestroy ace_medical_feedback_ppUnconsciousBlur;            
@@ -421,7 +417,6 @@ if(GOL_Core_Enabled isEqualTo true) then {
                         _camera cameraEffect ["internal", "back"];
                         sleep 2;
                         cutText ["", "BLACK IN",3];
-                        //systemChat "BLACK IN";
 
                         while {!([_unit] call ace_common_fnc_isAwake)} do {
                             _playerbloodVolume = _unit getVariable ["ace_medical_bloodVolume", 6];
@@ -438,17 +433,12 @@ if(GOL_Core_Enabled isEqualTo true) then {
                             _Dir = _dir + 10;
                             _camera camSetPos [_Position select 0,_Position select 1,_height];
                             _camera camCommit 1;
-                            //systemChat "Unconscious - Moving Camera";
                             sleep 1;
                         };			
-
-                        //cutText ["", "BLACK IN",1];
-                        //[true, 0] call ace_medical_feedback_fnc_effectUnconscious;   
                     };
                 };
             };
             if(!(_unconscious)) then {
-                // Exit Camera 
                 _unit spawn {
                     _camera = _this getVariable ["GOL_SpectatorCamera",objNull];
                     _camera camSetPos [(getPosATL _this) select 0,(getPosATL _this) select 1,0.1];

@@ -7,11 +7,11 @@ private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", f
 
 _random = random 1;
 if(_surrenderDebug) then {
-    systemChat format ["[DEBUG] SetSurrender Random %1%% value",round(_random * 100)];
+    format ["[DEBUG] SetSurrender Random %1%% value",round(_random * 100)] remoteExec ["systemChat",0];
 };
 if(_random < 0.5 && {_X distance _Unit < 20} count AllPlayers == 0) then {
     if(_surrenderDebug) then {
-        systemChat format ["[DEBUG] SetSurrender Unit set to flee."];
+        format ["[DEBUG] SetSurrender Unit set to flee."] remoteExec ["systemChat",0];
     };
     _CivilianGroup = createGroup CIVILIAN;
     [_Unit] join _CivilianGroup;
@@ -27,6 +27,6 @@ if(_random < 0.5 && {_X distance _Unit < 20} count AllPlayers == 0) then {
 } else {
     [_unit, true] call ACE_captives_fnc_setSurrendered;
     if(_surrenderDebug) then {
-        systemChat format ["[DEBUG] SetSurrender Unit set to surrender."];
+        format ["[DEBUG] SetSurrender Unit set to surrender."] remoteExec ["systemChat",0];;
     };
 };

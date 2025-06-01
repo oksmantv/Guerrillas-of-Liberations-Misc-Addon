@@ -12,12 +12,12 @@ private _faceswapDebug = missionNamespace getVariable ["GOL_FaceSwap_Debug", fal
 
 if (isNull _unit) exitWith {
     if(_faceswapDebug) then {
-        systemChat "[DEBUG] FaceSwap Exited - Unit is null";
+        "[DEBUG] FaceSwap Exited - Unit is null" remoteExec ["systemChat",0];;
     };
 };
 if (isNil "_faceType") exitWith {
     if(_faceswapDebug) then {
-        systemChat format["[DEBUG] FaceSwap Exited on %1 - Type is null"];
+        format["[DEBUG] FaceSwap Exited on %1 - Type is null"]  remoteExec ["systemChat",0];;
     };
 };
 
@@ -104,7 +104,6 @@ private _voice = selectRandom _speakers;
 
 _unit setSpeaker _voice;
 _unit setFace _face;
-//[_unit, _face, _voice] call BIS_fnc_setIdentity;
 if(_faceswapDebug) then {
-    systemChat format ["[DEBUG] %2 FaceSwap Executed on %1",_unit,(toupper _faceType)];
+    format ["[DEBUG] %2 FaceSwap Executed on %1",_unit,(toupper _faceType)] remoteExec ["systemChat",0];;
 };

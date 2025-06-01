@@ -10,6 +10,24 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
     1
 ] call CBA_fnc_addSetting;
 
+[
+    "GOL_Enemy_Debug",
+    "CHECKBOX",
+    ["Enables DEBUG messages for enemy scripts.", "Enables debugging for enemy scripts such as AdjustDamage, ForceVehicleSpeed, EnablePath etc."],
+    "GOL_CORE",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Ambience_Debug",
+    "CHECKBOX",
+    ["Enables DEBUG messages for ambience scripts.", "Enables debugging for enemy scripts such as the PowerGenerator, Death Score, House Destruction scripts."],
+    "GOL_CORE",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
 // CBA Settings for Dynamic
 [
     "GOL_Dynamic_Faction",

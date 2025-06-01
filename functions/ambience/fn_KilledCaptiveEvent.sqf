@@ -28,10 +28,10 @@ _unit addMPEventHandler ["MPKilled", {
         missionNamespace setVariable ["GOL_ForceMultiplier", _forceMultiplier, true];
         missionNamespace setVariable ["GOL_ResponseMultiplier", _responseMultiplier, true];
 
-        systemChat format[
-            "[DEBUG] Captive Killed - Increasing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",
-            round (_forceMultiplier * 100), round (_responseMultiplier * 100)
-        ];        
+        private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
+        if(_Debug) then {
+            format["[DEBUG] Captive Killed - Increasing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] remoteExec ["systemChat",0];
+        };     
     };
 }];
 
@@ -81,9 +81,10 @@ private _flags = [];
         missionNamespace setVariable ["GOL_ForceMultiplier", _forceMultiplier, true];
         missionNamespace setVariable ["GOL_ResponseMultiplier", _responseMultiplier, true];
 
-        systemChat format[
-            "[DEBUG] Captive Captured - Reducing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",
-            round (_forceMultiplier * 100), round (_responseMultiplier * 100)
-        ];
+        private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
+        if(_Debug) then {
+            format["[DEBUG] Captive Captured - Reducing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] remoteExec ["systemChat",0];
+        };  
+
     };
 };

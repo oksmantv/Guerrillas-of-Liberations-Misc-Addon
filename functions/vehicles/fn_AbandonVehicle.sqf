@@ -8,9 +8,7 @@ Params
 	["_vehicle", ObjNull, [ObjNull]]
 ];
 
-if(_vehicle isKindOf "StaticWeapon") exitWith {
-	//systemChat "OKS_AbandonVehicle: Is Static Weapon Exiting.."
-};
+if(_vehicle isKindOf "StaticWeapon") exitWith {};
 
 // Check if vehicle has any gunner turrets (occupied or empty)
 private _hasGunnerSeat = {
@@ -33,7 +31,10 @@ _Repetitions = 0;
 waitUntil {_Repetitions = _Repetitions + 1; sleep 2; count (crew _vehicle) > 1 || _Repetitions > 10};
 
 if(_Repetitions > 10) exitWith {
-	systemChat "OKS_AbandonVehicle: Vehicle crew did not exist after 20 seconds. Exiting.. "
+ 	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+	if(_Debug) then {
+		"[DEBUG] OKS_AbandonVehicle: Vehicle crew did not exist after 20 seconds. Exiting.." remoteExec ["systemChat",0];
+	};
 };
 
 // Only proceed if vehicle has weapons
@@ -44,7 +45,11 @@ if (_vehicle call _hasGunnerSeat) exitWith {
 		while {alive _vehicle} do {
 			// Re-check gunner seats in case turret gets destroyed
 			if ([_vehicle] call _hasGunnerSeat && !canFire _vehicle) then {
-				systemChat "_HasGunnerSeat and cannot fire. Abandon Vehicle.";
+				Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+				if(_Debug) then {
+					"[DEBUG] HasGunnerSeat and cannot fire. Abandoning Vehicle." remoteExec ["systemChat",0];
+				};
+				systemChat "";
 				{_x leaveVehicle _vehicle} forEach crew _vehicle;
 				_vehicle lock true;
 				break;
@@ -54,4 +59,9 @@ if (_vehicle call _hasGunnerSeat) exitWith {
 	};
 };
 
-//systemChat format["%1 does not have gunner. Exiting Abandon Vehicle", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName];
+Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+if(_Debug) then {
+	format["[DEBUG] %1 does not have gunner. Exiting Abandon Vehicle", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName] remoteExec ["systemChat",0];
+};
+
+//systemChat ;

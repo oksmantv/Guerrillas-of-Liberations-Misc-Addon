@@ -59,4 +59,7 @@ removeAllItems _unit;
 removeAllAssignedItems _unit;
 
 // Debug message
-systemChat format ["[DEBUG] %1 dropped all weapons and gear.", name _unit];
+private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
+if(_surrenderDebug) then {
+    format ["[DEBUG] %1 dropped all weapons and gear.", name _unit]  remoteExec ["systemChat",0];
+};

@@ -6,7 +6,10 @@ if(!isServer) exitWith { false };
 Params ["_Vehicle"];
 
 if(_Vehicle isKindOf "StaticWeapon" || _Vehicle isKindOf "Air") exitWith {
-	//systemChat "OKS_AbandonVehicle: Is Static Weapon/Air Exiting.."
+    Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+    if(_Debug) then {
+	    "[DEBUG] OKS_ForceVehicleSpeed: Is Static Weapon/Air Exiting.." remoteExec ["systemChat",0];
+    };
 };
 
 Private _Speed = 10;
@@ -28,4 +31,8 @@ switch (toLower (_VehicleType)) do {
 };
 
 [_Vehicle,_Speed] remoteExec ["forceSpeed",0];
-//systemChat format ["%1 forced speed to %2.",typeOf _Vehicle,_Speed];
+
+Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+if(_Debug) then {
+    format ["%1 forced speed to %2.",typeOf _Vehicle,_Speed] remoteExec ["systemChat",0];
+};

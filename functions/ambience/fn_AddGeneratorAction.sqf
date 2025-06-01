@@ -67,4 +67,8 @@ private _actionDisableGenerator = [
 ] call ace_interact_menu_fnc_createAction;
 
 [_Generator, 0, ["ACE_MainActions"], _actionDisableGenerator] call ace_interact_menu_fnc_addActionToObject;
-systemChat format ["[DEBUG] Power Generator Added Action to %1", _Generator];
+
+private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
+if(_Debug) then {
+    format ["[DEBUG] Power Generator Added Action to %1", _Generator] remoteExec ["systemChat",0];
+};

@@ -3,9 +3,9 @@
 
 	Params ["_Group",["_Chance",0.4,[0]],["_Sleep",60,[0]]];
 	Private ["_Units","_Unit"];
- 	Private _Debug_Variable = true;
+ 	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 
-	if(_Debug_Variable) then {
+	if(_Debug) then {
 		systemChat format["%1 ran code for OKS_fnc_EnablePath, Chance: %2, Time: %3",_Group,_Chance,_Sleep];
 	};
 	
@@ -32,7 +32,7 @@
 			};
 
 			if(!(_closePlayers isEqualTo [])) then {
-				if(_Debug_Variable) then { systemChat format ["Players Near Garrison - %1",_closePlayers]};
+				if(_Debug) then { systemChat format ["Players Near Garrison - %1",_closePlayers]};
 				if(Random 1 <= _Chance) then {
 					_Unit = selectRandom _AIUnits;
 
@@ -40,16 +40,16 @@
 
 						_newGroup = createGroup (side _Unit);
 						_Unit joinAs [_newGroup,0];
-						[_Unit,selectRandom ["moveUp_1","moveUp_2","advance","OnTheWay_1"],_Debug_Variable] remoteExec ["OKS_Fnc_JBOY_Speak",0]; 
+						[_Unit,selectRandom ["moveUp_1","moveUp_2","advance","OnTheWay_1"],_Debug] remoteExec ["OKS_Fnc_JBOY_Speak",0]; 
 
 						[_Unit, "PATH"] remoteExec ["enableAI",0];
 
 						//waitUntil {sleep 1; !isNil "lambs_wp_fnc_taskRush"};	
 						//[_newGroup,200,15,[],getPos _Unit,true] remoteExec ["lambs_wp_fnc_taskRush",0];
 
-						if(_Debug_Variable) then { systemChat format ["Garrison Unit Detached: %1",_Unit]};
+						if(_Debug) then { systemChat format ["Garrison Unit Detached: %1",_Unit]};
 					} else {
-						if(_Debug_Variable) then { systemChat format ["Ignored (Unit in Vehicle): %1",_Unit]};
+						if(_Debug) then { systemChat format ["Ignored (Unit in Vehicle): %1",_Unit]};
 					};
 				};
 			};

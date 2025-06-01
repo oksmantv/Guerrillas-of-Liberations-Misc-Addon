@@ -85,11 +85,11 @@ if (isServer) then  // To avoid having all players loop the scanners
 					PublicVariable "NEKY_ServiceStationArray";
 					if !(_x getVariable ["NEKY_ServiceStation_HasActions",false]) then
 					{
-						[[_x,_SS],{_This Spawn OKS_Fnc_ServiceAddActions}] remoteExec ["BIS_FNC_SPAWN",0,true];
+						[_x,_SS] remoteExec ["OKS_Fnc_ServiceAddActions",0,true];
 						_x setVariable ["NEKY_ServiceStation_HasActions",true,true];
 					};
 					_x setVariable ["NEKY_ServiceStation_InStation",[true,_SS],true];
-					[_x,_SS,_Radius] Spawn OKS_Fnc_ExitLoop;
+					[_x,_SS,_Radius] spawn OKS_Fnc_ExitLoop;
 				};
 			} forEach _Vehicles;
 			Sleep 4;

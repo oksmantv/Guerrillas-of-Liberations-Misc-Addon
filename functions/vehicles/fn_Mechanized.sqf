@@ -58,7 +58,7 @@ if(_ServiceStation && !(_Vehicle getVariable ["GOL_isMSS",false]) /*&& GOL_OKS_S
 	ClearItemCargoGlobal _Crate;
 
 	_fuelCan = "FlexibleTank_01_forest_F" createVehicle [0,0,0];
-	[_fuelCan,200] call ace_refuel_fnc_makeJerryCan;
+	[_fuelCan,1000] call ace_refuel_fnc_makeJerryCan;
 
 	//[_vehicle, ["car","west"]] call GW_Gear_Fnc_Init;
 	waitUntil {!isNil "OKS_fnc_MobileSS"};
@@ -83,26 +83,16 @@ _Vehicle addMagazineCargoGlobal ["ACE_rope12",1];
 
 if(_AddMortar) then {
 	if(_Debug_Variable) then {SystemChat "Adding Mortar Equipment"};
-	//add a new backpack to the vehicle
 	Switch (_MortarType) do {
 		case "light": {
-			_Vehicle addBackpackCargoGlobal ["PB_Bergen", 1];
-			_Vehicle addWeaponCargoGlobal ["UK3CB_BAF_M6",2];
-			_Vehicle addMagazineCargoGlobal ["UK3CB_BAF_1Rnd_60mm_Mo_Shells", 32];
+			_Vehicle addWeaponCargoGlobal ["UK3CB_BAF_M6",1];
+			_Vehicle addItemCargoGlobal ["Packed_60mm_HE",6];
+			_Vehicle addItemCargoGlobal ["Packed_60mm_HEAB",4];
+			_Vehicle addItemCargoGlobal ["Packed_60mm_Smoke",4];
 		};
 		case "heavy":{
-			_Vehicle addBackpackCargoGlobal ["I_Mortar_01_weapon_F",1];
-			_Vehicle addBackpackCargoGlobal ["I_Mortar_01_support_F",1];
+			_Vehicle addItemCargoGlobal ["GOL_Packed_Mortar",1];
 		};
-	};
-
-
-	//Find the added backpack
-	_BP = (everyBackpack _Vehicle) select (count (everyBackpack _Vehicle) - 1);
-
-	if(!isNil "_BP") then {
-		//Fill it with your stuff
-		_BP addMagazineCargoGlobal ["UK3CB_BAF_1Rnd_60mm_Mo_Shells", 16];
 	};
 };
 

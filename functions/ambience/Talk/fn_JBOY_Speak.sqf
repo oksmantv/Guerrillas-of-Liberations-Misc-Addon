@@ -45,7 +45,7 @@
 		if (!isNull _unit and alive _unit) then
 		{
 			if(_Debug_Variable) then {
-				SystemChat format["%1 spoke %2",_unit,_soundFileName];
+				format["[DEBUG] %1 spoke %2",_unit,_soundFileName] remoteExec ["systemChat",0];
 			};
 			playSound3D [_s, _unit];
 		};

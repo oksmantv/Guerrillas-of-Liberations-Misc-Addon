@@ -48,3 +48,8 @@ _Buildings = nearestTerrainObjects [_Trigger, ["HOUSE"], _Range];
         sleep 0.1;
     }
 } foreach _Buildings;
+
+private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
+if(_Debug) then {
+    format["[DEBUG] Destroy Houses activated at %1",_TriggerOrPosition] remoteExec ["systemChat",0];
+};

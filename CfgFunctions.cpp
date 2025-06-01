@@ -56,7 +56,6 @@ class CfgFunctions // Defines a function
 			class Available {};
 			class Busy {};
 			class ExitLoop {};
-			class FullService {};
 			class Hints {};
 			class Lights {};
 			class Rearm {};

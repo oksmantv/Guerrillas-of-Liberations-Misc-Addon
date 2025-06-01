@@ -57,14 +57,13 @@ _Object addAction ["<t color='#00FF00'>Activate Service Station</t>",
 	_Params Params ["_MRadius","_IsMSS","_Filter"];
 
 	Hint "Service Station Activated.";
-	[[_Object,_MRadius,_IsMSS,_Filter],{_This spawn OKS_fnc_ServiceStation}] RemoteExec ["BIS_FNC_SPAWN",0];
+	[_Object,_MRadius,_IsMSS,_Filter] remoteExec ["OKS_fnc_ServiceStation",0];
 	_Object setVariable ["NEKY_ServiceStation_MSS_Active",True,true];
 },[_MRadius,_IsMSS,_Filter],4,false,true,"","((_Target distance _This) < 10) && !(_Target getVariable ['NEKY_ServiceStation_MSS_Active',false]) && Alive _Target && vehicle player isNotEqualTo _target"];
 
 _Object addAction ["<t color='#FF0000'>Deactivate Service Station</t>",
 {
 	Params ["_Object"];
-
 	Hint "Service Station Deactivated.";
 	_Object setVariable ["NEKY_ServiceStation_MSS_Active",False,true];
 	NEKY_ServiceStations deleteAt (NEKY_ServiceStations find _Object);
