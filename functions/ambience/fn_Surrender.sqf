@@ -193,11 +193,13 @@ if (_SurrenderByFlashbang) then {
             if (_dice < _adjustedChance) then {
                 if(_unit getVariable ["GOL_Surrender",false]) then {
                     _unit spawn {
-                        params ["_unit"];
+                        params ["_unit"];         
                         sleep 1;
+                        
                         [_unit] call OKS_fnc_SetSurrendered;
                         [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;
-                        [_unit] spawn OKS_Fnc_KilledCaptiveEvent;                        
+                        [_unit] spawn OKS_Fnc_KilledCaptiveEvent;   
+                        private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];                     
                         if(_surrenderDebug) then {systemChat "[DEBUG] Surrender triggered by flashbang!";}
                     };
                 }

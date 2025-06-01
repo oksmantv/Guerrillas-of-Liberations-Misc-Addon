@@ -7,20 +7,24 @@ if(GOL_Core_Enabled isEqualTo true) then {
         OKS Force & Response Multiplier Values
         Used for increasing hunt intensity
     */
-    missionNamespace setVariable ["GOL_ForceMultiplier", 1, true];
-    missionNamespace setVariable ["GOL_ResponseMultiplier", 1, true];
+    if(isServer) then {
+        missionNamespace setVariable ["GOL_ForceMultiplier", 1, true];
+        missionNamespace setVariable ["GOL_ResponseMultiplier", 1, true];
+    };
 
     /*
         Create Arsenal for Grenadiers & Automatic Riflemen
     */
-    if (isNil "GOL_Arsenal_LMG") then {
-        GOL_Arsenal_LMG = "Logic" createVehicle [5000,5000,0];
-        publicVariable "GOL_Arsenal_LMG";
-    };   
-    if (isNil "GOL_Arsenal_GL") then {
-        GOL_Arsenal_GL = "Logic" createVehicle [5000,5000,0];
-        publicVariable "GOL_Arsenal_GL";
-    };   
+    if(isServer) then {
+        if (isNil "GOL_Arsenal_LMG") then {
+            GOL_Arsenal_LMG = "Logic" createVehicle [1000,1000,0];
+            publicVariable "GOL_Arsenal_LMG";
+        };   
+        if (isNil "GOL_Arsenal_GL") then {
+            GOL_Arsenal_GL = "Logic" createVehicle [1000,15000,0];
+            publicVariable "GOL_Arsenal_GL";
+        };   
+    };
 
     if(isServer) then {
         NEKY_Hunt_CurrentCount = [];
@@ -91,139 +95,159 @@ if(GOL_Core_Enabled isEqualTo true) then {
     /*
         Setup Death Board
     */
-    private _timeout = time + 60; // 60 seconds timeout
-    [
-        {
-            // Wait until all scoreboard variables are defined, or timeout
-            (
-                !isNil "scoreboard_west_support" &&
-                !isNil "scoreboard_west" &&
-                !isNil "scoreboard_east" &&
-                !isNil "scoreboard_east_support"
-            ) || {time > _timeout}
-        },
-        {
-            if (
-                !isNil "scoreboard_west_support" &&
-                !isNil "scoreboard_west" &&
-                !isNil "scoreboard_east" &&
-                !isNil "scoreboard_east_support"
-            ) then {
-                // All variables exist, start the handler
-                [
-                    { [] spawn OKS_fnc_DeathScore; },
-                    30
-                ] call CBA_fnc_addPerFrameHandler;
-            } else {
-                // Timeout reached, show debug message
-                private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
-                if(_Debug) then {
-                    "[DEBUG] DeathScore disabled - Can't find scoreboards" remoteExec ["systemChat",0];
+    if(isServer) then {
+        private _timeout = time + 60; // 60 seconds timeout
+        [
+            {
+                // Wait until all scoreboard variables are defined, or timeout
+                (
+                    !isNil "scoreboard_west_support" &&
+                    !isNil "scoreboard_west" &&
+                    !isNil "scoreboard_east" &&
+                    !isNil "scoreboard_east_support"
+                ) || {time > _timeout}
+            },
+            {
+                if (
+                    !isNil "scoreboard_west_support" &&
+                    !isNil "scoreboard_west" &&
+                    !isNil "scoreboard_east" &&
+                    !isNil "scoreboard_east_support"
+                ) then {
+                    // All variables exist, start the handler
+                    [
+                        { [] spawn OKS_fnc_DeathScore; },
+                        30
+                    ] call CBA_fnc_addPerFrameHandler;
+                } else {
+                    // Timeout reached, show debug message
+                    private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
+                    if(_Debug) then {
+                        "[DEBUG] DeathScore disabled - Can't find scoreboards" remoteExec ["systemChat",0];
+                    };
                 };
-            };
-        }
-    ] call CBA_fnc_waitUntilAndExecute;
+            }
+        ] call CBA_fnc_waitUntilAndExecute;
+    };
 
     /*
         Set Civilians to Friendly to all sides.
     */
-    civilian setFriend [west,1];
-    civilian setFriend [east,1];
-    civilian setFriend [independent,1];
+    if(isServer) then {
+        civilian setFriend [west,1];
+        civilian setFriend [east,1];
+        civilian setFriend [independent,1];
+    };
 
     /*
         NEKY Service Station Values.
     */
-    NEKY_ServiceStationActive = [];
-    NEKY_ServiceStations = [];
-    publicVariable "NEKY_ServiceStationActive";
-    publicVariable "NEKY_ServiceStations";
+    if(isServer && isNil "NEKY_ServiceStationActive" && isNil "NEKY_ServiceStations") then {
+        NEKY_ServiceStationActive = [];
+        NEKY_ServiceStations = [];
+        publicVariable "NEKY_ServiceStationActive";
+        publicVariable "NEKY_ServiceStations";
+    };
 
     /*
         RemoveVehicleHE from Current Vehicles.
     */
     private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
     if (_RemoveVehicleHE_Enabled) then {
+        _HeadlessClients = entities "HeadlessClient_F";
         // Process existing vehicles immediately
         {
             _vehicle = _X;
             if (["T34","T55","T72","T80"] findIf {typeOf _vehicle find _x >= 0} != -1 
                 && (typeOf _x find "UK3CB" >= 0)) then {
-                [_vehicle] spawn OKS_fnc_AdjustDamage;
+                [_vehicle] remoteExec ["OKS_fnc_AdjustDamage",0];
+                [_vehicle] remoteExec ["OKS_fnc_AdjustDamage",_HeadlessClients];
             };
-            [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
-            [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;
+            [_vehicle] remoteExec ["OKS_fnc_RemoveVehicleHE",0];
+            [_vehicle] remoteExec ["OKS_fnc_RemoveVehicleHE",_HeadlessClients];  
+            [_vehicle] remoteExec ["OKS_fnc_ForceVehicleSpeed",0];
+            [_vehicle] remoteExec ["OKS_fnc_ForceVehicleSpeed",_HeadlessClients];                  
         } forEach (vehicles select {_x isKindOf "LandVehicle"});
         
         ["LandVehicle", "init", {
             params ["_vehicle"];
-            [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
-            [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;
+            _HeadlessClients = entities "HeadlessClient_F";
+            [_vehicle] remoteExec ["OKS_fnc_RemoveVehicleHE",0];
+            [_vehicle] remoteExec ["OKS_fnc_RemoveVehicleHE",_HeadlessClients];  
+            [_vehicle] remoteExec ["OKS_fnc_ForceVehicleSpeed",0];
+            [_vehicle] remoteExec ["OKS_fnc_ForceVehicleSpeed",_HeadlessClients]; 
             
             // Whitelist check moved outside select for better performance
             private _type = typeOf _vehicle;
             if ((["T34","T55","T72","T80"] findIf {_type find _x >= 0}) != -1 
                 && (_type find "UK3CB" >= 0)) then {
-                [_vehicle] spawn OKS_AdjustDamage;
+                [_vehicle] remoteExec ["OKS_fnc_AdjustDamage",0];
+                [_vehicle] remoteExec ["OKS_fnc_AdjustDamage",_HeadlessClients];
             };
         }, true, [], true] call CBA_fnc_addClassEventHandler;
     };
 
     // Adds Code on EventHandler: Spawned Units.
-    ["CAManBase", "init", {
-        params ["_unit"];
-        if (local _unit && {!isPlayer _unit}) then {
-            private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-            if(_SuppressionEnabled) then {
-                [_unit] spawn OKS_fnc_Suppressed;
-            };
+    if (isServer) then {
+        ["CAManBase", "init", {
+            params ["_unit"];
+            if (!isPlayer _unit) then {
+                private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
+                if(_SuppressionEnabled) then {
+                    _HeadlessClients = entities "HeadlessClient_F";
+                    [_unit] remoteExec ["OKS_fnc_Suppressed",2];
+                    [_unit] remoteExec ["OKS_fnc_Suppressed",_HeadlessClients];
+                };
 
-            private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-            if(_SurrenderEnabled) then {
-                // Get current CBA settings
-                private _surrenderByShot               = missionNamespace getVariable ["GOL_Surrender_Shot", true];
-                private _surrenderByFlashbang          = missionNamespace getVariable ["GOL_Surrender_Flashbang", true];
-                private _surrenderChance               = missionNamespace getVariable ["GOL_Surrender_Chance", 0.2];
-                private _surrenderChanceWeaponAim      = missionNamespace getVariable ["GOL_Surrender_ChanceWeaponAim", 0.2];           
-                private _surrenderDistance             = missionNamespace getVariable ["GOL_Surrender_Distance", 30];
-                private _surrenderDistanceWeaponAim    = missionNamespace getVariable ["GOL_Surrender_DistanceWeaponAim", 50];
-                private _surrenderFriendlyDistance     = missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200];
-            
-                // Call your Surrender function with these settings
-                [_unit, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] spawn OKS_fnc_Surrender;
-            };
+                private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+                if(_SurrenderEnabled) then {
+                    // Get current CBA settings
+                    private _surrenderByShot               = missionNamespace getVariable ["GOL_Surrender_Shot", true];
+                    private _surrenderByFlashbang          = missionNamespace getVariable ["GOL_Surrender_Flashbang", true];
+                    private _surrenderChance               = missionNamespace getVariable ["GOL_Surrender_Chance", 0.2];
+                    private _surrenderChanceWeaponAim      = missionNamespace getVariable ["GOL_Surrender_ChanceWeaponAim", 0.2];           
+                    private _surrenderDistance             = missionNamespace getVariable ["GOL_Surrender_Distance", 30];
+                    private _surrenderDistanceWeaponAim    = missionNamespace getVariable ["GOL_Surrender_DistanceWeaponAim", 50];
+                    private _surrenderFriendlyDistance     = missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200];
+                
+                    // Call your Surrender function with these settings
+                    _HeadlessClients = entities "HeadlessClient_F";
+                    [_unit, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] remoteExec ["OKS_fnc_Surrender",2];
+                    [_unit, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] remoteExec ["OKS_fnc_Surrender",_HeadlessClients];
+                };
 
-            private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-            if(_FaceSwapEnabled) then {
-                // Apply ethnicity and face swap
+                private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+                if(_FaceSwapEnabled) then {
+                    // Apply ethnicity and face swap
+                    _unit spawn {
+                        params ["_unit"];
+                        sleep 1;
+                        _HeadlessClients = entities "HeadlessClient_F";
+                        private _ethnicity = [_unit] call OKS_fnc_GetEthnicity;
+                        [_unit, _ethnicity] remoteExec ["OKS_fnc_FaceSwap",2];
+                        [_unit, _ethnicity] remoteExec ["OKS_fnc_FaceSwap",_HeadlessClients];
+                    };
+                };
+
                 _unit spawn {
                     params ["_unit"];
-                    sleep 1;
-                    private _ethnicity = [_unit] call OKS_fnc_GetEthnicity;
-                    [_unit, _ethnicity] call OKS_fnc_FaceSwap;
+                    private ["_group"];
+                    sleep 5;
+                    _group = group _unit;
+                    if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
+                        // Exit if already enabled on Group level.
+                    };
+    
+                    if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {        
+                        _group setVariable ["OKS_EnablePath_Active",true,true];
+                        private _MoveChance = missionNamespace getVariable ["Static_Enable_Chance", 0.4];
+                        private _DelayCheck = missionNamespace getVariable ["Static_Enable_Refresh", 60];
+                        [_group,_MoveChance,_DelayCheck] spawn OKS_fnc_EnablePath;
+                    };
                 };
             };
+        }] call CBA_fnc_addClassEventHandler;
 
-            _unit spawn {
-                params ["_unit"];
-                private ["_group"];
-                sleep 5;
-                _group = group _unit;
-                if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
-                    // Exit if already enabled on Group level.
-                };
-  
-                if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {        
-                    _group setVariable ["OKS_EnablePath_Active",true,true];
-                    private _MoveChance = missionNamespace getVariable ["Static_Enable_Chance", 0.4];
-                    private _DelayCheck = missionNamespace getVariable ["Static_Enable_Refresh", 60];
-                    [_group,_MoveChance,_DelayCheck] spawn OKS_fnc_EnablePath;
-                };
-            };
-        };
-    }] call CBA_fnc_addClassEventHandler;
-
-    if (isServer) then {
         _unit spawn {
             params ["_unit"];
             sleep 5;
@@ -253,22 +277,28 @@ if(GOL_Core_Enabled isEqualTo true) then {
                         private _surrenderChanceWeaponAim      = missionNamespace getVariable ["GOL_Surrender_ChanceWeaponAim", 0.2];           
                         private _surrenderDistance             = missionNamespace getVariable ["GOL_Surrender_Distance", 30];
                         private _surrenderDistanceWeaponAim    = missionNamespace getVariable ["GOL_Surrender_DistanceWeaponAim", 50];
-                        private _surrenderFriendlyDistance     = missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200];               
-                        [_x, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] spawn OKS_fnc_Surrender;
+                        private _surrenderFriendlyDistance     = missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200];
+                                       
+                        _HeadlessClients = entities "HeadlessClient_F";
+                        [_x, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] remoteExec ["OKS_fnc_Surrender",2];
+                        [_x, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] remoteExec ["OKS_fnc_Surrender",_HeadlessClients];
                     };
                 };
 
                 if(_X isKindOf "CAManBase" && !isPlayer _X) then {
                     private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
                     if(_SuppressionEnabled) then {
-                        [_unit] spawn OKS_fnc_Suppressed;
+                        _HeadlessClients = entities "HeadlessClient_F";
+                        [_unit] remoteExec ["OKS_fnc_Suppressed",2];
+                        [_unit] remoteExec ["OKS_fnc_Suppressed",_HeadlessClients];
                     };
 
                     private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
                     if(_FaceSwapEnabled) then {
-                        // Apply ethnicity and face swap
+                        _HeadlessClients = entities "HeadlessClient_F";
                         private _ethnicity = [_x] call OKS_fnc_GetEthnicity;
-                        [_x, _ethnicity] call OKS_fnc_FaceSwap;
+                        [_x, _ethnicity] remoteExec ["OKS_fnc_FaceSwap",0];
+                        [_x, _ethnicity] remoteExec ["OKS_fnc_FaceSwap",_HeadlessClients];                     
                     };
 
                     _unit spawn {
@@ -284,7 +314,10 @@ if(GOL_Core_Enabled isEqualTo true) then {
                             _group setVariable ["OKS_EnablePath_Active",true,true];
                             private _MoveChance = missionNamespace getVariable ["Static_Enable_Chance", 0.4];
                             private _DelayCheck = missionNamespace getVariable ["Static_Enable_Refresh", 60];
-                            [_group,_MoveChance,_DelayCheck] spawn OKS_fnc_EnablePath;
+
+                            _HeadlessClients = entities "HeadlessClient_F";
+                            [_group,_MoveChance,_DelayCheck] remoteExec ["OKS_fnc_EnablePath",0];
+                            [_group,_MoveChance,_DelayCheck] remoteExec ["OKS_fnc_EnablePath",_HeadlessClients];
                         };
                     };  
                 };
@@ -470,7 +503,6 @@ if(GOL_Core_Enabled isEqualTo true) then {
             Add Medical Messages to Players.
         */
         ["ace_treatmentStarted", OKS_fnc_medicalMessage] call CBA_fnc_addEventHandler;
-
     };
 
     /*

@@ -35,7 +35,7 @@ if(_Debug) then {
 				_unit setVehicleArmor 0.1;
 
 				if(_Debug) then {
-					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.", , [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"10%"] remoteExec ["systemChat",0];
+					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"10%"] remoteExec ["systemChat",0];
 				};
 			};
 			if(["T55", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
@@ -43,7 +43,7 @@ if(_Debug) then {
 				_unit setVehicleArmor 0.15;
 
 				if(_Debug) then {
-					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.", , [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"15%"] remoteExec ["systemChat",0];
+					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"15%"] remoteExec ["systemChat",0];
 				};				
 			};
 			if(["T72", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
@@ -51,7 +51,7 @@ if(_Debug) then {
 				_unit setVehicleArmor 0.25;
 
 				if(_Debug) then {
-					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.", , [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"25%"] remoteExec ["systemChat",0];
+					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"25%"] remoteExec ["systemChat",0];
 				};
 			};
 			if(["T80", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
@@ -59,7 +59,7 @@ if(_Debug) then {
 				_unit setVehicleArmor 0.3;
 
 				if(_Debug) then {
-					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.", , [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"30%"] remoteExec ["systemChat",0];
+					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"30%"] remoteExec ["systemChat",0];
 				};
 			};		
 				

@@ -32,7 +32,11 @@ if (_primaryWeapon != "") then {
     private _attachments = _unit weaponAccessories _primaryWeapon;
     private _magazine = selectRandom ([_primaryWeapon] call BIS_fnc_compatibleMagazines);
     _attachments params ["_silencer","_pointer","_optics","_bipod"];
-    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_primaryWeapon, _silencer, _pointer, _optics, [_magazine, random 30], [], ""], 1];
+    private _magazineArray = [];
+    if(!isNil "_magazine") then {
+        _magazineArray = [_magazine, random 30];
+    };
+    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_primaryWeapon, _silencer, _pointer, _optics, _Magazine, [], ""], 1];
 };
 
 // --- Handgun: Drop with no attachments
@@ -41,7 +45,11 @@ if (_handgunWeapon != "") then {
     private _attachments = _unit weaponAccessories _handgunWeapon;
     private _magazine = selectRandom ([_handgunWeapon] call BIS_fnc_compatibleMagazines);
     _attachments params ["_silencer","_pointer","_optics","_bipod"];
-    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_handgunWeapon, _silencer, _pointer, _optics, [_magazine, random 30], [], ""], 1];
+    private _magazineArray = [];
+    if(!isNil "_magazine") then {
+        _magazineArray = [_magazine, random 30];
+    };
+    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_handgunWeapon, _silencer, _pointer, _optics, _Magazine, [], ""], 1];
 };
 
 // --- Launcher: Drop with no attachments
@@ -50,7 +58,11 @@ if (_launcherWeapon != "") then {
     private _attachments = _unit weaponAccessories _launcherWeapon;
     private _magazine = selectRandom ([_launcherWeapon] call BIS_fnc_compatibleMagazines);
     _attachments params ["_silencer","_pointer","_optics","_bipod"];
-    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_launcherWeapon, _silencer, _pointer, _optics, [_magazine, 1], [], ""], 1];
+    private _magazineArray = [];
+    if(!isNil "_magazine") then {
+        _magazineArray = [_magazine, 1];
+    };   
+    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_launcherWeapon, _silencer, _pointer, _optics, _magazineArray, [], ""], 1];
 };
 
 // Remove all weapons, magazines, and items from the unit
@@ -61,5 +73,5 @@ removeAllAssignedItems _unit;
 // Debug message
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 if(_surrenderDebug) then {
-    format ["[DEBUG] %1 dropped all weapons and gear.", name _unit]  remoteExec ["systemChat",0];
+    format ["[DEBUG] %1 dropped all weapons and gear.", name _unit] remoteExec ["systemChat",0];
 };
