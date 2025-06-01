@@ -53,7 +53,9 @@ if(_Return isNotEqualTo []) then {
     } foreach _Return; 
 
     _ReturnText = _ReturnText select [0, (count _ReturnText) - 3];
-}; 
+} else {
+	_ReturnText = "";
+};
 
 _ReturnText
 

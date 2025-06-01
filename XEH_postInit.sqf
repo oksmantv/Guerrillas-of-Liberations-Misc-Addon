@@ -17,7 +17,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
         GOL_Arsenal_LMG = "Logic" createVehicle [5000,5000,0];
         publicVariable "GOL_Arsenal_LMG";
     };   
-    if (isNil "GOL_Arsenal_G") then {
+    if (isNil "GOL_Arsenal_GL") then {
         GOL_Arsenal_GL = "Logic" createVehicle [5000,5000,0];
         publicVariable "GOL_Arsenal_GL";
     };   
@@ -73,12 +73,20 @@ if(GOL_Core_Enabled isEqualTo true) then {
     /*
         Setup Framework Check
     */
-    [] call OKS_fnc_CheckFrameworkObjects;
+    if(isServer) then {       
+        _ReturnText = [] call OKS_fnc_CheckFrameworkObjects;
+        if(_ReturnText != "") then {
+            systemChat format["[DEBUG] %1",_ReturnText];
+            copyToClipboard _ReturnText;
+        } else {
+            systemChat "[DEBUG] Framework is not missing any items."
+        };
+    };
 
     /*
         Setup TFAR Radios
     */
-    [] call OKS_fnc_TFAR_RadioSetup;
+    [] spawn OKS_fnc_TFAR_RadioSetup;
 
     /*
         Setup Death Board
@@ -197,19 +205,18 @@ if(GOL_Core_Enabled isEqualTo true) then {
                 params ["_unit"];
                 private ["_group"];
                 sleep 5;
-
-                if(_group getVariable ["OKS_EnablePath_Active"],false) exitWith {
+                _group = group _unit;
+                if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
                     // Exit if already enabled on Group level.
                 };
   
-                if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {
-                    _group = group _unit;
+                if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {        
                     _group setVariable ["OKS_EnablePath_Active",true,true];
                     private _MoveChance = missionNamespace getVariable ["Static_Enable_Chance", 0.4];
                     private _DelayCheck = missionNamespace getVariable ["Static_Enable_Refresh", 60];
                     [_group,_MoveChance,_DelayCheck] spawn OKS_fnc_EnablePath;
                 };
-            }
+            };
         };
     }] call CBA_fnc_addClassEventHandler;
 
@@ -265,19 +272,18 @@ if(GOL_Core_Enabled isEqualTo true) then {
                         params ["_unit"];
                         private ["_group"];
                         sleep 5;
-
-                        if(_group getVariable ["OKS_EnablePath_Active"],false) exitWith {
+                        _group = group _unit;
+                        if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
                             // Exit if already enabled on Group level.
                         };
         
-                        if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {
-                            _group = group _unit;
+                        if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {        
                             _group setVariable ["OKS_EnablePath_Active",true,true];
                             private _MoveChance = missionNamespace getVariable ["Static_Enable_Chance", 0.4];
                             private _DelayCheck = missionNamespace getVariable ["Static_Enable_Refresh", 60];
                             [_group,_MoveChance,_DelayCheck] spawn OKS_fnc_EnablePath;
                         };
-                    }   
+                    };  
                 };
             } forEach allUnits;
         };

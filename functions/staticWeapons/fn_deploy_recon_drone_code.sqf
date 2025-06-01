@@ -35,6 +35,12 @@ params ["_player"];
                     _player connectTerminalToUAV _object;					
                     _object setPosATL _pos;
                     _object setDir _dir;
+                    _object spawn { 
+                        sleep 5;
+                        params ["_object"];
+                        _object disableTIEquipment true;
+                        _object setVariable ["A3TI_Disable", true,true];
+                    };                   
                     ["ace_interact_menu_newControllableObject", [typeOf _object]] call CBA_fnc_globalEvent;
                 }
             },

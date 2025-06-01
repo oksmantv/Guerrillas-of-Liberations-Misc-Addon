@@ -206,6 +206,7 @@ class CfgFunctions // Defines a function
 			class Scout {};
 			class SpawnPatrol {};
 			class SpawnStatic {};
+			class AirSpawn {};
 		};	
 
 		class OKS_Spawn_Lambs {

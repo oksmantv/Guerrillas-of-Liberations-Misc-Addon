@@ -23,7 +23,7 @@ Switch (_Faction) do {
 	case "CSAT": {
 		// CSAT - OPFOR
 		_Wheeled = [
-						"UK3CB_CSAT_B_O_BRDM2", "UK3CB_CSAT_B_O_Tigr_FFV", "UK3CB_CSAT_B_O_GAZ_Vodnik_PKT", 
+			"UK3CB_CSAT_B_O_BRDM2", "UK3CB_CSAT_B_O_Tigr_FFV", "UK3CB_CSAT_B_O_GAZ_Vodnik_PKT", 
 			"UK3CB_CSAT_B_O_GAZ_Vodnik", "UK3CB_CSAT_B_O_Kamaz_Covered", "UK3CB_CSAT_B_O_Kamaz_Open", 
 			"UK3CB_CSAT_B_O_Gaz66_Covered", "UK3CB_CSAT_B_O_Gaz66_Open", "UK3CB_CSAT_B_O_Ural_Open", 
 			"UK3CB_CSAT_B_O_UAZ_Closed", "UK3CB_CSAT_B_O_UAZ_Open", "UK3CB_CSAT_B_O_Typhoon_transport", 
