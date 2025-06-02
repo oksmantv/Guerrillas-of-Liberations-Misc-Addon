@@ -70,5 +70,5 @@ private _actionDisableGenerator = [
 
 private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
 if(_Debug) then {
-    format ["[DEBUG] Power Generator Added Action to %1", _Generator] remoteExec ["systemChat",0];
+    format ["Power Generator Added Action to %1", _Generator] spawn OKS_fnc_LogDebug;
 };

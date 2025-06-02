@@ -8,5 +8,5 @@
 	{_X disableAI "PATH"; _X setUnitPos "UP"} foreach _Units;
 
 	if(_Debug) then {
-		systemChat format["[DEBUG] %1 set to static units",_Group];
+		format["%1 set to static units",_Group] spawn OKS_fnc_LogDebug;
 	};

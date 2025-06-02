@@ -5,10 +5,17 @@ if(!isServer) exitWith { false };
 
 Params ["_Vehicle"];
 
+Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+if(isNull _Vehicle) exitWith {
+    if(_Debug) then {
+        format ["ForceVehicleSpeed Script, Vehicle was null. Exiting.."] spawn OKS_fnc_LogDebug;
+    };
+};
+
 if(_Vehicle isKindOf "StaticWeapon" || _Vehicle isKindOf "Air") exitWith {
     Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
     if(_Debug) then {
-	    "[DEBUG] OKS_ForceVehicleSpeed: Is Static Weapon/Air Exiting.." remoteExec ["systemChat",0];
+	    "OKS_ForceVehicleSpeed: Is Static Weapon/Air Exiting.." spawn OKS_fnc_LogDebug;
     };
 };
 
@@ -34,5 +41,5 @@ switch (toLower (_VehicleType)) do {
 
 Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 if(_Debug) then {
-    format ["%1 forced speed to %2.",typeOf _Vehicle,_Speed] remoteExec ["systemChat",0];
+    format ["%1 forced speed to %2.",typeOf _Vehicle,_Speed] spawn OKS_fnc_LogDebug;
 };

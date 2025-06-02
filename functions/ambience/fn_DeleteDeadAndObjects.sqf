@@ -30,7 +30,7 @@ if(typename _TriggerOrPosition == "ARRAY") then {
 if({_X inArea _Trigger} count allPlayers > 0) then {
     private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
     if(_Debug) then {
-        systemChat "OKS_DeleteDeadAndObjects: Player inside deletion zone. Waiting until cleared." remoteExec ["systemChat",0];
+        systemChat "Player inside deletion zone. Waiting until cleared." spawn OKS_fnc_LogDebug;
     };  
     waitUntil {sleep 30; {_X inArea _Trigger} count allPlayers == 0}
 };

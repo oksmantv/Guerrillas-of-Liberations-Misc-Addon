@@ -3,9 +3,15 @@
 */
 
 Params ["_Vehicle"];
-if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticWeapon"] > 0) then {
+if(isNull _Vehicle) then {
+	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+	if(Debug) then {
+		format ["RemoveVehicleHE - Vehicle was null, exiting.."] spawn OKS_fnc_LogDebug;
+	};
+};
 
-private _Enabled = false;
+if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticWeapon"] > 0) then {
+	private _Enabled = false;
 
 	// Soviet Vehicles and Weapons
 	if(["BMP", typeOf _Vehicle, false] call BIS_fnc_inString) then {
@@ -14,7 +20,7 @@ private _Enabled = false;
 		if(_RemoveATGM) then {		
 			Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 			if(_Debug) then {
-				format["[DEBUG] Removed ATGM on %1 - %2", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle] remoteExec ["systemChat",0];
+				format["Removed ATGM on %1", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 			};
 			_Vehicle removeMagazinesTurret ["rhs_mag_9m14m",[0]];
 			_Vehicle removeMagazinesTurret ["rhs_mag_9m113M",[0]];
@@ -80,6 +86,6 @@ private _Enabled = false;
 
 	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 	if(_Debug) then {
-		format["[DEBUG] Removed HE on %1 - %2", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle] remoteExec ["systemChat",0];
+		format["Removed HE on %1", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 	};	
 };

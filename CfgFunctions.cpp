@@ -35,6 +35,12 @@ class CfgFunctions // Defines a function
 			class TaskRun {};
 		};	
 
+		class OKS_Logic {
+			file = "\OKS_GOL_Misc\functions\logic";
+			class GetClientId {};
+			class LogDebug {};
+		};			
+
 		class OKS_Tasks_Functions {
 			file = "\OKS_GOL_Misc\functions\tasks\functions";
 			class AvoidCasualties {};
@@ -141,6 +147,7 @@ class CfgFunctions // Defines a function
 			class AddGeneratorAction {};
 			class Suppressed {};
 			class Surrender {};			
+			class SurrenderHandle {};			
 			class ThrowWeaponsOnGround {};		
 			class GetEthnicity {};
 			class KilledCaptiveEvent {};

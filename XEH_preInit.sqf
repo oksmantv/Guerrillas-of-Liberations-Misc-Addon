@@ -11,6 +11,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Core_Debug",
+    "CHECKBOX",
+    ["Enables DEBUG messages", "Allows for any debug messages to be broadcast. If disabled, no messages will show regardless of specific debugs turned on."],
+    "GOL_CORE",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_Enemy_Debug",
     "CHECKBOX",
     ["Enables DEBUG messages for enemy scripts.", "Enables debugging for enemy scripts such as AdjustDamage, ForceVehicleSpeed, EnablePath etc."],
@@ -271,7 +280,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
     "GOL_RemoveVehicleHE_Enabled",
     "CHECKBOX",
     ["Remove HE Rounds from Vehicles", "When enabled, Russian/Soviet vehicles variants will have their HE rounds removed."],
-    "GOL_RemoveVehicleHE",
+    "GOL_Gear_AI",
     true,
     1,
     {},
@@ -282,7 +291,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
     "GOL_RemoveVehicleATGM_Enabled",
     "CHECKBOX",
     ["Remove ATGM Rounds from Vehicles", "When enabled, Russian/Soviet vehicles variants will have their ATGM rounds removed."],
-    "GOL_RemoveVehicleHE",
+    "GOL_Gear_AI",
     true,
     1,
     {},

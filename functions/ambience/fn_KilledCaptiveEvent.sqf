@@ -30,7 +30,7 @@ _unit addMPEventHandler ["MPKilled", {
 
         private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
         if(_Debug) then {
-            format["[DEBUG] Captive Killed - Increasing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] remoteExec ["systemChat",0];
+            format["Captive Killed - Increasing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] spawn OKS_fnc_LogDebug;
         };     
     };
 }];
@@ -83,7 +83,7 @@ private _flags = [];
 
         private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
         if(_Debug) then {
-            format["[DEBUG] Captive Captured - Reducing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] remoteExec ["systemChat",0];
+            format[" Captive Captured - Reducing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] spawn OKS_fnc_LogDebug;
         };  
 
     };

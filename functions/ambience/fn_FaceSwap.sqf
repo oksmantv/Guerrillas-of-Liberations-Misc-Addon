@@ -9,15 +9,16 @@ params [
     ["_faceType", nil, [""]]
 ];
 private _faceswapDebug = missionNamespace getVariable ["GOL_FaceSwap_Debug", false];
+_faceType = [_unit] call OKS_fnc_GetEthnicity;
 
-if (isNull _unit) exitWith {
+if(isNull _unit) exitWith {
     if(_faceswapDebug) then {
-        "[DEBUG] FaceSwap Exited - Unit is null" remoteExec ["systemChat",0];;
+        "FaceSwap Exited - Unit is null" spawn OKS_fnc_LogDebug;
     };
 };
 if (isNil "_faceType") exitWith {
     if(_faceswapDebug) then {
-        format["[DEBUG] FaceSwap Exited on %1 - Type is null"]  remoteExec ["systemChat",0];;
+        format["FaceSwap Exited on %1 - Type is null"] spawn OKS_fnc_LogDebug;
     };
 };
 
@@ -105,5 +106,5 @@ private _voice = selectRandom _speakers;
 _unit setSpeaker _voice;
 _unit setFace _face;
 if(_faceswapDebug) then {
-    format ["[DEBUG] %2 FaceSwap Executed on %1",_unit,(toupper _faceType)] remoteExec ["systemChat",0];;
+    format ["%2 FaceSwap Executed on %1",_unit,(toupper _faceType)] spawn OKS_fnc_LogDebug;
 };

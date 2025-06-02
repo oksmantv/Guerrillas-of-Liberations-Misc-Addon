@@ -62,10 +62,10 @@ if(GOL_Core_Enabled isEqualTo true) then {
             } else {
                 if (isServer) then {
                     if (isNil "ORBAT_GROUP") then {
-                        systemChat "[DEBUG] The ORBAT Group module is missing.";
+                        "The ORBAT Group module is missing." spawn OKS_fnc_LogDebug;
                     };
                     if (isNil "GOL_SelectedComposition") then {
-                        systemChat "[DEBUG] GOL_SelectedComposition variable is undefined. If you want to use the ORBAT, make sure to assign it in missionSettings.sqf.";
+                        "GOL_SelectedComposition variable is undefined. If you want to use the ORBAT, make sure to assign it in missionSettings.sqf." spawn OKS_fnc_LogDebug;
                     };
                 };
             };
@@ -123,7 +123,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
                     // Timeout reached, show debug message
                     private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
                     if(_Debug) then {
-                        "[DEBUG] DeathScore disabled - Can't find scoreboards" remoteExec ["systemChat",0];
+                        "[DEBUG] DeathScore disabled - Can't find scoreboards" spawn OKS_fnc_LogDebug;
                     };
                 };
             }
@@ -201,19 +201,9 @@ if(GOL_Core_Enabled isEqualTo true) then {
 
                 private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
                 if(_SurrenderEnabled) then {
-                    // Get current CBA settings
-                    private _surrenderByShot               = missionNamespace getVariable ["GOL_Surrender_Shot", true];
-                    private _surrenderByFlashbang          = missionNamespace getVariable ["GOL_Surrender_Flashbang", true];
-                    private _surrenderChance               = missionNamespace getVariable ["GOL_Surrender_Chance", 0.2];
-                    private _surrenderChanceWeaponAim      = missionNamespace getVariable ["GOL_Surrender_ChanceWeaponAim", 0.2];           
-                    private _surrenderDistance             = missionNamespace getVariable ["GOL_Surrender_Distance", 30];
-                    private _surrenderDistanceWeaponAim    = missionNamespace getVariable ["GOL_Surrender_DistanceWeaponAim", 50];
-                    private _surrenderFriendlyDistance     = missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200];
-                
-                    // Call your Surrender function with these settings
                     _HeadlessClients = entities "HeadlessClient_F";
-                    [_unit, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] remoteExec ["OKS_fnc_Surrender",2];
-                    [_unit, _surrenderChance, _surrenderChanceWeaponAim, _surrenderDistance, _surrenderDistanceWeaponAim, _surrenderByShot, _surrenderByFlashbang, _surrenderFriendlyDistance] remoteExec ["OKS_fnc_Surrender",_HeadlessClients];
+                    [_unit] remoteExec ["OKS_fnc_Surrender",2];
+                    [_unit] remoteExec ["OKS_fnc_Surrender",_HeadlessClients];
                 };
 
                 private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
@@ -223,9 +213,8 @@ if(GOL_Core_Enabled isEqualTo true) then {
                         params ["_unit"];
                         sleep 1;
                         _HeadlessClients = entities "HeadlessClient_F";
-                        private _ethnicity = [_unit] call OKS_fnc_GetEthnicity;
-                        [_unit, _ethnicity] remoteExec ["OKS_fnc_FaceSwap",2];
-                        [_unit, _ethnicity] remoteExec ["OKS_fnc_FaceSwap",_HeadlessClients];
+                        [_unit] remoteExec ["OKS_fnc_FaceSwap",2];
+                        [_unit] remoteExec ["OKS_fnc_FaceSwap",_HeadlessClients];
                     };
                 };
 
@@ -234,15 +223,9 @@ if(GOL_Core_Enabled isEqualTo true) then {
                     private ["_group"];
                     sleep 5;
                     _group = group _unit;
-                    if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
-                        // Exit if already enabled on Group level.
-                    };
     
-                    if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {        
-                        _group setVariable ["OKS_EnablePath_Active",true,true];
-                        private _MoveChance = missionNamespace getVariable ["Static_Enable_Chance", 0.4];
-                        private _DelayCheck = missionNamespace getVariable ["Static_Enable_Refresh", 60];
-                        [_group,_MoveChance,_DelayCheck] spawn OKS_fnc_EnablePath;
+                    if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {                          
+                        [_group] spawn OKS_fnc_EnablePath;
                     };
                 };
             };
@@ -257,7 +240,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
             if (_players isEqualTo []) exitWith {
                 private _SurrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", true];  
                 if(_SurrenderDebug) then {
-                    "[OKS] No players found for enemy check!" remoteExec ["systemChat",0];
+                    "[OKS] No players found for enemy check!" spawn OKS_fnc_LogDebug;
                 };
             };
 

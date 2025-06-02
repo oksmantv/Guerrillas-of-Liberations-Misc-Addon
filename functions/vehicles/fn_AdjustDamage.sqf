@@ -9,9 +9,15 @@ Params
 	["_Vehicle", ObjNull, [ObjNull]]
 ];
 
+if(isNull _Vehicle) exitWith {
+    if(_Debug) then {
+        format ["AdjustDamage Script, Vehicle was null. Exiting.."] spawn OKS_fnc_LogDebug;
+    };
+};
+
 Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 if(_Debug) then {
-	format["[DEBUG] Adjust Damage enabled on %1 - %2", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle] remoteExec ["systemChat",0];
+	format["Adjust Damage enabled on %1 - %2", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle] spawn OKS_fnc_LogDebug;
 };
 
 	_Vehicle addEventHandler ["HandleDamage",
@@ -35,7 +41,7 @@ if(_Debug) then {
 				_unit setVehicleArmor 0.1;
 
 				if(_Debug) then {
-					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"10%"] remoteExec ["systemChat",0];
+					format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"10%"] spawn OKS_fnc_LogDebug;
 				};
 			};
 			if(["T55", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
@@ -43,7 +49,7 @@ if(_Debug) then {
 				_unit setVehicleArmor 0.15;
 
 				if(_Debug) then {
-					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"15%"] remoteExec ["systemChat",0];
+					format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"15%"] spawn OKS_fnc_LogDebug;
 				};				
 			};
 			if(["T72", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
@@ -51,7 +57,7 @@ if(_Debug) then {
 				_unit setVehicleArmor 0.25;
 
 				if(_Debug) then {
-					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"25%"] remoteExec ["systemChat",0];
+					format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"25%"] spawn OKS_fnc_LogDebug;
 				};
 			};
 			if(["T80", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
@@ -59,7 +65,7 @@ if(_Debug) then {
 				_unit setVehicleArmor 0.3;
 
 				if(_Debug) then {
-					format["[DEBUG] Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"30%"] remoteExec ["systemChat",0];
+					format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"30%"] spawn OKS_fnc_LogDebug;
 				};
 			};		
 				
@@ -75,7 +81,7 @@ if(_Debug) then {
 
 			if(ToLower _hitpoint == "hithull") then {
 				if(_Debug) then {
-					format ["[DEBUG] AdjustDamage - Old: %3 | Added: %1 | Final: Damage %2",(_AddedDamage * _Multiplier),_Damage,_oldDamage] remoteExec ["systemChat",0];
+					format ["AdjustDamage - Old: %3 | Added: %1 | Final: Damage %2",(_AddedDamage * _Multiplier),_Damage,_oldDamage] spawn OKS_fnc_LogDebug;
 				};
 			};		
 			_Unit setVariable [format["NEKY_oldDamage_%1",_hitPoint],_Damage];

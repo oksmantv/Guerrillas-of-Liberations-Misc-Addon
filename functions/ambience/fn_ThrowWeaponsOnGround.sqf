@@ -73,5 +73,5 @@ removeAllAssignedItems _unit;
 // Debug message
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 if(_surrenderDebug) then {
-    format ["[DEBUG] %1 dropped all weapons and gear.", name _unit] remoteExec ["systemChat",0];
+    format ["%1 dropped all weapons and gear.", name _unit] spawn OKS_fnc_LogDebug;
 };

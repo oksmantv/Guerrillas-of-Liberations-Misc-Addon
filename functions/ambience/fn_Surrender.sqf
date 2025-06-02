@@ -4,23 +4,24 @@
 */
 params [
     "_Unit",
-    ["_Chance",0.05,[0]],
-    ["_ChanceWeaponAim",0.05,[0]],
-    ["_Distance",150,[0]],
-    ["_DistanceWeaponAim",50,[0]],
-    ["_SurrenderByShot",true,[false]],
-    ["_SurrenderByFlashbang",true,[false]],
-    ["_NearFriendliesDistance",150,[0]]
+    ["_Chance",(missionNamespace getVariable ["GOL_Surrender_Chance", 0.2]),[0]],
+    ["_ChanceWeaponAim",(missionNamespace getVariable ["GOL_Surrender_ChanceWeaponAim", 0.2]),[0]],
+    ["_Distance",(missionNamespace getVariable ["GOL_Surrender_Distance", 30]),[0]],
+    ["_DistanceWeaponAim",(missionNamespace getVariable ["GOL_Surrender_DistanceWeaponAim", 50]),[0]],
+    ["_SurrenderByShot",(missionNamespace getVariable ["GOL_Surrender_Shot", true]),[false]],
+    ["_SurrenderByFlashbang",(missionNamespace getVariable ["GOL_Surrender_Flashbang", true]),[false]],
+    ["_NearFriendliesDistance",(missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200]),[0]]
 ];
 
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 private ["_NearPlayers"];
 
+if(isNull _Unit) exitWith {
+    format ["Surrender Script Unit is null, exiting..",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
+};
+
 if(_surrenderDebug) then {
-    format [
-        "[DEBUG] Surrender Script Activated for %1 - %2",
-        _Unit, name _Unit
-    ] remoteExec ["systemChat",0];;
+    format ["Surrender Script Activated for %1 - %2",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
 };
 
 _Unit setVariable ["GOL_Surrender",true,true];
@@ -54,10 +55,7 @@ if (_SurrenderByShot) then {
                 private _inc = 0.025 * (10 - _numFriendlies);
                 _adjustedChance = _adjustedChance + _inc;
                 if(_surrenderDebug) then {
-                    format [
-                        "[DEBUG] Surrender chance increased by %1 %% (few friendlies nearby: %2). New chance: %3%%",
-                        (_inc * 100), _numFriendlies, (_adjustedChance * 100)
-                    ] remoteExec ["systemChat",0];;
+                    format ["Surrender chance increased by %1 %% (few friendlies nearby: %2). New chance: %3%%",(_inc * 100), _numFriendlies, (_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
                 };
             } else {
                 _adjustedChance = _adjustedChance * 0.3;
@@ -69,9 +67,9 @@ if (_SurrenderByShot) then {
                 _adjustedChance = _adjustedChance + 0.1;
                 if(_surrenderDebug) then {
                     format [
-                        "[DEBUG] Surrender chance increased by 10%% (suppression: %1). New chance: %2%%",
+                        "Surrender chance increased by 10%% (suppression: %1). New chance: %2%%",
                         round(_suppression * 100), round(_adjustedChance * 100)
-                    ]  remoteExec ["systemChat",0];
+                    ] spawn OKS_fnc_LogDebug;
                 };
             };
 
@@ -79,42 +77,33 @@ if (_SurrenderByShot) then {
             _adjustedChance = _adjustedChance + 0.1;
             if(_surrenderDebug) then {
                 format [
-                    "[DEBUG] Surrender chance increased by 10%% (shot). New chance: %1%%",
+                    "Surrender chance increased by 10%% (shot). New chance: %1%%",
                     round(_adjustedChance * 100)
-                ] remoteExec ["systemChat",0];
+                ] spawn OKS_fnc_LogDebug;
             };
             // Set to surrendered if unarmed.
             if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
                 _adjustedChance = 0.5;
                 if(_surrenderDebug) then {
-                    format ["[DEBUG] Unarmed increased chance to %1%%", round(_adjustedChance * 100)] remoteExec ["systemChat",0];;
+                    format ["Unarmed increased chance to %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
                 };
             };
 
             _adjustedChance = _adjustedChance min 1;
             if(_surrenderDebug) then {
-                format ["[DEBUG] Final surrender chance: %1%%", round(_adjustedChance * 100)] remoteExec ["systemChat",0];;
+                format ["Final surrender chance: %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
             };
             private _dice = random 1;
             if(_surrenderDebug) then {
-                format ["[DEBUG] Dice rolled: %1 (must be less than %2 to surrender)", round(_dice * 100), round(_adjustedChance * 100)] remoteExec ["systemChat",0];;
+                format ["Dice rolled: %1 (must be less than %2 to surrender)", round(_dice * 100), round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
             };
             if (_dice < _adjustedChance) then {
                 if(_unit getVariable ["GOL_Surrender",false]) then {
-                    _unit spawn {
-                        params ["_unit"];
-                        private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
-                        if(_surrenderDebug) then {
-                            "[DEBUG] Surrender triggered by shot!" remoteExec ["systemChat",0];
-                        };
-                        [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;
-                        sleep 3;
-                        [_unit] call OKS_fnc_SetSurrendered;
-                    };
+                    [_unit] spawn OKS_fnc_SurrenderHandle;
                 };
                 _unit removeAllEventHandlers "Hit";
             } else {
-                if(_surrenderDebug) then {"[DEBUG] Surrender not triggered by shot." remoteExec ["systemChat",0];;}
+                if(_surrenderDebug) then {"Surrender not triggered by shot." spawn OKS_fnc_LogDebug;}
             };
 
         };
@@ -137,17 +126,17 @@ if (_SurrenderByFlashbang) then {
             private _nearbyPlayers = AllPlayers select {
                 alive _x && _x distance _unit < 50
             };
-            if(count _nearbyPlayers == 0) exitWith { if(_surrenderDebug) then {systemChat "[DEBUG] Flashbang Event Cancelled - No players nearby." }};
+            if(count _nearbyPlayers == 0) exitWith { if(_surrenderDebug) then {"Flashbang Event Cancelled - No players nearby." spawn OKS_fnc_LogDebug; }};
             private _numFriendlies = count _nearbyFriendlies;
             private _adjustedChance = _baseChance;
 
              // Increase for flashbang
             _adjustedChance = _adjustedChance * 3;
             if(_surrenderDebug) then {
-                systemChat format [
-                    "[DEBUG] Surrender chance increased by 300%% (flashbang). New chance: %1%%",
+                format [
+                    "Surrender chance increased by 300%% (flashbang). New chance: %1%%",
                     round(_adjustedChance * 100)
-                ];           
+                ] spawn OKS_fnc_LogDebug;           
             };
             // Increase for few friendlies
             if (_numFriendlies < 10) then {
@@ -155,10 +144,10 @@ if (_SurrenderByFlashbang) then {
                 private _chanceInProcent = _inc * 100;
                 _adjustedChance = _adjustedChance * (1 +_inc);
                 if(_surrenderDebug) then {
-                    systemChat format [
-                        "[DEBUG] Surrender chance increased by %1%% (few friendlies nearby: %2). New chance: %3%%",
+                    format [
+                        "Surrender chance increased by %1%% (few friendlies nearby: %2). New chance: %3%%",
                         round(_chanceInProcent), _numFriendlies, round(_adjustedChance * 100)
-                    ];
+                    ] spawn OKS_fnc_LogDebug;
                 };
             };
 
@@ -167,10 +156,10 @@ if (_SurrenderByFlashbang) then {
             if (_suppression > 0.7) then {
                 _adjustedChance = _adjustedChance * 1.2;
                 if(_surrenderDebug) then {
-                    systemChat format [
-                        "[DEBUG] Surrender chance increased by 20%% (suppression: %1). New chance: %2%%",
+                    format [
+                        "Surrender chance increased by 20%% (suppression: %1). New chance: %2%%",
                         _suppression, (_adjustedChance * 100)
-                    ];
+                    ] spawn OKS_fnc_LogDebug;;
                 };
             };
 
@@ -178,33 +167,26 @@ if (_SurrenderByFlashbang) then {
             if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
                 _adjustedChance = _adjustedChance * 1.5;
                 if(_surrenderDebug) then {
-                    systemChat format ["[DEBUG] Unarmed increased chance by %1%%", round(_adjustedChance * 100)];
+                    format ["Unarmed increased chance by %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
                 };
             };
 
             _adjustedChance = _adjustedChance min 1;
             if(_surrenderDebug) then {
-                systemChat format ["[DEBUG] Final surrender chance: %1%%", round(_adjustedChance * 100)];
+                format ["Final surrender chance: %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
             };
             private _dice = random 1;
             if(_surrenderDebug) then {
-                systemChat format ["[DEBUG] Dice rolled: %1 %% (must be less than %2 %% to surrender)", round(_dice * 100), round(_adjustedChance * 100)];
+                format ["Dice rolled: %1 %% (must be less than %2 %% to surrender)", round(_dice * 100), round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
             };
             if (_dice < _adjustedChance) then {
                 if(_unit getVariable ["GOL_Surrender",false]) then {
-                    _unit spawn {
-                        params ["_unit"];         
-                        sleep 1;
-                        
-                        [_unit] call OKS_fnc_SetSurrendered;
-                        [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;
-                        [_unit] spawn OKS_Fnc_KilledCaptiveEvent;   
-                        private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];                     
-                        if(_surrenderDebug) then {systemChat "[DEBUG] Surrender triggered by flashbang!";}
-                    };
+                    [_unit] spawn OKS_fnc_SurrenderHandle;
+                    private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];                     
+                    if(_surrenderDebug) then {"Surrender triggered by flashbang!" spawn OKS_fnc_LogDebug;}
                 }
             } else {
-               if(_surrenderDebug) then { systemChat "[DEBUG] Surrender not triggered by flashbang."; }
+               if(_surrenderDebug) then { "Surrender not triggered by flashbang." spawn OKS_fnc_LogDebug; }
             };
         };
     }] call CBA_fnc_addEventHandler;
@@ -244,10 +226,10 @@ _Unit addEventHandler ["Suppressed", {
             private _inc = 0.025 * (10 - _numFriendlies);
             _adjustedChance = _adjustedChance + _inc;
             if(_surrenderDebug) then {
-                systemChat format [
-                    "[DEBUG] Surrender chance increased by %1 %% (few friendlies nearby: %2). New chance: %3%%",
+                format [
+                    "Surrender chance increased by %1 %% (few friendlies nearby: %2). New chance: %3%%",
                     round(_inc * 100), _numFriendlies, round(_adjustedChance * 100)
-                ];
+                ] spawn OKS_fnc_LogDebug;
             };
         };
 
@@ -255,10 +237,10 @@ _Unit addEventHandler ["Suppressed", {
         if (_suppression > 0.7) then {
             _adjustedChance = _adjustedChance * 1.05;
             if(_surrenderDebug) then {
-                systemChat format [
-                    "[DEBUG] Surrender chance increased by 5%% (suppression: %1). New chance: %2%%",
+                format [
+                    "Surrender chance increased by 5%% (suppression: %1). New chance: %2%%",
                     _suppression, round(_adjustedChance * 100)
-                ];
+                ] spawn OKS_fnc_LogDebug;
             };
         };
 
@@ -266,52 +248,46 @@ _Unit addEventHandler ["Suppressed", {
         if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
             _adjustedChance = _adjustedChance * 1.5;
             if(_surrenderDebug) then {
-                systemChat format ["[DEBUG] Unarmed increased chance by %1%%", round(_adjustedChance * 100)];
+                format ["Unarmed increased chance by %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
             };
         };
 
         _adjustedChance = _adjustedChance min 1; // Cap at 1 (100%)
         if(_surrenderDebug) then {
-            systemChat format ["[DEBUG] Final surrender chance: %1%%", round(_adjustedChance * 100)];
+            format ["Final surrender chance: %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
         };
 
         private _dice = random 1;
         if(_surrenderDebug) then {
-            systemChat format ["[DEBUG] Dice rolled: %1 %% (must be less than %2 %% to surrender)", round(_dice * 100), round(_adjustedChance * 100)];
+            format ["Dice rolled: %1 %% (must be less than %2 %% to surrender)", round(_dice * 100), round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
         };
 
         if (_dice < _adjustedChance) then {
             if(_unit getVariable ["GOL_Surrender",false]) then {
                 if(_surrenderDebug) then {
-                    systemChat "[DEBUG] Surrender triggered!";
+                    "Surrender triggered!" spawn OKS_fnc_LogDebug;
                 };
 
-                _unit spawn {
-                    params ["_unit"];
-                    sleep 1;
-                    [_unit] call OKS_fnc_SetSurrendered;
-                    [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;
-                    [_unit] spawn OKS_Fnc_KilledCaptiveEvent;
-                };
+                [_unit] spawn OKS_fnc_SurrenderHandle;
             };
             _unit removeAllEventHandlers "FiredNear";      
         } else {
             if(_surrenderDebug) then {
-                systemChat "[DEBUG] Surrender not triggered.";
+                "Surrender not triggered." spawn OKS_fnc_LogDebug;
             };
         };
     };
 }];
 
 
-if(_surrenderDebug) then {SystemChat "[DEBUG] Surrender Init Completed - Waiting for Nearby Player"};
+if(_surrenderDebug) then {"Surrender Init Completed - Waiting for Nearby Player" spawn OKS_fnc_LogDebug};
 waitUntil {
     sleep 5;
     _NearPlayers = (_Unit nearEntities [["Man"], _Distance]) select {isPlayer _X};
     count _NearPlayers > 0
 };
 
-if(!(_unit getVariable ["GOL_Surrender",true])) exitWith { if(_surrenderDebug) then { SystemChat "[DEBUG] Surrendered already. Will not check player aiming." } };
+if(!(_unit getVariable ["GOL_Surrender",true])) exitWith { if(_surrenderDebug) then { "Surrendered already. Will not check player aiming." spawn OKS_fnc_LogDebug } };
 
 private _interval = 0.5; // seconds
 private _pfhId = [
@@ -323,7 +299,7 @@ private _pfhId = [
 
 
         // Debug: Handler running
-        // systemChat format ["[DEBUG] Handler running for unit %1", name _unit];
+        // systemChat format ["Handler running for unit %1", name _unit];
 
         // Exit if unit is dead, captive, or surrender logic is off
         if !(alive _unit && !captive _unit && _unit getVariable ["GOL_Surrender", false]) exitWith {
@@ -358,13 +334,13 @@ private _pfhId = [
             private _angleDeg = _angle * 57.2958;
 
             // Debug: Show angle degrees
-            //systemChat format ["[DEBUG] Angle between player %1 and unit %2: %3", name _x, name _unit, _angleDeg];
+            //systemChat format ["Angle between player %1 and unit %2: %3", name _x, name _unit, _angleDeg];
 
             if (_angleDeg < _threatTolerance) then {
                 // Set to surrendered if unarmed.
                 if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
                     _chance = 0.5;
-                    if(_surrenderDebug) then { systemChat format ["[DEBUG] Unarmed increased chance to %1%%", round(_chance * 100)]; };
+                    if(_surrenderDebug) then { format ["Unarmed increased chance to %1%%", round(_chance * 100)] spawn OKS_fnc_LogDebug; };
                 };
 
                 _unit setVariable ["GOL_Threatened",true,true];
@@ -380,12 +356,9 @@ private _pfhId = [
                         [_unit,_X] spawn {
                             params ["_unit","_player"];
                             private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
-                            sleep 1;
-                            [_unit] call OKS_fnc_SetSurrendered;
-                            [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;
-                            [_unit] spawn OKS_Fnc_KilledCaptiveEvent;
+                            [_unit] spawn OKS_fnc_SurrenderHandle;
                             _unit setVariable ["GOL_Surrender", false, true];
-                            if(_surrenderDebug) then { systemChat format ["[DEBUG] Unit %1 surrendered to player %2", name _unit, name _player]; };
+                            if(_surrenderDebug) then { format ["Unit %1 surrendered to player %2", name _unit, name _player] spawn OKS_fnc_LogDebug; };
                         };
                     };
                     [_pfhId] call CBA_fnc_removePerFrameHandler;

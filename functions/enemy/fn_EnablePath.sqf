@@ -1,14 +1,22 @@
 	// OKS_fnc_EnablePath
 	// [_Group,0.3,10] spawn OKS_fnc_EnablePath;
 
-	Params ["_Group",["_Chance",0.4,[0]],["_Sleep",60,[0]]];
+	Params [
+		"_Group",
+		["_Chance",(missionNamespace getVariable ["Static_Enable_Chance", 0.4]),[0]],
+		["_Sleep",(missionNamespace getVariable ["Static_Enable_Refresh", 60]),[0]]
+	];
 	Private ["_Units","_Unit"];
- 	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+	if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
+		// Exit if already enabled on Group level.
+	};
 
+ 	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 	if(_Debug) then {
-		systemChat format["%1 ran code for OKS_fnc_EnablePath, Chance: %2, Time: %3",_Group,_Chance,_Sleep];
+		format["%1 ran code for OKS_fnc_EnablePath, Chance: %2, Time: %3",_Group,_Chance,_Sleep] spawn OKS_fnc_LogDebug;
 	};
 	
+	_group setVariable ["OKS_EnablePath_Active",true,true];
 	while{{Alive _X} count units _Group > 0} do {
 			_AIUnits = units _Group select {
 				!(isPlayer _x) && {alive _x || [_x] call ace_common_fnc_isAwake}
@@ -32,7 +40,7 @@
 			};
 
 			if(!(_closePlayers isEqualTo [])) then {
-				if(_Debug) then { systemChat format ["Players Near Garrison - %1",_closePlayers]};
+				if(_Debug) then { format ["Players Near Garrison - %1",_closePlayers]};
 				if(Random 1 <= _Chance) then {
 					_Unit = selectRandom _AIUnits;
 
@@ -47,9 +55,9 @@
 						//waitUntil {sleep 1; !isNil "lambs_wp_fnc_taskRush"};	
 						//[_newGroup,200,15,[],getPos _Unit,true] remoteExec ["lambs_wp_fnc_taskRush",0];
 
-						if(_Debug) then { systemChat format ["Garrison Unit Detached: %1",_Unit]};
+						if(_Debug) then { format ["Garrison Unit Detached: %1",_Unit] spawn OKS_fnc_LogDebug;};
 					} else {
-						if(_Debug) then { systemChat format ["Ignored (Unit in Vehicle): %1",_Unit]};
+						if(_Debug) then { format ["Ignored (Unit in Vehicle): %1",_Unit] spawn OKS_fnc_LogDebug;};
 					};
 				};
 			};
