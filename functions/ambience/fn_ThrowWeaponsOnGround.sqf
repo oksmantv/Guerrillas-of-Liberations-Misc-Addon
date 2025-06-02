@@ -21,49 +21,36 @@ waitUntil {
     !(_anim find "reload" > -1)
 };
 
+_GetCorrectWeaponsItems = {
+    params ["_unit"];
+    _PrimaryItems = [];
+    _SecondaryItems = [];
+    _HandgunItems = [];
+    {
+        if(_X find (primaryWeapon _unit) == 0) then {
+            _PrimaryItems = _X;
+        };
+        if(_X find (secondaryWeapon _unit) == 0) then {
+            _SecondaryItems = _X;
+        };    
+        if(_X find (handgunWeapon _unit) == 0) then {
+            _HandgunItems = _X;
+        };                
+    } forEach weaponsItems _unit;
+
+    [_PrimaryItems,_SecondaryItems,_HandgunItems]
+};
+
 // Create the ground weapon holder at the drop position
 private _groundHolder = createVehicle ["GroundWeaponHolder", [0,0,0], [], 0, "NONE"];
 _groundHolder setPosATL [_dropPosition select 0, _dropPosition select 1, _dropAltitude];
 
-// Assume _unit and _groundHolder are defined and valid
-// --- Primary Weapon: Drop with attachments (no magazine, no items)
-private _primaryWeapon = primaryWeapon _unit;
-if (_primaryWeapon != "") then {
-    private _attachments = _unit weaponAccessories _primaryWeapon;
-    private _magazine = selectRandom ([_primaryWeapon] call BIS_fnc_compatibleMagazines);
-    _attachments params ["_silencer","_pointer","_optics","_bipod"];
-    private _magazineArray = [];
-    if(!isNil "_magazine") then {
-        _magazineArray = [_magazine, random 30];
+_WeaponsArray = [_unit] call _GetCorrectWeaponsItems;
+{
+    if(_X isNotEqualTo []) then {
+        _groundHolder addWeaponWithAttachmentsCargoGlobal [_X, 1];
     };
-    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_primaryWeapon, _silencer, _pointer, _optics, _Magazine, [], ""], 1];
-};
-
-// --- Handgun: Drop with no attachments
-private _handgunWeapon = handgunWeapon _unit;
-if (_handgunWeapon != "") then {
-    private _attachments = _unit weaponAccessories _handgunWeapon;
-    private _magazine = selectRandom ([_handgunWeapon] call BIS_fnc_compatibleMagazines);
-    _attachments params ["_silencer","_pointer","_optics","_bipod"];
-    private _magazineArray = [];
-    if(!isNil "_magazine") then {
-        _magazineArray = [_magazine, random 30];
-    };
-    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_handgunWeapon, _silencer, _pointer, _optics, _Magazine, [], ""], 1];
-};
-
-// --- Launcher: Drop with no attachments
-private _launcherWeapon = secondaryWeapon _unit;
-if (_launcherWeapon != "") then {
-    private _attachments = _unit weaponAccessories _launcherWeapon;
-    private _magazine = selectRandom ([_launcherWeapon] call BIS_fnc_compatibleMagazines);
-    _attachments params ["_silencer","_pointer","_optics","_bipod"];
-    private _magazineArray = [];
-    if(!isNil "_magazine") then {
-        _magazineArray = [_magazine, 1];
-    };   
-    _groundHolder addWeaponWithAttachmentsCargoGlobal [[_launcherWeapon, _silencer, _pointer, _optics, _magazineArray, [], ""], 1];
-};
+} foreach _WeaponsArray;
 
 // Remove all weapons, magazines, and items from the unit
 removeAllWeapons _unit;

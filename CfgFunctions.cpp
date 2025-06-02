@@ -294,5 +294,15 @@ class CfgFunctions // Defines a function
 			preInit = 1;
 			class BLU_SetChannel {};
 		};	
+
+		class OKS_Player_Setup
+		{
+			file = "\OKS_GOL_Misc\functions\playersetup";
+			class SetupUnconsciousCamera {};
+			class InventoryHandler {};
+			class WarningSpeakerHandler {};
+			class ORBATHandler {};
+			class VehicleDropSetup {};
+		};
 	};
 };

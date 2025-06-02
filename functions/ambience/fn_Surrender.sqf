@@ -280,14 +280,14 @@ _Unit addEventHandler ["Suppressed", {
 }];
 
 
-if(_surrenderDebug) then {"Surrender Init Completed - Waiting for Nearby Player" spawn OKS_fnc_LogDebug};
+if(_surrenderDebug) then {"Surrender Setup OK - Waiting for Nearby Player for Aim Threat" spawn OKS_fnc_LogDebug};
 waitUntil {
-    sleep 5;
-    _NearPlayers = (_Unit nearEntities [["Man"], _Distance]) select {isPlayer _X};
-    count _NearPlayers > 0
+    sleep 5 + (random 5);
+    _NearPlayers = (_Unit nearEntities [["Man"], _DistanceWeaponAim]) select {isPlayer _X};
+    count _NearPlayers > 0 || !Alive _Unit
 };
 
-if(!(_unit getVariable ["GOL_Surrender",true])) exitWith { if(_surrenderDebug) then { "Surrendered already. Will not check player aiming." spawn OKS_fnc_LogDebug } };
+if(!(_unit getVariable ["GOL_Surrender",true]) || !Alive _Unit) exitWith { if(_surrenderDebug) then { "Surrendered already or killed. Will not check player aiming." spawn OKS_fnc_LogDebug } };
 
 private _interval = 0.5; // seconds
 private _pfhId = [

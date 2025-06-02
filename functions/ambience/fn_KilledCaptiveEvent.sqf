@@ -10,7 +10,7 @@ Params ["_unit"];
 
 sleep 1;
        
-_unit addMPEventHandler ["MPKilled", {
+_unit addEventHandler ["Killed", {
     params ["_unit", "_killer"];
     if(_unit getVariable ["GOL_CaptiveKilled",false]) exitWith {};
     if (isPlayer _killer) then {
@@ -60,7 +60,7 @@ private _flags = [];
 [_unit, _flags, _radius] spawn {
     params ["_unit", "_flags", "_radius"];
     waitUntil {
-        sleep 1;
+        sleep 10;
         (!alive _unit) || {
             _atBase = false;
             {
@@ -74,7 +74,6 @@ private _flags = [];
         private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
         private _responseMultiplier = missionNamespace getVariable ["GOL_ResponseMultiplier", 1];
         
-
         _forceMultiplier = 1 max (_forceMultiplier * 0.9);
         _responseMultiplier = 1 max (_responseMultiplier * 1.1);
 
@@ -85,6 +84,5 @@ private _flags = [];
         if(_Debug) then {
             format[" Captive Captured - Reducing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] spawn OKS_fnc_LogDebug;
         };  
-
     };
 };
