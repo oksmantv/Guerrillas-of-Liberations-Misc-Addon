@@ -1,6 +1,8 @@
 
 
 params ["_unit"];
+if(hasInterface) exitWith {};
+
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 
 if(_surrenderDebug) then {

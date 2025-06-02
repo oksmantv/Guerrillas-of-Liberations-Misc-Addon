@@ -16,6 +16,8 @@ params [
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 private ["_NearPlayers"];
 
+if(hasInterface) exitWith {};
+
 if(isNull _Unit) exitWith {
     format ["Surrender Script Unit is null, exiting..",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
 };

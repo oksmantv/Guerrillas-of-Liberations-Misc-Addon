@@ -3,9 +3,11 @@
 */
 
 Params ["_Vehicle"];
+if(hasInterface) exitWith {};
+
 if(isNull _Vehicle) then {
 	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
-	if(Debug) then {
+	if(_Debug) then {
 		format ["RemoveVehicleHE - Vehicle was null, exiting.."] spawn OKS_fnc_LogDebug;
 	};
 };

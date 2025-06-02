@@ -3,50 +3,184 @@ diag_log "OKS_GOL_Misc: XEH_postInit.sqf executed";
 
 GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
 if(GOL_Core_Enabled isEqualTo true) then {
+/*
+    Global Executions.
+*/
+if(true) then {
+    /* Define Player Side for Scripts */
+    missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 
     /*
-        Global Executions.
+        RemoveVehicleHE from Current and spawned Vehicles.
     */
-    if(true) then {
-        /* Define Player Side for Scripts */
-        missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
+    private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
+    if (_RemoveVehicleHE_Enabled) then {
+        _HeadlessClients = entities "HeadlessClient_F";
+        // Process existing vehicles immediately
+        {
+            _vehicle = _X;
+            if(local _x) then {
+                if (["T34","T55","T72","T80"] findIf {typeOf _vehicle find _x >= 0} != -1 
+                    && (typeOf _x find "UK3CB" >= 0)) then {
+                    [_vehicle] spawn OKS_fnc_AdjustDamage;
+                };
+                [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
+                [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;               
+            };
+        } forEach (vehicles select {_x isKindOf "LandVehicle"});
+        
+        ["LandVehicle", "init", {
+            params ["_vehicle"];
+            if(local _vehicle) then {
+                [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
+                [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;
+                
+                // Whitelist check moved outside select for better performance
+                private _type = typeOf _vehicle;
+                if ((["T34","T55","T72","T80"] findIf {_type find _x >= 0}) != -1 
+                    && (_type find "UK3CB" >= 0)) then {
+                    [_vehicle] spawn OKS_fnc_AdjustDamage;
+                };
+            };
+        }, true, [], true] call CBA_fnc_addClassEventHandler;
+    };
 
-        /* Setup Vehicle & MHQ Drops */
-        [] spawn OKS_fnc_VehicleDropSetup;
+    /*
+        Add code to spawned units.
+    */
+    ["CAManBase", "init", {
+        params ["_unit"];
+        if (!isPlayer _unit && local _unit) then {
+            private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
+            if(_SuppressionEnabled && side group _unit != civilian) then {
+                _unit spawn {
+                    sleep 1;
+                    [_unit] spawn OKS_fnc_Suppressed;
+                };
+            };
 
-        /* Setup ACE Carrying Limits */
-        ACE_maxWeightCarry = 1600; 
-        ACE_maxWeightDrag = 2500;
+            private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+            if(_SurrenderEnabled && side group _unit != civilian) then {
+                _unit spawn {
+                    sleep 1;
+                    [_unit] spawn OKS_fnc_Surrender;
+                };
+            };
 
-        if (hasInterface) then {
-            /* Setup TFAR Radios */
-            [] spawn OKS_fnc_TFAR_RadioSetup;
+            private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+            if(_FaceSwapEnabled) then {
+                // Apply ethnicity and face swap
+                _unit spawn {
+                    params ["_unit"];
+                    sleep 1;
+                    [_unit] spawn OKS_fnc_FaceSwap;
+                };
+            };
 
-            /* Warning System for Speaker */
-            [] spawn OKS_fnc_WarningSpeakerHandler;
-
-            /* Inventory Warning System */
-            [] spawn OKS_fnc_InventoryHandler;
-
-            /* Add Unconscious Camera Handler */
-            [] spawn OKS_fnc_SetupUnconsciousCamera;
-            
-            /* Add Medical Messages to Players. */
-            ["ace_treatmentStarted", OKS_fnc_medicalMessage] call CBA_fnc_addEventHandler;
-
-            /* Setup ORBAT */
-            [] spawn OKS_fnc_ORBATHandler;
-
-            /* Setup Support & Tent MHQ */
-            _condition = {leader group player == player};
-            _action = ["Request_Support", "Request Support","\A3\ui_f\data\map\VehicleIcons\iconCrateVeh_ca.paa", {}, _condition] call ace_interact_menu_fnc_createAction;
-            [typeOf player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToClass;
-            [] spawn OKS_fnc_Orbat_Action;
-
-            if(!isNil "Tent_MHQ") then {
-                [] spawn OKS_fnc_ACE_MoveMHQ;
-            };           
+            if(side group _unit != civilian) then {
+                _unit spawn {
+                    params ["_unit"];
+                    private ["_group"];
+                    sleep 5;
+                    _group = group _unit;
+    
+                    if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {                          
+                        [_group] spawn OKS_fnc_EnablePath;
+                    };
+                };
+            };
         };
+    }] call CBA_fnc_addClassEventHandler;
+
+    // Get all player units (for side comparison)
+    private _players = allPlayers select {alive _x};
+    if (_players isEqualTo []) exitWith {
+        private _SurrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", true];  
+        if(_SurrenderDebug) then {
+            "No players found for enemy check!" spawn OKS_fnc_LogDebug;
+        };
+    };
+
+    // Assume first player as reference for "enemy" side
+    private _playerSide = side (group (_players select 0));
+    {
+        if (
+            _x isKindOf "CAManBase" &&
+            !isPlayer _x &&
+            side _x getFriend _playerSide < 0.6 &&
+            side group _x != civilian &&
+            local _X
+        ) then {
+            private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+            if(_SurrenderEnabled) then {                                
+                [_x] spawn OKS_fnc_Surrender
+            };
+        };
+
+        if(_X isKindOf "CAManBase" && !isPlayer _X) then {
+            private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
+            if(_SuppressionEnabled) then {
+                [_unit] spawn OKS_fnc_Suppressed
+            };
+
+            private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+            if(_FaceSwapEnabled) then {
+                [_x] spawn OKS_fnc_FaceSwap;                   
+            };
+
+            _unit spawn {
+                params ["_unit"];
+                private ["_group"];
+                sleep 5;
+                _group = group _unit;
+                if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
+                    // Exit if already enabled on Group level.
+                };
+
+                if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {        
+                    _group setVariable ["OKS_EnablePath_Active",true,true];
+                    [_group] spawn OKS_fnc_EnablePath;
+                };
+            };  
+        };
+    } forEach allUnits;
+    };       
+
+    /* Setup Vehicle & MHQ Drops */
+    [] spawn OKS_fnc_VehicleDropSetup;
+
+    /* Setup ACE Carrying Limits */
+    ACE_maxWeightCarry = 1600; 
+    ACE_maxWeightDrag = 2500;
+
+    if (hasInterface) then {
+        /* Setup TFAR Radios */
+        [] spawn OKS_fnc_TFAR_RadioSetup;
+
+        /* Warning System for Speaker */
+        [] spawn OKS_fnc_WarningSpeakerHandler;
+
+        /* Inventory Warning System */
+        [] spawn OKS_fnc_InventoryHandler;
+
+        /* Add Unconscious Camera Handler */
+        [] spawn OKS_fnc_SetupUnconsciousCamera;
+        
+        /* Add Medical Messages to Players. */
+        ["ace_treatmentStarted", OKS_fnc_medicalMessage] call CBA_fnc_addEventHandler;
+
+        /* Setup ORBAT */
+        [] spawn OKS_fnc_ORBATHandler;
+
+        /* Setup Support & Tent MHQ */
+        _condition = {leader group player == player};
+        _action = ["Request_Support", "Request Support","\A3\ui_f\data\map\VehicleIcons\iconCrateVeh_ca.paa", {}, _condition] call ace_interact_menu_fnc_createAction;
+        [typeOf player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToClass;
+        [] spawn OKS_fnc_Orbat_Action;
+
+        if(!isNil "Tent_MHQ") then {
+            [] spawn OKS_fnc_ACE_MoveMHQ;
+        };           
     };
 
     /*
@@ -116,157 +250,6 @@ if(GOL_Core_Enabled isEqualTo true) then {
             NEKY_ServiceStations = [];
             publicVariable "NEKY_ServiceStationActive";
             publicVariable "NEKY_ServiceStations";
-        };
-
-        /*
-            RemoveVehicleHE from Current and spawned Vehicles.
-        */
-        private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
-        if (_RemoveVehicleHE_Enabled) then {
-            _HeadlessClients = entities "HeadlessClient_F";
-            // Process existing vehicles immediately
-            {
-                _vehicle = _X;
-                if (["T34","T55","T72","T80"] findIf {typeOf _vehicle find _x >= 0} != -1 
-                    && (typeOf _x find "UK3CB" >= 0)) then {
-                    [_vehicle] remoteExec ["OKS_fnc_AdjustDamage",0];
-                    [_vehicle] remoteExec ["OKS_fnc_AdjustDamage",_HeadlessClients];
-                };
-                [_vehicle] remoteExec ["OKS_fnc_RemoveVehicleHE",0];
-                [_vehicle] remoteExec ["OKS_fnc_RemoveVehicleHE",_HeadlessClients];  
-                [_vehicle] remoteExec ["OKS_fnc_ForceVehicleSpeed",0];
-                [_vehicle] remoteExec ["OKS_fnc_ForceVehicleSpeed",_HeadlessClients];                  
-            } forEach (vehicles select {_x isKindOf "LandVehicle"});
-            
-            ["LandVehicle", "init", {
-                params ["_vehicle"];
-                _HeadlessClients = entities "HeadlessClient_F";
-                [_vehicle] remoteExec ["OKS_fnc_RemoveVehicleHE",0];
-                [_vehicle] remoteExec ["OKS_fnc_RemoveVehicleHE",_HeadlessClients];  
-                [_vehicle] remoteExec ["OKS_fnc_ForceVehicleSpeed",0];
-                [_vehicle] remoteExec ["OKS_fnc_ForceVehicleSpeed",_HeadlessClients]; 
-                
-                // Whitelist check moved outside select for better performance
-                private _type = typeOf _vehicle;
-                if ((["T34","T55","T72","T80"] findIf {_type find _x >= 0}) != -1 
-                    && (_type find "UK3CB" >= 0)) then {
-                    [_vehicle] remoteExec ["OKS_fnc_AdjustDamage",0];
-                    [_vehicle] remoteExec ["OKS_fnc_AdjustDamage",_HeadlessClients];
-                };
-            }, true, [], true] call CBA_fnc_addClassEventHandler;
-        };
-
-        /*
-            Add code to spawned units.
-        */
-        ["CAManBase", "init", {
-            params ["_unit"];
-            if (!isPlayer _unit) then {
-                private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-                if(_SuppressionEnabled && side group _unit != civilian) then {
-                    _HeadlessClients = entities "HeadlessClient_F";
-                    [_unit] remoteExec ["OKS_fnc_Suppressed",2];
-                    [_unit] remoteExec ["OKS_fnc_Suppressed",_HeadlessClients];
-                };
-
-                private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-                if(_SurrenderEnabled && side group _unit != civilian) then {
-                    _HeadlessClients = entities "HeadlessClient_F";
-                    [_unit] remoteExec ["OKS_fnc_Surrender",2];
-                    [_unit] remoteExec ["OKS_fnc_Surrender",_HeadlessClients];
-                };
-
-                private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-                if(_FaceSwapEnabled) then {
-                    // Apply ethnicity and face swap
-                    _unit spawn {
-                        params ["_unit"];
-                        sleep 1;
-                        _HeadlessClients = entities "HeadlessClient_F";
-                        [_unit] remoteExec ["OKS_fnc_FaceSwap",2];
-                        [_unit] remoteExec ["OKS_fnc_FaceSwap",_HeadlessClients];
-                    };
-                };
-
-                if(side group _unit != civilian) then {
-                    _unit spawn {
-                        params ["_unit"];
-                        private ["_group"];
-                        sleep 5;
-                        _group = group _unit;
-        
-                        if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {                          
-                            [_group] spawn OKS_fnc_EnablePath;
-                        };
-                    };
-                };
-            };
-        }] call CBA_fnc_addClassEventHandler;
-
-        _unit spawn {
-            params ["_unit"];
-            sleep 5;
-
-            // Get all player units (for side comparison)
-            private _players = allPlayers select {alive _x};
-            if (_players isEqualTo []) exitWith {
-                private _SurrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", true];  
-                if(_SurrenderDebug) then {
-                    "No players found for enemy check!" spawn OKS_fnc_LogDebug;
-                };
-            };
-
-            // Assume first player as reference for "enemy" side
-            private _playerSide = side (group (_players select 0));
-            {
-                if (
-                    _x isKindOf "CAManBase" &&
-                    !isPlayer _x &&
-                    side _x getFriend _playerSide < 0.6 &&
-                    side group _x != civilian
-                ) then {
-                    private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-                    if(_SurrenderEnabled) then {                                
-                        _HeadlessClients = entities "HeadlessClient_F";
-                        [_x] remoteExec ["OKS_fnc_Surrender",2];
-                        [_x] remoteExec ["OKS_fnc_Surrender",_HeadlessClients];
-                    };
-                };
-
-                if(_X isKindOf "CAManBase" && !isPlayer _X) then {
-                    private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-                    if(_SuppressionEnabled) then {
-                        _HeadlessClients = entities "HeadlessClient_F";
-                        [_unit] remoteExec ["OKS_fnc_Suppressed",2];
-                        [_unit] remoteExec ["OKS_fnc_Suppressed",_HeadlessClients];
-                    };
-
-                    private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-                    if(_FaceSwapEnabled) then {
-                        _HeadlessClients = entities "HeadlessClient_F";
-                        [_x] remoteExec ["OKS_fnc_FaceSwap",0];
-                        [_x] remoteExec ["OKS_fnc_FaceSwap",_HeadlessClients];                     
-                    };
-
-                    _unit spawn {
-                        params ["_unit"];
-                        private ["_group"];
-                        sleep 5;
-                        _group = group _unit;
-                        if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
-                            // Exit if already enabled on Group level.
-                        };
-        
-                        if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {        
-                            _group setVariable ["OKS_EnablePath_Active",true,true];
-
-                            _HeadlessClients = entities "HeadlessClient_F";
-                            [_group] remoteExec ["OKS_fnc_EnablePath",0];
-                            [_groupk] remoteExec ["OKS_fnc_EnablePath",_HeadlessClients];
-                        };
-                    };  
-                };
-            } forEach allUnits;
         };
 
         /*

@@ -8,6 +8,8 @@
 
 Params ["_unit"];
 
+if(hasInterface) exitWith {};
+
 sleep 1;
        
 _unit addEventHandler ["Killed", {
