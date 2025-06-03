@@ -1,7 +1,8 @@
 
 
 params ["_unit"];
-if(hasInterface) exitWith {};
+
+if(hasInterface && !isServer) exitWith {};
 
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 

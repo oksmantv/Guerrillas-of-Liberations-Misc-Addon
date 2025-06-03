@@ -74,14 +74,23 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\enemy";
 			class EnablePath {};
 			class SetStatic {};
+			class AbandonVehicle {};
+			class AdjustDamage {};
+			class ForceVehicleSpeed {};	
+			class RemoveVehicleHE {};					
+			class FaceSwap {};
+			class Suppressed {};
+			class Surrender {};			
+			class SurrenderHandle {};			
+			class ThrowWeaponsOnGround {};		
+			class GetEthnicity {};
+			class KilledCaptiveEvent {};
+			class SetSurrendered {};					
 		};		
 
 		class OKS_Vehicles {
 			file = "\OKS_GOL_Misc\functions\vehicles";
-			class AbandonVehicle {};
-			class AdjustDamage {};
 			class DAP_Config {};
-			class ForceVehicleSpeed {};
 			class HeliActions {};
 			class Helicopter {};
 			class Helicopter_Code {};
@@ -89,8 +98,7 @@ class CfgFunctions // Defines a function
 			class Interact_Copilot {};
 			class Interact_DoorGunner {};
 			class Interact_Pilot {};
-			class Mechanized {};			
-			class RemoveVehicleHE {};			
+			class Mechanized {};				
 			class Retexture {};
 			class SetPylonsToTurret {};
 		};			
@@ -142,16 +150,8 @@ class CfgFunctions // Defines a function
 			class Chat {};
 			class DeleteDeadAndObjects {};
 			class Destroy_Houses {};
-			class FaceSwap {};
 			class PowerGenerator {};
 			class AddGeneratorAction {};
-			class Suppressed {};
-			class Surrender {};			
-			class SurrenderHandle {};			
-			class ThrowWeaponsOnGround {};		
-			class GetEthnicity {};
-			class KilledCaptiveEvent {};
-			class SetSurrendered {};
 		};	
 
 		class OKS_Dynamic {

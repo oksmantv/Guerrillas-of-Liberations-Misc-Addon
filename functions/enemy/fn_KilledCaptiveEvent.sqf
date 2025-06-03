@@ -8,7 +8,7 @@
 
 Params ["_unit"];
 
-if(hasInterface) exitWith {};
+if(hasInterface && !isServer) exitWith {};
 
 sleep 1;
        

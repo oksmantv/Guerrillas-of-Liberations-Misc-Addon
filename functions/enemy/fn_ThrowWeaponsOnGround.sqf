@@ -4,10 +4,10 @@
 */
 
 params ["_unit"];
-if(hasInterface) exitWith {};
+
+if(hasInterface && !isServer) exitWith {};
 
 if (isNull _unit) exitWith {};
-
 
 private _direction = getDir _unit;
 private _dropPosition = _unit getPos [0.5, _direction];

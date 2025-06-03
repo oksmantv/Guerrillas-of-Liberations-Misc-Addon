@@ -6,6 +6,9 @@
 		["_Chance",(missionNamespace getVariable ["Static_Enable_Chance", 0.4]),[0]],
 		["_Sleep",(missionNamespace getVariable ["Static_Enable_Refresh", 60]),[0]]
 	];
+
+	if(hasInterface && !isServer) exitWith {};
+
 	Private ["_Units","_Unit"];
 	if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
 		// Exit if already enabled on Group level.

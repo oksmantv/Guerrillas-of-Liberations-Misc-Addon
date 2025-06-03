@@ -293,6 +293,16 @@ diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
     1
 ] call CBA_fnc_addSetting;
 
+// CheckBox: Enable Custom Vehicle Appearance for AI Vehicles.
+[
+    "GOL_VehicleAppearanceAI",
+    "CHECKBOX",
+    ["Enable AI Vehicle Appearance", "When enabled, certain AI Vehicles will have randomized vehicle appearance."],
+    "GOL_Gear_AI",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // CheckBox: Enable OKS Remove ATGM.
 [
     "GOL_RemoveVehicleATGM_Enabled",

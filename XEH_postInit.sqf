@@ -19,28 +19,28 @@ if(true) then {
         // Process existing vehicles immediately
         {
             _vehicle = _X;
-            if(local _x) then {
-                if (["T34","T55","T72","T80"] findIf {typeOf _vehicle find _x >= 0} != -1 
-                    && (typeOf _x find "UK3CB" >= 0)) then {
-                    [_vehicle] spawn OKS_fnc_AdjustDamage;
-                };
-                [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
-                [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;               
+            if (["T34","T55","T72","T80"] findIf {typeOf _vehicle find _x >= 0} != -1 
+                && (typeOf _x find "UK3CB" >= 0)) then {
+                [_vehicle] spawn OKS_fnc_AdjustDamage;
             };
+            [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
+            [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;   
+            [_vehicle] spawn OKS_fnc_AbandonVehicle;      
+            [_vehicle] call OKS_fnc_VehicleAppearance;
         } forEach (vehicles select {_x isKindOf "LandVehicle"});
         
         ["LandVehicle", "init", {
             params ["_vehicle"];
-            if(local _vehicle) then {
-                [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
-                [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;
-                
-                // Whitelist check moved outside select for better performance
-                private _type = typeOf _vehicle;
-                if ((["T34","T55","T72","T80"] findIf {_type find _x >= 0}) != -1 
-                    && (_type find "UK3CB" >= 0)) then {
-                    [_vehicle] spawn OKS_fnc_AdjustDamage;
-                };
+            [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
+            [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;
+            [_vehicle] spawn OKS_fnc_AbandonVehicle;
+            [_vehicle] call OKS_fnc_VehicleAppearance;
+            
+            // Whitelist check moved outside select for better performance
+            private _type = typeOf _vehicle;
+            if ((["T34","T55","T72","T80"] findIf {_type find _x >= 0}) != -1 
+                && (_type find "UK3CB" >= 0)) then {
+                [_vehicle] spawn OKS_fnc_AdjustDamage;
             };
         }, true, [], true] call CBA_fnc_addClassEventHandler;
     };
@@ -50,18 +50,20 @@ if(true) then {
     */
     ["CAManBase", "init", {
         params ["_unit"];
-        if (!isPlayer _unit && local _unit) then {
+        if (!isPlayer _unit) then {
             private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-            if(_SuppressionEnabled && side group _unit != civilian) then {
+            if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
                 _unit spawn {
+                    params ["_unit"];
                     sleep 1;
                     [_unit] spawn OKS_fnc_Suppressed;
                 };
             };
 
             private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-            if(_SurrenderEnabled && side group _unit != civilian) then {
+            if(_SurrenderEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
                 _unit spawn {
+                    params ["_unit"];
                     sleep 1;
                     [_unit] spawn OKS_fnc_Surrender;
                 };
@@ -77,7 +79,7 @@ if(true) then {
                 };
             };
 
-            if(side group _unit != civilian) then {
+            if(side group _unit != civilian || vehicle _unit == _unit) then {
                 _unit spawn {
                     params ["_unit"];
                     private ["_group"];
@@ -109,7 +111,7 @@ if(true) then {
             !isPlayer _x &&
             side _x getFriend _playerSide < 0.6 &&
             side group _x != civilian &&
-            local _X
+            vehicle _unit == _unit
         ) then {
             private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
             if(_SurrenderEnabled) then {                                
@@ -119,8 +121,8 @@ if(true) then {
 
         if(_X isKindOf "CAManBase" && !isPlayer _X) then {
             private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-            if(_SuppressionEnabled) then {
-                [_unit] spawn OKS_fnc_Suppressed
+            if(_SuppressionEnabled && vehicle _unit == _unit) then {
+                [_x] spawn OKS_fnc_Suppressed
             };
 
             private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
@@ -128,13 +130,13 @@ if(true) then {
                 [_x] spawn OKS_fnc_FaceSwap;                   
             };
 
-            _unit spawn {
+            _x spawn {
                 params ["_unit"];
                 private ["_group"];
                 sleep 5;
                 _group = group _unit;
-                if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
-                    // Exit if already enabled on Group level.
+                if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _unit == _unit) exitWith {
+                    // Exit if already enabled on Group level or if inside vehicle.
                 };
 
                 if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {        

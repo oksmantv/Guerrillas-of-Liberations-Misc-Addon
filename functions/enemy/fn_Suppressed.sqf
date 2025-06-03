@@ -10,6 +10,8 @@ params [
     ["_MaximumTime",missionNamespace getVariable ["GOL_Suppressed_MaximumTime",10],[1]]         // #3 MAXIMUM TIME - Number of seconds to be suppressed
 ];
 
+if(hasInterface && !isServer) exitWith {};
+
 _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug",false];
 if(_Suppressed_Debug) then {
     format["Suppressed added to %1.",name _unit] spawn OKS_fnc_LogDebug;

@@ -5,6 +5,8 @@
 params ["_Unit", "_Chance", "_ChanceWeaponAim", "_Distance", "_DistanceWeaponAim" ,"_SurrenderByShot", "_SurrenderByFlashbang", "_NearFriendliesDistance"];
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 
+if(hasInterface && !isServer) exitWith {};
+
 _random = random 1;
 if(_surrenderDebug) then {
     format ["SetSurrender Random %1%% value",round(_random * 100)] spawn OKS_fnc_LogDebug;

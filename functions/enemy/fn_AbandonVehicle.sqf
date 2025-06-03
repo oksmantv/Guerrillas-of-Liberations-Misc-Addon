@@ -1,12 +1,12 @@
 
 // [this] spawn OKS_fnc_AbandonVehicle;
 
-if(!isServer) exitWith {};
-
 Params
 [
 	["_vehicle", ObjNull, [ObjNull]]
 ];
+
+if(hasInterface && !isServer) exitWith {};
 
 if(isNull _vehicle) exitWith {
     if(_Debug) then {

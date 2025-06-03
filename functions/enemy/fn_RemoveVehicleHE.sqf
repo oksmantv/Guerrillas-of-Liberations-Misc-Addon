@@ -3,10 +3,11 @@
 */
 
 Params ["_Vehicle"];
-if(hasInterface) exitWith {};
 
+if(hasInterface && !isServer) exitWith {};
+
+Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 if(isNull _Vehicle) then {
-	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 	if(_Debug) then {
 		format ["RemoveVehicleHE - Vehicle was null, exiting.."] spawn OKS_fnc_LogDebug;
 	};
@@ -15,7 +16,15 @@ if(isNull _Vehicle) then {
 if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticWeapon"] > 0) then {
 	private _Enabled = false;
 
-	// Soviet Vehicles and Weapons
+	// BM-2T
+	if(["O_APC_Tracked_02", typeOf _Vehicle, false] call BIS_fnc_inString) then {
+		_Enabled = true;
+		if(_RemoveATGM) then {	
+			_Vehicle removeMagazinesTurret ["2Rnd_GAT_missiles_0",[0]] // BM-2T
+		};
+		_Vehicle removeMagazinesTurret ["140Rnd_30mm_MP_shells_Tracer_Green",[0]] // BM-2T
+	};
+
 	if(["BMP", typeOf _Vehicle, false] call BIS_fnc_inString) then {
 		_Enabled = true;
 		_RemoveATGM = missionNamespace getVariable ["GOL_RemoveVehicleATGM_Enabled",true];
@@ -35,6 +44,8 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 		_Vehicle removeMagazinesTurret ["rhs_mag_og15v_16",[0]]; // 3CB BMP1
 		_Vehicle removeMagazinesTurret ["rhs_mag_og15v_16",[1]]; // 3CB MTLB BMP1
 		_Vehicle removeMagazinesTurret ["rhs_mag_og15v_20",[0]]; // RHS BMP1
+		_Vehicle removeMagazinesTurret ["rhs_mag_3UOF191_22",[0]] // RHS BMP3
+		_Vehicle removeMagazinesTurret ["rhs_mag_3uof8_305",[0]] // RHS BMP3 Autocanon
 	};
 	if(["T34", typeOf _Vehicle, false] call BIS_fnc_inString) then {
 		_Enabled = true;

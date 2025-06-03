@@ -1,9 +1,9 @@
 // Example
 // [_Vehicle] spawn OKS_fnc_ForceVehicleSpeed;    
 
-if(!isServer) exitWith { false };
-
 Params ["_Vehicle"];
+
+if(hasInterface && !isServer) exitWith {};
 
 Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 if(isNull _Vehicle) exitWith {

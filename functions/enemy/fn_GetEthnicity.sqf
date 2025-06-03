@@ -7,6 +7,8 @@ params [
     ["_unit", objNull, [objNull]]
 ];
 
+if(hasInterface && !isServer) exitWith {};
+
 private _ethnicity = "middleeast"; // Default fallback
 private _faceswapDebug = missionNamespace getVariable ["GOL_FaceSwap_Debug", false];
 
