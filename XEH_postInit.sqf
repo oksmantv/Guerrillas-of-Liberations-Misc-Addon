@@ -13,37 +13,49 @@ if(true) then {
     /*
         RemoveVehicleHE from Current and spawned Vehicles.
     */
-    private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
-    if (_RemoveVehicleHE_Enabled) then {
-        _HeadlessClients = entities "HeadlessClient_F";
-        // Process existing vehicles immediately
-        {
-            _vehicle = _X;
-            if (["T34","T55","T72","T80"] findIf {typeOf _vehicle find _x >= 0} != -1 
-                && (typeOf _x find "UK3CB" >= 0)) then {
-                [_vehicle] spawn OKS_fnc_AdjustDamage;
+    {
+        _vehicle = _X;
+        if(
+            !(["vehicle",vehicleVarName _Vehicle, false] call BIS_fnc_inString) &&
+            !(["mhq",vehicleVarName _Vehicle, false] call BIS_fnc_inString)
+        ) then {
+            private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
+            if (_RemoveVehicleHE_Enabled) then {
+                [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
             };
-            [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
             [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;   
             [_vehicle] spawn OKS_fnc_AbandonVehicle;      
             [_vehicle] call OKS_fnc_VehicleAppearance;
-        } forEach (vehicles select {_x isKindOf "LandVehicle"});
-        
-        ["LandVehicle", "init", {
-            params ["_vehicle"];
-            [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
+
+            private _type = typeOf _vehicle;
+            if (["T34","T55","T72","T80"] findIf {_type find _x >= 0} != -1 
+                && (typeOf _x find "UK3CB" >= 0)) then {
+                [_vehicle] spawn OKS_fnc_AdjustDamage;
+            };
+        }
+    } forEach (vehicles select {_x isKindOf "LandVehicle"});
+    
+    ["LandVehicle", "init", {
+        params ["_vehicle"];
+        if( 
+            !(["vehicle",vehicleVarName _Vehicle, false] call BIS_fnc_inString) &&
+            !(["mhq",vehicleVarName _Vehicle, false] call BIS_fnc_inString)
+        ) then {           
+            private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
+            if (_RemoveVehicleHE_Enabled) then {
+                [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
+            };
             [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;
             [_vehicle] spawn OKS_fnc_AbandonVehicle;
             [_vehicle] call OKS_fnc_VehicleAppearance;
             
-            // Whitelist check moved outside select for better performance
             private _type = typeOf _vehicle;
             if ((["T34","T55","T72","T80"] findIf {_type find _x >= 0}) != -1 
                 && (_type find "UK3CB" >= 0)) then {
                 [_vehicle] spawn OKS_fnc_AdjustDamage;
             };
-        }, true, [], true] call CBA_fnc_addClassEventHandler;
-    };
+        };
+    }, true, [], true] call CBA_fnc_addClassEventHandler;
 
     /*
         Add code to spawned units.
