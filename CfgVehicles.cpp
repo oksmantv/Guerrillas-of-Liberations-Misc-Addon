@@ -193,8 +193,8 @@ class CfgVehicles {
 		};
 	};
 
-	class Box_NATO_Ammo_F; // Base class
-    class OKS_GOL_MSS: Box_NATO_Ammo_F {
+	class FlexibleTank_01_forest_F; // Base class
+    class OKS_GOL_MSS: FlexibleTank_01_forest_F {
         displayName = "Mobile Service Station";
 		class TransportMagazines {};
         class TransportWeapons {};

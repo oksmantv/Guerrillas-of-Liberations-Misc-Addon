@@ -10,9 +10,9 @@
 	clearWeaponCargoGlobal _Vehicle;
 	clearMagazineCargoGlobal _Vehicle;
 	clearBackpackCargoGlobal _Vehicle;
-	_Vehicle disableTIEquipment true;
 
 	if(_ShouldDisableThermal) then {
+		_Vehicle disableTIEquipment true;
 		_Vehicle setVariable ["A3TI_Disable", true,true];
 	};
 	if(_shouldDisableNVG) then {
@@ -29,6 +29,7 @@
 
 	_Vehicle addItemCargoGlobal ["Toolkit",2];
 	_Vehicle addMagazineCargoGlobal ["SatchelCharge_Remote_Mag",5];
+	_Vehicle addItemCargoGlobal ["ACE_rope36",4];
 
 	// Add Extra Flares
 	_CMWeapons = (_Vehicle weaponsTurret [-1]) select {["CM", _X,false] call BIS_fnc_inString};

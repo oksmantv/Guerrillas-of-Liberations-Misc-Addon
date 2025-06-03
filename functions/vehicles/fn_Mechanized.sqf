@@ -50,36 +50,40 @@ _Vehicle spawn {
 	}
 };
 
-if(_ServiceStation && !(_Vehicle getVariable ["GOL_isMSS",false]) /*&& GOL_OKS_SERVICESTATION isEqualTo 1*/) then {
+if(_ServiceStation) then {
 	if(_Debug_Variable) then {SystemChat "Adding Service Station Box"};
 	_Crate = "OKS_GOL_MSS" createVehicle [0,0,0];
 	ClearMagazineCargoGlobal _Crate;
 	ClearWeaponCargoGlobal _Crate;
 	ClearItemCargoGlobal _Crate;
 
-	_fuelCan = "FlexibleTank_01_forest_F" createVehicle [0,0,0];
-	[_fuelCan,1000] call ace_refuel_fnc_makeJerryCan;
-
-	//[_vehicle, ["car","west"]] call GW_Gear_Fnc_Init;
 	waitUntil {!isNil "OKS_fnc_MobileSS"};
-	_MSS = [_Crate,_Vehicle,_fuelCan] spawn {
-		Params ["_Crate","_Vehicle","_fuelCan"];
+	_MSS = [_Crate,_Vehicle] spawn {
+		Params ["_Crate","_Vehicle"];
 		[_Crate,25,true] remoteExec ["OKS_fnc_MobileSS",0];
 		_Crate setVariable ["ace_rearm_isSupplyVehicle", true];
-		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;
-		[_fuelCan,_Vehicle,true] call ace_cargo_fnc_loadItem;
+		_Crate setVariable ["ace_rearm_isSupplyVehicle", true];
+		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;		
+		[_Crate, 9999] call ace_refuel_fnc_setFuel;
+		[_Crate, 9999] call ace_rearm_fnc_makeSource;
 	};
+} else {
+	_fuelCan = "FlexibleTank_01_forest_F" createVehicle [0,0,0];
+	[_fuelCan,3000] call ace_refuel_fnc_makeJerryCan;
+	[_fuelCan,_Vehicle,true] call ace_cargo_fnc_loadItem;
 };
 
+if(_Vehicle getVariable ["GOL_isMHQ",false]) then {
+	_Vehicle addItemCargoGlobal ["GOL_Packed_Drone_AP",15];
+	_Vehicle addItemCargoGlobal ["GOL_Packed_Drone_AT",15];
+};
 _Vehicle addItemCargoGlobal ["Toolkit",1];
 _Vehicle addMagazineCargoGlobal ["SatchelCharge_Remote_Mag",2];
 _Vehicle addMagazineCargoGlobal ["DemoCharge_Remote_Mag",4];
 _Vehicle addWeaponCargoGlobal ["rhs_weap_fim92",2];
 _Vehicle addMagazineCargoGlobal ["Titan_AA",5];
-_Vehicle addMagazineCargoGlobal ["GOL_Packed_Drone_AP",5];
-_Vehicle addMagazineCargoGlobal ["GOL_Packed_Drone_AT",5];
-_Vehicle addMagazineCargoGlobal ["ACE_rope6",1];
-_Vehicle addMagazineCargoGlobal ["ACE_rope12",1];
+_Vehicle addItemCargoGlobal ["ACE_rope6",1];
+_Vehicle addItemCargoGlobal ["ACE_rope12",1];
 
 if(_AddMortar) then {
 	if(_Debug_Variable) then {SystemChat "Adding Mortar Equipment"};

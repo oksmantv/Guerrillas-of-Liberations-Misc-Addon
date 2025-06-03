@@ -1,42 +1,42 @@
-//	
-//	
-//	This creates the flashing light effect while service station is in use.
-//	
-//	Made by NeKo-ArroW
-
 #include "..\fn_Service_Settings.sqf"
 
 Params ["_SS"];
 
-While {_SS In NEKY_ServiceStationActive && _Lights} do
-{
-	_Index = 0;
-	_45 = 45;
-	_10 = 10;
-	_Pos = GetPos _SS;
-	_Spheres = [];
-	for "_y" from 1 to 4 do
-	{
-		for "_i" from 1 to 10 do
-		{
-			_Light = CreateVehicle ["Sign_Sphere25cm_F", ([_Pos, _10, ((Direction _SS) + ((0) + _45))] call BIS_FNC_RelPos), [], 0, "CAN_COLLIDE"];
-			_Light setVectorUp surfaceNormal position _Light;
-			_Spheres pushBack _Light;
-			_Index = _Index +1;
-			_45 = _45 + 90;
-		};
-		_10 = _10 - 1;
-		sleep 0.2;
-	};
-	if !(_SS In NEKY_ServiceStationActive) exitWith { {deleteVehicle _x} forEach _Spheres };
-	_Index = 0;
-	for "_i" from 1 to ((count _Spheres) / 4) do
-	{
-		for "_y" from 1 to 4 do
-		{
-			deleteVehicle (_Spheres select _Index);
-			_Index = _Index +1;
-		};			
-		sleep 0.2;
-	};
+private _angles = [45, 135, 225, 315];
+private _numLights = 10;
+private _maxDistance = 15;
+private _minDistance = 3; // Stop 3 meters short of center
+private _distanceStep = (_maxDistance - _minDistance) / (_numLights - 1);
+
+while {_SS in NEKY_ServiceStationActive && _Lights} do {
+    private _pos = getPos _SS;
+    private _angleOffset = direction _SS;
+
+    // For each angle, spawn a thread for the pulse
+    {
+        private _angle = _angleOffset + _x;
+        [_SS, _pos, _angle, _numLights, _maxDistance, _minDistance, _distanceStep] spawn {
+            params ["_SS", "_pos", "_angle", "_numLights", "_maxDistance", "_minDistance", "_distanceStep"];
+            private _light = objNull;
+            for "_i" from 0 to (_numLights - 1) do {
+                if (!isNull _light) then { deleteVehicle _light; };
+                private _distance = _maxDistance - (_i * _distanceStep);
+                // Ensure we don't go closer than _minDistance
+                if (_distance < _minDistance) then { _distance = _minDistance; };
+                _light = createVehicle [
+                    "Sign_Sphere25cm_F",
+                    ([_pos, _distance, _angle] call BIS_fnc_relPos),
+                    [],
+                    0,
+                    "CAN_COLLIDE"
+                ];
+                _light setVectorUp surfaceNormal position _light;
+                sleep 0.05; // 50% faster pulse
+                if !(_SS in NEKY_ServiceStationActive) exitWith { if (!isNull _light) then { deleteVehicle _light; }; };
+            };
+            if (!isNull _light) then { deleteVehicle _light; };
+        };
+    } forEach _angles;
+
+    sleep (_numLights * 0.05 + 0.05);
 };

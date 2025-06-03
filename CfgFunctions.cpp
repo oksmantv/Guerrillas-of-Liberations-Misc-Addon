@@ -64,8 +64,6 @@ class CfgFunctions // Defines a function
 			class ExitLoop {};
 			class Hints {};
 			class Lights {};
-			class Rearm {};
-			class Refuel {};
 			class Repair {};
 			class ServiceAddActions {};
 		};
