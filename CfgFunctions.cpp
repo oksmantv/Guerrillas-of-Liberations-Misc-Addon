@@ -41,6 +41,12 @@ class CfgFunctions // Defines a function
 			class LogDebug {};
 		};			
 
+		class OKS_Supply {
+			file = "\OKS_GOL_Misc\functions\supply";
+			class SetupMobileServiceStation {};
+			class SpawnCrate {};
+		};		
+
 		class OKS_Tasks_Functions {
 			file = "\OKS_GOL_Misc\functions\tasks\functions";
 			class AvoidCasualties {};

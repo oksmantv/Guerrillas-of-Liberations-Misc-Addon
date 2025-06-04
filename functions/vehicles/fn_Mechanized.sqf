@@ -55,43 +55,15 @@ if(_ServiceStation) then {
 	_ShouldGiveServiceStationToVehicle = ["ShouldGiveServiceStationToVehicle", 1] call BIS_fnc_getParamValue;
 
 	if(!(_Vehicle getVariable ["GOL_isMHQ",false]) && _ShouldGiveServiceStationToVehicle isEqualTo 1) then {
-		_Crate = "OKS_GOL_MSS" createVehicle [0,0,0];
-		ClearMagazineCargoGlobal _Crate;
-		ClearWeaponCargoGlobal _Crate;
-		ClearItemCargoGlobal _Crate;
-
-		waitUntil {!isNil "OKS_fnc_MobileSS"};
-		_MSS = [_Crate,_Vehicle] spawn {
-			Params ["_Crate","_Vehicle"];
-			[_Crate,25,true] remoteExec ["OKS_fnc_MobileSS",0];
-			_Crate setVariable ["ace_rearm_isSupplyVehicle", true];
-			_Crate setVariable ["ace_repair_canRepair", 1, true];
-			_Crate setVariable ["ace_isRepairFacility", 1, true];			
-			[_Crate, 9999] call ace_refuel_fnc_setFuel;
-			[_Crate, 9999] call ace_rearm_fnc_makeSource;
-			[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;		
-		};
+		_Crate = "GOL_MobileServiceStation" createVehicle [0,0,0];
+		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;				
 	} else {
-		_Crate = "OKS_GOL_MSS" createVehicle [0,0,0];
-		ClearMagazineCargoGlobal _Crate;
-		ClearWeaponCargoGlobal _Crate;
-		ClearItemCargoGlobal _Crate;
-
-		waitUntil {!isNil "OKS_fnc_MobileSS"};
-		_MSS = [_Crate,_Vehicle] spawn {
-			Params ["_Crate","_Vehicle"];
-			[_Crate,25,true] remoteExec ["OKS_fnc_MobileSS",0];
-			_Crate setVariable ["ace_rearm_isSupplyVehicle", true];
-			_Crate setVariable ["ace_repair_canRepair", 1, true];
-			_Crate setVariable ["ace_isRepairFacility", 1, true];
-			[_Crate, 9999] call ace_refuel_fnc_setFuel;
-			[_Crate, 9999] call ace_rearm_fnc_makeSource;
-			[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;		
-		};	
+		_Crate = "GOL_MobileServiceStation" createVehicle [0,0,0];
+		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;			
 	}
 } else {
 	_fuelCan = "FlexibleTank_01_forest_F" createVehicle [0,0,0];
-	[_fuelCan,3000] call ace_refuel_fnc_makeJerryCan;
+	[_fuelCan,2000] call ace_refuel_fnc_makeJerryCan;
 	[_fuelCan,_Vehicle,true] call ace_cargo_fnc_loadItem;
 };
 

@@ -27,7 +27,7 @@ class CfgPatches
 			"GOL_Packed_60mm_Smoke"
 		};
 		weapons[] = {};
-		requiredAddons[] = { "UK3CB_BAF_Weapons_Static" };
+		requiredAddons[] = { "UK3CB_BAF_Weapons_Static", "ace_main" };
 	}
 };
 
@@ -41,4 +41,16 @@ class Extended_PostInit_EventHandlers {
     class OKS_PostInit {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit.sqf'";
     };
+};
+
+class CfgEditorCategories {
+    class GOL_GuerrillasOfLiberation {
+        displayName = "GOL Guerrillas of Liberation";
+    };
+};
+class CfgEditorSubcategories {
+    class GOL_Resupply {
+        displayName = "Resupply";
+    };
+    // Add more subcategories as needed
 };
