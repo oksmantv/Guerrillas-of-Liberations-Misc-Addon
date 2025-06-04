@@ -39,6 +39,7 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\logic";
 			class GetClientId {};
 			class LogDebug {};
+			class FlagTeleport {};
 		};			
 
 		class OKS_Supply {

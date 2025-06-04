@@ -10,9 +10,53 @@ if(true) then {
     /* Define Player Side for Scripts */
     missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 
-    /*
-        RemoveVehicleHE from Current and spawned Vehicles.
-    */
+    /* Setup Flag Teleport */
+    [] spawn OKS_fnc_FlagTeleport;
+
+    /* Setup player vehicles & boxes */
+    [] spawn {
+        sleep 1;
+        {
+            private _Vehicle = _x;
+            private _varName = toLower vehicleVarName _Vehicle;
+            [_Vehicle, _varName] spawn {
+                params ["_Vehicle", "_varName"];
+                waitUntil {
+                    sleep 1;
+                    !isNil "OKS_fnc_Mechanized" &&
+                    !isNil "GW_MHQ_Fnc_Handler" &&
+                    !isNil "GW_Gear_Fnc_Init"
+                };
+
+                if(isServer) then {
+                    if (["vehicle_", _varName] call BIS_fnc_inString) exitWith {
+                        [_Vehicle] spawn OKS_fnc_Mechanized;
+                    };
+                    if (["mhq_", _varName] call BIS_fnc_inString) exitWith {
+                        [_Vehicle, "medium"] call GW_MHQ_Fnc_Handler;
+                        [_Vehicle] spawn OKS_fnc_Mechanized;
+                    };
+                    if (["helicopter_", _varName] call BIS_fnc_inString) exitWith {
+                        [_Vehicle] spawn OKS_fnc_Helicopter;
+                    };
+                };
+                if (["gearboxwest_", _varName] call BIS_fnc_inString) exitWith {
+                    [_Vehicle, ["gearbox","west"]] call GW_Gear_Fnc_Init;
+                };
+                if (["gearboxeast_", _varName] call BIS_fnc_inString) exitWith {
+                    [_Vehicle, ["gearbox","east"]] call GW_Gear_Fnc_Init;
+                };
+                if (_varName isEqualTo "medical_box_west") exitWith {
+                    [_Vehicle, ["med_box","west"]] call GW_Gear_Fnc_Init;
+                };
+                if (_varName isEqualTo "medical_box_east") exitWith {
+                    [_Vehicle, ["med_box","east"]] call GW_Gear_Fnc_Init;
+                };
+            };
+        } forEach Vehicles;
+    };
+
+    /* RemoveVehicleHE from Current and spawned Vehicles. */
     {
         _vehicle = _X;
         if(
@@ -222,6 +266,11 @@ if(true) then {
         Server Side Executions
     */
     if(isServer) then {
+        /* Tent MHQ Setup */
+        if (!isNil "Tent_MHQ") exitWith {
+            [Tent_MHQ, "small"] call GW_MHQ_Fnc_Handler;
+        };
+
         /*
             Setup Framework Check
         */       
