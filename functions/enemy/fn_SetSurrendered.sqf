@@ -29,6 +29,6 @@ if(_random < 0.5 && {_X distance _Unit < 20} count AllPlayers == 0) then {
 } else {
     [_unit, true] call ACE_captives_fnc_setSurrendered;
     if(_surrenderDebug) then {
-        format ["SetSurrender Unit set to surrender."] spawn OKS_fnc_LogDebug;;
+        format ["SetSurrender Unit set to surrender."] spawn OKS_fnc_LogDebug;
     };
 };

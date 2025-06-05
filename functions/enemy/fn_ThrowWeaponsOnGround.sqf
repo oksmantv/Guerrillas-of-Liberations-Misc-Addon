@@ -13,11 +13,6 @@ private _direction = getDir _unit;
 private _dropPosition = _unit getPos [0.5, _direction];
 private _dropAltitude = getPosATL _unit select 2;
 
-// Only execute on server for MP safety
-if (!isServer) exitWith {
-    [_unit] remoteExec ["OKS_fnc_ThrowWeaponsOnGround", 2];
-};
-
 // Wait for reload animation to finish (optional)
 waitUntil {
     private _anim = animationState _unit;
@@ -44,17 +39,19 @@ _GetCorrectWeaponsItems = {
     [_PrimaryItems,_SecondaryItems,_HandgunItems]
 };
 
-// Create the ground weapon holder at the drop position
-private _groundHolder = createVehicle ["GroundWeaponHolder", [0,0,0], [], 0, "NONE"];
-_groundHolder setPosATL [_dropPosition select 0, _dropPosition select 1, _dropAltitude];
+if(isServer) then {
+    // Create the ground weapon holder at the drop position
+    private _groundHolder = createVehicle ["GroundWeaponHolder", [0,0,0], [], 0, "NONE"];
+    _groundHolder setPosATL [_dropPosition select 0, _dropPosition select 1, _dropAltitude];
 
-_WeaponsArray = [_unit] call _GetCorrectWeaponsItems;
-{
-    if(_X isNotEqualTo []) then {
-        _groundHolder addWeaponWithAttachmentsCargoGlobal [_X, 1];
-    };
-} foreach _WeaponsArray;
-
+    _WeaponsArray = [_unit] call _GetCorrectWeaponsItems;
+    {
+        if(_X isNotEqualTo []) then {
+            _groundHolder addWeaponWithAttachmentsCargoGlobal [_X, 1];
+        };
+    } foreach _WeaponsArray;
+};
+    
 // Remove all weapons, magazines, and items from the unit
 removeAllWeapons _unit;
 removeAllItems _unit;

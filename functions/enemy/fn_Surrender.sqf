@@ -57,7 +57,7 @@ if (_SurrenderByShot) then {
                 private _inc = 0.025 * (10 - _numFriendlies);
                 _adjustedChance = _adjustedChance + _inc;
                 if(_surrenderDebug) then {
-                    format ["Surrender chance increased by %1 %% (few friendlies nearby: %2). New chance: %3%%",(_inc * 100), _numFriendlies, (_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
+                    format ["Surrender chance increased by %1%% (few friendlies nearby: %2). New chance: %3%%",(_inc * 100), _numFriendlies, (_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
                 };
             } else {
                 _adjustedChance = _adjustedChance * 0.3;
@@ -66,7 +66,7 @@ if (_SurrenderByShot) then {
             // Increase for suppression
             private _suppression = getSuppression _unit;
             if (_suppression > 0.7) then {
-                _adjustedChance = _adjustedChance + 0.1;
+                _adjustedChance = _adjustedChance + 0.05;
                 if(_surrenderDebug) then {
                     format [
                         "Surrender chance increased by 10%% (suppression: %1). New chance: %2%%",
@@ -76,7 +76,7 @@ if (_SurrenderByShot) then {
             };
 
             // Increase for being shot
-            _adjustedChance = _adjustedChance + 0.1;
+            _adjustedChance = _adjustedChance + 0.05;
             if(_surrenderDebug) then {
                 format [
                     "Surrender chance increased by 10%% (shot). New chance: %1%%",
@@ -296,9 +296,8 @@ private _pfhId = [
     {
         params ["_args", "_pfhId"];
         _args params ["_unit", "_chance", "_distance"];
-        private _threatTolerance = 100; // degrees
+        private _threatTolerance = 70; // degrees
         private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
-
 
         // Debug: Handler running
         // systemChat format ["Handler running for unit %1", name _unit];

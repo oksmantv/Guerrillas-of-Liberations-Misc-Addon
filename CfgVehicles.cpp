@@ -212,7 +212,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";    
-		model = "\A3\Supplies_F_Heli\CargoNets\CargoNet_01_ammo_F.p3d";
+		model = "\a3\Structures_F_Tank\Military\RepairDepot\RepairDepot_01_green_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -270,7 +270,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";    
-		model = "\A3\Supplies_F_Heli\CargoNets\CargoNet_01_ammo_F.p3d";
+		model = "\a3\Structures_F_Tank\Military\RepairDepot\RepairDepot_01_green_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};

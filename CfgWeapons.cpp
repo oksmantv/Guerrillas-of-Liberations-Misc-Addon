@@ -11,7 +11,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_HMG_Packed.paa";
 		model = "\z\ace\addons\gunbag\data\ace_gunbag.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 40;
+			mass = 50;
 		};
 	};
 	class GOL_Packed_GMG: ACE_ItemCore {
@@ -24,7 +24,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_GMG_Packed.paa";
 		model = "\z\ace\addons\gunbag\data\ace_gunbag.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 40;
+			mass = 50;
 		};
 	};
 	class GOL_Packed_Mortar: ACE_ItemCore {
@@ -37,7 +37,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_Mortar_Packed.paa";
 		model = "\z\ace\addons\gunbag\data\ace_gunbag.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 40;
+			mass = 50;
 		};
 	};
 	class GOL_Packed_AT: ACE_ItemCore {
@@ -50,7 +50,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_AT_Packed.paa";
 		model = "\z\ace\addons\gunbag\data\ace_gunbag.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 40;
+			mass = 50;
 		};
 	};
 	class GOL_Packed_Drone_AT: ACE_ItemCore {
@@ -63,7 +63,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
 		model = "\fpv_ua\drone_pg7vl.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 25;
+			mass = 40;
 		};
 	};	
 	class GOL_Packed_Drone_AP: ACE_ItemCore {
@@ -76,7 +76,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
 		model = "\fpv_ua\drone_ied.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 25;
+			mass = 40;
 		};
 	};
 	class GOL_Packed_Drone_Supply: ACE_ItemCore {
@@ -89,7 +89,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
 		model = "\A3\Air_F_Orange\UAV_06\UAV_06_F.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 60;
+			mass = 80;
 		};
 	};
 	
@@ -103,7 +103,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
 		model = "\A3\Drones_F\Air_F_Gamma\UAV_01\UAV_01_F.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
+			mass = 30;
 		};
 	};		
 	class GOL_Packed_60mm_HE: ACE_ItemCore {

@@ -70,9 +70,9 @@
 
                         [format["YOU ARE A %1 CASUALTY.",_Tier], -1, 0, 5, 0, 0, 935] spawn BIS_fnc_dynamicText;
                         _Position = (getPosATL _unit) getPos [_distance,_Dir];
-                        _Dir = _dir + 10;
+                        _Dir = _dir + 20;
                         _camera camSetPos [_Position select 0,_Position select 1,_height];
-                        _camera camCommit 1;
+                        _camera camCommit 3;
                         sleep 3;
                     };			
                 };
