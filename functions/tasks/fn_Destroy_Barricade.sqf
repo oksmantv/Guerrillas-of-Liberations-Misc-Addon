@@ -1,40 +1,55 @@
 	// OKS_Destroy_Barricade
 	// [[barricade_1,barricade_2]] spawn OKS_fnc_Destroy_Barricade;
-	// [[barricade_1,barricade_2]] spawn OKS_fnc_Destroy_Barricade;
+	// [[barricade_1,barricade_2],"TaskParent"] spawn OKS_fnc_Destroy_Barricade;
 	if(HasInterface && !isServer) exitWith {};
 
-	Params ["_Barricades"];
-	Private ["_startmarker","_Position"];
+	Params ["_Barricades",["_TaskParent",nil,[""]]];
+	Private ["_startmarker","_TaskPosition","_TaskTitle","_BarricadeText"];
 	Private _Debug_Variable = false;
-
-	_BarricadeReference = selectRandom _Barricades;
-	_Position = getPos _BarricadeReference;
-
+	_TaskTitle = "Clear Barricade";
+	_BarricadeText = "barricade";
+	_TaskPosition = getPos (selectRandom _Barricades);
 	if(count _Barricades > 1) then {
-		_Remaining = _Barricades select {_X != _BarricadeReference};
-		_TargetReference = selectRandom _Remaining;
-		_Distance = ((_BarricadeReference distance _TargetReference) / 2);
-		_Dir = _TargetReference getDir _BarricadeReference;
-
-		SystemChat str [_Position,_Barricades,_Remaining,_BarricadeReference,_TargetReference,_Distance,_Dir];
-		_Position = _TargetReference getPos [_Distance,_Dir];
-		SystemChat str _Position;
+		_TaskTitle = "Clear Barricades";
+		_BarricadeText = "barricades";
+		_TaskPosition = [0, 0, 0];
+		{
+			_TaskPosition = _TaskPosition vectorAdd (getPosWorld _x);
+		} forEach _Barricades;
+		_TaskPosition = _TaskPosition vectorMultiply (1 / (count _Barricades));	
 	};
 
-	_startmarker = createMarker [format ["oks_barricade_marker_%1",str round(random 80000 + random 9999)],_Position, 0];
-	_startmarker setMarkerType "Contact_dashedLine2";
-	_startmarker setMarkerColor "colorBlack";
-	_startmarker setMarkerSize [2,2];
+	_startmarker = createMarker [format ["oks_barricade_marker_%1",str round(random 80000 + random 9999)],_TaskPosition];
+	_startmarker setMarkerType "mil_destroy_noShadow";
+	_startmarker setMarkerColor "colorRed";
+	_startmarker setMarkerSize [0.7,0.7];
 	_startmarker setMarkerAlpha 1;
 	_startmarker setMarkerShape "ICON";
-	_startMarker setMarkerDir (getDir _BarricadeReference - 90);
+	_startMarker setMarkerText "Barricade";
+	_startMarker setMarkerDir 45;
 
-		_Task = format["OKS_BARRICADETASK_%1",(round(random 99999))];
-		Private _SubTasks = [];
-		// Create Main Task
-		[true, [_Task], [format["We have reports of a <font color='#84e4ff'><marker name = '%1'>obstacles</marker></font color> in our area of operations. We need to clear a path for our logistics, remove the obstacles.",_startmarker], "Destroy Obstacle", "Obstacle"], _Position,"CREATED",-1, false,"destroy", false] call BIS_fnc_taskCreate;
+	private _TaskMain = format["OKS_BARRICADETASK_%1",(round(random 99999))];
+	private _TaskMainArray = [_TaskMain];
+	if(!isNil "_TaskParent") then {
+		_TaskMainArray = [_TaskMain,_TaskParent];
+	};
 
-		waitUntil {sleep 10; {!Alive _X || getDammage _X > 0.8} count _Barricades isEqualTo count _Barricades};
-		[_Task,"SUCCEEDED"] call BIS_fnc_taskSetState;
+	// Create Main Task
+	[true, _TaskMainArray, [format["We have reports of <font color='#84e4ff'><marker name = '%1'>%2</marker></font color> present in our area of operations. We need to clear a path, remove the %2.",_startmarker,_BarricadeText], _TaskTitle, "Obstacle"],(_TaskPosition getPos [10,0]),"CREATED",-1, false,"container", false] call BIS_fnc_taskCreate;
+
+	{
+		_RandomSecondaryTaskId = _TaskMain + format["_SubTask_%1",round(random 9999)];
+		[true, [_RandomSecondaryTaskId, _TaskMain], ["This obstacle needs to be destroyed to complete the parent task.", "Destroy Barricade", "Obstacle"], nil,"CREATED",-1, false,"destroy", false] call BIS_fnc_taskCreate;
+
+		[_X, _RandomSecondaryTaskId] spawn {
+			params ["_Barricade","_RandomSecondaryTaskId"];
+			waitUntil {sleep 4; !Alive _Barricade || getDammage _Barricade > 0.8};
+		
+			[_RandomSecondaryTaskId,"SUCCEEDED"] call BIS_fnc_taskSetState;
+		};
+	} foreach _Barricades;
+
+	waitUntil {sleep 10; {_X call BIS_fnc_taskCompleted} count (_TaskMain call BIS_fnc_taskChildren) == count (_TaskMain call BIS_fnc_taskChildren)};
+	[_TaskMain,"SUCCEEDED"] call BIS_fnc_taskSetState;
 
 
