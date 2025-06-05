@@ -85,7 +85,7 @@ Private _CreateStaticCivilian = {
 	if(_UsePanicMode) then {
 		[_StaticCivilian,selectRandom["middle","up","middle","middle"]] spawn _AnimationLoop;
 	} else {
-		[_StaticCivilian,"UP"] remoteExec ["disableAI",0];
+		[_StaticCivilian,"UP"] remoteExec ["setUnitPos",0];
 	}
 };
 

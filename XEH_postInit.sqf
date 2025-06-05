@@ -236,7 +236,7 @@ if(true) then {
         [typeOf player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToClass;
         [] spawn OKS_fnc_Orbat_Action;
 
-        if(!isNil "Tent_MHQ") then {
+        if(!isNil "Mobile_HQ") then {
             [] spawn OKS_fnc_ACE_MoveMHQ;
         };           
 
@@ -267,8 +267,8 @@ if(true) then {
     */
     if(isServer) then {
         /* Tent MHQ Setup */
-        if (!isNil "Tent_MHQ") exitWith {
-            [Tent_MHQ, "small"] call GW_MHQ_Fnc_Handler;
+        if (!isNil "Mobile_HQ") exitWith {
+            [Mobile_HQ, "small"] call GW_MHQ_Fnc_Handler;
         };
 
         /*
@@ -290,18 +290,18 @@ if(true) then {
             {
                 // Wait until all scoreboard variables are defined, or timeout
                 (
-                    !isNil "scoreboard_west_support" &&
-                    !isNil "scoreboard_west" &&
-                    !isNil "scoreboard_east" &&
-                    !isNil "scoreboard_east_support"
+                    (!isNil "scoreboard_west_support" &&
+                    !isNil "scoreboard_west") ||
+                    (!isNil "scoreboard_east" &&
+                    !isNil "scoreboard_east_support")
                 ) || {time > _timeout}
             },
             {
                 if (
-                    !isNil "scoreboard_west_support" &&
-                    !isNil "scoreboard_west" &&
-                    !isNil "scoreboard_east" &&
-                    !isNil "scoreboard_east_support"
+                    (!isNil "scoreboard_west_support" &&
+                    !isNil "scoreboard_west") ||
+                    (!isNil "scoreboard_east" &&
+                    !isNil "scoreboard_east_support")
                 ) then {
                     // All variables exist, start the handler
                     [

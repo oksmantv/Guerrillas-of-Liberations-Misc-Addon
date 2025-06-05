@@ -9,17 +9,20 @@
 private _ReturnText = "This template is not missing any NEW template items."; 
 _Return = []; 
  
-_HasAacRearmBox = ({typeOf _X == "VirtualReammoBox_small_F"} count vehicles > 0); 
-_HasAacRearmBoxArray = [_HasAacRearmBox,"AAC Rearm Box: "]; 
+_HasResupplyStationWest = ({typeOf _X == "GOL_ResupplyStation_WEST"} count vehicles > 0); 
+_HasResupplyStationWestArray = [_HasResupplyStationWest,"Resupply Station WEST: "]; 
+
+_HasResupplyStationEast = ({typeOf _X == "GOL_ResupplyStation_EAST"} count vehicles > 0); 
+_HasResupplyStationEastArray = [_HasResupplyStationEast,"Resupply Station EAST: "]; 
  
-_HasAacRefuelCan = ({typeOf _X == "FlexibleTank_01_forest_F"} count vehicles > 0); 
-_HasAacRefuelArray = [_HasAacRefuelCan,"AAC Refuel Can: "]; 
+_HasMobileServiceStation = ({typeOf _X == "GOL_MobileServiceStation"} count vehicles > 0); 
+_HasMobileServiceStationArray = [_HasMobileServiceStation,"Mobile Service Station: "]; 
  
-_HasAacServiceHelipad = ({typeOf _X == "Land_HelipadSquare_F"} count (allMissionObjects "ALL") > 0); 
+_HasAacServiceHelipad = ({typeOf _X == "GOL_Helipad"} count (allMissionObjects "ALL") > 0); 
 _HasAacServiceHelipadArray = [_HasAacServiceHelipad,"AAC Service Helipad: "]; 
  
-_HasTentMhq = ({vehicleVarName _X == "Tent_MHQ"} count (allMissionObjects "ALL") > 0); 
-_HasTentMhqArray = [_HasTentMhq,"Tent MHQ: "]; 
+_HasTentMhq = ({vehicleVarName _X == "Mobile_HQ"} count (allMissionObjects "ALL") > 0); 
+_HasTentMhqArray = [_HasTentMhq,"Mobile HQ: "]; 
  
 _HasArsenalGL = ({vehicleVarName _X == "GOL_Arsenal_GL"} count allMissionObjects "ALL" > 0); 
 _HasArsenalGLArray = [_HasArsenalGL,"GL Arsenal Logic: "]; 
@@ -30,9 +33,6 @@ _HasArsenalLMGArray = [_HasArsenalLMG,"LMG Arsenal Logic: "];
 _HasHeadless = ({vehicleVarName _X in ["HC","HC2","HC3"]} count allMissionObjects "ALL" > 0); 
 _HasHeadlessArray = [_HasHeadless,"Headless Clients: "]; 
 
-_HasTeamResupply = ({typeOf _X == "Box_Syndicate_Ammo_F"} count vehicles > 0); 
-_HasTeamResupplyArray = [_HasTeamResupply,"Team Resupply Box: "]; 
-
 _HasDapsOptions = ({typeOf _X == "DAPS_Options"} count allMissionObjects "LOGIC" > 0); 
 _HasDapsOptionsArray = [_HasDapsOptions,"DAPS Options: "]; 
  
@@ -41,9 +41,9 @@ _HasDapsOptionsArray = [_HasDapsOptions,"DAPS Options: "];
 		_Return pushBack _X;
 	} 
 } foreach [
-	_HasAacRearmBoxArray,_HasAacRefuelArray,_HasAacServiceHelipadArray,
+	_HasResupplyStationWestArray,_HasAacRefuelArray,_HasAacServiceHelipadArray,
 	_HasTentMhqArray,_HasArsenalGLArray,_HasArsenalLMGArray,_HasHeadlessArray,
-	_HasTeamResupplyArray,_HasDapsOptionsArray
+	_HasResupplyStationEastArray,_HasDapsOptionsArray
 ]; 
  
 if(_Return isNotEqualTo []) then { 

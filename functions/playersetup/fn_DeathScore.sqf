@@ -1,5 +1,5 @@
 
-// execVM "Scripts\OKS_Ambience\OKS_DeathScore.sqf";
+// [] spawn OKS_fnc_DeathScore;
 
 private _stringHint = "";
 private _ArrayOfDeathsAndNames = "";
