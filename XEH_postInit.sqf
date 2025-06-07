@@ -1,4 +1,5 @@
 
+#include "script_component.hpp"
 diag_log "OKS_GOL_Misc: XEH_postInit.sqf executed";
 
 GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
@@ -7,6 +8,12 @@ if(GOL_Core_Enabled isEqualTo true) then {
     Global Executions.
 */
 if(true) then {
+
+
+    if (hasInterface) then {
+        [] call FUNC(addActions);
+    };
+
     /* Define Player Side for Scripts */
     missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 
@@ -230,7 +237,7 @@ if(true) then {
         /* Setup ORBAT */
         [] spawn OKS_fnc_ORBATHandler;
 
-        /* Setup Support & Tent MHQ */
+        /* Setup Support & Mobile HQ MHQ */
         _condition = {leader group player == player};
         _action = ["Request_Support", "Request Support","\A3\ui_f\data\map\VehicleIcons\iconCrateVeh_ca.paa", {}, _condition] call ace_interact_menu_fnc_createAction;
         [typeOf player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToClass;
@@ -267,7 +274,7 @@ if(true) then {
     */
     if(isServer) then {
         /* Tent MHQ Setup */
-        if (!isNil "Mobile_HQ") exitWith {
+        if (!isNil "Mobile_HQ") then {
             [Mobile_HQ, "small"] call GW_MHQ_Fnc_Handler;
         };
 

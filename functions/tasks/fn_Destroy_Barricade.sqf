@@ -3,7 +3,7 @@
 	// [[barricade_1,barricade_2],"TaskParent"] spawn OKS_fnc_Destroy_Barricade;
 	if(HasInterface && !isServer) exitWith {};
 
-	Params ["_Barricades",["_TaskParent",nil,[""]]];
+	Params ["_Barricades",["_TaskParent",nil,[""]],["_ShouldAddActionToDestroy",false,[false]]];
 	Private ["_startmarker","_TaskPosition","_TaskTitle","_BarricadeText"];
 	Private _Debug_Variable = false;
 	_TaskTitle = "Clear Barricade";
@@ -22,8 +22,8 @@
 	_startmarker = createMarker [format ["oks_barricade_marker_%1",str round(random 80000 + random 9999)],_TaskPosition];
 	_startmarker setMarkerType "mil_destroy_noShadow";
 	_startmarker setMarkerColor "colorRed";
-	_startmarker setMarkerSize [0.7,0.7];
-	_startmarker setMarkerAlpha 1;
+	_startmarker setMarkerSize [0.9,0.9];
+	_startmarker setMarkerAlpha 0;
 	_startmarker setMarkerShape "ICON";
 	_startMarker setMarkerText "Barricade";
 	_startMarker setMarkerDir 45;
@@ -35,7 +35,7 @@
 	};
 
 	// Create Main Task
-	[true, _TaskMainArray, [format["We have reports of <font color='#84e4ff'><marker name = '%1'>%2</marker></font color> present in our area of operations. We need to clear a path, remove the %2.",_startmarker,_BarricadeText], _TaskTitle, "Obstacle"],(_TaskPosition getPos [10,0]),"CREATED",-1, false,"container", false] call BIS_fnc_taskCreate;
+	[true, _TaskMainArray, [format["We have reports of <font color='#84e4ff'><marker name = '%1'>%2</marker></font color> present in our area of operations. We need to clear a path, remove the %2.",_startmarker,_BarricadeText], _TaskTitle, "Obstacle"],_TaskPosition,"CREATED",-1, false,"container", false] call BIS_fnc_taskCreate;
 
 	{
 		_RandomSecondaryTaskId = _TaskMain + format["_SubTask_%1",round(random 9999)];
@@ -48,6 +48,50 @@
 			[_RandomSecondaryTaskId,"SUCCEEDED"] call BIS_fnc_taskSetState;
 		};
 	} foreach _Barricades;
+
+	if(_ShouldAddActionToDestroy && count _Barricades == 1) then {
+		_Barricade = _Barricades select 0;
+		_plantBombAction = [
+			"Plant_Bomb",
+			"Place Satchel Charge",
+			"\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\destroy_ca.paa",
+			{ 
+				_relPos = [-1.53137,10.0522,198.065];
+				_explosivePos = _target modelToWorld _relPos;
+
+				if ([_player, "SatchelCharge_Remote_Mag"] call BIS_fnc_hasItem && [_player, "ACE_M26_Clacker"] call BIS_fnc_hasItem) then {
+					_player removeMagazine "SatchelCharge_Remote_Mag";
+					_explosive = [
+						_player,
+						_player modelToWorldVisual [0,1.5,0.1],
+						getDir _player,
+						"SatchelCharge_Remote_Mag",
+						"Command",
+						[]
+					] call ace_explosives_fnc_placeExplosive;
+					[_player, _explosive, "ACE_M26_Clacker"] call ace_explosives_fnc_connectExplosive;
+
+
+					[_explosive,_target] spawn {
+						params ["_explosive","_barricade"];
+						waitUntil {sleep 0.01; !Alive _explosive};
+						sleep 0.05;
+						deleteVehicle _barricade;
+					};
+					systemChat "Satchel placed and linked to your clacker.";
+				} else {
+					systemChat "A Satchel Charge and M26 Firing Device is required to plant the explosives.";
+				};
+			},
+			{ 
+				true
+			},
+			{},
+			[]
+		] call ace_interact_menu_fnc_createAction;
+
+		[_Barricade, 0, ["ACE_MainActions"], _plantBombAction] call ace_interact_menu_fnc_addActionToObject;
+	};
 
 	waitUntil {sleep 10; {_X call BIS_fnc_taskCompleted} count (_TaskMain call BIS_fnc_taskChildren) == count (_TaskMain call BIS_fnc_taskChildren)};
 	[_TaskMain,"SUCCEEDED"] call BIS_fnc_taskSetState;

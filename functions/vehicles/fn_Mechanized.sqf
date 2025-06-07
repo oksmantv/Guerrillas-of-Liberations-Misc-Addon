@@ -68,14 +68,14 @@ if(_ServiceStation) then {
 };
 
 if(_Vehicle getVariable ["GOL_isMHQ",false]) then {
-	_Vehicle addItemCargoGlobal ["GOL_Packed_Drone_AP",15];
-	_Vehicle addItemCargoGlobal ["GOL_Packed_Drone_AT",15];
+	_Vehicle addItemCargoGlobal ["GOL_Packed_Drone_AP",5];
+	_Vehicle addItemCargoGlobal ["GOL_Packed_Drone_AT",5];
 };
 _Vehicle addItemCargoGlobal ["Toolkit",1];
 _Vehicle addMagazineCargoGlobal ["SatchelCharge_Remote_Mag",2];
 _Vehicle addMagazineCargoGlobal ["DemoCharge_Remote_Mag",4];
 _Vehicle addWeaponCargoGlobal ["rhs_weap_fim92",2];
-_Vehicle addMagazineCargoGlobal ["Titan_AA",5];
+_Vehicle addMagazineCargoGlobal ["rhs_fim92_mag",5];
 _Vehicle addItemCargoGlobal ["ACE_rope6",1];
 _Vehicle addItemCargoGlobal ["ACE_rope12",1];
 

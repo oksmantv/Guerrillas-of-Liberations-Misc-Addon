@@ -1,5 +1,12 @@
 diag_log "OKS_GOL_Misc: XEH_preInit.sqf executed";
 
+#include "script_component.hpp"
+
+if (!isDedicated) then {
+    PREP(addActions);
+    PREP(openDialog);
+};
+
 /// CORE
 [
     "GOL_CORE_Enabled",

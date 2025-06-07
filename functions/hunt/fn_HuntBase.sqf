@@ -57,7 +57,9 @@ Params
 	["_ShouldDeployFlare",true,[true]]
 ];
 
-Private ["_Group","_Leaders","_Units","_Vehicle","_VehicleClass","_MaxCargoSeats","_Trigger","_MaxUnits","_KnowsAboutValue","_DetectDelay","_ShouldDeployFlare"];
+Private ["_Group","_Leaders","_Units","_Vehicle","_VehicleClass",
+"_MaxCargoSeats","_Trigger","_MaxUnits","_KnowsAboutValue",
+"_DetectDelay","_ShouldDeployFlare","_CurrentHuntCount","_AliveCurrentCount"];
 
 sleep 5;
 _IsNight = false;
@@ -80,6 +82,7 @@ _EyeCheck enableSimulation false;
 
 while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 {
+	_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
 	_ForceMultiplier = missionNameSpace getVariable ["GOL_ForceMultiplier",1];
 	_ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];
 	_MaxCount = missionNameSpace getVariable ["GOL_Hunt_MaxCount",1];
@@ -109,8 +112,8 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 				{
 					_Soldiers = _Soldiers * _ForceMultiplier;
 					_Waves = _Waves - 1;
-					if(!isNil "NEKY_Hunt_CurrentCount") then {
-						_AliveCurrentCount = NEKY_Hunt_CurrentCount select {alive _X};
+					if(!isNil "_CurrentHuntCount") then {
+						_AliveCurrentCount = _CurrentHuntCount select {alive _X};
 					} else {
 						_AliveCurrentCount = 0
 					};
@@ -126,20 +129,24 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 							{
 								_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), _SpawnPos, [], 0, "NONE"];
 								_Unit setRank "SERGEANT";
-								if(!isNil "NEKY_Hunt_CurrentCount") then {
-									NEKY_Hunt_CurrentCount pushBackUnique _Unit;
+								if(!isNil "_CurrentHuntCount") then {
+									_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
+									_CurrentHuntCount pushBackUnique _Unit;
+									missionNamespace setVariable ["GOL_CurrentHuntCount",_CurrentHuntCount];
 								};
 							} else {
 								_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), _SpawnPos, [], 0, "NONE"];
 								_Unit setRank "PRIVATE";
-								if(!isNil "NEKY_Hunt_CurrentCount") then {
-									NEKY_Hunt_CurrentCount pushBackUnique _Unit;
+								if(!isNil "_CurrentHuntCount") then {
+									_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
+									_CurrentHuntCount pushBackUnique _Unit;
+									missionNamespace setVariable ["GOL_CurrentHuntCount",_CurrentHuntCount];
 								};
 							};
 						};
 
 						//SystemChat str [_Skill,_SkillVariables,_Group];
-						[_Group, _SkillVariables, _Skill] spawn OKS_fnc_Hunt_SetSkill;
+						[_Group, _SkillVariables, _Skill] spawn OKS_fnc_SetSkill;
 						_Group AllowFleeing 0;
 
 						sleep 1;
@@ -149,7 +156,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 
 				if(typeName _Soldiers == "STRING" || typeName _Soldiers == "ARRAY") then {
 
-					_AliveNumber  = count (NEKY_Hunt_CurrentCount select {alive _X});
+					_AliveNumber  = count (_CurrentHuntCount select {alive _X});
 
 					if((_MaxCount * _ForceMultiplier) >= _AliveNumber) then {
 						_Waves = _Waves - 1;
@@ -169,7 +176,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 							_CargoSeats = ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - (["TypeOf _Vehicle",false] call BIS_fnc_crewCount);
 							if(_CargoSeats > _MaxCargoSeats) then { _CargoSeats = _MaxCargoSeats };
 
-							_AliveCurrentCount = NEKY_Hunt_CurrentCount select {alive _X};
+							_AliveCurrentCount = _CurrentHuntCount select {alive _X};
 							_AliveNumber = count _AliveCurrentCount;
 
 							if((_AliveNumber + (_CargoSeats + 1)) <= _MaxCount && _Vehicle emptyPositions "cargo" > 0) then {
@@ -180,14 +187,18 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 									_Unit setRank "SERGEANT";
 									_Unit MoveInCargo _Vehicle;
 									_Group selectLeader _Unit;
-									NEKY_Hunt_CurrentCount pushBackUnique _Unit;
+									_CurrentHuntCount = missionNamespace getVariable ["CurrentHuntCount",[]];
+									_CurrentHuntCount pushBackUnique _Unit;
+									missionNamespace setVariable ["CurrentHuntCount",_CurrentHuntCount];
 
 								for "_i" from 1 to (_CargoSeats - 1) do
 								{
 									Private "_Unit";
 									_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), [0,0,50], [], 0, "NONE"];
 									_Unit setRank "PRIVATE";
-									NEKY_Hunt_CurrentCount pushBackUnique _Unit;
+									_CurrentHuntCount = missionNamespace getVariable ["CurrentHuntCount",[]];
+									_CurrentHuntCount pushBackUnique _Unit;
+									missionNamespace setVariable ["CurrentHuntCount",_CurrentHuntCount];
 									_Unit MoveInCargo _Vehicle;
 								};
 								_Group setVariable ["GW_Performance_autoDelete", false, true];
@@ -200,7 +211,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 							_Group = [_Vehicle,_Side] call OKS_fnc_AddVehicleCrew; 
 						};
 
-						{NEKY_Hunt_CurrentCount pushBackUnique _X} foreach crew _Vehicle;
+						{_CurrentHuntCount pushBackUnique _X} foreach crew _Vehicle;
 					};
 					sleep 5;
 					if(!isNil "_Group") then {
@@ -215,7 +226,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 				};
 
 				sleep 5;
-				_AliveNumber  = count (NEKY_Hunt_CurrentCount select {alive _X});
+				_AliveNumber  = count (_CurrentHuntCount select {alive _X});
 				sleep (_RespawnDelay * _ResponseMultiplier);
 			};
 		};

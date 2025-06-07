@@ -9,20 +9,20 @@
 private _ReturnText = "This template is not missing any NEW template items."; 
 _Return = []; 
  
-_HasResupplyStationWest = ({typeOf _X == "GOL_ResupplyStation_WEST"} count vehicles > 0); 
+_HasResupplyStationWest = ({typeOf _X == "GOL_ResupplyStation_WEST"} count (allMissionObjects "ALL") > 0); 
 _HasResupplyStationWestArray = [_HasResupplyStationWest,"Resupply Station WEST: "]; 
 
-_HasResupplyStationEast = ({typeOf _X == "GOL_ResupplyStation_EAST"} count vehicles > 0); 
+_HasResupplyStationEast = ({typeOf _X == "GOL_ResupplyStation_EAST"} count (allMissionObjects "ALL") > 0); 
 _HasResupplyStationEastArray = [_HasResupplyStationEast,"Resupply Station EAST: "]; 
- 
-_HasMobileServiceStation = ({typeOf _X == "GOL_MobileServiceStation"} count vehicles > 0); 
+
+_HasMobileServiceStation = ({typeOf _X == "GOL_MobileServiceStation"} count (allMissionObjects "ALL") > 0); 
 _HasMobileServiceStationArray = [_HasMobileServiceStation,"Mobile Service Station: "]; 
  
 _HasAacServiceHelipad = ({typeOf _X == "GOL_Helipad"} count (allMissionObjects "ALL") > 0); 
 _HasAacServiceHelipadArray = [_HasAacServiceHelipad,"AAC Service Helipad: "]; 
  
-_HasTentMhq = ({vehicleVarName _X == "Mobile_HQ"} count (allMissionObjects "ALL") > 0); 
-_HasTentMhqArray = [_HasTentMhq,"Mobile HQ: "]; 
+HasMobileHQ = ({vehicleVarName _X == "Mobile_HQ"} count (allMissionObjects "ALL") > 0); 
+HasMobileHQArray = [HasMobileHQ,"Mobile HQ: "]; 
  
 _HasArsenalGL = ({vehicleVarName _X == "GOL_Arsenal_GL"} count allMissionObjects "ALL" > 0); 
 _HasArsenalGLArray = [_HasArsenalGL,"GL Arsenal Logic: "]; 
@@ -42,7 +42,7 @@ _HasDapsOptionsArray = [_HasDapsOptions,"DAPS Options: "];
 	} 
 } foreach [
 	_HasResupplyStationWestArray,_HasAacRefuelArray,_HasAacServiceHelipadArray,
-	_HasTentMhqArray,_HasArsenalGLArray,_HasArsenalLMGArray,_HasHeadlessArray,
+	HasMobileHQArray,_HasArsenalGLArray,_HasArsenalLMGArray,_HasHeadlessArray,
 	_HasResupplyStationEastArray,_HasDapsOptionsArray
 ]; 
  

@@ -1,11 +1,3 @@
-#include "BIS_AddonInfo.hpp"
-#include "CfgWeapons.cpp"
-#include "CfgVehicles.cpp"
-#include "CfgFunctions.cpp"
-#include "CfgSounds.cpp"
-#include "CfgUnitInsignia.cpp"
-#include "CfgOrbat.cfg"
-
 class CfgPatches
 {
 	class GOL_MISC_ADDON {
@@ -27,9 +19,24 @@ class CfgPatches
 			"GOL_Packed_60mm_Smoke"
 		};
 		weapons[] = {};
-		requiredAddons[] = { "UK3CB_BAF_Weapons_Static", "ace_main" };
+        requiredVersion = 2.14;
+        requiredAddons[] = { 
+            "UK3CB_BAF_Weapons_Static", 
+            "ace_main",
+            "cba_main",
+            "cba_ui",
+            "cba_xeh_a3"
+        };
 	}
 };
+
+#include "BIS_AddonInfo.hpp"
+#include "CfgWeapons.cpp"
+#include "CfgVehicles.cpp"
+#include "CfgFunctions.cpp"
+#include "CfgSounds.cpp"
+#include "CfgUnitInsignia.cpp"
+#include "CfgOrbat.cfg"
 
 class Extended_PreInit_EventHandlers {
     class OKS_PreInit {
@@ -53,4 +60,18 @@ class CfgEditorSubcategories {
         displayName = "Resupply";
     };
     // Add more subcategories as needed
+};
+
+class RscTitles {
+    #include "functions\endMenu\endMenu_dialog.hpp"
+};
+
+class CfgSettings {
+    class CBA {
+        class Versioning {
+            class GOL_MISC_ADDON {
+                main_addon = "GOL_MISC_ADDON";
+            };
+        };
+    };
 };

@@ -1,6 +1,7 @@
 
 class CfgFunctions // Defines a function
 {
+	
 	class OKS {
 		class OKS_Packing {
 			file = "\OKS_GOL_Misc\functions\staticWeapons";
@@ -18,6 +19,12 @@ class CfgFunctions // Defines a function
 			class Deploy_Mortar_Code {};			
 			class Packing_code {};			
 		};
+
+		class endMenu {
+            file = "OKS_GOL_Misc\functions\endMenu";
+            class addActions {};
+            class openDialog {};
+        };
 		
 		class OKS_Tasks {
 			file = "\OKS_GOL_Misc\functions\tasks";
