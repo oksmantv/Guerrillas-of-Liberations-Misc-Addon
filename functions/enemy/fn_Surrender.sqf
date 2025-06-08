@@ -204,6 +204,7 @@ _Unit addEventHandler ["Suppressed", {
     private _lastCheck = _unit getVariable ["GOL_SurrenderCooldown", -_cooldown];
     if (CBA_missionTime - _lastCheck < _cooldown) exitWith {}; // Skip if still on cooldown
     if (_distance > 50) exitWith {}; // Skip if round is far from the unit.
+    if (!isPlayer _firer) exitWith {}; // Skip if round is not fired from player;
 
     _unit setVariable ["GOL_SurrenderCooldown", CBA_missionTime];
     
@@ -337,7 +338,11 @@ private _pfhId = [
             // Debug: Show angle degrees
             //systemChat format ["Angle between player %1 and unit %2: %3", name _x, name _unit, _angleDeg];
 
-            if (_angleDeg < _threatTolerance) then {
+            if (_angleDeg < _threatTolerance &&
+                behaviour _unit == "COMBAT" &&
+                _unit knowsAbout _X > 3 &&
+                (side group _unit) getFriend (side group _x) < 0.6
+            ) then {
                 // Set to surrendered if unarmed.
                 if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
                     _chance = 0.5;

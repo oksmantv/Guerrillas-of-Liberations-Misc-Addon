@@ -1,7 +1,11 @@
-	// [this,true,false] spawn OKS_Fnc_Helicopter_Code;
+	// [this] spawn OKS_Fnc_Helicopter_Code;
 	
 	Private _Debug_Variable = false;
-	Params ["_Vehicle","_ShouldDisableThermal","_shouldDisableNVG"];
+	Params [
+		"_Vehicle",
+		["_ShouldDisableThermal",false,[false]],
+		["_shouldDisableNVG",false,[false]]
+	];
 	_Vehicle RemoveAllEventHandlers "HandleDamage";
 	_Vehicle setVariable ["NEKY_OldDamage",0];
 	_Vehicle setVariable ["GW_Disable_autoRemoveCargo",true,true];
@@ -59,20 +63,32 @@
 				break;
 			};
 		} foreach _WhiteListWords;
-		if(true) exitWith {_return}
+		_return;
 	};	
 	
 	// Created by Neko-Arrow - Thanks very much
 	if([_Vehicle] call _isWhiteList) then {
+		_Debug = missionNamespace getVariable ["GOL_RotorProtection_Debug",false];
+		private _vehicleClass = typeof _vehicle;
+		private _displayName = getText (configFile >> "CfgVehicles" >> _vehicleClass >> "displayName");
+		if(_Debug) then {
+			format["Enabled Rotor protection on %1 - %2",_Vehicle,_displayName] spawn OKS_fnc_LogDebug;
+		};
 		_Vehicle addEventHandler ["HandleDamage",
 		{
 		    Params ["_Unit","_Selection","_NewDamage"];
 
 		    //SystemChat str _Selection;
+			if(isNil "_Selection" || _Selection == "") exitWith {
+				//format["Rotor Protection: No Selection"] spawn OKS_fnc_LogDebug;
+			};
 
 		    // Exits
 		    if !(Alive _Unit) exitWith {};
-		    if ( ((ToLower _Selection) find "rotor") == -1 ) exitWith {};
+			//format["Rotor Protection: Hit on %1",_Selection] spawn OKS_fnc_LogDebug;
+			if (!((toLower _selection) in ["main_rotor_hit","tail_rotor_hit"])) exitWith {
+				//format["Rotor Protection: Not Rotor - Exited",_Selection] spawn OKS_fnc_LogDebug;
+			};		
 
 		    // Variables
 		    _Multiplier = 0.05;
@@ -85,8 +101,15 @@
 		    // New Damage
 		    _Damage = _OldDamage + (_AddedDamage * _Multiplier);
 		    _Damage = if (_Damage > 1) then { 1 } else { _Damage };
-
-		    //SystemChat format ["Old: %3 Added: %1 Final: Damage %2",(_AddedDamage * _Multiplier),_Damage,_OldDamage];
+			_Debug = missionNamespace getVariable ["GOL_RotorProtection_Debug",false];
+			if(_Debug) then {
+				format[
+					"Rotor Protection Damage: Old: %3%% | Added: %1%% | Final: Damage %2%%",
+					((_AddedDamage * _Multiplier) * 100),
+					(_Damage * 100),
+					(_OldDamage * 100)
+				] spawn OKS_fnc_LogDebug;
+			};
 		    _Unit setVariable ["NEKY_OldDamage",_Damage];
 
 		    _Damage

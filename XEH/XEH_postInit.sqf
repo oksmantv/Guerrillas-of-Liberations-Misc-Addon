@@ -1,5 +1,3 @@
-
-#include "script_component.hpp"
 diag_log "OKS_GOL_Misc: XEH_postInit.sqf executed";
 
 GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
@@ -8,11 +6,6 @@ if(GOL_Core_Enabled isEqualTo true) then {
     Global Executions.
 */
 if(true) then {
-
-
-    if (hasInterface) then {
-        [] call FUNC(addActions);
-    };
 
     /* Define Player Side for Scripts */
     missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
@@ -41,23 +34,19 @@ if(true) then {
                     };
                     if (["mhq_", _varName] call BIS_fnc_inString) exitWith {
                         [_Vehicle, "medium"] call GW_MHQ_Fnc_Handler;
+                        _MHQShouldBeMobileServiceStation = missionNamespace getVariable ["MHQ_ShouldBe_ServiceStation",false];
+                        if(_MHQShouldBeMobileServiceStation isEqualTo true) then {
+                            [_Vehicle] spawn OKS_fnc_SetupMobileServiceStation;
+                            _Debug = missionNamespace getVariable ["MHQ_Debug",false];
+                            if(_Debug) then {
+                                format["SetupMSS-Init was run on %1",_Vehicle] spawn OKS_fnc_LogDebug;
+                            };
+                        };
                         [_Vehicle] spawn OKS_fnc_Mechanized;
                     };
                     if (["helicopter_", _varName] call BIS_fnc_inString) exitWith {
                         [_Vehicle] spawn OKS_fnc_Helicopter;
                     };
-                };
-                if (["gearboxwest_", _varName] call BIS_fnc_inString) exitWith {
-                    [_Vehicle, ["gearbox","west"]] call GW_Gear_Fnc_Init;
-                };
-                if (["gearboxeast_", _varName] call BIS_fnc_inString) exitWith {
-                    [_Vehicle, ["gearbox","east"]] call GW_Gear_Fnc_Init;
-                };
-                if (_varName isEqualTo "medical_box_west") exitWith {
-                    [_Vehicle, ["med_box","west"]] call GW_Gear_Fnc_Init;
-                };
-                if (_varName isEqualTo "medical_box_east") exitWith {
-                    [_Vehicle, ["med_box","east"]] call GW_Gear_Fnc_Init;
                 };
             };
         } forEach Vehicles;
@@ -114,6 +103,15 @@ if(true) then {
     ["CAManBase", "init", {
         params ["_unit"];
         if (!isPlayer _unit) then {
+            // Add Killed EventHandler for Scores.
+            private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
+            if (_unit isKindOf "CAManBase" &&
+                side _unit getFriend _playerSide < 0.6 &&
+                side group _unit != civilian) then 
+            {
+                [_unit] call OKS_fnc_AddKilledScore;    
+            };
+
             private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
             if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
                 _unit spawn {
@@ -167,8 +165,17 @@ if(true) then {
     };
 
     // Assume first player as reference for "enemy" side
-    private _playerSide = side (group (_players select 0));
+    private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];   
     {
+        // Add Killed EventHandler for Scores.    
+        if (_x isKindOf "CAManBase" &&
+            !isPlayer _x &&
+            side _x getFriend _playerSide < 0.6 &&
+            side group _x != civilian) then 
+        {
+            [_X] call OKS_fnc_AddKilledScore;    
+        };
+
         if (
             _x isKindOf "CAManBase" &&
             !isPlayer _x &&
@@ -241,11 +248,27 @@ if(true) then {
         _condition = {leader group player == player};
         _action = ["Request_Support", "Request Support","\A3\ui_f\data\map\VehicleIcons\iconCrateVeh_ca.paa", {}, _condition] call ace_interact_menu_fnc_createAction;
         [typeOf player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToClass;
+
+        /* Setup ORBAT Actions for Pilots */
         [] spawn OKS_fnc_Orbat_Action;
 
         if(!isNil "Mobile_HQ") then {
             [] spawn OKS_fnc_ACE_MoveMHQ;
         };           
+
+        /* Setup AI Supply Drops */
+        _SupplyEnabled = missionNamespace getVariable ["NEKY_Supply_Enabled", true];
+        _VehicleDropEnabled = missionNamespace getVariable ["NEKY_SupplyVehicle_Enabled", true];
+        _MHQDropEnabled = missionNamespace getVariable ["NEKY_SupplyMHQ_Enabled", true];
+        if(_SupplyEnabled isEqualTo true) then {
+            [] spawn OKS_fnc_Ace_Resupply;
+        };
+        if(!isNil "Vehicle_1" && _VehicleDropEnabled isEqualTo true) then {
+            [] spawn OKS_fnc_Ace_VehicleDrop;
+        };
+        if(!isNil "MHQ_1" && _MHQDropEnabled isEqualTo true) then {
+            [] spawn OKS_fnc_Ace_MHQDrop;
+        };	
 
         /* Reset Radio Transmit upon death handler */
         player addEventHandler ["Killed", {
@@ -288,44 +311,7 @@ if(true) then {
         } else {
             "Framework is not missing any items." spawn OKS_fnc_LogDebug;
         };
-
-        /*
-            Setup Death Board
-        */
-        private _timeout = time + 60; // 60 seconds timeout
-        [
-            {
-                // Wait until all scoreboard variables are defined, or timeout
-                (
-                    (!isNil "scoreboard_west_support" &&
-                    !isNil "scoreboard_west") ||
-                    (!isNil "scoreboard_east" &&
-                    !isNil "scoreboard_east_support")
-                ) || {time > _timeout}
-            },
-            {
-                if (
-                    (!isNil "scoreboard_west_support" &&
-                    !isNil "scoreboard_west") ||
-                    (!isNil "scoreboard_east" &&
-                    !isNil "scoreboard_east_support")
-                ) then {
-                    // All variables exist, start the handler
-                    [
-                        { [] spawn OKS_fnc_DeathScore; },
-                        30
-                    ] call CBA_fnc_addPerFrameHandler;
-                } else {
-                    // Timeout reached, show debug message
-                    private _Debug = missionNamespace getVariable ["GOL_Core_Debug", false];
-                    if(_Debug) then {
-                        "DeathScore disabled - Can't find scoreboards" spawn OKS_fnc_LogDebug;
-                    };
-                };
-            }
-        ] call CBA_fnc_waitUntilAndExecute;
-        
-
+ 
         /*
             Set Civilians to Friendly to all sides.
         */

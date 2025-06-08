@@ -50,6 +50,8 @@ if(isServer) then {
             _groundHolder addWeaponWithAttachmentsCargoGlobal [_X, 1];
         };
     } foreach _WeaponsArray;
+
+    _groundHolder enableSimulationGlobal false;
 };
     
 // Remove all weapons, magazines, and items from the unit

@@ -8,6 +8,7 @@ Params
 
 if(hasInterface && !isServer) exitWith {};
 
+Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 if(isNull _vehicle) exitWith {
     if(_Debug) then {
         format ["AbandonVehicle Script, Vehicle was null. Exiting.."] spawn OKS_fnc_LogDebug;

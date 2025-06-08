@@ -1,6 +1,15 @@
 class CfgPatches
 {
 	class GOL_MISC_ADDON {
+        requiredAddons[] = { 
+            "A3_UI_F", 
+            "ace_main",
+            "cba_main",
+            "cba_ui",
+            "cba_xeh_a3",
+            "UK3CB_BAF_Weapons_Static"
+        };
+        requiredVersion = 2.14;
 		author = "OksmanTV";
 		name = "GOL Misc Addon";
 		url = "https://gol-clan.com/";
@@ -19,34 +28,26 @@ class CfgPatches
 			"GOL_Packed_60mm_Smoke"
 		};
 		weapons[] = {};
-        requiredVersion = 2.14;
-        requiredAddons[] = { 
-            "UK3CB_BAF_Weapons_Static", 
-            "ace_main",
-            "cba_main",
-            "cba_ui",
-            "cba_xeh_a3"
-        };
 	}
 };
 
 #include "BIS_AddonInfo.hpp"
-#include "CfgWeapons.cpp"
-#include "CfgVehicles.cpp"
-#include "CfgFunctions.cpp"
-#include "CfgSounds.cpp"
-#include "CfgUnitInsignia.cpp"
-#include "CfgOrbat.cfg"
+#include "configs\CfgWeapons.cpp"
+#include "configs\CfgVehicles.cpp"
+#include "configs\CfgFunctions.cpp"
+#include "configs\CfgSounds.cpp"
+#include "configs\CfgUnitInsignia.cpp"
+#include "configs\CfgOrbat.cfg"
 
 class Extended_PreInit_EventHandlers {
     class OKS_PreInit {
-        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_preInit.sqf'";
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH\XEH_preInit.sqf'";
     };
 };
 
 class Extended_PostInit_EventHandlers {
     class OKS_PostInit {
-        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit.sqf'";
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH\XEH_PostInit.sqf'";
     };
 };
 
@@ -62,10 +63,6 @@ class CfgEditorSubcategories {
     // Add more subcategories as needed
 };
 
-class RscTitles {
-    #include "functions\endMenu\endMenu_dialog.hpp"
-};
-
 class CfgSettings {
     class CBA {
         class Versioning {
@@ -75,3 +72,25 @@ class CfgSettings {
         };
     };
 };
+
+#include "functions\logic\baseControls.hpp"
+
+class RscStandardDisplay;
+class OKS_MissionComplete_base: RscButtonMenu  {
+    idc = 470215;
+    text = "Mission Complete";
+	tooltip="Sets up safety and scoreboards";    
+	x = "1 * (((safezoneW / safezoneH) min 1.2) / 40) + (safezoneX)";
+	y = "7 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
+	w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
+	h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
+    action = "closeDialog 2; [] spawn OKS_fnc_SetMissionComplete;";
+};
+
+class RscDisplayInterrupt: RscStandardDisplay {
+    class controls {
+        class OKS_MissionComplete: OKS_MissionComplete_base {};
+    };
+};
+
+

@@ -20,12 +20,6 @@ class CfgFunctions // Defines a function
 			class Packing_code {};			
 		};
 
-		class endMenu {
-            file = "OKS_GOL_Misc\functions\endMenu";
-            class addActions {};
-            class openDialog {};
-        };
-		
 		class OKS_Tasks {
 			file = "\OKS_GOL_Misc\functions\tasks";
 			class AddAction {};
@@ -47,12 +41,24 @@ class CfgFunctions // Defines a function
 			class GetClientId {};
 			class LogDebug {};
 			class FlagTeleport {};
+			class SetMissionComplete {};
 		};			
 
 		class OKS_Supply {
 			file = "\OKS_GOL_Misc\functions\supply";
-			class SetupMobileServiceStation {};
+			class Ace_MHQDrop {};
+			class Ace_Resupply {};
+			class Ace_VehicleDrop {};
+			class MapClose {};
+			class MHQDrop {};
+			class MHQDropMapClick {};
 			class SpawnCrate {};
+			class SetupMobileServiceStation {};
+			class Supply {};
+			class SupplyMapClick {};
+			class VehicleDrop {};
+			class VehicleDropMapClick {};
+			class VehicleDropSetup {};
 		};		
 
 		class OKS_Tasks_Functions {
@@ -97,7 +103,8 @@ class CfgFunctions // Defines a function
 			class ThrowWeaponsOnGround {};		
 			class GetEthnicity {};
 			class KilledCaptiveEvent {};
-			class SetSurrendered {};					
+			class SetSurrendered {};
+			class AddKilledScore {};					
 		};		
 
 		class OKS_Vehicles {
@@ -129,7 +136,6 @@ class CfgFunctions // Defines a function
 			class ACE_MoveMHQ {};
 			class BLU_SetChannel {};
 			class CheckFrameworkObjects {};
-			class DeathScore {};
 			class TFAR_RadioSetup {};
 		};
 
@@ -314,7 +320,6 @@ class CfgFunctions // Defines a function
 			class InventoryHandler {};
 			class WarningSpeakerHandler {};
 			class ORBATHandler {};
-			class VehicleDropSetup {};
 		};
 	};
 };

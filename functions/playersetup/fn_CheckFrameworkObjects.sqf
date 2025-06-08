@@ -9,6 +9,12 @@
 private _ReturnText = "This template is not missing any NEW template items."; 
 _Return = []; 
  
+_HasGearBoxWest = ({typeOf _X == "GOL_GearBox_WEST"} count (allMissionObjects "ALL") > 0); 
+_HasGearBoxWestArray = [_HasGearBoxWest,"Gear Box WEST: "]; 
+
+_HasGearBoxEAST = ({typeOf _X == "GOL_GearBox_EAST"} count (allMissionObjects "ALL") > 0); 
+_HasGearBoxEASTArray = [_HasGearBoxEAST,"Gear Box EAST: "]; 
+
 _HasResupplyStationWest = ({typeOf _X == "GOL_ResupplyStation_WEST"} count (allMissionObjects "ALL") > 0); 
 _HasResupplyStationWestArray = [_HasResupplyStationWest,"Resupply Station WEST: "]; 
 
@@ -41,7 +47,7 @@ _HasDapsOptionsArray = [_HasDapsOptions,"DAPS Options: "];
 		_Return pushBack _X;
 	} 
 } foreach [
-	_HasResupplyStationWestArray,_HasAacRefuelArray,_HasAacServiceHelipadArray,
+	_HasGearBoxWestArray,_HasGearBoxEASTArray,_HasResupplyStationWestArray,_HasAacRefuelArray,_HasAacServiceHelipadArray,
 	HasMobileHQArray,_HasArsenalGLArray,_HasArsenalLMGArray,_HasHeadlessArray,
 	_HasResupplyStationEastArray,_HasDapsOptionsArray
 ]; 
