@@ -132,82 +132,57 @@ if (_show) then {
             hintSilent parseText _hintText;
 
             // Safety Zone
-            if(isServer) then {
-                {
-                    _Player = _X;
-                    _Player allowDamage false;
-                    _Player setCaptive true;
-                    _Player addEventHandler ["FiredMan",{
-                        params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_vehicle"];
-                        deleteVehicle _projectile;
-                    }];
-
-                    private _launcher = secondaryWeapon _Player;
-                    if(_launcher != "") then {
-                        private _launcherReplaced = _Player getVariable ["ReplacedSecondaryWeapon",false];
-                        if(!(_launcherReplaced)) then {
-                            private _launcherAmmo = (_Player weaponState (secondaryWeapon _Player)) select 3;
-                            private _RestoreAmmoArray = [];
-                            if(_launcherAmmo != "") then {
-                                _RestoreAmmoArray pushBack _launcherAmmo;
-                            };
-
-                            _Player setVariable ["ReplacedSecondaryWeapon",true,true];
-                            _Player removeWeapon _launcher;
-
-                            private _magTypes = getArray (configFile >> "CfgWeapons" >> _launcher >> "magazines");
-                            {
-                                _magType = _X;
-                                while {(_magType in (magazines _Player))} do {
-                                    _Player removeMagazine _magType;
-                                    _RestoreAmmoArray pushBack _magType;
-                                };
-                            } forEach _magTypes;
-
-                            // Add the launcher back without magazines
-                            _Player addWeapon _launcher;
-                            _RestoreLauncherArray = [_launcher,_RestoreAmmoArray];
-                            _Player setVariable ["GOL_RestoreSecondaryArray", _RestoreLauncherArray, true];
-                        };
-                    };
-                } foreach AllPlayers; 
-
-                // Throw EventHandler
-                _throwEvent = ["ace_throwableThrown", {
-                    params ["_unit", "_projectile", "_ammo"];
-                    if (missionNamespace getVariable ["ThrowableHandlerActive", true]) then {
-                        deleteVehicle _projectile;
-                    };
-                }] call CBA_fnc_addEventHandler;
-                missionNamespace setVariable ["ThrowableHandlerActive", true, true];
-            };
-            sleep 0.5;
-        };
-        hintSilent "";
-        if(isServer) then {
             {
                 _Player = _X;
-                _Player allowDamage true;
-                _Player setCaptive false;
-                _Player removeAllEventHandlers "FiredMan";
-                _Player setVariable ["ReplacedSecondaryWeapon",false,true];
-                _LauncherArray = _Player getVariable ["GOL_RestoreSecondaryArray", []];
-                if(_LauncherArray isNotEqualTo []) then {
-                    _LauncherArray params ["_Launcher","_LauncherAmmo"];
-                    {
-                        _Player addMagazine _X;
-                    } foreach _LauncherAmmo;
-                    _Player removeWeapon _Launcher;
-                    _Player addWeapon _Launcher;
+                _Player allowDamage false;
+                _Player setCaptive true;
+                _Player addEventHandler ["FiredMan",{
+                    params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_vehicle"];
+                    deleteVehicle _projectile;
+                }];
+
+                private _launcher = secondaryWeapon _Player;
+                if(_launcher != "") then {
+                    private _launcherReplaced = _Player getVariable ["ReplacedSecondaryWeapon",false];
+                    if(!(_launcherReplaced)) then {
+                        private _launcherAmmo = (_Player weaponState (secondaryWeapon _Player)) select 3;
+                        private _RestoreAmmoArray = [];
+                        if(_launcherAmmo != "") then {
+                            _RestoreAmmoArray pushBack _launcherAmmo;
+                        };
+
+                        _Player setVariable ["ReplacedSecondaryWeapon",true,true];
+                        _Player removeWeapon _launcher;
+
+                        private _magTypes = getArray (configFile >> "CfgWeapons" >> _launcher >> "magazines");
+                        {
+                            _magType = _X;
+                            while {(_magType in (magazines _Player))} do {
+                                _Player removeMagazine _magType;
+                                _RestoreAmmoArray pushBack _magType;
+                            };
+                        } forEach _magTypes;
+
+                        // Add the launcher back without magazines
+                        _Player addWeapon _launcher;
+                        _RestoreLauncherArray = [_launcher,_RestoreAmmoArray];
+                        _Player setVariable ["GOL_RestoreSecondaryArray", _RestoreLauncherArray, true];
+                    };
                 };
-                _Player setVariable ["GOL_RestoreSecondaryArray", [], true];
-            } foreach AllPlayers;   
-            missionNamespace setVariable ["ThrowableHandlerActive", false, true]
-        };       
-    };
-} else {
-    hintSilent "";
-    if(isServer) then {
+            } foreach AllPlayers; 
+
+            // Throw EventHandler
+            _throwEvent = ["ace_throwableThrown", {
+                params ["_unit", "_projectile", "_ammo"];
+                if (missionNamespace getVariable ["ThrowableHandlerActive", true]) then {
+                    deleteVehicle _projectile;
+                };
+            }] call CBA_fnc_addEventHandler;
+            missionNamespace setVariable ["ThrowableHandlerActive", true, true];
+            sleep 0.5;
+        };
+
+        hintSilent "";
         {
             _Player = _X;
             _Player allowDamage true;
@@ -225,6 +200,26 @@ if (_show) then {
             };         
             _Player setVariable ["GOL_RestoreSecondaryArray", [], true];         
         } foreach AllPlayers;   
-        missionNamespace setVariable ["ThrowableHandlerActive", false, true]
+        missionNamespace setVariable ["ThrowableHandlerActive", false, true];   
     };
+} else {
+    hintSilent "";
+    {
+        _Player = _X;
+        _Player allowDamage true;
+        _Player setCaptive false;
+        _Player removeAllEventHandlers "FiredMan";
+        _Player setVariable ["ReplacedSecondaryWeapon",false,true]; 
+        _LauncherArray = _Player getVariable ["GOL_RestoreSecondaryArray", []];
+        if(_LauncherArray isNotEqualTo []) then {
+            _LauncherArray params ["_Launcher","_LauncherAmmo"];
+            {
+                _Player addMagazine _X;
+            } foreach _LauncherAmmo;
+            _Player removeWeapon _Launcher;
+            _Player addWeapon _Launcher;
+        };         
+        _Player setVariable ["GOL_RestoreSecondaryArray", [], true];         
+    } foreach AllPlayers;   
+    missionNamespace setVariable ["ThrowableHandlerActive", false, true]
 };
