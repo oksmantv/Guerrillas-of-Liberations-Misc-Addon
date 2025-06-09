@@ -71,7 +71,7 @@ if (_show) then {
             if (_supportCasualty > 60) then {_supportColor = "#ff0000";};
 
             private _enemiesKilled = missionNamespace getVariable ["GOL_EnemiesKilled", 0];
-            private _civiliansKilled = missionNamespace getVariable ["OKS_fnc_AvoidCasualties_CIVILIAN", 0];
+            private _civiliansKilled = missionNamespace getVariable ["GOL_CiviliansKilled", 0];
             private _totalSeconds = time; // Or your own elapsed seconds value
 
             private _hours = floor (_totalSeconds / 3600);
@@ -100,8 +100,8 @@ if (_show) then {
                 "<t size='1.1' font='RobotoCondensedBold' color='#FFFFFF'>%3</t><br/><br/>" +
                 "<img image='%4' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Active Players: %5</t><br/>" +
                 "<img image='%6' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Enemies Killed: %7</t><br/>" +
-                "<img image='%8' size='1.0'/><t color='#FFFFFF' font='RobotoCondensedBold'> Civilians Killed: %9</t><br/>" +
-                "<img image='%10' size='1.0'/><t color='#FFFFFF' font='RobotoCondensedBold'> Time Elapsed: %11</t><br/><br/>" +
+                "<img image='%8' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Non-Combatants Killed: %9</t><br/>" +
+                "<img image='%10' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Time Elapsed: %11</t><br/><br/>" +
                 "<img image='%12' size='1.4'/><t size='1.0' font='RobotoCondensedBold'>Platoon Casualty Rate: <t color='%13'> %14%%</t></t><br/>" +
                 "<t color='#FFFFFF' font='RobotoCondensedBold'>%15</t><br/>" +
                 "<img image='%16' size='1.0'/><img image='%17' size='1.0'/><br/>" +

@@ -14,4 +14,5 @@ if(_surrenderDebug) then {
 sleep 0.5;
 [_unit] call OKS_fnc_SetSurrendered;
 sleep 2.5;
-[_unit] spawn OKS_Fnc_KilledCaptiveEvent; 
+[_unit] spawn OKS_fnc_KilledCaptiveEvent;
+[_unit] call OKS_fnc_AddCivilianKilled;
