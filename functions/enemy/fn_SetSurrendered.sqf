@@ -11,7 +11,7 @@ _random = random 1;
 if(_surrenderDebug) then {
     format ["SetSurrender Random %1%% value",round(_random * 100)] spawn OKS_fnc_LogDebug;
 };
-if(_random < 0.5 && {_X distance _Unit < 20} count AllPlayers == 0) then {
+if(_random < 0.8 && {_X distance _Unit < 10} count AllPlayers == 0 && _X checkAIFeature "PATH") then {
     if(_surrenderDebug) then {
         format ["SetSurrender Unit set to flee."] spawn OKS_fnc_LogDebug;
     };
@@ -22,8 +22,11 @@ if(_random < 0.5 && {_X distance _Unit < 20} count AllPlayers == 0) then {
     _FleeWaypoint setWaypointType "MOVE";
     _FleeWaypoint setWaypointBehaviour "AWARE";
     _FleeWaypoint setWaypointCombatMode "BLUE";
-    _FleeWaypoint setWaypointStatements ["true", "this setUnitPos 'DOWN'; this disableAI 'PATH'"];
-    {_Unit disableAI _X} foreach ["AUTOTARGET","AUTOCOMBAT","FIREWEAPON","MINEDETECTION","COVER","FSM"];
+    _FleeWaypoint setWaypointStatements ["true", "this setUnitPos 'DOWN'; this disableAI 'PATH';"];
+
+    waitUntil {sleep 1; !isNil "lambs_wp_fnc_taskAssault"};
+    [_Unit, _RandomPosition, true] remoteExec ["lambs_wp_fnc_taskAssault",0];
+
     _CivilianGroup setVariable ["lambs_danger_disableAI",true,true];
     _Unit setVariable ["lambs_danger_disableAI", true,true];   
 } else {

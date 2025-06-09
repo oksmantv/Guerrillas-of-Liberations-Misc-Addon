@@ -54,13 +54,13 @@ if (_SurrenderByShot) then {
 
             // Increase for few friendlies
             if (_numFriendlies < 10) then {
-                private _inc = 0.025 * (10 - _numFriendlies);
+                private _inc = 0.015 * (10 - _numFriendlies);
                 _adjustedChance = _adjustedChance + _inc;
                 if(_surrenderDebug) then {
                     format ["Surrender chance increased by %1%% (few friendlies nearby: %2). New chance: %3%%",(_inc * 100), _numFriendlies, (_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
                 };
             } else {
-                _adjustedChance = _adjustedChance * 0.3;
+                _adjustedChance = _adjustedChance * 0.1;
             };
 
             // Increase for suppression
@@ -85,7 +85,7 @@ if (_SurrenderByShot) then {
             };
             // Set to surrendered if unarmed.
             if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
-                _adjustedChance = 0.5;
+                _adjustedChance = 0.3;
                 if(_surrenderDebug) then {
                     format ["Unarmed increased chance to %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
                 };
@@ -133,30 +133,32 @@ if (_SurrenderByFlashbang) then {
             private _adjustedChance = _baseChance;
 
              // Increase for flashbang
-            _adjustedChance = _adjustedChance * 3;
+            _adjustedChance = _adjustedChance * 1.3;
             if(_surrenderDebug) then {
                 format [
-                    "Surrender chance increased by 300%% (flashbang). New chance: %1%%",
+                    "Surrender chance increased by 150%% (flashbang). New chance: %1%%",
                     round(_adjustedChance * 100)
                 ] spawn OKS_fnc_LogDebug;           
             };
             // Increase for few friendlies
             if (_numFriendlies < 10) then {
-                private _inc = 0.025 * (10 - _numFriendlies);
+                private _inc = 0.015 * (10 - _numFriendlies);
                 private _chanceInProcent = _inc * 100;
-                _adjustedChance = _adjustedChance * (1 +_inc);
+                _adjustedChance = _adjustedChance * (1 + _inc);
                 if(_surrenderDebug) then {
                     format [
                         "Surrender chance increased by %1%% (few friendlies nearby: %2). New chance: %3%%",
                         round(_chanceInProcent), _numFriendlies, round(_adjustedChance * 100)
                     ] spawn OKS_fnc_LogDebug;
                 };
+            } else {
+                _adjustedChance = _adjustedChance * 0.1
             };
 
             // Increase for suppression
             private _suppression = getSuppression _unit;
             if (_suppression > 0.7) then {
-                _adjustedChance = _adjustedChance * 1.2;
+                _adjustedChance = _adjustedChance * 1.1;
                 if(_surrenderDebug) then {
                     format [
                         "Surrender chance increased by 20%% (suppression: %1). New chance: %2%%",
@@ -167,7 +169,7 @@ if (_SurrenderByFlashbang) then {
 
             // Set to surrendered if unarmed.
             if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
-                _adjustedChance = _adjustedChance * 1.5;
+                _adjustedChance = _adjustedChance * 1.3;
                 if(_surrenderDebug) then {
                     format ["Unarmed increased chance by %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
                 };
@@ -226,7 +228,7 @@ _Unit addEventHandler ["Suppressed", {
 
         private _adjustedChance = _baseChance;
         if (_numFriendlies < 10) then {
-            private _inc = 0.025 * (10 - _numFriendlies);
+            private _inc = 0.015 * (10 - _numFriendlies);
             _adjustedChance = _adjustedChance + _inc;
             if(_surrenderDebug) then {
                 format [
@@ -249,7 +251,7 @@ _Unit addEventHandler ["Suppressed", {
 
         // Set to surrendered if unarmed.
         if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
-            _adjustedChance = _adjustedChance * 1.5;
+            _adjustedChance = _adjustedChance * 1.3;
             if(_surrenderDebug) then {
                 format ["Unarmed increased chance by %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
             };
