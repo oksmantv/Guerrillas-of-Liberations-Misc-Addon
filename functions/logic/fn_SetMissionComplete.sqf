@@ -26,8 +26,8 @@ if (_show) then {
             ];
 
             // Separate players into platoon (ground) and support
-            private _groundPlayers = allPlayers select {!(str _x in _SupportUnits) && alive _x};
-            private _supportPlayers = allPlayers select {str _x in _SupportUnits && alive _x};
+            private _groundPlayers = (allPlayers - entities "HeadlessClient_F") select {!(str _x in _SupportUnits) && alive _x};
+            private _supportPlayers = (allPlayers - entities "HeadlessClient_F") select {str _x in _SupportUnits && alive _x};
             if(isServer && !isDedicated) then {
                 _groundPlayers = allUnits select {!(str _x in _SupportUnits) && alive _x && side group _X == side group player};
                 _groundPlayers = _groundPlayers select [0, 25];
