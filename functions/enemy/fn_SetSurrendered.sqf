@@ -11,7 +11,7 @@ _random = random 1;
 if(_surrenderDebug) then {
     format ["SetSurrender Random %1%% value",round(_random * 100)] spawn OKS_fnc_LogDebug;
 };
-if(_random < 0.8 && {_X distance _Unit < 10} count AllPlayers == 0 && _X checkAIFeature "PATH") then {
+if(_random < 0.8 && {_X distance _Unit < 10} count AllPlayers == 0 && _Unit checkAIFeature "PATH") then {
     if(_surrenderDebug) then {
         format ["SetSurrender Unit set to flee."] spawn OKS_fnc_LogDebug;
     };
