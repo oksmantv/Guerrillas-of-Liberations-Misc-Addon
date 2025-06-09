@@ -139,14 +139,17 @@ if (_show) then {
                     params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_vehicle"];
                     deleteVehicle _projectile;
                 }];
+                private _secMag = secondaryWeaponMagazine _x;
+                if (count _secMag > 0) then {
+                    _x removeMagazine (_secMag select 0);
+                };
             } foreach AllPlayers; 
 
             // Throw EventHandler
-            _ThrowableEventHandler = ["ace_throwableThrown", {
+            ["ace_throwableThrown", {
                 params ["_unit", "_projectile", "_ammo"];
                 deleteVehicle _projectile;
             }] call CBA_fnc_addEventHandler;
-            missionNamespace setVariable ["ThrowableEventHandlerId", _ThrowableEventHandler, true];
             sleep 0.5;
         };
         hintSilent "";
@@ -158,8 +161,8 @@ if (_show) then {
         _X setCaptive false;
         _X removeAllEventHandlers "FiredMan";
     } foreach AllPlayers;   
-    _ThrowableEventHandler = missionNamespace getVariable ["ThrowableEventHandlerId", nil];
-    if(!isNil "_ThrowableEventHandler") then {
-        ["ace_throwableThrown", _ThrowableEventHandler] call CBA_fnc_removeEventHandler;   
-    };
+    private _handlers = ["ace_throwableThrown"] call CBA_fnc_getEventHandlers;
+    {
+        ["ace_throwableThrown", _x] call CBA_fnc_removeEventHandler;
+    } forEach _handlers;
 };
