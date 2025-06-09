@@ -28,6 +28,17 @@ if (_show) then {
             // Separate players into platoon (ground) and support
             private _groundPlayers = allPlayers select {!(str _x in _SupportUnits) && alive _x};
             private _supportPlayers = allPlayers select {str _x in _SupportUnits && alive _x};
+            if(isServer && !isDedicated) then {
+                _groundPlayers = allUnits select {!(str _x in _SupportUnits) && alive _x && side group _X == side group player};
+                _groundPlayers = _groundPlayers select [0, 25];
+                { _Random = (selectRandom [0,0,0,0,1,2,3,4,5]); _x setVariable ["GOL_Player_Deaths",_Random] } foreach _groundPlayers;
+
+                _supportPlayers = allUnits select {(str _x in _SupportUnits) && alive _x && side group _X == side group player};
+                _supportPlayers = _supportPlayers select [0, 8];
+                { _Random = (selectRandom [0,0,0,0,1,2,3,4,5]); _x setVariable ["GOL_Player_Deaths",_Random] } foreach _supportPlayers;
+            };
+            _groundPlayers = [_groundPlayers, [], { _x getVariable ["GOL_Player_Deaths", 0] }, "ASCEND"] call BIS_fnc_sortBy;
+            _supportPlayers = [_supportPlayers, [], { _x getVariable ["GOL_Player_Deaths", 0] }, "ASCEND"] call BIS_fnc_sortBy;      
 
             // Platoon (ground) casualties
             private _groundTotal = count _groundPlayers;
@@ -74,31 +85,48 @@ if (_show) then {
             private _formattedTime = format ["%1:%2:%3", _hoursStr, _minutesStr, _secondsStr];
             
             // Structured text for hintSilent
-            private _imagePath = "\OKS_GOL_MISC\data\images\logo.paa"; // Path to your image
+            private _armaPath = "\a3\ui_f\data\Logos\arma3_white_ca.paa";
+            private _logoPath = "\OKS_GOL_MISC\data\images\logo.paa";
+            private _playerPath = "\a3\ui_f\data\IGUI\Cfg\MPTable\infantry_ca.paa";
+            private _deathPath = "\a3\ui_f\data\IGUI\Cfg\MPTable\killed_ca.paa";
+            private _killsPath = "\a3\ui_f\data\GUI\Rsc\RscDisplayGarage\crew_ca.paa";
+            private _civilianPath = "\a3\ui_f\data\GUI\Cfg\Hints\Death_ca.paa";
+            private _timePath = "\a3\ui_f\data\GUI\Cfg\Hints\Timing_ca.paa";
+            private _heliPath = "\a3\ui_f\data\GUI\Rsc\RscDisplayGarage\helicopter_ca.paa";
+            private _tankPath = "\a3\ui_f\data\GUI\Rsc\RscDisplayGarage\tank_ca.paa";
             private _hintText = format [
-                "<img image='%1' size='8'/><br/>" +
-                "<t size='1.9' color='#FFD700'>MISSION COMPLETE</t><br/>" +
-                "<t size='1.1' color='#FFFFFF'>%2</t><br/><br/>" +
-                "<t color='#FFFFFF'>Active Players: %3</t><br/>" +
-                "<t color='#FFFFFF'>Enemies Killed: %4</t><br/>" +
-                "<t color='#FFFFFF'>Civilians Killed: %5</t><br/>" +
-                "<t color='#FFFFFF'>Time Elapsed: %6</t><br/><br/>" +
-                "<t size='1.0'>Platoon Casualty Rate: <t color='%7'>%8%%</t></t><br/>" +
-                "<t color='#FFFFFF'>%9</t><br/>" +
-                "<t size='1.0'>Support Casualty Rate: <t color='%10'>%11%%</t></t><br/>" +
-                "<t color='#FFFFFF'>%12</t>",
-                _imagePath,
-                _missionName,
-                (_groundTotal + _supportTotal),
-                _enemiesKilled,
-                _civiliansKilled,
-                _formattedTime,
-                _groundColor,
-                _groundCasualty,
-                _groundDeathsList,
-                _supportColor,
-                _supportCasualty,
-                _supportDeathsList
+                "<img image='%1' size='3'/><img image='%2' size='3'/><br/>" +
+                "<t size='1.5' font='RobotoCondensedBold' color='#FFD700'>MISSION COMPLETE</t><br/>" +
+                "<t size='1.1' font='RobotoCondensedBold' color='#FFFFFF'>%3</t><br/><br/>" +
+                "<img image='%4' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Active Players: %5</t><br/>" +
+                "<img image='%6' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Enemies Killed: %7</t><br/>" +
+                "<img image='%8' size='1.0'/><t color='#FFFFFF' font='RobotoCondensedBold'> Civilians Killed: %9</t><br/>" +
+                "<img image='%10' size='1.0'/><t color='#FFFFFF' font='RobotoCondensedBold'> Time Elapsed: %11</t><br/><br/>" +
+                "<img image='%12' size='1.4'/><t size='1.0' font='RobotoCondensedBold'>Platoon Casualty Rate: <t color='%13'> %14%%</t></t><br/>" +
+                "<t color='#FFFFFF' font='RobotoCondensedBold'>%15</t><br/>" +
+                "<img image='%16' size='1.0'/><img image='%17' size='1.0'/><br/>" +
+                "<t size='1.0' font='RobotoCondensedBold'> Support Casualty Rate: <t color='%18'> %19%%</t></t><br/>" +
+                "<t color='#FFFFFF' font='RobotoCondensedBold'>%20</t>",
+                _armaPath,                      // 1
+                _logoPath,                      // 2
+                _missionName,                   // 3
+                _playerPath,                    // 4
+                (_groundTotal + _supportTotal), // 5
+                _killsPath,                     // 6
+                _enemiesKilled,                 // 7
+                _civilianPath,                  // 8
+                _civiliansKilled,               // 9
+                _timePath,                      // 10
+                _formattedTime,                 // 11
+                _deathPath,                     // 12
+                _groundColor,                   // 13
+                _groundCasualty,                // 14
+                _groundDeathsList,              // 15
+                _tankPath,                      // 16
+                _helipath,                      // 17
+                _supportColor,                  // 18
+                _supportCasualty,               // 19
+                _supportDeathsList              // 20
             ];
 
             hintSilent parseText _hintText;
@@ -119,7 +147,6 @@ if (_show) then {
                 deleteVehicle _projectile;
             }] call CBA_fnc_addEventHandler;
             missionNamespace setVariable ["ThrowableEventHandlerId", _ThrowableEventHandler, true];
-
             sleep 0.5;
         };
         hintSilent "";
@@ -131,7 +158,7 @@ if (_show) then {
         _X setCaptive false;
         _X removeAllEventHandlers "FiredMan";
     } foreach AllPlayers;   
-    _ThrowableEventHandler = missionNamespace getVariable ["ThrowableEventHandlerId", nil, true];
+    _ThrowableEventHandler = missionNamespace getVariable ["ThrowableEventHandlerId", nil];
     if(!isNil "_ThrowableEventHandler") then {
         ["ace_throwableThrown", _ThrowableEventHandler] call CBA_fnc_removeEventHandler;   
     };

@@ -214,7 +214,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";    
-		model = "\a3\Structures_F_Tank\Military\RepairDepot\RepairDepot_01_green_F.p3d";
+		model = "\A3\Structures_F_Heli\Ind\Cargo\Cargo10_military_green_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -267,7 +267,7 @@ class CfgVehicles {
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_MedicalResupply_WEST'] call OKS_fnc_spawnCrate;";
-						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\heal_ca.paa";
+						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};										
 				};
 			};
@@ -280,7 +280,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";    
-		model = "\a3\Structures_F_Tank\Military\RepairDepot\RepairDepot_01_green_F.p3d";
+		model = "\A3\Structures_F_Heli\Ind\Cargo\Cargo10_military_green_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
