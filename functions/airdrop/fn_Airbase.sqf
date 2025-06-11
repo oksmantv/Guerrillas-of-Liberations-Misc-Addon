@@ -86,11 +86,11 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 	SystemChat str _playerHunted;
 
 	if (count _playerHunted != 0) then {
-
-		_AliveCurrentCount = NEKY_Hunt_CurrentCount select {alive _X};
+		_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
+		_AliveCurrentCount = count _CurrentHuntCount select {alive _X};
 		_AliveNumber = count _AliveCurrentCount;
 
-		if((_AliveNumber + (_SpareIndex + 1)) <= NEKY_Hunt_MaxCount) then {
+		if((_AliveNumber + (_SpareIndex + 1)) <= (count _CurrentHuntCount)) then {
 			_AirbaseRespawnCount = _AirbaseRespawnCount - 1;
 			_PlayerTarget = _playerHunted call BIS_fnc_selectRandom;
 			_CalculatedIngress = _PlayerTarget getPos [Random 360,_AirbaseRandomDistanceLZ+(Random _AirbaseRandomDistanceLZ)];
@@ -103,11 +103,11 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 			switch (_type) do {
 				case "unloadthenpatrol": {
 					SystemChat "Running Unload then Patrol";
-					[_OKS_Side, _Classname, true, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn NEKY_AirDrop;
+					[_OKS_Side, _Classname, true, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
 				};
 				case "unload": {
 					SystemChat "Running Unload";
-					[_OKS_Side, _Classname, False, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn NEKY_AirDrop;
+					[_OKS_Side, _Classname, False, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
 				};
 			};
 
