@@ -21,7 +21,7 @@ if(isNull _Vehicle) then {
 
 if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticWeapon"] > 0) then {
 	private _Enabled = false;
-
+	private _RemoveATGM = missionNamespace getVariable ["GOL_RemoveVehicleATGM_Enabled",true];
 	// BM-2T
 	if(["O_APC_Tracked_02", typeOf _Vehicle, false] call BIS_fnc_inString) then {
 		_Enabled = true;
@@ -33,7 +33,7 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 
 	if(["BMP", typeOf _Vehicle, false] call BIS_fnc_inString) then {
 		_Enabled = true;
-		_RemoveATGM = missionNamespace getVariable ["GOL_RemoveVehicleATGM_Enabled",true];
+		
 		if(_RemoveATGM) then {		
 			Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 			if(_Debug) then {

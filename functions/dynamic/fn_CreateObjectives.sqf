@@ -39,7 +39,7 @@ if(!isServer) exitWith {};
 		["_Parent",nil,[""]]
 	];
 	private ["_marker","_Condition","_playerSide","_trg","_EnemySideString","_playerSideString","_playerColor","_Area","_SpawnPos","_Repetitions","_Debug_Variable","_LocationsInArea","_Dir","_Object","_TargetGroup"];
-
+	private _FriendlySide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 	_Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian","_ObjectiveTypes","_Configuration"];
 	_Configuration Params ["_CompoundSize","_EnableEnemyMarkers","_EnableZoneMarker","_EnableZoneTypeMarker","_RoadblockVehicleType","_EnableObjectiveTasks","_MarkerColor","_PatrolSize","_TaskNotification"];
@@ -127,8 +127,7 @@ switch (_TypeOfObjective) do {
 	};
 
 	case "sector": {
-
-		switch(OKS_FRIENDLY_SIDE) do {
+		switch(_FriendlySide) do {
 			case west:{
 				_playerSideString = "WEST";
 				_playerColor = "ColorBLUFOR";
@@ -542,7 +541,7 @@ switch (_TypeOfObjective) do {
 			_trg setTriggerStatements ["this", format ["['%1','FAILED',true] call BIS_fnc_taskSetState;",_Task,_TaskNotification], ""];
 
 			private "_base";
-			switch(OKS_FRIENDLY_SIDE) do {
+			switch(_FriendlySide) do {
 				case west:{
 					_base = getMarkerPos "respawn_west";
 				};
@@ -613,7 +612,7 @@ switch (_TypeOfObjective) do {
 		};
 
 		if(!isNil "OKS_ArtyFire") then {
-			switch(OKS_FRIENDLY_SIDE) do {
+			switch(_FriendlySide) do {
 				case west:{
 					_Target = getMarkerPos "respawn_west";
 				};
@@ -792,7 +791,7 @@ switch (_TypeOfObjective) do {
 
 		//{[_X] join _HostageGroup} foreach [_Hostage1,_Hostage2];
 
-		switch(OKS_FRIENDLY_SIDE) do {
+		switch(_FriendlySide) do {
 			case west:{
 				_Target = getMarkerPos "respawn_west";
 			};
