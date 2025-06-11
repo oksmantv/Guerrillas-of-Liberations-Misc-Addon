@@ -368,7 +368,7 @@ switch (_TypeOfObjective) do {
 			_Area setTriggerArea [1000, 1000, 0, false];
 		};
 				
-		[_Area,_Group,6] spawn OKS_Vehicle_Waypoints;
+		[_Area,_Group,6] spawn OKS_fnc_Vehicle_Waypoints;
 
 		if(_EnableObjectiveTasks) then {
 			_trg = createTrigger ["EmptyDetector", GetPos _Truck, true];
@@ -686,7 +686,7 @@ switch (_TypeOfObjective) do {
 				[_Task,[_AA,true]] call BIS_fnc_taskSetDestination;
 
 				if(_ObjectivePatrols) then {
-					[_AA getPos [25,(random 360)],5,150,_Side] spawn OKS_Patrol_Spawn;
+					[_AA getPos [25,(random 360)],5,150,_Side] spawn OKS_fnc_Patrol_Spawn;
 				};
 			_trg setTriggerStatements ["this", format ["['%1','SUCCEEDED',%2] call BIS_fnc_taskSetState; %3 setVariable ['OKS_ObjectiveComplete',true,true]",_Task,_TaskNotification,_Object], ""];
 		};
