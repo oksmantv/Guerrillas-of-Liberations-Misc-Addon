@@ -4,6 +4,7 @@
 
 Params ["_unit"];
 if(isNil "_unit") exitWith {};
+if(isNull _unit) exitWith {};
 
 Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 if(_Debug) then {

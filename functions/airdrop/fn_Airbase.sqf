@@ -87,7 +87,7 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 
 	if (count _playerHunted != 0) then {
 		_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
-		_AliveCurrentCount = count _CurrentHuntCount select {alive _X};
+		_AliveCurrentCount = _CurrentHuntCount select {alive _X};
 		_AliveNumber = count _AliveCurrentCount;
 
 		if((_AliveNumber + (_SpareIndex + 1)) <= (count _CurrentHuntCount)) then {
