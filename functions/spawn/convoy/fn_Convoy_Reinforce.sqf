@@ -158,6 +158,7 @@ For "_i" from 1 to _Count do {
 		}		
 	};
 	_Vehicle = CreateVehicle [_Classname,getPos _Spawn];
+	_Vehicle setVariable ["OKS_ForceSpeedActive", true, true];
 	_Vehicle setDir (getDir _Spawn);
 	_Vehicle setVehicleLock "LOCKED";
 

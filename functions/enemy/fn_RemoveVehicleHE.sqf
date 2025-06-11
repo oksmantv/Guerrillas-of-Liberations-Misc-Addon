@@ -5,8 +5,14 @@
 Params ["_Vehicle"];
 
 if(hasInterface && !isServer) exitWith {};
-
 Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+
+if((["vehicle_", vehicleVarName _Vehicle] call BIS_fnc_inString) || (["mhq_", vehicleVarName _Vehicle] call BIS_fnc_inString)) exitWith {
+	if(_Debug) then {
+		format ["RemoveVehicleHE - Vehicle_ or MHQ_ , exiting.."] spawn OKS_fnc_LogDebug;
+	};
+};
+
 if(isNull _Vehicle) then {
 	if(_Debug) then {
 		format ["RemoveVehicleHE - Vehicle was null, exiting.."] spawn OKS_fnc_LogDebug;

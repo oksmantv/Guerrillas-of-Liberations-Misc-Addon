@@ -32,8 +32,8 @@ Params [
 	["_ForcedCareless",false,[false]],
 	["_DeleteAtFinalWP",false,[false]]
 ];
-_CargoArray Params ["_ShouldHaveCargo","_Soldiers"];
 _VehicleArray Params ["_Count","_Vehicles","_SpeedMeterPerSecond","_DispersionInMeters"];
+_CargoArray Params ["_ShouldHaveCargo","_Soldiers"];
 
 Private ["_crewClass","_Units","_Leader","_Vehicles","_DismountCode","_Classname"];
 private _Debug_Variable = false;
@@ -156,6 +156,7 @@ For "_i" from 1 to _Count do {
 		}		
 	};
 	_Vehicle = CreateVehicle [_Classname,getPos _Spawn];
+	_Vehicle setVariable ["OKS_ForceSpeedActive", true, true];
 	_Vehicle setDir (getDir _Spawn);
 	_Vehicle setVehicleLock "LOCKED";
 

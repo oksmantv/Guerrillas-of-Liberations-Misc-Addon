@@ -5,6 +5,8 @@ Params ["_Vehicle"];
 
 if(hasInterface && !isServer) exitWith {};
 
+sleep 2;
+
 Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 if(isNull _Vehicle) exitWith {
     if(_Debug) then {
@@ -18,6 +20,19 @@ if(_Vehicle isKindOf "StaticWeapon" || _Vehicle isKindOf "Air") exitWith {
 	    "OKS_ForceVehicleSpeed: Is Static Weapon/Air Exiting.." spawn OKS_fnc_LogDebug;
     };
 };
+
+if((["vehicle_", vehicleVarName _vehicle] call BIS_fnc_inString) || (["mhq_", vehicleVarName _vehicle] call BIS_fnc_inString)) exitWith {
+	if(_Debug) then {
+		format ["OKS_ForceVehicleSpeed, Vehicle_ or MHQ_ , exiting.."] spawn OKS_fnc_LogDebug;
+	};
+};
+
+if(_vehicle getVariable ["OKS_ForceSpeedActive",false]) exitWith {
+	if(_Debug) then {
+		format ["OKS_ForceVehicleSpeed, already applied, exiting.."] spawn OKS_fnc_LogDebug;
+	};    
+};
+_vehicle setVariable ["OKS_ForceSpeedActive", true, true];
 
 Private _Speed = 10;
 private _VehicleType = (_Vehicle call BIS_fnc_objectType)#1;

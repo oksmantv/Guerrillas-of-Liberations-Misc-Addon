@@ -24,8 +24,6 @@ _Vehicle addEventHandler ["HandleDamage",
 		params ["_unit", "_selection", "_newDamage", "_source", "_projectile", "_hitIndex", "_instigator", "_hitPoint", "_directHit"];
 		private ["_selectedMultiplier","_hitpointName"];
 		Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
-		//SystemChat str [_Selection,_hitIndex,_hitPoint,_directHit];
-		//copyToClipboard str [_Selection,_hitIndex,_hitPoint,_directHit];
 
 		// Exits
 		if !(Alive _Unit) exitWith {};
@@ -35,39 +33,40 @@ _Vehicle addEventHandler ["HandleDamage",
 
 		// Variables
 		private _Multiplier = 1;
-		if(["T34", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
-			_Multiplier = 6;
-			_unit setVehicleArmor 0.1;
+		if(!(["vehicle_", vehicleVarName _unit] call BIS_fnc_inString) && !(["mhq_", vehicleVarName _unit] call BIS_fnc_inString)) then {
+			if(["T34", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
+				_Multiplier = 6;
+				_unit setVehicleArmor 0.1;
 
-			if(_Debug) then {
-				format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"10%"] spawn OKS_fnc_LogDebug;
+				if(_Debug) then {
+					format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"10%"] spawn OKS_fnc_LogDebug;
+				};
 			};
-		};
-		if(["T55", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
-			_Multiplier = 6;
-			_unit setVehicleArmor 0.15;
+			if(["T55", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
+				_Multiplier = 6;
+				_unit setVehicleArmor 0.15;
 
-			if(_Debug) then {
-				format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"15%"] spawn OKS_fnc_LogDebug;
+				if(_Debug) then {
+					format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"15%"] spawn OKS_fnc_LogDebug;
+				};				
+			};
+			if(["T72", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
+				_Multiplier = 3;
+				_unit setVehicleArmor 0.25;
+
+				if(_Debug) then {
+					format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"25%"] spawn OKS_fnc_LogDebug;
+				};
+			};
+			if(["T80", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
+				_Multiplier = 3;
+				_unit setVehicleArmor 0.3;
+
+				if(_Debug) then {
+					format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"30%"] spawn OKS_fnc_LogDebug;
+				};
 			};				
 		};
-		if(["T72", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
-			_Multiplier = 3;
-			_unit setVehicleArmor 0.25;
-
-			if(_Debug) then {
-				format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"25%"] spawn OKS_fnc_LogDebug;
-			};
-		};
-		if(["T80", typeOf _unit] call BIS_fnc_inString && ["UK3CB", typeOf _unit] call BIS_fnc_inString) then {
-			_Multiplier = 3;
-			_unit setVehicleArmor 0.3;
-
-			if(_Debug) then {
-				format["Adjust Damage - %1 Identified - %2 - Changed Damage: %3 | Armor: %4.",[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName,_Vehicle,_Multiplier,"30%"] spawn OKS_fnc_LogDebug;
-			};
-		};		
-			
 		// Added Damage
 		_newDamage = if (_newDamage > 1) then { 1 } else { _newDamage };
 		_oldDamage = _Unit getVariable [format["NEKY_oldDamage_%1",_hitPoint],0];
