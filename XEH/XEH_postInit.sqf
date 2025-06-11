@@ -213,7 +213,7 @@ if(true) then {
                 private ["_group"];
                 sleep 5;
                 _group = group _X;
-                if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _X == _X) exitWith {
+                if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _X != _X) exitWith {
                     // Exit if already enabled on Group level or if inside vehicle.
                 };
 

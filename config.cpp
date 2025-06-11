@@ -7,7 +7,10 @@ class CfgPatches
             "cba_main",
             "cba_ui",
             "cba_xeh_a3",
-            "UK3CB_BAF_Weapons_Static"
+            "UK3CB_BAF_Weapons_Static",
+            "rhs_main",
+            "rhs_weapons",
+            "rhs_c_weapons"
         };
         requiredVersion = 2.14;
 		author = "OksmanTV";
@@ -32,6 +35,8 @@ class CfgPatches
 };
 
 #include "BIS_AddonInfo.hpp"
+#include "configs\CfgAmmo.cpp"
+#include "configs\CfgMagazines.cpp"
 #include "configs\CfgWeapons.cpp"
 #include "configs\CfgVehicles.cpp"
 #include "configs\CfgFunctions.cpp"

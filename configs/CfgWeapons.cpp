@@ -157,5 +157,12 @@ class CfgWeapons {
 		class ItemInfo: CBA_MiscItem_ItemInfo {
 			mass = 20;
 		};
-	};					
+	};		
+
+	class rhs_weap_igla;
+	class oks_weapon_igla : rhs_weap_igla {
+		displayName = "9K38 Igla - GOL";
+        magazines[] = { "oks_mag_9k38_rocket_GOL" };
+		scope = 2;
+    };
 };

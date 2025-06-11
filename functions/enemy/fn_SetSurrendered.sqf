@@ -3,9 +3,13 @@
     [_unit, _chance, _ChanceWeaponAim _distance, _DistanceWeaponAim, _byShot, _byFlashbang] spawn OKS_fnc_SetSurrendered;
 */
 params ["_Unit", "_Chance", "_ChanceWeaponAim", "_Distance", "_DistanceWeaponAim" ,"_SurrenderByShot", "_SurrenderByFlashbang", "_NearFriendliesDistance"];
-private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 
 if(hasInterface && !isServer) exitWith {};
+private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
+_SetSurrendered = _unit getVariable ["GOL_SetSurrendered",false];
+
+if(_SetSurrendered) exitWith {};
+_unit setVariable ["GOL_SetSurrendered",true,true];
 
 _random = random 1;
 if(_surrenderDebug) then {
@@ -29,6 +33,8 @@ if(_random < 0.8 && {_X distance _Unit < 10} count AllPlayers == 0 && _Unit chec
 
     _CivilianGroup setVariable ["lambs_danger_disableAI",true,true];
     _Unit setVariable ["lambs_danger_disableAI", true,true];   
+    sleep 10;
+    [_Unit, _RandomPosition, true] remoteExec ["lambs_wp_fnc_taskAssault",0];
 } else {
     [_unit, true] call ACE_captives_fnc_setSurrendered;
     if(_surrenderDebug) then {
