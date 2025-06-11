@@ -87,10 +87,11 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 
 	if (count _playerHunted != 0) then {
 		_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
+		_MaxCount = missionNameSpace getVariable ["GOL_Hunt_MaxCount",1];
 		_AliveCurrentCount = _CurrentHuntCount select {alive _X};
 		_AliveNumber = count _AliveCurrentCount;
 
-		if((_AliveNumber + (_SpareIndex + 1)) <= (count _CurrentHuntCount)) then {
+		if((_AliveNumber + (_SpareIndex + 1)) <= _MaxCount) then {
 			_AirbaseRespawnCount = _AirbaseRespawnCount - 1;
 			_PlayerTarget = _playerHunted call BIS_fnc_selectRandom;
 			_CalculatedIngress = _PlayerTarget getPos [Random 360,_AirbaseRandomDistanceLZ+(Random _AirbaseRandomDistanceLZ)];
