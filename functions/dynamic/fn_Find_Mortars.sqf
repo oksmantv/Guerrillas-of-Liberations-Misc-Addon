@@ -74,9 +74,9 @@ _Debug_Variable = false;
 	_Mortar = createVehicle ["I_G_Mortar_01_F", _SelectedPos, [], 0, "NONE"];
 
 	if(_EnableEnemyMarkers) then {
-		[_Mortar, _Side, "precise", "light", ["auto", 40],250,1000,30] execVM "Scripts\NEKY_Mortars\NEKY_Mortars.sqf";
+		[_Mortar, _Side, "precise", "light", ["auto", 40],250,1000,30] spawn NEKY_Mortars;
 	} else {
-		[_Mortar, _Side, "precise", "light", ["auto", 40],150,500,30] execVM "Scripts\NEKY_Mortars\NEKY_Mortars.sqf";
+		[_Mortar, _Side, "precise", "light", ["auto", 40],150,500,30] spawn NEKY_Mortars;
 	};
 
 	if(_MortarPatrol) then {

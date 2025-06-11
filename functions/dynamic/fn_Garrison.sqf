@@ -74,7 +74,7 @@
 
 			{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _Group;
 			[_Group] remoteExec ["OKS_fnc_SetStatic",0];
-			[_Group,GOL_Static_Enable_Chance,GOL_Static_Enable_Refresh] spawn OKS_fnc_EnablePath;
+			[_Group] spawn OKS_fnc_EnablePath;
 		}	
 	};
 
