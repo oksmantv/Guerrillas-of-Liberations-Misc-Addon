@@ -45,15 +45,51 @@ class CfgPatches
 #include "configs\CfgOrbat.cfg"
 
 class Extended_PreInit_EventHandlers {
-    class OKS_PreInit {
-        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH\XEH_preInit.sqf'";
+    class OKS_PreInit_Core {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_core.sqf'";
     };
+    class OKS_PreInit_Supply {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_supply.sqf'";
+    };
+    class OKS_PreInit_Gear {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_gear.sqf'";
+    };
+    class OKS_PreInit_Gear_AI {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_gear_ai.sqf'";
+    };   
+    class OKS_PreInit_Dynamic {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_dynamic.sqf'";
+    };
+    class OKS_PreInit_MHQ {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_mhq.sqf'";
+    };
+    class OKS_PreInit_ORBAT {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_orbat.sqf'";
+    };
+    class OKS_PreInit_Hunt {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_hunt.sqf'";
+    };
+    class OKS_PreInit_Suppression {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_suppression.sqf'";
+    };
+     class OKS_PreInit_Surrender {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_surrender.sqf'";
+    };   
+    class OKS_PreInit_FaceSwap {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_faceswap.sqf'";
+    };
+    class OKS_PreInit_Packing {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_PreInit_Packing.sqf'";
+    };    
 };
 
 class Extended_PostInit_EventHandlers {
-    class OKS_PostInit {
-        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH\XEH_PostInit.sqf'";
+    class OKS_PostInit_Global {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_PostInit_Global.sqf'";
     };
+    class OKS_PostInit_Server {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_PostInit_Server.sqf'";
+    };    
 };
 
 class CfgEditorCategories {

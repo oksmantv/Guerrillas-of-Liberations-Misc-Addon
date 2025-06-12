@@ -1,0 +1,93 @@
+diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
+
+// Core and Debug Settings
+/// CORE
+[
+    "GOL_CORE_Enabled",
+    "CHECKBOX",
+    ["Enables features from FW Version 2.7", "Enables all features added in the GOL Misc Addon."],
+    "GOL_CORE",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Core_Debug",
+    "CHECKBOX",
+    ["Enable DEBUG", "Allows for any debug messages to be broadcast. If disabled, no messages will show regardless of specific debugs turned on."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Ambience_Debug",
+    "CHECKBOX",
+    ["Enable Ambience DEBUG", "Enables debugging for enemy scripts such as the PowerGenerator, Death Score, House Destruction scripts."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Enemy_Debug",
+    "CHECKBOX",
+    ["Enable Enemy DEBUG", "Enables debugging for enemy scripts such as AdjustDamage, ForceVehicleSpeed, EnablePath etc."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_RotorProtection_Debug",
+    "CHECKBOX",
+    ["Enable Rotor DEBUG", "Enables debugging for the handleDamage scripts for Mi-8/Mi-24 rotors."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Unconscious_CameraDebug",
+    "CHECKBOX",
+    ["Enable Camera DEBUG", "Enables Camera DEBUG for unconscious state."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "MHQ_Debug",
+    "CHECKBOX",
+    ["Enable MHQ DEBUG", "Enable DEBUG messages for MHQ code."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_FaceSwap_Debug",
+    "CHECKBOX",
+    ["Enable FaceSwap Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Surrender_Debug",
+    "CHECKBOX",
+    ["Enable Surrender Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Suppression_Debug",
+    "CHECKBOX",
+    ["Enable Suppression Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL_DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;

@@ -18,16 +18,18 @@ if(_Debug) then {
 
 _unit addEventHandler ["Killed", {
     params ["_unit", "_killer"];
-    private _enemyKilledCount = missionNamespace getVariable ["GOL_EnemiesKilled", 0];
-    missionNamespace setVariable ["GOL_EnemiesKilled", _enemyKilledCount + 1, true];
+    if(isPlayer _killer) then {
+        private _enemyKilledCount = missionNamespace getVariable ["GOL_EnemiesKilled", 0];
+        missionNamespace setVariable ["GOL_EnemiesKilled", _enemyKilledCount + 1, true];
 
-    _name = name _unit;
-    if(isNil "_name" || _name isEqualTo "") then {
-        _name = typeof _unit;
+        _name = name _unit;
+        if(isNil "_name" || _name isEqualTo "") then {
+            _name = typeof _unit;
+        };
+
+        Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+        if(_Debug) then {
+            format["%1 killed by %2 - Total Score: %3",_name, name _killer, _enemyKilledCount] spawn OKS_fnc_LogDebug;
+        };   
     };
-
-    Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
-    if(_Debug) then {
-        format["%1 killed by %2 - Total Score: %3",_name, name _killer, _enemyKilledCount] spawn OKS_fnc_LogDebug;
-    };   
 }];

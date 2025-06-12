@@ -26,7 +26,7 @@ Edited by OksmanTV & Bluwolf.
 <details>
   <summary>⚙️ CBA Settings</summary>
 <details>
-  <summary>🔧 GOL_CORE_Enabled</summary>
+  <summary>🔧 CORE Enabled</summary>
 
   ### Description
   Enables all features added in the GOL Misc Addon (FW Version 2.7).
@@ -1738,6 +1738,43 @@ Edited by OksmanTV & Bluwolf.
   - Supports both infantry and vehicle waves, with random selection if an array of classnames is provided.
   - Refresh rate controls how quickly the script responds to player presence in the zone.
   - Designed for robust, dynamic reinforcement and hunting behaviors in Arma 3 missions.
+
+</details>
+<details>
+  <summary>OKS_fnc_Airbase</summary>
+
+  ### Description
+  Spawns a helicopter insertion group from a destructible base, with customizable insertion type, group size, and cargo fill. Designed for dynamic, repeatable enemy air assaults triggered by player presence.
+
+  ### Parameters
+  | Name                  | Type                | Example/Default                | Description                                                                                 |
+  |-----------------------|---------------------|-------------------------------|---------------------------------------------------------------------------------------------|
+  | Base Object           | Object              | `Object_1`                    | Destructible object representing the base. When destroyed, disables further spawns.         |
+  | Spawn Object          | Object              | `Spawn_1`                     | Object indicating where the helicopter/group will spawn and its facing direction.            |
+  | Trigger               | Trigger             | `Trigger_1`                   | Area trigger. When activated by players, enables hunting and spawns.                        |
+  | Side                  | Side                | `EAST`                        | Faction side for spawned units. (e.g., `EAST`, `WEST`, `INDEPENDENT`)                       |
+  | Helicopter Classname  | String              | `"O_Heli_Light_02_dynamicLoadout_F"` | Classname of helicopter to spawn.                                                  |
+  | Type of Insert        | String              | `"Unload"`                    | `"Unload"` (lands and unloads), `"Paradrop"` (paradrop), or `"UnloadThenPatrol"` (lands, then patrols) |
+  | Group/Cargo Array     | Array [Number, %]   | `[2, 1]`                      | `[NumberOfGroups, ProportionOfCargoSpace]` — e.g., `[2, 1]` for 2 groups, 100% cargo used.  |
+
+  ### Example Usage
+  [Object_1, Spawn_1, Trigger_1, EAST, "O_Heli_Light_02_dynamicLoadout_F", "Unload", [2,1]] spawn OKS_fnc_Airbase;
+- This spawns 2 groups, filling 100% of the helicopter’s cargo space, using "Unload" insertion.
+
+### Step-by-Step Guide
+1. **Place a destructible object** (e.g., truck, tent) and name it `Object_1`. Destroying this disables the base.
+2. **Place a spawn object** (e.g., box of matches, helipad) and name it `Spawn_1`. Its orientation sets the spawn direction.
+3. **Create a trigger** and name it `Trigger_1`. Set to "Any Player" and "Repeatable". This defines the hunting/spawn area.
+4. **Add the script call** to your mission logic (e.g., `spawnList.sqf`):
+   ```
+   [Object_1, Spawn_1, Trigger_1, EAST, "O_Heli_Light_02_unarmed_F", "Unload", [2,1]] spawn OKS_fnc_Airbase;
+   ```
+5. **Adjust parameters** as needed for side, helicopter type, insertion mode, group count, and cargo fill.
+
+### Notes
+- Players must be detected by the enemy (knowsAbout > 3.5) within the trigger for the base to activate.
+- When the base object is destroyed, the script will stop spawning new attacks.
+- "UnloadThenPatrol" will land troops and then send the helicopter to patrol the area.
 
 </details>
 <details>
