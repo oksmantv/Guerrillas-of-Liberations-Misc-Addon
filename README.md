@@ -22,9 +22,875 @@
 This is the Guerrillas Of Liberation's custom addon that contains miscellaneous scripts for GOL gameplay. This includes a number of quality of life features for editing as well as general tweaks.
 Edited by OksmanTV & Bluwolf.
 
-## Modules
+## CBA Settings ⚙️
 <details>
-  <summary>🚩 OKS Task Scripts</summary>
+  <summary>⚙️ CBA Settings</summary>
+<details>
+  <summary>🔧 GOL_CORE_Enabled</summary>
+
+  ### Description
+  Enables all features added in the GOL Misc Addon (FW Version 2.7).
+
+  ### Parameters
+  | Name              | Type     | Default | Description                                        |
+  |-------------------|----------|---------|----------------------------------------------------|
+  | GOL_CORE_Enabled  | Checkbox | false   | Master switch for all GOL Misc Addon features.     |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_CORE".
+</details>
+
+<details>
+  <summary>🔧 DEBUG Settings</summary>
+<details>
+  <summary>GOL_Core_Debug</summary>
+
+  ### Description
+  Allows for any debug messages to be broadcast. If disabled, no messages will show regardless of specific debugs turned on.
+
+  ### Parameters
+  | Name            | Type     | Default | Description                           |
+  |-----------------|----------|---------|---------------------------------------|
+  | GOL_Core_Debug  | Checkbox | false   | Master switch for all debug messages. |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+
+<details>
+  <summary>GOL_Ambience_Debug</summary>
+
+  ### Description
+  Enables debugging for enemy scripts such as the PowerGenerator, Death Score, House Destruction scripts.
+
+  ### Parameters
+  | Name                | Type     | Default | Description                                  |
+  |---------------------|----------|---------|----------------------------------------------|
+  | GOL_Ambience_Debug  | Checkbox | false   | Debug for ambience/enemy scripts.            |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+
+<details>
+  <summary>GOL_Enemy_Debug</summary>
+
+  ### Description
+  Enables debugging for enemy scripts such as AdjustDamage, ForceVehicleSpeed, EnablePath etc.
+
+  ### Parameters
+  | Name             | Type     | Default | Description                      |
+  |------------------|----------|---------|----------------------------------|
+  | GOL_Enemy_Debug  | Checkbox | false   | Debug for enemy scripts.         |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+
+<details>
+  <summary>GOL_RotorProtection_Debug</summary>
+
+  ### Description
+  Enables debugging for the handleDamage scripts for Mi-8/Mi-24 rotors.
+
+  ### Parameters
+  | Name                      | Type     | Default | Description                         |
+  |---------------------------|----------|---------|-------------------------------------|
+  | GOL_RotorProtection_Debug | Checkbox | false   | Debug for rotor damage scripts.     |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+
+<details>
+  <summary>GOL_Unconscious_CameraDebug</summary>
+
+  ### Description
+  Enables Camera DEBUG for unconscious state.
+
+  ### Parameters
+  | Name                        | Type     | Default | Description                        |
+  |-----------------------------|----------|---------|------------------------------------|
+  | GOL_Unconscious_CameraDebug | Checkbox | false   | Debug for unconscious camera.      |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+
+<details>
+  <summary>MHQ_Debug</summary>
+
+  ### Description
+  Enable DEBUG messages for MHQ code.
+
+  ### Parameters
+  | Name       | Type     | Default | Description                  |
+  |------------|----------|---------|------------------------------|
+  | MHQ_Debug  | Checkbox | false   | Debug for MHQ code.          |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+</details>
+<details>
+  <summary>🔧 Supply Settings</summary>
+<details>
+  <summary>NEKY_SupplyHelicopter</summary>
+
+  ### Description
+  Classname for the AI helicopter that brings in supplies and vehicles.
+
+  ### Parameters
+  | Name                  | Type    | Default   | Description                                   |
+  |-----------------------|---------|-----------|-----------------------------------------------|
+  | NEKY_SupplyHelicopter | Editbox | *(empty)* | Aircraft classname for supply drops.           |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Supply".
+</details>
+
+<details>
+  <summary>NEKY_Supply_Enabled</summary>
+
+  ### Description
+  Enables AI Resupply through landings or paradrops.
+
+  ### Parameters
+  | Name                | Type     | Default | Description                        |
+  |---------------------|----------|---------|------------------------------------|
+  | NEKY_Supply_Enabled | Checkbox | true    | Enable AI resupply (land/paradrop) |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Supply".
+</details>
+
+<details>
+  <summary>NEKY_SupplyVehicle_Enabled</summary>
+
+  ### Description
+  Enables AI Vehicle drop through paradrop.
+
+  ### Parameters
+  | Name                      | Type     | Default | Description                |
+  |---------------------------|----------|---------|----------------------------|
+  | NEKY_SupplyVehicle_Enabled| Checkbox | true    | Enable AI vehicle paradrop |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Supply".
+</details>
+
+<details>
+  <summary>NEKY_SupplyMHQ_Enabled</summary>
+
+  ### Description
+  Enables AI MHQ Drop through paradrop.
+
+  ### Parameters
+  | Name                 | Type     | Default | Description          |
+  |----------------------|----------|---------|----------------------|
+  | NEKY_SupplyMHQ_Enabled | Checkbox | true    | Enable AI MHQ paradrop |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Supply".
+</details>
+</details>
+<details>
+  <summary>🔧 Dynamic Settings</summary>
+<details>
+  <summary>GOL_Dynamic_Faction</summary>
+
+  ### Description
+  Select the faction to use for dynamic operations.
+
+  ### Parameters
+  | Name                | Type | Default | Description                                      |
+  |---------------------|------|---------|--------------------------------------------------|
+  | GOL_Dynamic_Faction | List | CSAT    | Faction for dynamic ops (CSAT, CDF, LDF, etc.).  |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Dynamic".
+</details>
+</details>
+<details>
+  <summary>🔧 MHQ Settings</summary>
+<details>
+  <summary>MHQSAFEZONE</summary>
+
+  ### Description
+  Radius (in meters) of the MHQ safe zone.
+
+  ### Parameters
+  | Name        | Type   | Default | Description                    |
+  |-------------|--------|---------|--------------------------------|
+  | MHQSAFEZONE | Slider | 100     | MHQ safe zone radius (meters). |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_MHQ".
+</details>
+
+<details>
+  <summary>MHQ_ShouldBe_ServiceStation</summary>
+
+  ### Description
+  If enabled the MHQ vehicle itself will be a service station, if disabled, it will be loaded with a mobile service station.
+
+  ### Parameters
+  | Name                        | Type     | Default | Description                  |
+  |-----------------------------|----------|---------|------------------------------|
+  | MHQ_ShouldBe_ServiceStation | Checkbox | false   | MHQ is a service station     |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_MHQ".
+</details>
+</details>
+<details>
+  <summary>🔧 Gear Settings</summary>
+<details>
+  <summary>MAGNIFIED_OPTICS_ALLOW</summary>
+
+  ### Description
+  Allows magnified 2x sights to be selected from the Arsenal.
+
+  ### Parameters
+  | Name                   | Type     | Default | Description                        |
+  |------------------------|----------|---------|------------------------------------|
+  | MAGNIFIED_OPTICS_ALLOW | Checkbox | true    | Allow 2x sights in Arsenal         |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>OPTICS_ALLOW</summary>
+
+  ### Description
+  Allows sights to be selected from the Arsenal.
+
+  ### Parameters
+  | Name          | Type     | Default | Description                |
+  |---------------|----------|---------|----------------------------|
+  | OPTICS_ALLOW  | Checkbox | true    | Allow optics in Arsenal    |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>WEAPONS_ALLOW</summary>
+
+  ### Description
+  Allows weapon variations to be selected from Arsenal.
+
+  ### Parameters
+  | Name           | Type     | Default | Description                        |
+  |----------------|----------|---------|------------------------------------|
+  | WEAPONS_ALLOW  | Checkbox | true    | Allow weapon variants in Arsenal   |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>ARSENAL_ALLOW</summary>
+
+  ### Description
+  Allows Attachment Menu in Arsenal.
+
+  ### Parameters
+  | Name           | Type     | Default | Description                        |
+  |----------------|----------|---------|------------------------------------|
+  | ARSENAL_ALLOW  | Checkbox | true    | Allow attachment menu in Arsenal   |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>GroundRoles_ALLOW</summary>
+
+  ### Description
+  Allows specialist ground roles (Dragon, Light Rifleman, Ammo Bearer, Anti-Air, Heavy AT).
+
+  ### Parameters
+  | Name              | Type     | Default | Description                        |
+  |-------------------|----------|---------|------------------------------------|
+  | GroundRoles_ALLOW | Checkbox | false   | Allow specialist ground roles      |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>AirRoles_ALLOW</summary>
+
+  ### Description
+  Allows specialist air roles (Para-Rescueman, Jet Pilot, Marksman).
+
+  ### Parameters
+  | Name           | Type     | Default | Description                        |
+  |----------------|----------|---------|------------------------------------|
+  | AirRoles_ALLOW | Checkbox | false   | Allow specialist air roles         |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>ENTRENCH_ALLOW</summary>
+
+  ### Description
+  Adds Entrenching Tools to certain roles.
+
+  ### Parameters
+  | Name           | Type     | Default | Description                        |
+  |----------------|----------|---------|------------------------------------|
+  | ENTRENCH_ALLOW | Checkbox | false   | Add entrenching tools to roles     |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>WIRECUTTER_ALLOW</summary>
+
+  ### Description
+  Adds Wirecutters to Riflemen.
+
+  ### Parameters
+  | Name             | Type     | Default | Description                        |
+  |------------------|----------|---------|------------------------------------|
+  | WIRECUTTER_ALLOW | Checkbox | false   | Add wirecutters to riflemen        |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>ForceNVG</summary>
+
+  ### Description
+  Forces addition of NVGs.
+
+  ### Parameters
+  | Name      | Type     | Default | Description                        |
+  |-----------|----------|---------|------------------------------------|
+  | ForceNVG  | Checkbox | false   | Force NVGs for players             |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+
+<details>
+  <summary>ForceNVGClassname</summary>
+
+  ### Description
+  Forces change of NVGs.
+
+  ### Parameters
+  | Name              | Type    | Default   | Description                        |
+  |-------------------|---------|-----------|------------------------------------|
+  | ForceNVGClassname | Editbox | *(empty)* | Override NVG classname             |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear".
+</details>
+</details>
+<details>
+  <summary>🔧 AI Gear Settings</summary>
+<details>
+  <summary>LAT_Chance</summary>
+
+  ### Description
+  Chance for Light AT to be given to AI (0 = never, 1 = always).
+
+  ### Parameters
+  | Name        | Type   | Default | Description                        |
+  |-------------|--------|---------|------------------------------------|
+  | LAT_Chance  | Slider | 0.25    | Chance AI get Light AT (0-1)       |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>MAT_Chance</summary>
+
+  ### Description
+  Chance for Medium AT to be given to AI (0 = never, 1 = always).
+
+  ### Parameters
+  | Name        | Type   | Default | Description                        |
+  |-------------|--------|---------|------------------------------------|
+  | MAT_Chance  | Slider | 0.15    | Chance AI get Medium AT (0-1)      |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>UGL_Chance</summary>
+
+  ### Description
+  Chance for UGL to be given to AI (0 = never, 1 = always).
+
+  ### Parameters
+  | Name        | Type   | Default | Description                        |
+  |-------------|--------|---------|------------------------------------|
+  | UGL_Chance  | Slider | 0.25    | Chance AI get UGL (0-1)            |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>Static_Enable_Chance</summary>
+
+  ### Description
+  Chance per loop to enable a Static AI to move (0 = never, 1 = always).
+
+  ### Parameters
+  | Name                 | Type   | Default | Description                        |
+  |----------------------|--------|---------|------------------------------------|
+  | Static_Enable_Chance | Slider | 0.4     | Chance static AI can move (0-1)    |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>Static_Enable_Refresh</summary>
+
+  ### Description
+  Delay per loop (in seconds) to enable movement.
+
+  ### Parameters
+  | Name                 | Type   | Default | Description                        |
+  |----------------------|--------|---------|------------------------------------|
+  | Static_Enable_Refresh| Slider | 60      | Static AI move refresh (seconds)   |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>AIForceNVG</summary>
+
+  ### Description
+  Forces addition of NVGs for AI.
+
+  ### Parameters
+  | Name        | Type     | Default | Description                        |
+  |-------------|----------|---------|------------------------------------|
+  | AIForceNVG  | Checkbox | false   | Force NVGs for AI                  |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>AIForceNVGClassname</summary>
+
+  ### Description
+  Classname to be used as NVG for AI. Leave blank for none.
+
+  ### Parameters
+  | Name                 | Type    | Default   | Description                        |
+  |----------------------|---------|-----------|------------------------------------|
+  | AIForceNVGClassname  | Editbox | *(empty)* | Override AI NVG classname          |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>GOL_RemoveVehicleHE_Enabled</summary>
+
+  ### Description
+  When enabled, Russian/Soviet vehicle variants will have their HE rounds removed.
+
+  ### Parameters
+  | Name                        | Type     | Default | Description                        |
+  |-----------------------------|----------|---------|------------------------------------|
+  | GOL_RemoveVehicleHE_Enabled | Checkbox | true    | Remove HE rounds from RU/SOV vehicles |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>GOL_VehicleAppearanceAI</summary>
+
+  ### Description
+  When enabled, certain AI Vehicles will have randomized vehicle appearance.
+
+  ### Parameters
+  | Name                  | Type     | Default | Description                        |
+  |-----------------------|----------|---------|------------------------------------|
+  | GOL_VehicleAppearanceAI| Checkbox| true    | Randomize AI vehicle appearance    |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+
+<details>
+  <summary>GOL_RemoveVehicleATGM_Enabled</summary>
+
+  ### Description
+  When enabled, Russian/Soviet vehicle variants will have their ATGM rounds removed.
+
+  ### Parameters
+  | Name                          | Type     | Default | Description                        |
+  |-------------------------------|----------|---------|------------------------------------|
+  | GOL_RemoveVehicleATGM_Enabled | Checkbox | true    | Remove ATGM rounds from RU/SOV vehicles |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Gear_AI".
+</details>
+</details>
+<details>
+  <summary>🔧 Player Composition Settings</summary>
+<details>
+  <summary>GOL_SelectedComposition</summary>
+
+  ### Description
+  Set the ORBAT Composition.
+
+  ### Parameters
+  | Name                   | Type | Default   | Description                     |
+  |------------------------|------|-----------|---------------------------------|
+  | GOL_SelectedComposition| List | Infantry  | ORBAT composition: Infantry/Mechanized |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_ORBAT".
+</details>
+</details>
+<details>
+  <summary>🔧 Hunt Settings</summary>
+<details>
+  <summary>GOL_Hunt_MaxCount</summary>
+
+  ### Description
+  The maximum allowed enemy hunters at any given time.
+
+  ### Parameters
+  | Name               | Type   | Default | Description                        |
+  |--------------------|--------|---------|------------------------------------|
+  | GOL_Hunt_MaxCount  | Slider | 40      | Max enemy hunters at once (10-100) |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Hunt".
+</details>
+</details>
+<details>
+  <summary>🔧 Suppression Settings</summary>
+<details>
+  <summary>GOL_Suppression_Enabled</summary>
+
+  ### Description
+  When enabled, AI will be able to be suppressed.
+
+  ### Parameters
+  | Name                   | Type     | Default | Description                        |
+  |------------------------|----------|---------|------------------------------------|
+  | GOL_Suppression_Enabled| Checkbox | true    | Enable AI suppression              |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Suppression".
+</details>
+
+<details>
+  <summary>GOL_Suppression_Debug</summary>
+
+  ### Description
+  When enabled, DEBUG messages will play in the SystemChat.
+
+  ### Parameters
+  | Name                  | Type     | Default | Description                        |
+  |-----------------------|----------|---------|------------------------------------|
+  | GOL_Suppression_Debug | Checkbox | false   | Debug for suppression system       |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+
+<details>
+  <summary>GOL_Suppressed_Threshold</summary>
+
+  ### Description
+  For every friendly below 10 in the vicinity (this value) of the candidate, chance to surrender will increase.
+
+  ### Parameters
+  | Name                     | Type   | Default | Description                        |
+  |--------------------------|--------|---------|------------------------------------|
+  | GOL_Suppressed_Threshold | Slider | 0.75    | Surrender chance per friendly nearby (0-1) |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Suppression".
+</details>
+
+<details>
+  <summary>GOL_Suppressed_MinimumTime</summary>
+
+  ### Description
+  Sets the minimum suppressed time for a unit to recover from suppression.
+
+  ### Parameters
+  | Name                        | Type   | Default | Description                        |
+  |-----------------------------|--------|---------|------------------------------------|
+  | GOL_Suppressed_MinimumTime  | Slider | 6       | Min suppressed time (seconds)      |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Suppression".
+</details>
+
+<details>
+  <summary>GOL_Suppressed_MaximumTime</summary>
+
+  ### Description
+  Sets the maximum suppressed time for a unit to recover from suppression.
+
+  ### Parameters
+  | Name                        | Type   | Default | Description                        |
+  |-----------------------------|--------|---------|------------------------------------|
+  | GOL_Suppressed_MaximumTime  | Slider | 10      | Max suppressed time (seconds)      |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Suppression".
+</details>
+</details>
+<details>
+  <summary>🔧 Surrender Settings</summary>
+<details>
+  <summary>GOL_Surrender_Enabled</summary>
+
+  ### Description
+  When enabled, AI can surrender when threatened, suppressed, shot, flashbanged.
+
+  ### Parameters
+  | Name                  | Type     | Default | Description                        |
+  |-----------------------|----------|---------|------------------------------------|
+  | GOL_Surrender_Enabled | Checkbox | true    | Enable AI surrender                |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Surrender".
+</details>
+
+<details>
+  <summary>GOL_Surrender_Debug</summary>
+
+  ### Description
+  When enabled, DEBUG messages will play in the SystemChat.
+
+  ### Parameters
+  | Name                | Type     | Default | Description                        |
+  |---------------------|----------|---------|------------------------------------|
+  | GOL_Surrender_Debug | Checkbox | false   | Debug for surrender system         |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+
+<details>
+  <summary>GOL_Surrender_Shot</summary>
+
+  ### Description
+  When enabled, AI can surrender when shot at.
+
+  ### Parameters
+  | Name               | Type     | Default | Description                        |
+  |--------------------|----------|---------|------------------------------------|
+  | GOL_Surrender_Shot | Checkbox | true    | Surrender if shot at               |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Surrender".
+</details>
+
+<details>
+  <summary>GOL_Surrender_Flashbang</summary>
+
+  ### Description
+  When enabled, AI can surrender when flashbanged.
+
+  ### Parameters
+  | Name                    | Type     | Default | Description                        |
+  |-------------------------|----------|---------|------------------------------------|
+  | GOL_Surrender_Flashbang | Checkbox | true    | Surrender if flashbanged           |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Surrender".
+</details>
+
+<details>
+  <summary>GOL_Surrender_FriendlyDistance</summary>
+
+  ### Description
+  For every friendly below 10 in the vicinity (this value) of the candidate, chance to surrender will increase.
+
+  ### Parameters
+  | Name                         | Type   | Default | Description                        |
+  |------------------------------|--------|---------|------------------------------------|
+  | GOL_Surrender_FriendlyDistance| Slider | 200     | Surrender: friendly check radius   |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Surrender".
+</details>
+
+<details>
+  <summary>GOL_Surrender_Chance</summary>
+
+  ### Description
+  Probability (0 = never, 0.3 = very likely) that AI will surrender.
+
+  ### Parameters
+  | Name                | Type   | Default | Description                        |
+  |---------------------|--------|---------|------------------------------------|
+  | GOL_Surrender_Chance| Slider | 0.05    | Base surrender chance (0-0.3)      |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Surrender".
+</details>
+
+<details>
+  <summary>GOL_Surrender_ChanceWeaponAim</summary>
+
+  ### Description
+  Probability (0 = never, 0.3 = very likely) that AI will surrender when aimed at.
+
+  ### Parameters
+  | Name                         | Type   | Default | Description                        |
+  |------------------------------|--------|---------|------------------------------------|
+  | GOL_Surrender_ChanceWeaponAim| Slider | 0.05    | Surrender chance if aimed at (0-0.3)|
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Surrender".
+</details>
+
+<details>
+  <summary>GOL_Surrender_Distance</summary>
+
+  ### Description
+  Maximum distance (in meters) for surrender checks.
+
+  ### Parameters
+  | Name                 | Type   | Default | Description                        |
+  |----------------------|--------|---------|------------------------------------|
+  | GOL_Surrender_Distance| Slider| 200     | Surrender check max distance (m)   |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Surrender".
+</details>
+
+<details>
+  <summary>GOL_Surrender_DistanceWeaponAim</summary>
+
+  ### Description
+  Maximum distance (in meters) for surrender checks by player aiming at unit.
+
+  ### Parameters
+  | Name                             | Type   | Default | Description                        |
+  |----------------------------------|--------|---------|------------------------------------|
+  | GOL_Surrender_DistanceWeaponAim  | Slider | 50      | Surrender check distance (aimed)   |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_Surrender".
+</details>
+</details>
+<details>
+  <summary>🔧 Faceswap Settings</summary>
+ <details>
+  <summary>GOL_FaceSwap_Enabled</summary>
+
+  ### Description
+  When enabled, AI will change faces based on your choices on mission start and when spawned.
+
+  ### Parameters
+  | Name                 | Type     | Default | Description                        |
+  |----------------------|----------|---------|------------------------------------|
+  | GOL_FaceSwap_Enabled | Checkbox | true    | Enable FaceSwap for AI             |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_FaceSwap".
+</details> 
+<details>
+  <summary>GOL_FaceSwap_Debug</summary>
+
+  ### Description
+  When enabled, DEBUG messages will play in the SystemChat.
+
+  ### Parameters
+  | Name               | Type     | Default | Description                        |
+  |--------------------|----------|---------|------------------------------------|
+  | GOL_FaceSwap_Debug | Checkbox | false   | Debug for FaceSwap system          |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_DEBUG".
+</details>
+
+<details>
+  <summary>GOL_FaceSwap_BLUFOR</summary>
+
+  ### Description
+  Set ethnic appearance for spawned BLUFOR units.
+
+  ### Parameters
+  | Name                  | Type | Default   | Description                        |
+  |-----------------------|------|-----------|------------------------------------|
+  | GOL_FaceSwap_BLUFOR   | List | American  | BLUFOR ethnicity                   |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_FaceSwap".
+</details>
+
+<details>
+  <summary>GOL_FaceSwap_OPFOR</summary>
+
+  ### Description
+  Set ethnic appearance for spawned OPFOR units.
+
+  ### Parameters
+  | Name                  | Type | Default        | Description                        |
+  |-----------------------|------|----------------|------------------------------------|
+  | GOL_FaceSwap_OPFOR    | List | Middle Eastern | OPFOR ethnicity                    |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_FaceSwap".
+</details>
+
+<details>
+  <summary>GOL_FaceSwap_INDEPENDENT</summary>
+
+  ### Description
+  Set ethnic appearance for spawned INDEPENDENT units.
+
+  ### Parameters
+  | Name                        | Type | Default        | Description                        |
+  |-----------------------------|------|----------------|------------------------------------|
+  | GOL_FaceSwap_INDEPENDENT    | List | Middle Eastern | INDEPENDENT ethnicity              |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_FaceSwap".
+</details>
+
+<details>
+  <summary>GOL_FaceSwap_CIVILIAN</summary>
+
+  ### Description
+  Set ethnic appearance for spawned CIVILIAN units.
+
+  ### Parameters
+  | Name                     | Type | Default        | Description                        |
+  |--------------------------|------|----------------|------------------------------------|
+  | GOL_FaceSwap_CIVILIAN    | List | Middle Eastern | CIVILIAN ethnicity                 |
+
+  ### Example Usage
+  Set in CBA Addon Options under "GOL_FaceSwap".
+</details>
+</details>
+</details> 
+
+## Modules/Scripts
+<details>
+  <summary>🚩 Task Scripts</summary>
 <details>
   <summary>OKS_fnc_FallbackArtillery</summary>
 
@@ -250,7 +1116,7 @@ Edited by OksmanTV & Bluwolf.
 </details>
 </details>
 <details>
-  <summary>🚩 OKS Spawn Scripts</summary>
+  <summary>🚩 Spawn Scripts</summary>
 <details>
   <summary>OKS_fnc_AI_Battle</summary>
 
@@ -792,7 +1658,7 @@ Edited by OksmanTV & Bluwolf.
 
 </details>  
 <details>
-  <summary>🚩 NEKY Mortars</summary>
+  <summary>🚩 Mortars</summary>
   <details>
   <summary>OKS_fnc_Mortars</summary>
 
@@ -1125,7 +1991,7 @@ Edited by OksmanTV & Bluwolf.
 
 </details>  
 <details>
-  <summary>🚩 OKS Ambience Scripts</summary>
+  <summary>🚩 Ambience Scripts</summary>
   <details>
   <summary>OKS_fnc_Chat</summary>
 
