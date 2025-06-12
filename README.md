@@ -1124,3 +1124,138 @@ Edited by OksmanTV & Bluwolf.
 </details>
 
 </details>  
+<details>
+  <summary>🚩 OKS Ambience Scripts</summary>
+  <details>
+  <summary>OKS_fnc_Chat</summary>
+
+  ### Description
+  Displays a custom chat/radio message from a specified entity or preset callsign, either over radio ("side" channel) or as a local message.  
+  Supports both player entities and preset callsigns, with execution requirements based on channel type.
+
+  ### Parameters
+
+  | Name        | Type     | Default | Description                                                                                   |
+  |-------------|----------|---------|-----------------------------------------------------------------------------------------------|
+  | `_Talker`   | Object/String | —   | Entity (person) or preset callsign ("Base", "HQ", "PAPA_BEAR", etc.).                        |
+  | `_Channel`  | String   | "side"  | "side" for radio (must match player side), "local" for proximity chat (20m range).           |
+  | `_Message`  | String   | —       | The chat message to display.                                                                  |
+  | `_Callsign` | String   | ""      | (Optional) Custom callsign override.                                                          |
+
+  ### Example Usage
+
+      ["HQ", "side", "Test"] spawn OKS_fnc_Chat;  
+      [person1, "local", "Hello World!"] remoteExec ["OKS_fnc_Chat", 0];
+
+  ### Behavior
+
+  - **"side" channel:**  
+    - Displays a radio message from the specified side/callsign.
+    - Must be executed globally (e.g., via trigger or remoteExec), and is only visible to players of the same side (not captives).
+    - Range: 1000m (radio).
+    - Supports preset callsigns.
+
+  - **"local" channel:**  
+    - Displays a local message from any entity (not preset callsigns).
+    - Must be executed on the client(s) that should see the message (e.g., via `remoteExec`).
+    - Range: 20m (proximity).
+    - Cannot use preset callsigns.
+
+  - Designed for flexible mission communication and custom UI integration in Arma 3 mods.
+</details>
+<details>
+  <summary>OKS_fnc_DeleteDeadAndObjects</summary>
+
+  ### Description
+  Deletes dead bodies (corpses), vehicles, and/or placed objects within a trigger area or around a specified position.  
+  Supports customizable deletion delay, selective deletion of vehicles and objects, and adjustable range if using a position.
+
+  ### Parameters
+
+  | Name                     | Type         | Default   | Description                                                                 |
+  |--------------------------|--------------|-----------|-----------------------------------------------------------------------------|
+  | `_TriggerNameOrPosition` | Object/Array | —         | Trigger object (area) or position array to define the deletion zone.         |
+  | `_DeleteDelayPerDelete`  | Number       | 0.01      | Time delay (in seconds) between each deletion for performance control.       |
+  | `_ShouldDeleteVehicles`  | Boolean      | true      | If true, deletes vehicles in the area.                                      |
+  | `_ShouldDeleteObjects`   | Boolean      | true      | If true, deletes placed objects (e.g., editor-placed items) in the area.    |
+  | `_Range`                 | Number       | 250       | Range (meters) if using a position array instead of a trigger.              |
+
+  ### Example Usage
+
+      [DeleteTrigger_1] spawn OKS_fnc_DeleteDeadAndObjects;
+      [[1000,2000,0], 0.05, true, false, 300] spawn OKS_fnc_DeleteDeadAndObjects;
+
+  ### Behavior
+
+  - If a trigger is provided, deletes all matching entities within the trigger area.
+  - If a position array is provided, deletes entities within the specified range.
+  - Deletion is staggered by the given delay to avoid performance spikes.
+  - Useful for cleanup of corpses, wrecks, and clutter during or after missions, maintaining performance and immersion[5][1].
+</details>
+<details>
+  <summary>OKS_fnc_Destroy_Houses</summary>
+
+  ### Description
+  Destroys or damages all houses within a trigger area or around a specified position, with optional randomization of damage level.  
+  Supports blacklisting specific buildings to prevent their destruction, and can be used for immersive battlefield effects or mission scripting.
+
+  ### Parameters
+
+  | Name              | Type         | Default    | Description                                                                 |
+  |-------------------|--------------|------------|-----------------------------------------------------------------------------|
+  | `_TriggerOrPosition` | Object/Array | —        | Trigger object or position array defining the center of the destruction zone.|
+  | `_RandomDamage`   | Boolean      | true       | If true, applies random damage; if false, sets all to 100% damage.           |
+  | `_DamageVariation`| Array        | [8,10]     | Two numbers (0–10) for min/max damage (e.g., [8,10] = 80–100% damage).       |
+  | `_Range`          | Number       | 250        | Range (meters) from position if using a position array.                      |
+
+  ### Example Usage
+
+      [thisTrigger, true, [8,10], 500] spawn OKS_fnc_Destroy_Houses;
+
+  ### Blacklisting Buildings
+
+  To prevent a building from being destroyed, place a logic object near it and add in its init:
+
+      (nearestObject [getPos this,"HOUSE"]) setVariable ["OKS_Destroy_Blacklist",true,true];
+      (nearestBuilding this) setVariable ["OKS_Destroy_Blacklist",true,true];
+
+  ### Behavior
+
+  - All houses within the specified area are damaged or destroyed, except those blacklisted.
+  - If `_RandomDamage` is true and a variation is provided, each house receives a random damage within the specified range (as a percentage).
+  - If `_RandomDamage` is false, all houses are set to full destruction (100% damage).
+  - Useful for scripting post-battle effects, dynamic mission environments, or simulating artillery/airstrike aftermaths[1].
+
+</details>
+<details>
+  <summary>OKS_fnc_PowerGenerator</summary>
+
+  ### Description
+  Activates a power generator object, optionally adds an interaction action, and manages nearby lights within a defined range.  
+  Plays activation, idle, and shutdown sounds, and maintains generator state for immersive mission environments in Arma 3.
+
+  ### Parameters
+
+  | Name                  | Type    | Description                                                                 |
+  |-----------------------|---------|-----------------------------------------------------------------------------|
+  | `_Generator`          | Object  | The generator object to activate.                                           |
+  | `_AddAction`          | Boolean | If true, adds an interaction action to the generator.                       |
+  | `_TurnOffNearbyLights`| Boolean | If true, turns off nearby lights within the specified range.                |
+  | `_RangeOfPowerSupply` | Number  | Range (meters) for power supply/light control.                              |
+
+  ### Example Usage
+
+      [Generator_1, true, true, 1000] spawn OKS_fnc_PowerGenerator;
+
+  ### Behavior
+
+  - If `_AddAction` is true, adds an interactive action to the generator via `OKS_fnc_addGeneratorAction`.
+  - Plays a startup sound, then sets the generator as active (`GeneratorActive = true`).
+  - Uses a per-frame handler to play idle sounds and monitor generator state.
+  - If the generator is turned off or destroyed, plays a shutdown sound and stops the handler.
+  - Optionally controls nearby lights within the specified range for immersive power management.
+  - Debug messages and state changes are logged if debug mode is enabled.
+  - Integrates with custom UI and scripting systems for enhanced mission control.
+
+</details>
+</details>

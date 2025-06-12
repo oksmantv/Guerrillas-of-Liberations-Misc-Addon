@@ -1,5 +1,5 @@
-	// OKS_Garrison
-	// [5,nearestBuilding player,east,["O_Soldier_F"]] spawn OKS_Garrison;
+	// OKS_fnc_Garrison
+	// [5,nearestBuilding player,east,["O_Soldier_F"]] spawn OKS_fnc_Garrison;
 	if(HasInterface && !isServer) exitWith {};
 
 	Params ["_NumberInfantry","_House","_Side","_UnitArray"];
