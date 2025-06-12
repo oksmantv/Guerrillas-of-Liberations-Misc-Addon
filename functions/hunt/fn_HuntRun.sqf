@@ -1,4 +1,4 @@
-//	[SIDE, NumberOfUnits, TriggerZone, Distance, UpdateFrequency, Repeat, {CODE}] spawn OKS_fnc_Hunt_Run;
+//	[SIDE, NumberOfUnits, TriggerZone, Distance, UpdateFrequency, Repeat, {CODE}] spawn OKS_fnc_HuntRun;
 //////////////////
 /*	Parameters	*/
 //////////////////
@@ -40,10 +40,10 @@
 //		e) OPTIONAL, if you do not know what this is, don't use it.
 //
 //	Examples:
-//	[EAST, 4, Zone1, 600] Spawn OKS_fnc_Hunt_Run;
-//	[MyUnit, 3, Trigger1] Spawn OKS_fnc_Hunt_Run;
-//	[EnemyGroup, 0, Trigger1, nil, nil, {SystemChat "Enemy Group: We're on the trace!"}] Spawn OKS_fnc_Hunt_Run;
-//	[Enemies, 0, Zone1, 0, 10] Spawn OKS_fnc_Hunt_Run;
+//	[EAST, 4, Zone1, 600] Spawn OKS_fnc_HuntRun;
+//	[MyUnit, 3, Trigger1] Spawn OKS_fnc_HuntRun;
+//	[EnemyGroup, 0, Trigger1, nil, nil, {SystemChat "Enemy Group: We're on the trace!"}] Spawn OKS_fnc_HuntRun;
+//	[Enemies, 0, Zone1, 0, 10] Spawn OKS_fnc_HuntRun;
 //
 /////////////
 /*	NOTES  */

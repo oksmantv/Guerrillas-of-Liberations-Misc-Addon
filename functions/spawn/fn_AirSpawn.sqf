@@ -1,7 +1,6 @@
 // Example
-// [airspawn_1,[22278,19441.9,0],selectRandom ["UK3CB_CSAT_B_O_MIG21_AA", "UK3CB_CSAT_B_O_Su25SM", "UK3CB_CSAT_B_O_MIG21", "UK3CB_CSAT_B_O_MIG29SM"],east,false,"SAD",1000] spawn OKS_AirSpawn;    
-// [Plane_1,PlaneExit_1,selectRandom ["UK3CB_AAF_B_L39_AA","UK3CB_AAF_B_C130J_CARGO","UK3CB_AAF_B_Gripen"],west,true,"MOVE"] execVM "Scripts\OKS_Spawn\OKS_AirSpawn.sqf";
-
+// [airspawn_1,[22278,19441.9,0],selectRandom ["UK3CB_CSAT_B_O_MIG21_AA", "UK3CB_CSAT_B_O_Su25SM", "UK3CB_CSAT_B_O_MIG21", "UK3CB_CSAT_B_O_MIG29SM"],east,false,"SAD",1000] spawn OKS_fnc_AirSpawn;    
+// [Plane_1,PlaneExit_1,selectRandom ["UK3CB_AAF_B_L39_AA","UK3CB_AAF_B_C130J_CARGO","UK3CB_AAF_B_Gripen"],west,true,"MOVE"] spawn OKS_fnc_AirSpawn;  
 Params ["_SpawnPos","_MoveToPos","_Classname","_Side","_ShouldBeCareless","_WaypointType","_Height"];
 
 _SpawnPos = [_SpawnPos#0,_SpawnPos#1,_Height];
