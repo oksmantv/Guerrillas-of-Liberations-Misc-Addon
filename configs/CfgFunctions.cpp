@@ -1,7 +1,5 @@
-
 class CfgFunctions // Defines a function
-{
-	
+{	
 	class OKS {
 		class OKS_Packing {
 			file = "\OKS_GOL_Misc\functions\staticWeapons";
@@ -34,6 +32,7 @@ class CfgFunctions // Defines a function
 			class Hostage {};			
 			class Task_Settings {};
 			class TaskRun {};
+			class NekyTasks {};
 		};	
 
 		class OKS_Logic {
@@ -44,6 +43,8 @@ class CfgFunctions // Defines a function
 			class SetMissionComplete {};
 			class AddKilledScore {};	
 			class AddCivilianKilled {};				
+			class Ranks {};				
+			class RespawnHandler {};				
 		};			
 
 		class OKS_Supply {

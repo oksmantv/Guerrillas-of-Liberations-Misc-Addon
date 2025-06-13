@@ -44,6 +44,18 @@ class CfgPatches
 #include "configs\CfgUnitInsignia.cpp"
 #include "configs\CfgOrbat.cfg"
 
+class CfgEditorCategories {
+    class GOL_GuerrillasOfLiberation {
+        displayName = "GOL Guerrillas of Liberation";
+    }; 
+};
+
+class CfgEditorSubcategories {
+    class GOL_Resupply {
+        displayName = "Resupply";
+    };  
+};
+
 class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Core {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_core.sqf'";
@@ -80,7 +92,10 @@ class Extended_PreInit_EventHandlers {
     };
     class OKS_PreInit_Packing {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_PreInit_Packing.sqf'";
-    };    
+    };   
+    class OKS_PreInit_Tasks {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_PreInit_Tasks.sqf'";
+    };        
 };
 
 class Extended_PostInit_EventHandlers {
@@ -90,18 +105,6 @@ class Extended_PostInit_EventHandlers {
     class OKS_PostInit_Server {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_PostInit_Server.sqf'";
     };    
-};
-
-class CfgEditorCategories {
-    class GOL_GuerrillasOfLiberation {
-        displayName = "GOL Guerrillas of Liberation";
-    };
-};
-class CfgEditorSubcategories {
-    class GOL_Resupply {
-        displayName = "Resupply";
-    };
-    // Add more subcategories as needed
 };
 
 class CfgSettings {

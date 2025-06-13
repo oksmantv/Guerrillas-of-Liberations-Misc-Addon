@@ -1,9 +1,7 @@
 // [] spawn OKS_fnc_SetMissionComplete;
 #define CURRENT_WEAPONS player, currentWeapon player, currentMuzzle player
 
-if !(serverCommandAvailable "#kick" || isServer) exitWith {
-    hint "Only admins are allowed to use this function.";
-};
+if !(serverCommandAvailable "#kick" || isServer) exitWith {};
 
 if (isNil {missionNamespace getVariable "GOL_ShowMissionCompleteHint"}) then {
     missionNamespace setVariable ["GOL_ShowMissionCompleteHint", false];
@@ -72,6 +70,7 @@ if (_show) then {
 
             private _enemiesKilled = missionNamespace getVariable ["GOL_EnemiesKilled", 0];
             private _civiliansKilled = missionNamespace getVariable ["GOL_CiviliansKilled", 0];
+            private _currentPOWs = missionNamespace getVariable ["GOL_CapturedPOWs", 0];
             private _totalSeconds = time; // Or your own elapsed seconds value
 
             private _hours = floor (_totalSeconds / 3600);
@@ -94,6 +93,7 @@ if (_show) then {
             private _timePath = "\a3\ui_f\data\GUI\Cfg\Hints\Timing_ca.paa";
             private _heliPath = "\a3\ui_f\data\GUI\Rsc\RscDisplayGarage\helicopter_ca.paa";
             private _tankPath = "\a3\ui_f\data\GUI\Rsc\RscDisplayGarage\tank_ca.paa";
+            private _captivePath = "\OKS_GOL_MISC\data\UI\Surrender_ca.paa";
             private _hintText = format [
                 "<img image='%1' size='3'/><img image='%2' size='3'/><br/>" +
                 "<t size='1.8' font='RobotoCondensedBold' color='#FFD700'>MISSION COMPLETE</t><br/>" +
@@ -101,6 +101,7 @@ if (_show) then {
                 "<img image='%4' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Active Players: %5</t><br/>" +
                 "<img image='%6' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Enemies Killed: %7</t><br/>" +
                 "<img image='%8' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Non-Combatants Killed: %9</t><br/>" +
+                "<img image='%22' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> POWs Captured: %21</t><br/>" +                
                 "<img image='%10' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Time Elapsed: %11</t><br/><br/>" +
                 "<img image='%12' size='1.4'/><t size='1.0' font='RobotoCondensedBold'>Platoon Casualty Rate: <t color='%13'> %14%%</t></t><br/>" +
                 "<t color='#FFFFFF' font='RobotoCondensedBold'>%15</t><br/>" +
@@ -126,10 +127,12 @@ if (_show) then {
                 _helipath,                      // 17
                 _supportColor,                  // 18
                 _supportCasualty,               // 19
-                _supportDeathsList              // 20
+                _supportDeathsList,             // 20
+                _currentPOWs,                   // 21
+                _captivePath                    // 22
             ];
 
-            hintSilent parseText _hintText;
+            parseText _hintText remoteExec ["hintSilent",0];
 
             // Safety Zone
             {

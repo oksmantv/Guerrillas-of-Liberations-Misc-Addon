@@ -78,5 +78,11 @@ if(GOL_Core_Enabled isEqualTo true) then {
     
         NEKY_Hunt_CurrentCount = [];
         publicVariable "NEKY_Hunt_CurrentCount";
+
+        /* Enable NEKY Casualty */
+        _EnableNekyTasks = missionNamespace getVariable ["GOL_Neky_Tasks_Enabled", false];
+        if(_EnableNekyTasks) then {
+            [] spawn OKS_fnc_NekyTasks;
+        };
     };  
 };

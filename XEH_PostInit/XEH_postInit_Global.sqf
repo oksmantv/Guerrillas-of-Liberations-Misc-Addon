@@ -282,21 +282,29 @@ if(true) then {
         player addEventHandler ["Killed", {
             // Get the player's current SR radio info
             private _radio = player call TFAR_fnc_activeSwRadio;
-            private _channel = player getVariable ["TFAR_currentSwChannel", 1];
-            private _frequency = player getVariable ["TFAR_currentSwFrequency", ""];
-            private _isAdditional = false;
+            if(!isNil "_radio") then {
+                private _channel = player getVariable ["TFAR_currentSwChannel", 1];
+                private _frequency = player getVariable ["TFAR_currentSwFrequency", ""];
+                private _isAdditional = false;
 
-            if (!isNil "_radio" && {!isNull _radio}) then {
-                [_radio, _channel, _frequency, _isAdditional] call TFAR_fnc_doSRTransmitEnd;
-            };
+                if (!isNil "_radio" && {!isNull _radio}) then {
+                    [_radio, _channel, _frequency, _isAdditional] call TFAR_fnc_doSRTransmitEnd;
+                };
 
-            // Optionally, also handle LR radios:
-            private _lrRadio = player call TFAR_fnc_activeLrRadio;
-            private _lrChannel = player getVariable ["TFAR_currentLrChannel", 1];
-            private _lrFrequency = player getVariable ["TFAR_currentLrFrequency", ""];
-            if (!isNil "_lrRadio" && {!isNull _lrRadio}) then {
-                [_lrRadio, _lrChannel, _lrFrequency, false] call TFAR_fnc_doLRTransmitEnd;
+                // Optionally, also handle LR radios:
+                private _lrRadio = player call TFAR_fnc_activeLrRadio;
+                private _lrChannel = player getVariable ["TFAR_currentLrChannel", 1];
+                private _lrFrequency = player getVariable ["TFAR_currentLrFrequency", ""];
+                if (!isNil "_lrRadio" && {!isNull _lrRadio}) then {
+                    [_lrRadio, _lrChannel, _lrFrequency, false] call TFAR_fnc_doLRTransmitEnd;
+                };
             };
         }];
+
+        /* Set Ranks of Leaders */
+        [] call OKS_fnc_Ranks;
+
+        /* Handle Respawn */
+        [] call OKS_fnc_RespawnHandler;        
     };
 };

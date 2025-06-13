@@ -75,6 +75,9 @@ private _flags = [];
     if (alive _unit) then {
         private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
         private _responseMultiplier = missionNamespace getVariable ["GOL_ResponseMultiplier", 1];
+        private _currentPOWs = missionNamespace getVariable ["GOL_CapturedPOWs", 0];
+        _currentPOWs = _currentPOWs + 1;
+        missionNamespace setVariable ["GOL_CapturedPOWs", _currentPOWs ,true];
         
         _forceMultiplier = 1 max (_forceMultiplier * 0.9);
         _responseMultiplier = 1 max (_responseMultiplier * 1.1);

@@ -33,9 +33,11 @@ if (isMultiplayer || isDedicated) then
         } foreach _radiosSW;
     };
 
-    if(_activeLR == true) then {		
-        [_Player call TFAR_fnc_activeLrRadio, 6] call TFAR_fnc_setLrVolume; 
-        [_Player call TFAR_fnc_activeLrRadio, 4] call TFAR_fnc_setLrChannel;
-		[_Player call TFAR_fnc_activeLrRadio, 2] call TFAR_fnc_setLrStereo;
-    };	
+    if(!isNil "_activeLR") then {
+        if(_activeLR == true) then {		
+            [_Player call TFAR_fnc_activeLrRadio, 6] call TFAR_fnc_setLrVolume; 
+            [_Player call TFAR_fnc_activeLrRadio, 4] call TFAR_fnc_setLrChannel;
+            [_Player call TFAR_fnc_activeLrRadio, 2] call TFAR_fnc_setLrStereo;
+        };	
+    };
 };
