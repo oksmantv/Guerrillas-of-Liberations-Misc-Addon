@@ -25,11 +25,9 @@ _unit addEventHandler ["Killed", {
         };
 
         private _civilianKilledCount = missionNamespace getVariable ["GOL_CiviliansKilled", 0];
+        _civilianKilledCount = _civilianKilledCount + 1;
         missionNamespace setVariable ["GOL_CiviliansKilled", _civilianKilledCount + 1, true];
 
-        Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
-        if(_Debug) then {
-            format["%1 killed by %2 - Total Killed: %3",_name, name _killer, _civilianKilledCount] spawn OKS_fnc_LogDebug;
-        };   
+        [10] call OKS_fnc_IncreaseMultiplier;        
     };
 }];

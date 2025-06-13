@@ -20,6 +20,7 @@ _unit addEventHandler ["Killed", {
     params ["_unit", "_killer"];
     if(isPlayer _killer) then {
         private _enemyKilledCount = missionNamespace getVariable ["GOL_EnemiesKilled", 0];
+        _enemyKilledCount = _enemyKilledCount + 1;
         missionNamespace setVariable ["GOL_EnemiesKilled", _enemyKilledCount + 1, true];
 
         _name = name _unit;

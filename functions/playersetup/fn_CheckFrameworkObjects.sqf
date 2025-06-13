@@ -9,17 +9,11 @@
 private _ReturnText = "This template is not missing any NEW template items."; 
 _Return = []; 
  
-_HasGearBoxWest = ({typeOf _X == "GOL_GearBox_WEST"} count (allMissionObjects "ALL") > 0); 
-_HasGearBoxWestArray = [_HasGearBoxWest,"Gear Box WEST: "]; 
+_HasGearBox = ({typeOf _X == "GOL_GearBox_WEST"} count (allMissionObjects "ALL") > 0); 
+_HasGearBoxArray = [_HasGearBox,"Gear Box WEST: "]; 
 
-_HasGearBoxEAST = ({typeOf _X == "GOL_GearBox_EAST"} count (allMissionObjects "ALL") > 0); 
-_HasGearBoxEASTArray = [_HasGearBoxEAST,"Gear Box EAST: "]; 
-
-_HasResupplyStationWest = ({typeOf _X == "GOL_ResupplyStation_WEST"} count (allMissionObjects "ALL") > 0); 
-_HasResupplyStationWestArray = [_HasResupplyStationWest,"Resupply Station WEST: "]; 
-
-_HasResupplyStationEast = ({typeOf _X == "GOL_ResupplyStation_EAST"} count (allMissionObjects "ALL") > 0); 
-_HasResupplyStationEastArray = [_HasResupplyStationEast,"Resupply Station EAST: "]; 
+_HasResupplyStation = ({typeOf _X == "GOL_ResupplyStation"} count (allMissionObjects "ALL") > 0); 
+_HasResupplyStationArray = [_HasResupplyStation,"Resupply Station: "]; 
 
 _HasMobileServiceStation = ({typeOf _X == "GOL_MobileServiceStation"} count (allMissionObjects "ALL") > 0); 
 _HasMobileServiceStationArray = [_HasMobileServiceStation,"Mobile Service Station: "]; 
@@ -27,29 +21,23 @@ _HasMobileServiceStationArray = [_HasMobileServiceStation,"Mobile Service Statio
 _HasAacServiceHelipad = ({typeOf _X == "GOL_Helipad"} count (allMissionObjects "ALL") > 0); 
 _HasAacServiceHelipadArray = [_HasAacServiceHelipad,"AAC Service Helipad: "]; 
  
-HasMobileHQ = ({vehicleVarName _X == "Mobile_HQ"} count (allMissionObjects "ALL") > 0); 
-HasMobileHQArray = [HasMobileHQ,"Mobile HQ: "]; 
- 
-_HasArsenalGL = ({vehicleVarName _X == "GOL_Arsenal_GL"} count allMissionObjects "ALL" > 0); 
-_HasArsenalGLArray = [_HasArsenalGL,"GL Arsenal Logic: "]; 
- 
-_HasArsenalLMG = ({vehicleVarName _X == "GOL_Arsenal_LMG"} count allMissionObjects "ALL" > 0); 
-_HasArsenalLMGArray = [_HasArsenalLMG,"LMG Arsenal Logic: "]; 
+_HasMobileHQ = ({vehicleVarName _X == "Mobile_HQ"} count (allMissionObjects "ALL") > 0); 
+_HasMobileHQArray = [HasMobileHQ,"Mobile HQ: "]; 
  
 _HasHeadless = ({vehicleVarName _X in ["HC","HC2","HC3"]} count allMissionObjects "ALL" > 0); 
 _HasHeadlessArray = [_HasHeadless,"Headless Clients: "]; 
-
-_HasDapsOptions = ({typeOf _X == "DAPS_Options"} count allMissionObjects "LOGIC" > 0); 
-_HasDapsOptionsArray = [_HasDapsOptions,"DAPS Options: "]; 
  
 { 
     if((_X select 0) == false) then {
 		_Return pushBack _X;
 	} 
 } foreach [
-	_HasGearBoxWestArray,_HasGearBoxEASTArray,_HasResupplyStationWestArray,_HasAacRefuelArray,_HasAacServiceHelipadArray,
-	HasMobileHQArray,_HasArsenalGLArray,_HasArsenalLMGArray,_HasHeadlessArray,
-	_HasResupplyStationEastArray,_HasDapsOptionsArray
+	_HasGearBoxArray,
+	_HasResupplyStationArray,
+	_HasMobileServiceStationArray,
+	_HasAacServiceHelipadArray,
+	_HasMobileHQArray,
+	_HasHeadlessArray
 ]; 
  
 if(_Return isNotEqualTo []) then { 

@@ -451,10 +451,7 @@ switch (_TypeOfObjective) do {
 				[_Task,'SUCCEEDED',_TaskNotification] call BIS_fnc_taskSetState;
 				_Object setVariable ['OKS_ObjectiveComplete',true,true];
 
-				OKS_ForceMultiplier = OKS_ForceMultiplier * 0.75;
-				OKS_ResponseMultiplier = OKS_ResponseMultiplier * 1.25;
-				publicVariable "OKS_ForceMultiplier";
-				publicVariable "OKS_ResponseMultiplier";
+				[10] call OKS_fnc_DecreaseMultiplier;			
 			};
 		};
 	};

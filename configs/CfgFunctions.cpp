@@ -43,6 +43,8 @@ class CfgFunctions // Defines a function
 			class SetMissionComplete {};
 			class AddKilledScore {};	
 			class AddCivilianKilled {};				
+			class IncreaseMultiplier {};				
+			class DecreaseMultiplier {};				
 			class Ranks {};				
 			class RespawnHandler {};				
 		};			
@@ -106,23 +108,36 @@ class CfgFunctions // Defines a function
 			class ThrowWeaponsOnGround {};		
 			class GetEthnicity {};
 			class KilledCaptiveEvent {};
-			class SetSurrendered {};				
+			class SetSurrendered {};
+			
+			class HandleChance {};
+			class CheckCooldown {};
+			class Adjust_Shot {};
+			class Adjust_NearFriendlies {};
+			class Adjust_Unarmed {};
+			class Adjust_Suppressed {};
+			class Adjust_Flashbang {};	
 		};		
 
 		class OKS_Vehicles {
 			file = "\OKS_GOL_Misc\functions\vehicles";
+			class Mechanized {};				
+			class Retexture {};
+		};	
+		
+		class OKS_Helicopters {
+			file = "\OKS_GOL_Misc\functions\vehicles\helicopters";
 			class DAP_Config {};
 			class HeliActions {};
 			class Helicopter {};
+			class Helicopter_Protection {};
 			class Helicopter_Code {};
 			class Interact_Apply {};
 			class Interact_Copilot {};
 			class Interact_DoorGunner {};
 			class Interact_Pilot {};
-			class Mechanized {};				
-			class Retexture {};
 			class SetPylonsToTurret {};
-		};			
+		};
 
 		class OKS_RescueFriendly {
 			file = "\OKS_GOL_Misc\functions\tasks\rescuefriendly";

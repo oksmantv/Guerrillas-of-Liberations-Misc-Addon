@@ -64,3 +64,6 @@ private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", f
 if(_surrenderDebug) then {
     format ["%1 dropped all weapons and gear.", name _unit] spawn OKS_fnc_LogDebug;
 };
+
+sleep 2;
+[unit] spawn OKS_fnc_ThrowWeaponsOnGround;

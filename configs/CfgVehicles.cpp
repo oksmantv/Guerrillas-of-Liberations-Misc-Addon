@@ -73,7 +73,8 @@ class CfgVehicles {
     class Air;
     class Helicopter: Air {
         class ACE_Actions {
-            class ACE_MainActions {};
+            class ACE_MainActions;
+            class ACE_SelfActions;
         };
     };
     class Helicopter_Base_F: Helicopter {
@@ -85,7 +86,7 @@ class CfgVehicles {
 					exceptions[] = {};
 					statement = "[_player,_target] call OKS_fnc_Packing_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";	
-				}
+				};
 			};
         };
     };		

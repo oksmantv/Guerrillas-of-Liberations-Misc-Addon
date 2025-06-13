@@ -13,15 +13,15 @@ params [
     ["_NearFriendliesDistance",(missionNamespace getVariable ["GOL_Surrender_FriendlyDistance", 200]),[0]]
 ];
 
+if(_Unit getVariable ["GOL_SurrenderEnabled",false]) exitWith {};
+_Unit setVariable ["GOL_SurrenderEnabled",true,true];
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 private ["_NearPlayers"];
 
 if(hasInterface && !isServer) exitWith {};
-
 if(isNull _Unit) exitWith {
     format ["Surrender Script Unit is null, exiting..",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
 };
-
 if(_surrenderDebug) then {
     format ["Surrender Script Activated for %1 - %2",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
 };
@@ -35,255 +35,74 @@ if (_SurrenderByShot) then {
     _Unit addEventHandler ["Hit", {
         params ["_unit", "_source", "_damage", "_instigator"];
         private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
+        private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
         private _surrenderDistance = _Unit getVariable ["GOL_SurrenderDistance",50];
-        private _nearFriendliesDistance = _Unit getVariable ["GOL_NearFriendliesDistance",200];
+
         if (isPlayer _instigator && (_instigator distance _unit < _surrenderDistance) && vehicle _unit == _unit) then {
-            private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
-            private _side = side (group _unit);
-            private _nearbyFriendlies = (_unit nearEntities [["Man"], _nearFriendliesDistance]) select {
-                side (group _x) isEqualTo _side && alive _x && _x != _unit
-            };
-            private _nearbyFriendliesClose = (_unit nearEntities [["Man"], _nearFriendliesDistance * 0.5]) select {
-                side (group _x) isEqualTo _side && alive _x && _x != _unit
-            };
+            if([_unit, 5, "Hit"] call OKS_fnc_CheckCooldown) then {
+                // Increase for suppression
+                _adjustedChance = [_unit, _baseChance] call OKS_fnc_Adjust_Suppressed;
 
-            if(count _nearbyFriendliesClose > 10) exitWith {}; // Skip if close to a lot of friendlies
+                // Increase for being shot
+                _adjustedChance = [_unit, _adjustedChance] call OKS_fnc_Adjust_Shot;
 
-            private _numFriendlies = count _nearbyFriendlies;
-            private _adjustedChance = _baseChance;
+                // Set to surrendered if unarmed.
+                _adjustedChance = [_unit, _adjustedChance] call OKS_fnc_Adjust_Unarmed;
 
-            // Increase for few friendlies
-            if (_numFriendlies < 10) then {
-                private _inc = 0.015 * (10 - _numFriendlies);
-                _adjustedChance = _adjustedChance + _inc;
-                if(_surrenderDebug) then {
-                    format ["Surrender chance increased by %1%% (few friendlies nearby: %2). New chance: %3%%",(_inc * 100), _numFriendlies, (_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-                };
-            } else {
-                _adjustedChance = _adjustedChance * 0.1;
+                // Handle Surrender
+                [_unit, _adjustedChance] call OKS_fnc_HandleChance;
             };
-
-            // Increase for suppression
-            private _suppression = getSuppression _unit;
-            if (_suppression > 0.7) then {
-                _adjustedChance = _adjustedChance + 0.05;
-                if(_surrenderDebug) then {
-                    format [
-                        "Surrender chance increased by 10%% (suppression: %1). New chance: %2%%",
-                        round(_suppression * 100), round(_adjustedChance * 100)
-                    ] spawn OKS_fnc_LogDebug;
-                };
-            };
-
-            // Increase for being shot
-            _adjustedChance = _adjustedChance + 0.05;
-            if(_surrenderDebug) then {
-                format [
-                    "Surrender chance increased by 10%% (shot). New chance: %1%%",
-                    round(_adjustedChance * 100)
-                ] spawn OKS_fnc_LogDebug;
-            };
-            // Set to surrendered if unarmed.
-            if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
-                _adjustedChance = 0.3;
-                if(_surrenderDebug) then {
-                    format ["Unarmed increased chance to %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-                };
-            };
-
-            _adjustedChance = _adjustedChance min 1;
-            if(_surrenderDebug) then {
-                format ["Final surrender chance: %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-            };
-            private _dice = random 1;
-            if(_surrenderDebug) then {
-                format ["Dice rolled: %1 (must be less than %2 to surrender)", round(_dice * 100), round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-            };
-            if (_dice < _adjustedChance) then {
-                if(_unit getVariable ["GOL_Surrender",false]) then {
-                    [_unit] spawn OKS_fnc_SurrenderHandle;
-                };
-                _unit removeAllEventHandlers "Hit";
-            } else {
-                if(_surrenderDebug) then {"Surrender not triggered by shot." spawn OKS_fnc_LogDebug;}
-            };
-
         };
     }];
 };
 
-
 // Add Surrender by Flashbang
 if (_SurrenderByFlashbang) then {
     ["ace_grenades_flashbangedAI", {
-        _unit = _this select 0;
+        params ["_unit"];
+        private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
         if (_unit getVariable ["GOL_Surrender", false] && vehicle _unit == _unit) then {
-            private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
-            private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
-            private _side = side (group _unit);
-            private _nearFriendliesDistance = _Unit getVariable ["GOL_NearFriendliesDistance",200];
-            private _nearbyFriendlies = (_unit nearEntities [["Man"], _NearFriendliesDistance]) select {
-                side (group _x) isEqualTo _side && alive _x && _x != _unit
-            };
-            private _nearbyPlayers = AllPlayers select {
-                alive _x && _x distance _unit < 50
-            };
-            if(count _nearbyPlayers == 0) exitWith { if(_surrenderDebug) then {"Flashbang Event Cancelled - No players nearby." spawn OKS_fnc_LogDebug; }};
-            private _numFriendlies = count _nearbyFriendlies;
-            private _adjustedChance = _baseChance;
+            if([_unit, 5, "Flashbang"] call OKS_fnc_CheckCooldown) then {
+                // Increase for suppression
+                _adjustedChance = [_unit, _baseChance] call OKS_fnc_Adjust_Suppressed;
 
-             // Increase for flashbang
-            _adjustedChance = _adjustedChance * 1.3;
-            if(_surrenderDebug) then {
-                format [
-                    "Surrender chance increased by 150%% (flashbang). New chance: %1%%",
-                    round(_adjustedChance * 100)
-                ] spawn OKS_fnc_LogDebug;           
-            };
-            // Increase for few friendlies
-            if (_numFriendlies < 10) then {
-                private _inc = 0.015 * (10 - _numFriendlies);
-                private _chanceInProcent = _inc * 100;
-                _adjustedChance = _adjustedChance * (1 + _inc);
-                if(_surrenderDebug) then {
-                    format [
-                        "Surrender chance increased by %1%% (few friendlies nearby: %2). New chance: %3%%",
-                        round(_chanceInProcent), _numFriendlies, round(_adjustedChance * 100)
-                    ] spawn OKS_fnc_LogDebug;
-                };
-            } else {
-                _adjustedChance = _adjustedChance * 0.1
-            };
+                // Increase for being shot
+                _adjustedChance = [_unit, _adjustedChance] call OKS_fnc_Adjust_Shot;
 
-            // Increase for suppression
-            private _suppression = getSuppression _unit;
-            if (_suppression > 0.7) then {
-                _adjustedChance = _adjustedChance * 1.1;
-                if(_surrenderDebug) then {
-                    format [
-                        "Surrender chance increased by 20%% (suppression: %1). New chance: %2%%",
-                        _suppression, (_adjustedChance * 100)
-                    ] spawn OKS_fnc_LogDebug;;
-                };
-            };
+                // Set to surrendered if unarmed.
+                _adjustedChance = [_unit, _adjustedChance] call OKS_fnc_Adjust_Unarmed;
 
-            // Set to surrendered if unarmed.
-            if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
-                _adjustedChance = _adjustedChance * 1.3;
-                if(_surrenderDebug) then {
-                    format ["Unarmed increased chance by %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-                };
-            };
+                // Increase for flashbang
+                _adjustedChance = [_unit, _adjustedChance] call OKS_fnc_Adjust_Flashbang;
 
-            _adjustedChance = _adjustedChance min 1;
-            if(_surrenderDebug) then {
-                format ["Final surrender chance: %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-            };
-            private _dice = random 1;
-            if(_surrenderDebug) then {
-                format ["Dice rolled: %1 %% (must be less than %2 %% to surrender)", round(_dice * 100), round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-            };
-            if (_dice < _adjustedChance) then {
-                if(_unit getVariable ["GOL_Surrender",false]) then {
-                    [_unit] spawn OKS_fnc_SurrenderHandle;
-                    private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];                     
-                    if(_surrenderDebug) then {"Surrender triggered by flashbang!" spawn OKS_fnc_LogDebug;}
-                }
-            } else {
-               if(_surrenderDebug) then { "Surrender not triggered by flashbang." spawn OKS_fnc_LogDebug; }
+                // Handle Surrender
+                [_unit, _adjustedChance] call OKS_fnc_HandleChance;
             };
         };
     }] call CBA_fnc_addEventHandler;
 };
 
-
 // Add FiredNear Event for Surrender.
 _Unit addEventHandler ["Suppressed", {
     params ["_unit", "_distance", "_firer", "_instigator", "_ammoObject", "_ammoClassname", "_ammoConfig"];
 
-    private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
-    private _cooldown = 3; // seconds
-    private _lastCheck = _unit getVariable ["GOL_SurrenderCooldown", -_cooldown];
-    if (CBA_missionTime - _lastCheck < _cooldown) exitWith {}; // Skip if still on cooldown
-    if (_distance > 50) exitWith {}; // Skip if round is far from the unit.
+    if (_distance > 20) exitWith {}; // Skip if round is far from the unit.
     if (!isPlayer _firer) exitWith {}; // Skip if round is not fired from player;
+    private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
+    private _surrenderDistance = _unit getVariable ["GOL_SurrenderDistance",50];
+    if (isPlayer _firer && ((_unit distance _firer) < _surrenderDistance) && vehicle _unit == _unit) then {
+        if([_unit, 5,"Suppressed"] call OKS_fnc_CheckCooldown) then {
+            // Increase if Suppressed
+            _adjustedChance = [_unit, _baseChance] call OKS_fnc_Adjust_Suppressed;
 
-    _unit setVariable ["GOL_SurrenderCooldown", CBA_missionTime];
-    
-    _nearFriendliesDistance = _Unit getVariable ["GOL_NearFriendliesDistance",200];
-    private _nearbyFriendliesClose = (_unit nearEntities [["Man"], _nearFriendliesDistance * 0.5]) select {
-        side (group _x) isEqualTo _side && alive _x && _x != _unit
-    };
+            // Increase if unarmed.
+            _adjustedChance = [_unit, _adjustedChance] call OKS_fnc_Adjust_Unarmed;
 
-    if(count _nearbyFriendliesClose > 10) exitWith {}; // Skip if close to a lot of friendlies
-
-    _surrenderDistance = _unit getVariable ["GOL_SurrenderDistance",50];
-    if (isPlayer _firer && _distance < _surrenderDistance && vehicle _unit == _unit) then {
-        private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
-        private _side = side (group _unit);
-        private _nearbyFriendlies = (_unit nearEntities [["Man"], _NearFriendliesDistance]) select {
-            side (group _x) isEqualTo _side && alive _x && _x != _unit
-        };
-        private _numFriendlies = count _nearbyFriendlies;
-
-        private _adjustedChance = _baseChance;
-        if (_numFriendlies < 10) then {
-            private _inc = 0.015 * (10 - _numFriendlies);
-            _adjustedChance = _adjustedChance + _inc;
-            if(_surrenderDebug) then {
-                format [
-                    "Surrender chance increased by %1 %% (few friendlies nearby: %2). New chance: %3%%",
-                    round(_inc * 100), _numFriendlies, round(_adjustedChance * 100)
-                ] spawn OKS_fnc_LogDebug;
-            };
-        };
-
-        private _suppression = getSuppression _unit;
-        if (_suppression > 0.7) then {
-            _adjustedChance = _adjustedChance * 1.05;
-            if(_surrenderDebug) then {
-                format [
-                    "Surrender chance increased by 5%% (suppression: %1). New chance: %2%%",
-                    _suppression, round(_adjustedChance * 100)
-                ] spawn OKS_fnc_LogDebug;
-            };
-        };
-
-        // Set to surrendered if unarmed.
-        if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
-            _adjustedChance = _adjustedChance * 1.3;
-            if(_surrenderDebug) then {
-                format ["Unarmed increased chance by %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-            };
-        };
-
-        _adjustedChance = _adjustedChance min 1; // Cap at 1 (100%)
-        if(_surrenderDebug) then {
-            format ["Final surrender chance: %1%%", round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-        };
-
-        private _dice = random 1;
-        if(_surrenderDebug) then {
-            format ["Dice rolled: %1 %% (must be less than %2 %% to surrender)", round(_dice * 100), round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
-        };
-
-        if (_dice < _adjustedChance) then {
-            if(_unit getVariable ["GOL_Surrender",false]) then {
-                if(_surrenderDebug) then {
-                    "Surrender triggered!" spawn OKS_fnc_LogDebug;
-                };
-
-                [_unit] spawn OKS_fnc_SurrenderHandle;
-            };
-            _unit removeAllEventHandlers "FiredNear";      
-        } else {
-            if(_surrenderDebug) then {
-                "Surrender not triggered." spawn OKS_fnc_LogDebug;
-            };
+            // Handle Surrender
+            [_unit, _adjustedChance] call OKS_fnc_HandleChance;
         };
     };
 }];
-
 
 if(_surrenderDebug) then {"Surrender Setup OK - Waiting for Nearby Player for Aim Threat" spawn OKS_fnc_LogDebug};
 waitUntil {
@@ -339,7 +158,6 @@ private _pfhId = [
 
             // Debug: Show angle degrees
             //systemChat format ["Angle between player %1 and unit %2: %3", name _x, name _unit, _angleDeg];
-
             if (_angleDeg < _threatTolerance &&
                 behaviour _unit == "COMBAT" &&
                 _unit knowsAbout _X > 3 &&
@@ -349,7 +167,7 @@ private _pfhId = [
                 if(primaryWeapon _unit == "" && secondaryWeapon _unit == "" && handgunWeapon _unit == "") then {
                     _chance = 0.5;
                     if(_surrenderDebug) then { format ["Unarmed increased chance to %1%%", round(_chance * 100)] spawn OKS_fnc_LogDebug; };
-                };
+                }; 
 
                 _unit setVariable ["GOL_Threatened",true,true];
                 _unit spawn {

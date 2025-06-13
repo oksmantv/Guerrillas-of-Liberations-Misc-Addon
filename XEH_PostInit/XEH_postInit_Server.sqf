@@ -61,8 +61,12 @@ if(GOL_Core_Enabled isEqualTo true) then {
             OKS Force & Response Multiplier Values
             Used for increasing hunt intensity
         */
-        missionNamespace setVariable ["GOL_ForceMultiplier", 1, true];
-        missionNamespace setVariable ["GOL_ResponseMultiplier", 1, true];
+        _ForceMultiplier = missionNamespace getVariable "GOL_ForceMultiplier";
+        _ResponseMultiplier = missionNamespace getVariable "GOL_ResponseMultiplier";
+        if(isNil "_ForceMultiplier" && isNil "_ResponseMultiplier") then {
+            missionNamespace setVariable ["GOL_ForceMultiplier", 1, true];
+            missionNamespace setVariable ["GOL_ResponseMultiplier", 1, true];
+        };
 
         /*
             Create Arsenal for Grenadiers & Automatic Riflemen

@@ -84,6 +84,4 @@ if (_vehicle isKindOf "Helicopter") then {
 			_Vehicle setVariable ["ace_rearm_scriptedLoadout", true, true];
 		};
 	};
-
-	_null = [_vehicle] spawn OKS_fnc_Interact_Apply;
 };	

@@ -18,22 +18,7 @@ _unit addEventHandler ["Killed", {
     if (isPlayer _killer) then {
         _unit setVariable ["GOL_CaptiveKilled",true,true];
 
-        // Get current values from mission namespace
-        private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
-        private _responseMultiplier = missionNamespace getVariable ["GOL_ResponseMultiplier", 1];
-        
-        // Increase values by 10%
-        _forceMultiplier = _forceMultiplier * 1.1;
-        _responseMultiplier = _responseMultiplier * 0.9;
-        
-        // Update global variables
-        missionNamespace setVariable ["GOL_ForceMultiplier", _forceMultiplier, true];
-        missionNamespace setVariable ["GOL_ResponseMultiplier", _responseMultiplier, true];
-
-        private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
-        if(_Debug) then {
-            format["Captive Killed - Increasing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] spawn OKS_fnc_LogDebug;
-        };     
+        [15] call OKS_fnc_IncreaseMultiplier;
     };
 }];
 
@@ -79,15 +64,6 @@ private _flags = [];
         _currentPOWs = _currentPOWs + 1;
         missionNamespace setVariable ["GOL_CapturedPOWs", _currentPOWs ,true];
         
-        _forceMultiplier = 1 max (_forceMultiplier * 0.9);
-        _responseMultiplier = 1 max (_responseMultiplier * 1.1);
-
-        missionNamespace setVariable ["GOL_ForceMultiplier", _forceMultiplier, true];
-        missionNamespace setVariable ["GOL_ResponseMultiplier", _responseMultiplier, true];
-
-        private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
-        if(_Debug) then {
-            format[" Captive Captured - Reducing Multipliers by 10%% to %1%% (Force) & %2%% (Response)",round (_forceMultiplier * 100), round (_responseMultiplier * 100)] spawn OKS_fnc_LogDebug;
-        };  
+        [10] call OKS_fnc_DecreaseMultiplier;
     };
 };

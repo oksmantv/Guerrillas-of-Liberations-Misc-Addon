@@ -102,56 +102,60 @@ if(true) then {
     */
     ["CAManBase", "init", {
         params ["_unit"];
-        if (!isPlayer _unit) then {
-            // Add Killed EventHandler for Scores.
-            private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
-            if (_unit isKindOf "CAManBase" && side _unit getFriend _playerSide < 0.6 && side group _unit != civilian) then 
-            {
-                [_unit] call OKS_fnc_AddKilledScore;    
-            };
-
-            if (_unit isKindOf "CAManBase" && side group _unit == civilian) then 
-            {
-                [_unit] call OKS_fnc_AddCivilianKilled;    
-            };        
-
-            private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-            if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
-                _unit spawn {
-                    params ["_unit"];
-                    sleep 1;
-                    [_unit] spawn OKS_fnc_Suppressed;
+        _unit spawn {
+            params ["_unit"];
+            sleep 5;
+            if (!isPlayer _unit) then {
+                // Add Killed EventHandler for Scores.
+                private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
+                if (_unit isKindOf "CAManBase" && side _unit getFriend _playerSide < 0.6 && side group _unit != civilian) then 
+                {
+                    [_unit] call OKS_fnc_AddKilledScore;    
                 };
-            };
 
-            private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-            if(_SurrenderEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
-                _unit spawn {
-                    params ["_unit"];
-                    sleep 1;
-                    [_unit] spawn OKS_fnc_Surrender;
+                if (_unit isKindOf "CAManBase" && side group _unit == civilian) then 
+                {
+                    [_unit] call OKS_fnc_AddCivilianKilled;    
+                };        
+
+                private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
+                if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
+                    _unit spawn {
+                        params ["_unit"];
+                        sleep 1;
+                        [_unit] spawn OKS_fnc_Suppressed;
+                    };
                 };
-            };
 
-            private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-            if(_FaceSwapEnabled) then {
-                // Apply ethnicity and face swap
-                _unit spawn {
-                    params ["_unit"];
-                    sleep 1;
-                    [_unit] spawn OKS_fnc_FaceSwap;
+                private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+                if(_SurrenderEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
+                    _unit spawn {
+                        params ["_unit"];
+                        sleep 1;
+                        [_unit] spawn OKS_fnc_Surrender;
+                    };
                 };
-            };
 
-            if(side group _unit != civilian || vehicle _unit == _unit) then {
-                _unit spawn {
-                    params ["_unit"];
-                    private ["_group"];
-                    sleep 5;
-                    _group = group _unit;
-    
-                    if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {                          
-                        [_group] spawn OKS_fnc_EnablePath;
+                private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+                if(_FaceSwapEnabled) then {
+                    // Apply ethnicity and face swap
+                    _unit spawn {
+                        params ["_unit"];
+                        sleep 1;
+                        [_unit] spawn OKS_fnc_FaceSwap;
+                    };
+                };
+
+                if(side group _unit != civilian || vehicle _unit == _unit) then {
+                    _unit spawn {
+                        params ["_unit"];
+                        private ["_group"];
+                        sleep 5;
+                        _group = group _unit;
+        
+                        if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {                          
+                            [_group] spawn OKS_fnc_EnablePath;
+                        };
                     };
                 };
             };
@@ -167,61 +171,65 @@ if(true) then {
         };
     };
 
-    // Assume first player as reference for "enemy" side
-    private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];   
     {
-        // Add Killed EventHandler for Scores.    
-        if (_x isKindOf "CAManBase" &&
-            !isPlayer _x &&
-            side _x getFriend _playerSide < 0.6 &&
-            side group _x != civilian) then 
-        {
-            [_X] call OKS_fnc_AddKilledScore;    
-        };
+        _X spawn {
+            Params ["_x"];
+            private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];   
+            sleep 5; // Ensure all units are initialized
 
-        if (_X isKindOf "CAManBase" && side group _X == civilian) then 
-        {
-            [_X] call OKS_fnc_AddCivilianKilled;    
-        };        
-
-        if (
-            _x isKindOf "CAManBase" &&
-            !isPlayer _x &&
-            side _x getFriend _playerSide < 0.6 &&
-            side group _x != civilian &&
-            vehicle _X == _X
-        ) then {
-            private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-            if(_SurrenderEnabled) then {                                
-                [_x] spawn OKS_fnc_Surrender
-            };
-        };
-
-        if(_X isKindOf "CAManBase" && !isPlayer _X) then {
-            private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-            if(_SuppressionEnabled && vehicle _X == _X) then {
-                [_x] spawn OKS_fnc_Suppressed
+            // Add Killed EventHandler for Scores.    
+            if (_x isKindOf "CAManBase" &&
+                !isPlayer _x &&
+                side _x getFriend _playerSide < 0.6 &&
+                side group _x != civilian) then 
+            {
+                [_X] call OKS_fnc_AddKilledScore;    
             };
 
-            private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-            if(_FaceSwapEnabled) then {
-                [_x] spawn OKS_fnc_FaceSwap;                   
+            if (_X isKindOf "CAManBase" && side group _X == civilian) then 
+            {
+                [_X] call OKS_fnc_AddCivilianKilled;    
+            };        
+
+            if (
+                _x isKindOf "CAManBase" &&
+                !isPlayer _x &&
+                side _x getFriend _playerSide < 0.6 &&
+                side group _x != civilian &&
+                vehicle _X == _X
+            ) then {
+                private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+                if(_SurrenderEnabled) then {                                
+                    [_x] spawn OKS_fnc_Surrender
+                };
             };
 
-            _x spawn {
-                params ["_X"];
-                private ["_group"];
-                sleep 5;
-                _group = group _X;
-                if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _X != _X) exitWith {
-                    // Exit if already enabled on Group level or if inside vehicle.
+            if(_X isKindOf "CAManBase" && !isPlayer _X) then {
+                private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
+                if(_SuppressionEnabled && vehicle _X == _X) then {
+                    [_x] spawn OKS_fnc_Suppressed
                 };
 
-                if(!isNil "OKS_fnc_EnablePath" && !(_X checkAIFeature "PATH")) then {        
-                    _group setVariable ["OKS_EnablePath_Active",true,true];
-                    [_group] spawn OKS_fnc_EnablePath;
+                private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+                if(_FaceSwapEnabled) then {
+                    [_x] spawn OKS_fnc_FaceSwap;                   
                 };
-            };  
+
+                _x spawn {
+                    params ["_X"];
+                    private ["_group"];
+                    sleep 5;
+                    _group = group _X;
+                    if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _X != _X) exitWith {
+                        // Exit if already enabled on Group level or if inside vehicle.
+                    };
+
+                    if(!isNil "OKS_fnc_EnablePath" && !(_X checkAIFeature "PATH")) then {        
+                        _group setVariable ["OKS_EnablePath_Active",true,true];
+                        [_group] spawn OKS_fnc_EnablePath;
+                    };
+                };  
+            };
         };
     } forEach allUnits;
     };       
