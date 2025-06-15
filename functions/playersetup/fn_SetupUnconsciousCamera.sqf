@@ -15,12 +15,12 @@
             sleep 0.5;
             private _Debug = missionNamespace getVariable ["GOL_Unconscious_CameraDebug",false];
             private _camera = nil;
-            while {!([_Unit] call ace_common_fnc_isAwake)} do {               
+            while {!([_Unit] call ace_common_fnc_isAwake) && Alive _Unit} do {               
                 _playerbloodVolume = _unit getVariable ["ace_medical_bloodVolume", 6];
                 if(_Debug) then {
                     format["Camera: Player Blood: %1 | Camera Active Already: %2 | IsAwake: %3",_playerBloodVolume,_Unit getVariable ["UnconsciousCameraActivated",false],[_Unit] call ace_common_fnc_isAwake] spawn OKS_fnc_LogDebug;
                 };
-                if(_playerbloodVolume < 5.1 && !(_Unit getVariable ["UnconsciousCameraActivated",false]) && !([_Unit] call ace_common_fnc_isAwake)) then {
+                if(_playerbloodVolume < 5.1 && !(_Unit getVariable ["UnconsciousCameraActivated",false]) && !([_Unit] call ace_common_fnc_isAwake) && Alive _Unit) then {
                     _Unit setVariable ["UnconsciousCameraActivated",true,true];
                     private _dir = 0;
                     private _height = 4;
@@ -50,7 +50,13 @@
                     sleep 2;
                     cutText ["", "BLACK IN",3];
 
-                    while {!([_unit] call ace_common_fnc_isAwake)} do {
+                    while {!([_unit] call ace_common_fnc_isAwake) && Alive _unit} do {
+                        if([_unit] call ace_common_fnc_isAwake || !Alive _unit) exitWith {
+                            if(_Debug) then {
+                                format["Camera: %1 is now awake or dead. Exiting camera loop.",name _unit] spawn OKS_fnc_LogDebug;
+                            };
+                            ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
+                        };
                         _playerbloodVolume = _unit getVariable ["ace_medical_bloodVolume", 6];
                         private _Tier = "<t color='#ffff66'>TIER 3</t>";
                         private _TierDebug = "TIER 3";
@@ -77,8 +83,8 @@
                     };			
                 };
                 sleep 5;
-                if([_Unit] call ace_common_fnc_isAwake) exitWith {
-
+                if([_Unit] call ace_common_fnc_isAwake || !Alive _Unit) exitWith {
+                    ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
                 };
             };  
         };
@@ -121,6 +127,7 @@ player addEventHandler ["Killed", {
         _unit setVariable ["GOL_SpectatorCamera", nil, true];
         ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
     } else {
+        ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
         if(_Debug) then {
             format["Camera did not exist when %1 was killed.",name _unit] spawn OKS_fnc_LogDebug;
         };      

@@ -295,7 +295,7 @@ if(true) then {
                 private _frequency = player getVariable ["TFAR_currentSwFrequency", ""];
                 private _isAdditional = false;
 
-                if (!isNil "_radio" && {!isNull _radio}) then {
+                if (!isNil "_radio") then {
                     [_radio, _channel, _frequency, _isAdditional] call TFAR_fnc_doSRTransmitEnd;
                 };
 
@@ -303,7 +303,7 @@ if(true) then {
                 private _lrRadio = player call TFAR_fnc_activeLrRadio;
                 private _lrChannel = player getVariable ["TFAR_currentLrChannel", 1];
                 private _lrFrequency = player getVariable ["TFAR_currentLrFrequency", ""];
-                if (!isNil "_lrRadio" && {!isNull _lrRadio}) then {
+                if (!isNil "_lrRadio") then {
                     [_lrRadio, _lrChannel, _lrFrequency, false] call TFAR_fnc_doLRTransmitEnd;
                 };
             };
