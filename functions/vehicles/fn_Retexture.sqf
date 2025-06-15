@@ -9,6 +9,9 @@
 	]
 ] spawn OKS_fnc_Retexture;
 
+Find Retexture array using this example (Will be in clipboard) replace the array in the example above with the one you want to use:
+copyToClipboard str (cursorObject getVariable ["hiddenSelectionsTextures", getObjectTextures cursorObject]);
+
 */
 
 if(!isServer) exitWith {};
