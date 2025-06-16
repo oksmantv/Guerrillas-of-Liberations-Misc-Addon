@@ -21,6 +21,16 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_DAPS_Enabled",
+    "CHECKBOX",
+    ["Enables APS Setup", "Enables default DAPS Options for the server. This will allow players to use APS features on vehicles."],
+    "GOL_CORE",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+
+[
     "GOL_Core_Debug",
     "CHECKBOX",
     ["Enable DEBUG", "Allows for any debug messages to be broadcast. If disabled, no messages will show regardless of specific debugs turned on."],

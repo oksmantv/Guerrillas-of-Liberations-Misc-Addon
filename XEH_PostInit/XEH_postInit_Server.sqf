@@ -2,10 +2,17 @@ diag_log "OKS_GOL_Misc: XEH_postInit_Server.sqf executed";
 
 GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
 if(GOL_Core_Enabled isEqualTo true) then {
+
     /*
         Server Side Executions
     */
     if(isServer) then {
+        _EnabledDaps = missionNamespace getVariable ["GOL_DAPS_Enabled", false];
+        if(!_EnabledDaps) then {
+            /* DAPS Options */
+            [] spawn OKS_fnc_DisableAPS;
+        };
+
         /* Tent MHQ Setup */
         if (!isNil "Mobile_HQ") then {
             [Mobile_HQ, "small"] call GW_MHQ_Fnc_Handler;

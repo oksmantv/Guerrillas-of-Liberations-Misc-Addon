@@ -47,6 +47,7 @@ class CfgFunctions // Defines a function
 			class DecreaseMultiplier {};				
 			class Ranks {};				
 			class RespawnHandler {};				
+			class DisableAPS {};				
 		};			
 
 		class OKS_Supply {

@@ -19,7 +19,13 @@ _HasAacServiceHelipad = ({typeOf _X == "GOL_Helipad"} count (allMissionObjects "
 _HasAacServiceHelipadArray = [_HasAacServiceHelipad,"AAC Service Helipad: "]; 
  
 _HasMobileHQ = ({vehicleVarName _X == "Mobile_HQ"} count (allMissionObjects "ALL") > 0); 
-_HasMobileHQArray = [HasMobileHQ,"Mobile HQ: "]; 
+_HasMobileHQArray = [_HasMobileHQ,"Mobile HQ: "]; 
+
+_Flag_1 = ({(vehicleVarName _X) find "flag_" > -1 && (vehicleVarName _X) find "_1" > -1} count (allMissionObjects "ALL") > 0); 
+_Flag_1_Array = [_Flag_1,"Flag Staging Area: "]; 
+
+_Flag_2 = ({(vehicleVarName _X) find "flag_" > -1 && (vehicleVarName _X) find "_2" > -1} count (allMissionObjects "ALL") > 0); 
+_Flag_2_Array = [_Flag_2,"Flag FARP: "]; 
  
 _HasHeadless = ({vehicleVarName _X in ["HC","HC2","HC3"]} count allMissionObjects "ALL" > 0); 
 _HasHeadlessArray = [_HasHeadless,"Headless Clients: "]; 
@@ -33,7 +39,9 @@ _HasHeadlessArray = [_HasHeadless,"Headless Clients: "];
 	_HasResupplyStationArray,
 	_HasAacServiceHelipadArray,
 	_HasMobileHQArray,
-	_HasHeadlessArray
+	_HasHeadlessArray,
+	_Flag_1_Array,
+	_Flag_2_Array
 ]; 
  
 if(_Return isNotEqualTo []) then { 
@@ -43,6 +51,7 @@ if(_Return isNotEqualTo []) then {
     } foreach _Return; 
 
     _ReturnText = _ReturnText select [0, (count _ReturnText) - 3];
+	_ReturnText call OKS_fnc_LogDebug;
 } else {
 	_ReturnText = "";
 };
