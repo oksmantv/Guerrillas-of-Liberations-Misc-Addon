@@ -1,6 +1,13 @@
 /*
     Add Unconscious Camera
 */
+_Enabled = missionNamespace getVariable ["GOL_Unconscious_CameraEnabled",true];
+if (!_Enabled) exitWith {
+    if (missionNamespace getVariable ["GOL_Core_Debug", false]) then {
+        "Unconscious Camera is disabled. Exiting setup." spawn OKS_fnc_LogDebug;
+    };
+};
+
 ["ace_unconscious", {
     params ["_unit","_unconscious"];
     private _Debug = missionNamespace getVariable ["GOL_Unconscious_CameraDebug",false];
@@ -57,6 +64,21 @@
                             };
                             ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
                         };
+
+                        private _unit = player;
+                        private _startPos = eyePos _unit;
+                        private _endPos = _startPos vectorAdd [0, 0, 3]; // 3m above eye level
+
+                        private _hits = lineIntersectsSurfaces [_startPos, _endPos, _unit, objNull, true, 1, "GEOM", "FIRE"];
+                        private _isIndoors = count _hits > 0;
+                        if(_isIndoors) then {
+                            if(_Debug) then {
+                                format["Inside - Camera adjusted",name _unit] spawn OKS_fnc_LogDebug;
+                            };                           
+                            _height = 1.5;
+                            _distance = 2;
+                        };
+
                         _playerbloodVolume = _unit getVariable ["ace_medical_bloodVolume", 6];
                         private _Tier = "<t color='#ffff66'>TIER 3</t>";
                         private _TierDebug = "TIER 3";

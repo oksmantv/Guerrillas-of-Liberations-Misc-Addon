@@ -9,14 +9,11 @@
 private _ReturnText = "This template is not missing any NEW template items."; 
 _Return = []; 
  
-_HasGearBox = ({typeOf _X == "GOL_GearBox_WEST"} count (allMissionObjects "ALL") > 0); 
-_HasGearBoxArray = [_HasGearBox,"Gear Box WEST: "]; 
+_HasGearBox = ({(typeOf _X) find "GOL_GearBox" > -1} count (allMissionObjects "ALL") > 0); 
+_HasGearBoxArray = [_HasGearBox,"Gear Box: "]; 
 
-_HasResupplyStation = ({typeOf _X == "GOL_ResupplyStation"} count (allMissionObjects "ALL") > 0); 
+_HasResupplyStation = ({(typeOf _X) find "GOL_ResupplyStation" > -1} count (allMissionObjects "ALL") > 0); 
 _HasResupplyStationArray = [_HasResupplyStation,"Resupply Station: "]; 
-
-_HasMobileServiceStation = ({typeOf _X == "GOL_MobileServiceStation"} count (allMissionObjects "ALL") > 0); 
-_HasMobileServiceStationArray = [_HasMobileServiceStation,"Mobile Service Station: "]; 
  
 _HasAacServiceHelipad = ({typeOf _X == "GOL_Helipad"} count (allMissionObjects "ALL") > 0); 
 _HasAacServiceHelipadArray = [_HasAacServiceHelipad,"AAC Service Helipad: "]; 
@@ -34,7 +31,6 @@ _HasHeadlessArray = [_HasHeadless,"Headless Clients: "];
 } foreach [
 	_HasGearBoxArray,
 	_HasResupplyStationArray,
-	_HasMobileServiceStationArray,
 	_HasAacServiceHelipadArray,
 	_HasMobileHQArray,
 	_HasHeadlessArray

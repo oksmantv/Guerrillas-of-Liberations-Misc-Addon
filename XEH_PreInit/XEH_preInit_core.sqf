@@ -12,6 +12,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Unconscious_CameraEnabled",
+    "CHECKBOX",
+    ["Enables Unconscious Camera", "Enables Unconscious Camera feature. This will allow players to see their surroundings while unconscious."],
+    "GOL_CORE",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_Core_Debug",
     "CHECKBOX",
     ["Enable DEBUG", "Allows for any debug messages to be broadcast. If disabled, no messages will show regardless of specific debugs turned on."],
