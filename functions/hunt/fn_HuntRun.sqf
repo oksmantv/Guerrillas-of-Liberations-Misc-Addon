@@ -73,7 +73,7 @@
 //	Version 1.0
 
 if (hasInterface && !isServer) exitWith {false};	// Ensures only server or HC runs this script
-Private ["_Grp","_SkillVariables","_Skill","_Units","_Leaders","_MinDistance","_UpdateFreqSettings","_ForceRespawnMultiplier"];
+Private ["_Grp","_SkillVariables","_Skill","_Units","_Leaders","_MinDistance","_UpdateFreqSettings","_ForceRespawnMultiplier","_FactionSide"];
 Params
 [
 	["_Side", WEST, [SideUnknown, GrpNull, ObjNull]],
@@ -82,17 +82,22 @@ Params
 	["_Distance", 0, [0]],
 	["_UpdateFreq", 0, [0]],
 	["_Repeat", 0, [0]],
-	["_Code", {}, [{}]]
+	["_Code", {}, [{}]],
+	["_WaypointBehaviour", "SAFE", [""]]
 ];
 
 _isSide = ((typeName _Side) == "SIDE");
+if(_isSide) then {
+	_FactionSide = _Side;
+} else {
+	_FactionSide = side _Side;
+};
 if (_Number == 0 && _isSide) exitWith {SystemChat "NEKY_Hunt: ERROR, spawn 0 units"};
 if (isNull _Zone) exitWith {SystemChat "NEKY_Hunt: ERROR, No trigger zone."};
 if (_Zone getVariable ["NEKY_Hunt_Disabled",false]) exitWith {}; // Exit if Zone is disabled.
 
-// Load settings
-_Settings = [] call OKS_fnc_Hunt_Settings;
-_Settings Params ["_MinDistance","_UpdateFreqSettings","_SkillVariables","_Skill","_Leaders","_Units"];
+_Settings = [_FactionSide] call OKS_fnc_Hunt_Settings;
+_Settings Params ["_MinDistance","_UpdateFreqSettings","_SkillVariables","_Skill","_Leaders","_Units", "_MaxCargoSeat", "_HeliClass", "_PilotClasses", "_CrewClasses", "_ForceRespawnMultiplier"];
 if (_UpdateFreq == 0) then {_UpdateFreq = _UpdateFreqSettings +1};
 if (_Distance == 0) then {_Distance = _MinDistance +1};
 
@@ -107,14 +112,14 @@ WaitUntil {Sleep 1; !isNil "_Temp"};
 
 if (_Zone getVariable ["NEKY_Hunt_Disabled",false]) exitWith {};
 _Temp Params ["_Count","_SpawnPos","_Player"];
-if (_Count != 0) exitWith {_This Spawn OKS_fnc_Hunt_Run};	// Exits and loops function.
+if (_Count != 0) exitWith {_This Spawn OKS_fnc_HuntRun};	// Exits and loops function.
 
 if ((typeName _Side) == "GROUP") then {_Grp = _Side};
 if(isNil "_Grp") exitWith { SystemChat "Run.sqf _Grp is null.. exiting" };
 if(_Grp getVariable ["Disable_Hunt",false]) exitWith  { SystemChat "Hunt disabled on _Grp.. exiting" };
 
 // Start hunting
-[_Grp,_Player,_Zone,_UpdateFreq,_Distance,_Number,_Code,_ForceRespawnMultiplier,_Repeat] spawn OKS_fnc_Hunting;
+[_Grp,_Player,_Zone,_UpdateFreq,_Distance,_Number,_Code,_ForceRespawnMultiplier,_Repeat,_WaypointBehaviour] spawn OKS_fnc_Hunting;
 
 // Execute code
 [_Grp, _Player, _Zone] Spawn _Code;

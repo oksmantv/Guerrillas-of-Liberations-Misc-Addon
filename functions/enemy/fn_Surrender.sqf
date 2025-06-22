@@ -19,8 +19,15 @@ private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", f
 private ["_NearPlayers"];
 
 if(hasInterface && !isServer) exitWith {};
+if(isNil "_Unit") exitWith {
+    if(_surrenderDebug) then {
+        format ["Surrender Script Unit is nil, exiting..",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
+    };
+};
 if(isNull _Unit) exitWith {
-    format ["Surrender Script Unit is null, exiting..",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
+    if(_surrenderDebug) then {
+        format ["Surrender Script Unit is null, exiting..",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
+    };
 };
 if(_surrenderDebug) then {
     format ["Surrender Script Activated for %1 - %2",_Unit, name _Unit] spawn OKS_fnc_LogDebug;

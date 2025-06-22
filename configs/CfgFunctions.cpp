@@ -110,6 +110,7 @@ class CfgFunctions // Defines a function
 			class GetEthnicity {};
 			class KilledCaptiveEvent {};
 			class SetSurrendered {};
+			class Has_Sight {};
 			
 			class HandleChance {};
 			class CheckCooldown {};
@@ -210,6 +211,7 @@ class CfgFunctions // Defines a function
 			class Find_Roadblocks {};
 			class Garrison {};
 			class Garrison_Compound {};
+			class Garrison_Rooftops {};
 			class Patrol_Spawn {};
 			class Populate_Bunkers {};
 			class Populate_Sandbag {};

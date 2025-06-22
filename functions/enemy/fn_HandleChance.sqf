@@ -14,5 +14,7 @@ if (_dice < _adjustedChance) then {
     };
     _unit removeAllEventHandlers "Hit";
 } else {
-    format ["No Surrender: Dice rolled: %1 << %2", round(_dice * 100), round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
+    if(_surrenderDebug) then { 
+        format ["No Surrender: Dice rolled: %1 << %2", round(_dice * 100), round(_adjustedChance * 100)] spawn OKS_fnc_LogDebug;
+    };
 };

@@ -35,6 +35,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable DEBUG", "Allows for any debug messages to be broadcast. If disabled, no messages will show regardless of specific debugs turned on."],
     "GOL_DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Global_Debug",
+    "CHECKBOX",
+    ["Enable Global DEBUG", "Allows for any debug messages to be broadcasted on all clients. If disabled, no messages will show for players but still logged on server."],
+    "GOL_DEBUG",
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -44,7 +53,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable Ambience DEBUG", "Enables debugging for enemy scripts such as the PowerGenerator, Death Score, House Destruction scripts."],
     "GOL_DEBUG",
-    false,
+    true,
     1
 ] call CBA_fnc_addSetting;
 
@@ -53,7 +62,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable Enemy DEBUG", "Enables debugging for enemy scripts such as AdjustDamage, ForceVehicleSpeed, EnablePath etc."],
     "GOL_DEBUG",
-    false,
+    true,
     1
 ] call CBA_fnc_addSetting;
 
@@ -62,7 +71,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable Rotor DEBUG", "Enables debugging for the handleDamage scripts for Mi-8/Mi-24 rotors."],
     "GOL_DEBUG",
-    false,
+    true,
     1
 ] call CBA_fnc_addSetting;
 
@@ -71,7 +80,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable Camera DEBUG", "Enables Camera DEBUG for unconscious state."],
     "GOL_DEBUG",
-    false,
+    true,
     1
 ] call CBA_fnc_addSetting;
 
@@ -80,7 +89,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable MHQ DEBUG", "Enable DEBUG messages for MHQ code."],
     "GOL_DEBUG",
-    false,
+    true,
     1
 ] call CBA_fnc_addSetting;
 
@@ -89,7 +98,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable FaceSwap Debug", "When enabled, DEBUG messages will play in the SystemChat."],
     "GOL_DEBUG",
-    false,
+    true,
     1
 ] call CBA_fnc_addSetting;
 
@@ -98,7 +107,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable Surrender Debug", "When enabled, DEBUG messages will play in the SystemChat."],
     "GOL_DEBUG",
-    false,
+    true,
     1
 ] call CBA_fnc_addSetting;
 
@@ -107,6 +116,42 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enable Suppression Debug", "When enabled, DEBUG messages will play in the SystemChat."],
     "GOL_DEBUG",
-    false,
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Dynamic_Debug",
+    "CHECKBOX",
+    ["Enable Dynamic Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL_DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Hunt_Debug",
+    "CHECKBOX",
+    ["Enable Hunt Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL_DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_AirDrop_Debug",
+    "CHECKBOX",
+    ["Enable AirDrop Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL_DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_AA_Debug",
+    "CHECKBOX",
+    ["Enable AA Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL_DEBUG",
+    true,
     1
 ] call CBA_fnc_addSetting;

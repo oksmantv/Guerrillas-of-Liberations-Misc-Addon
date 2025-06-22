@@ -7,6 +7,7 @@ params ["_unit"];
 
 if(hasInterface && !isServer) exitWith {};
 
+if (isNil "_unit") exitWith {};
 if (isNull _unit) exitWith {};
 
 private _direction = getDir _unit;
@@ -66,4 +67,4 @@ if(_surrenderDebug) then {
 };
 
 sleep 2;
-[unit] spawn OKS_fnc_ThrowWeaponsOnGround;
+[_unit] spawn OKS_fnc_ThrowWeaponsOnGround;

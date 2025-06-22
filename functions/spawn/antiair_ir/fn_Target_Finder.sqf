@@ -1,6 +1,8 @@
 Params ["_Unit","_MinimumAltitude","_MinimumRange","_MaximumRange"];
-	Private ["_PreviousTarget"];
-	_PreviousTarget = [];
+Private ["_PreviousTarget"];
+Private _Debug = missionNamespace getVariable ["OKS_AA_Debug", false];
+
+_PreviousTarget = [];
 	while {alive _Unit} do {
 		_NearbyTargets = AllPlayers select {
 			vehicle _X isKindOf "AIR" &&
@@ -16,13 +18,16 @@ Params ["_Unit","_MinimumAltitude","_MinimumRange","_MaximumRange"];
 				_Unit doFire Vehicle _X;
 			} forEach _NearbyTargets;
 			_PreviousTarget = _NearbyTargets;
-			systemChat "Found Target - Combat Red - Revealed";
+			if(_Debug) then {
+				"Found Target - Combat Red - Revealed" call OKS_fnc_LogDebug;
+			};
 		} else {
 
 			if(!(_Unit getVariable ["AA_isReloading",false])) then {
 				_Unit setCombatMode "BLUE";
-				systemChat "No Target - Combat Blue - Forgot";
-
+				if(_Debug) then {
+					"No Target - Combat Blue - Forgot" call OKS_fnc_LogDebug;
+				};
 				if(_PreviousTarget isNotEqualTo []) then {
 					{
 						_Unit forgetTarget _X

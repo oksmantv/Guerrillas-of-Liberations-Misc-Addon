@@ -14,6 +14,7 @@ Params [
 ];
 Private ["_Unit"];
 
+
 // Main Code
 if(typeName _UnitOrPosition == "OBJECT") then {
 	_Unit = [_UnitOrPosition] call OKS_fnc_Spawn_AntiAir_Soldier;
@@ -48,12 +49,13 @@ if(!isNil "_Array") then {
 
 [_Unit,_ReloadTime,_MinimumAltitude,_MinimumRange,_MaximumRange] spawn {
 	params ["_Unit","_ReloadTime","_MinimumAltitude","_MinimumRange","_MaximumRange"];
+	Private _Debug = missionNamespace getVariable ["OKS_AA_Debug", false];
 	sleep 10;
-	SystemChat "OKS_IR_AA.sqf: Anti-Air Ready - Removing Infantry Weapons.";
+	if(_Debug) then {
+	 	"OKS_IR_AA.sqf: Anti-Air Ready - Removing Infantry Weapons." call OKS_fnc_LogDebug;
+	};
 	[_Unit] remoteExec ["OKS_fnc_Remove_InfantryWeapons",0];
 	[_Unit,_ReloadTime] remoteExec ["OKS_fnc_Forced_Reload",0];
-
-	systemChat str _Unit;
 	[_Unit,_MinimumAltitude,_MinimumRange,_MaximumRange] spawn OKS_fnc_Target_Finder;
 };
 

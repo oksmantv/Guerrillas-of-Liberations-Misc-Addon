@@ -32,7 +32,7 @@
 
 if (hasInterface && !isServer) exitWith {false};		// Ensures only server or HC runs this script
 
-Private ["_HeliType","_WPDistance","_ChuteHeight","_SpareIndex","_SkillVariables","_Rendevouz","_Type","_AIPilotSkill","_AICrewSkill","_AIUnitSkill","_UnitTypes","_OldDropMarker","_DropPosition","_Dir","_Sectors","_CrewSpots","_PilotClasses","_CrewClasses","_EmptyCargoSeats","_LZ","_TeamLeaders","_Temp","_Side","_Direction","_Position","_Index","_HeliClass","_SAD","_UnloadOrDrop","_Ingress","_UnloadOrDropMarker","_Egress","_Units","_UnitsWPs","_Group","_Heli","_x","_HeliGroup","_Pilot","_UnitClasses","_y","_i","_OKS_Dir"];
+Private ["_HeliType","_WPDistance","_ChuteHeight","_SpareIndex","_SkillVariables","_Rendevouz","_Type","_AIPilotSkill","_AICrewSkill","_AIUnitSkill","_UnitTypes","_OldDropMarker","_DropPosition","_Dir","_Sectors","_CrewSpots","_PilotClasses","_CrewClasses","_EmptyCargoSeats","_LZ","_AirDropLeaders","_Temp","_Side","_Direction","_Position","_Index","_HeliClass","_SAD","_UnloadOrDrop","_Ingress","_UnloadOrDropMarker","_Egress","_Units","_UnitsWPs","_Group","_Heli","_x","_HeliGroup","_Pilot","_AirDropUnits","_y","_i","_OKS_Dir"];
 
 Params
 [
@@ -54,12 +54,11 @@ Params
 
 _UnloadOrDrop = (toLower _UnloadOrDrop);
 
-_TeamLeaders = [(_UnitTypes select 0), (_UnitTypes select 1)];
-_UnitClasses = [];
+_AirDropUnits = [];
 _Index = 2;
 for "_i" from 1 to ((count _UnitTypes) -2) do
 {
-	_UnitClasses PushBack (_UnitTypes select _Index);
+	_AirDropUnits PushBack (_UnitTypes select _Index);
 	_Index = _Index +1;
 };
 
@@ -159,7 +158,7 @@ if (_UnloadOrDrop isEqualTo "paradrop") then
 	_Pilot MoveInDriver _Heli;
 	_Pilot SetRank "SERGEANT";
 	_Pilot setVariable ["oks_disable_hunt",true];
-	[_Pilot, "pilot",_Side] call OKS_fnc_AirDropAISkill;
+	[_Pilot, "Pilot",_Side] call OKS_fnc_AirDropAISkill;
 	removeBackPack _Pilot;
 	_Pilot addBackPack "B_Parachute";
 	sleep 1;
@@ -173,7 +172,7 @@ if (_UnloadOrDrop isEqualTo "paradrop") then
 		_Temp setVariable ["oks_disable_hunt",true];
 		if (_Heli getCargoIndex _Temp == -1) then
 		{
-			[_Temp, "crew",_Side] call OKS_fnc_AirDropAISkill;
+			[_Temp, "Crew",_Side] call OKS_fnc_AirDropAISkill;
 			removeBackPack _Temp;
 			_Temp addBackpack "B_Parachute";
 			_Temp SetBehaviour "SAFE";
@@ -303,18 +302,18 @@ if ((_Units Select 0) > 0) then
 			Private "_Unit";
 			if ( (count (units _Group)) == 0 ) then
 			{
-				_Unit = _Group CreateUnit [(_TeamLeaders call BIS_FNC_selectRandom), [0,0,200], [], 0, "NONE"];
+				_Unit = _Group CreateUnit [(_AirDropLeaders call BIS_FNC_selectRandom), [0,0,200], [], 0, "NONE"];
 				_Unit setRank "SERGEANT";
-				[_Unit, "unit", _Side] call OKS_fnc_AirDropAISkill;
+				[_Unit, "Unit", _Side] call OKS_fnc_AirDropAISkill;
 
 				if(!isNil "NEKY_Hunt_CurrentCount") then {
 					NEKY_Hunt_CurrentCount pushBackUnique _Unit;
 					publicVariable "NEKY_Hunt_CurrentCount";
 				};
 			} else {
-				_Unit = _Group CreateUnit [(_UnitClasses call BIS_FNC_selectRandom), [0,0,200], [], 0, "NONE"];
+				_Unit = _Group CreateUnit [(_AirDropUnits call BIS_FNC_selectRandom), [0,0,200], [], 0, "NONE"];
 				_Unit setRank "PRIVATE";
-				[_Unit, "unit", _Side] call OKS_fnc_AirDropAISkill;
+				[_Unit, "Unit", _Side] call OKS_fnc_AirDropAISkill;
 
 				if(!isNil "NEKY_Hunt_CurrentCount") then {
 					NEKY_Hunt_CurrentCount pushBackUnique _Unit;

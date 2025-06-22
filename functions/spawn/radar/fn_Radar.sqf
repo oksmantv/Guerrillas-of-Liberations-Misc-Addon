@@ -14,7 +14,7 @@ Params [
 _Unit = ((crew _Radar) select 0);
 
 while {Alive _Radar} do {
-
+	_Unit moveInAny _Radar;
 	_Targets = (_Radar targets [true]) select {_X isKindOf "AIR"};
 	_AaaVehicles = (_Radar nearEntities ["LandVehicle",_ShareDistance]) select {(typeof _X) in _VehicleClassnames && _Radar distance _X <= _ShareDistance};
 

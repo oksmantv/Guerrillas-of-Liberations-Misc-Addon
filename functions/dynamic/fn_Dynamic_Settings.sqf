@@ -18,7 +18,11 @@ INDEPENDENT FACTIONS:  NAPA
 */
 
 Private _Faction = missionNamespace getVariable ["GOL_Dynamic_Faction","CSAT"];
-systemChat format["[DEBUG] Dynamic Faction Selected - %1",_Faction];
+_Debug = missionNamespace getVariable ["GOL_Dynamic_Debug",false];
+if(_Debug) then {
+	format["[DEBUG] Dynamic Faction Selected - %1",_Faction] call OKS_fnc_LogDebug;
+};
+
 Switch (_Faction) do {
 	case "CSAT": {
 		// CSAT - OPFOR
@@ -379,7 +383,6 @@ _EnableObjectiveTasks = true;
 
 /* Vehicle Type for Roadblock Vehicles - Options: _Wheeled, _APC, _Tank, _AntiAir */
 _RoadblockVehicleType = _APC;
-
 
 /* Civilian Units for Hostage Objectives & HVT Objectives */
 _CivilianUnits = ["C_man_polo_1_F","C_man_polo_2_F","C_man_polo_3_F","C_man_polo_4_F","C_man_polo_5_F","C_man_polo_6_F"];

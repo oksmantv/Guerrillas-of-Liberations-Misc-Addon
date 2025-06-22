@@ -1595,23 +1595,25 @@ Edited by OksmanTV & Bluwolf.
 
 </details>
 <details>
-  <summary>OKS_fnc_ArtyFire</summary>
+  <summary>OKS_fnc_ArtySuppression</summary>
 
   ### Description
-  Spawns and manages an artillery fire mission: an artillery piece (with optional full crew) fires a specified number of rounds at a target position, with configurable rearm and reload times.  
-  Includes projectile management to delete shells after impact or if they travel too far, optimizing performance for large-scale Arma 3 missions.
+  Spawns and manages an artillery fire mission: an artillery piecefires a specified number of rounds at an array of target position, with configurable rearm and reload times.
 
   ### Parameters
 
-  | Name         | Type    | Default     | Description                                                               |
-  |--------------|---------|-------------|---------------------------------------------------------------------------|
-  | `_side`      | Side    | `east`      | Side of the artillery unit.                                               |
-  | `_arty`      | Object  | —           | Artillery object (vehicle or static weapon).                              |
-  | `_target`    | Array   | —           | Target position (array, e.g., `getMarkerPos "marker"`).                   |
-  | `_rof`       | Number  | `5`         | Number of rounds to fire per fire mission.                                |
-  | `_time`      | Number  | `60`        | Rearm time (seconds) between fire missions.                               |
-  | `_reload`    | Number  | `300`       | Reload time (seconds) after expending all rounds.                         |
-  | `_FullCrew`  | Boolean | `false`     | If true, spawns a full crew for the artillery piece.                      |
+  | Name          | Type    | Default     | Description                                                               |
+  |---------------|---------|-------------|---------------------------------------------------------------------------|
+  | `_arty`       | Object  | —           | Artillery object (vehicle or static weapon).                              |
+  | `_targetArray`| Array   | —           | Target position (array, e.g., `getMarkerPos "marker"`).                   |  
+  | `_side`       | Side    | `east`      | Side of the artillery unit.                                               |
+  | `_rof`        | Number  | `3`         | Number of rounds to fire per target.                                      |
+  | `_time`       | Number  | `5`         | Rearm time (seconds) between targetsrounds.                               |
+  | `_unlimited`  | Boolean | `true`      | Artillery has unlimited ammunition.                                       |
+  | `_shouldLoop` | Boolean | `true`      | Artillery should loop after finishing target array.                       |
+  | `_FullCrew`   | Boolean | `false`     | If true, spawns a full crew for the artillery piece.                      |
+  | `_timeLoop`   | Number  | `120`       | Rearm time (seconds) between loops.                                       |
+  | `_shouldMark` | Boolean | `true`      | If true, marks target with red smoke before strike.                       |
 
   ### Example Usage
 
@@ -1744,39 +1746,45 @@ Edited by OksmanTV & Bluwolf.
   <summary>OKS_fnc_Airbase</summary>
 
   ### Description
-  Spawns a helicopter insertion group from a destructible base, with customizable insertion type, group size, and cargo fill. Designed for dynamic, repeatable enemy air assaults triggered by player presence.
+  Spawns a helicopter insertion group from a destructible base, with full control over insertion type, group size, cargo fill, respawn timing, and wave count. Designed for dynamic, repeatable enemy air assaults triggered by player presence.
 
   ### Parameters
-  | Name                  | Type                | Example/Default                | Description                                                                                 |
-  |-----------------------|---------------------|-------------------------------|---------------------------------------------------------------------------------------------|
-  | Base Object           | Object              | `Object_1`                    | Destructible object representing the base. When destroyed, disables further spawns.         |
-  | Spawn Object          | Object              | `Spawn_1`                     | Object indicating where the helicopter/group will spawn and its facing direction.            |
-  | Trigger               | Trigger             | `Trigger_1`                   | Area trigger. When activated by players, enables hunting and spawns.                        |
-  | Side                  | Side                | `EAST`                        | Faction side for spawned units. (e.g., `EAST`, `WEST`, `INDEPENDENT`)                       |
-  | Helicopter Classname  | String              | `"O_Heli_Light_02_dynamicLoadout_F"` | Classname of helicopter to spawn.                                                  |
-  | Type of Insert        | String              | `"Unload"`                    | `"Unload"` (lands and unloads), `"Paradrop"` (paradrop), or `"UnloadThenPatrol"` (lands, then patrols) |
-  | Group/Cargo Array     | Array [Number, %]   | `[2, 1]`                      | `[NumberOfGroups, ProportionOfCargoSpace]` — e.g., `[2, 1]` for 2 groups, 100% cargo used.  |
+  | Name                      | Type                | Example/Default                | Description                                                                                 |
+  |---------------------------|---------------------|-------------------------------|---------------------------------------------------------------------------------------------|
+  | Base Object               | Object              | `Object_1`                    | Destructible object representing the base. When destroyed, disables further spawns.         |
+  | Spawn Object              | Object              | `Spawn_1`                     | Object indicating where the helicopter/group will spawn and its facing direction.            |
+  | Trigger                   | Trigger             | `Trigger_1`                   | Area trigger. When activated by players, enables hunting and spawns.                        |
+  | Side                      | Side                | `EAST`                        | Faction side for spawned units. (e.g., `EAST`, `WEST`, `INDEPENDENT`)                       |
+  | Helicopter Classname      | String              | `"O_Heli_Light_02_dynamicLoadout_F"` | Classname of helicopter to spawn.                                                  |
+  | Type of Insert            | String              | `"Unload"`                    | `"Unload"` (lands and unloads), `"Paradrop"` (paradrop), or `"UnloadThenPatrol"` (lands, then patrols) |
+  | Group/Cargo Array         | Array [Number, %]   | `[2, 1]`                      | `[ProportionOfCargoSpace, NumberOfGroups]` — e.g., `[0.5, 2]` for 2 groups, 50% cargo used.  |
+  | Respawn Timer             | Number (seconds)    | `900`                         | Minimum time (plus random up to this value) before another wave can spawn.                   |
+  | Random LZ Distance        | Number (meters)     | `200`                         | Distance from player for helicopter to select landing zone (LZ).                             |
+  | Refresh Rate              | Number (seconds)    | `30`                          | How often the script checks for player presence and base status.                             |
+  | Respawn Count             | Number              | `4`                           | How many waves of reinforcements will be sent from this base.                                |
 
   ### Example Usage
-  [Object_1, Spawn_1, Trigger_1, EAST, "O_Heli_Light_02_dynamicLoadout_F", "Unload", [2,1]] spawn OKS_fnc_Airbase;
-- This spawns 2 groups, filling 100% of the helicopter’s cargo space, using "Unload" insertion.
+  ```sqf
+  [Object_1, Spawn_1, Trigger_1, EAST, "O_Heli_Light_02_dynamicLoadout_F", "Unload", [0.5,2], 900, 200, 30, 4] spawn OKS_fnc_Airbase;
+  ```
+  - This spawns 2 groups, filling 50% of the helicopter’s cargo space, using "Unload" insertion, with a 900s respawn timer, 200m random LZ, 30s refresh, and up to 4 waves.
 
-### Step-by-Step Guide
-1. **Place a destructible object** (e.g., truck, tent) and name it `Object_1`. Destroying this disables the base.
-2. **Place a spawn object** (e.g., box of matches, helipad) and name it `Spawn_1`. Its orientation sets the spawn direction.
-3. **Create a trigger** and name it `Trigger_1`. Set to "Any Player" and "Repeatable". This defines the hunting/spawn area.
-4. **Add the script call** to your mission logic (e.g., `spawnList.sqf`):
-   ```
-   [Object_1, Spawn_1, Trigger_1, EAST, "O_Heli_Light_02_unarmed_F", "Unload", [2,1]] spawn OKS_fnc_Airbase;
-   ```
-5. **Adjust parameters** as needed for side, helicopter type, insertion mode, group count, and cargo fill.
+  ### Step-by-Step Guide
+  1. **Place a destructible object** (e.g., truck, tent) and name it `Object_1`. Destroying this disables the base.
+  2. **Place a spawn object** (e.g., box of matches, helipad) and name it `Spawn_1`. Its orientation sets the spawn direction.
+  3. **Create a trigger** and name it `Trigger_1`. Set to "Any Player" and "Repeatable". This defines the hunting/spawn area.
+  4. **Add the script call** to your mission logic (e.g., `spawnList.sqf`):
+     ```sqf
+     [Object_1, Spawn_1, Trigger_1, EAST, "O_Heli_Light_02_unarmed_F", "Unload", [0.5,2], 900, 200, 30, 4] spawn OKS_fnc_Airbase;
+     ```
+  5. **Adjust parameters** as needed for side, helicopter type, insertion mode, group count, cargo fill, respawn timing, and wave count.
 
-### Notes
-- Players must be detected by the enemy (knowsAbout > 3.5) within the trigger for the base to activate.
-- When the base object is destroyed, the script will stop spawning new attacks.
-- "UnloadThenPatrol" will land troops and then send the helicopter to patrol the area.
-
-</details>
+  ### Notes
+  - Players must be detected by the enemy (knowsAbout > 3.5) within the trigger for the base to activate.
+  - When the base object is destroyed, the script will stop spawning new attacks.
+  - "UnloadThenPatrol" will land troops and then send the helicopter to patrol the area.
+  - Respawn timer and count allow for multiple waves and dynamic reinforcement pacing.
+  - All parameters after the group/cargo array are optional and will default if omitted.
 <details>
   <summary>OKS_fnc_HuntRun</summary>
 
@@ -1844,7 +1852,7 @@ Edited by OksmanTV & Bluwolf.
 
   ### Example Usage
 
-      [ Trigger_1, false, [8,25,false,false], east, 0, 0, 0, [0,true,false,0], [0,false], [0,false], [0,0,0,0,0], false ] spawn OKS_CreateZone;
+      [ Trigger_1, false, [8,25,false,false], east, 0, 0, 0, [0,true,false,0], [0,false], [0,false], [0,0,0,0,0], false ] spawn OKS_fnc_CreateZone;
 
   - Infantry and vehicles are spawned as static garrisons or patrols, with optional sector objectives and local patrols.
   - Roadblocks, mortars, and objectives can have their own local patrols and are best placed using Eden-Editor locations for optimal results.

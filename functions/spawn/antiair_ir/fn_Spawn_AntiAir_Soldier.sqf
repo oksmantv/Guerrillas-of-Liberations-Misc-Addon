@@ -1,4 +1,6 @@
 Params ["_Position","_Side"];
+
+Private _Debug = missionNamespace getVariable ["OKS_AA_Debug", false];
 	Private ["_Classname"];
 	if(typeName _Position == "ARRAY") then {
 		switch (_Side) do {
@@ -12,7 +14,9 @@ Params ["_Position","_Side"];
 				_Classname = "I_Soldier_AA_F";
 			};				
 			default {
-				SystemChat "OKS_IR_AA.sqf: Side not recognized"
+				if(_Debug) then {
+				 	"OKS_IR_AA.sqf: Side not recognized" call OKS_fnc_LogDebug;
+				};
 			};
 		};
 		_Group = createGroup _Side;

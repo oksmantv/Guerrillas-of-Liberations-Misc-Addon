@@ -9,5 +9,10 @@ if(_Debug) then {
 	_DebugTag = format["[DEBUG-%1]",_ClientTag];
 	_DebugLogMessage = format["%1 %2",_DebugTag,_DebugMessage];
 	diag_log _DebugLogMessage;
-	_DebugLogMessage remoteExec ["systemChat",0];
+	Private _GlobalDebug = missionNamespace getVariable ["GOL_Global_Debug",false];
+	if(_GlobalDebug) then {
+		_DebugLogMessage remoteExec ["systemChat",0];
+	} else {
+		_DebugLogMessage remoteExec ["systemChat",2];
+	};
 };

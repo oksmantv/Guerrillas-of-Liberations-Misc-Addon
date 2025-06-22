@@ -1,5 +1,5 @@
-	// OKS_Garrison_Compound
-	// [5,getPos player,east,["O_Soldier_F"],30] spawn OKS_Garrison_Compound;
+	// OKS_fnc_Garrison_Compound
+	// [5,getPos player,east,["O_Soldier_F"],30] spawn OKS_fnc_Garrison_Compound;
 	if(HasInterface && !isServer) exitWith {};
 
 	Params ["_NumberInfantry","_Position","_Side","_UnitArray","_Range"];
@@ -51,6 +51,3 @@
 		[_Group] remoteExec ["OKS_fnc_SetStatic",0];
 		_Group setVariable ["GOL_IsStatic",true,true];
 		{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _Group;
-		if(_Side isNotEqualTo civilian) then {
-			[_Group] spawn OKS_fnc_EnablePath;
-		};

@@ -1,4 +1,4 @@
-//	[] Call OKS_fnc_Hunt_Settings;
+//	[side] Call OKS_fnc_Hunt_Settings;
 //
 //	Settings for OKS Dynamic.
 //

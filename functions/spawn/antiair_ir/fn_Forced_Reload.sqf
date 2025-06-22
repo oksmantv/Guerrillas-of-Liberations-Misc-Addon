@@ -6,18 +6,23 @@
 
 			_ReloadTimer = {
 				params ["_Unit","_ReloadTime","_magazine"];
+				Private _Debug = missionNamespace getVariable ["OKS_AA_Debug", false];
 				// _Unit setCombatMode "BLUE";
 				// _Unit setBehaviour "CARELESS";
 				// {
 				// 	_Unit forgetTarget (_X);
 				// } foreach (_Unit targets [true]);
+				if(_Debug) then {
+					"Reloading - Combat Blue" call OKS_fnc_LogDebug;
+				};
 				
-				systemChat "Reloading - Combat Blue";
 				sleep _ReloadTime;
 				_Unit setCombatMode "RED";
 				_Unit addMagazine _magazine;
 				_Unit setBehaviour "COMBAT";		
-				systemChat "Reloaded - Combat Red";	
+				if(_Debug) then {
+					"Reloaded - Combat Red";	 call OKS_fnc_LogDebug;
+				};
 				_Unit setVariable ["AA_isReloading",false,true];	
 			};		
 			_ReloadTime = _Unit getVariable "AA_ReloadTime";

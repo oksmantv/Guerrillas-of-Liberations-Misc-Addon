@@ -6,7 +6,7 @@
 //
 //	Made by NeKo-ArroW
 
-Params ["_Grp","_Player","_Zone","_UpdateFreq","_Distance","_Number","_Code","_ForceRespawnMultiplier","_Repeat"];
+Params ["_Grp","_Player","_Zone","_UpdateFreq","_Distance","_Number","_Code","_ForceRespawnMultiplier","_Repeat","_WaypointBehaviour"];
 Private ["_WP1","_WP2","_WPs"];
 
 if(isNil "_Grp") exitWith {
@@ -34,6 +34,9 @@ else
 	_WP1 setWaypointBehaviour "AWARE";
 };
 
+if(!isNil "_WaypointBehaviour") then {
+	_WP1 setWaypointBehaviour _WaypointBehaviour;
+};
 
 // Waypoint at the prey's last updated position
 _WP2 = _Grp addWaypoint	[_Leader, 25, 2];

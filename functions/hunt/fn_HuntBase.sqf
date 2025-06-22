@@ -54,7 +54,8 @@ Params
 	["_Side", East, [sideUnknown]],
 	["_Soldiers", 0, ["",0,[]]],
 	["_RefreshRate", 0, [0]],
-	["_ShouldDeployFlare",true,[true]]
+	["_ShouldDeployFlare",true,[true]],
+	["_WaypointBehaviour","SAFE",[""]]
 ];
 
 Private ["_Group","_Leaders","_Units","_Vehicle","_VehicleClass",
@@ -63,9 +64,10 @@ Private ["_Group","_Leaders","_Units","_Vehicle","_VehicleClass",
 
 sleep 5;
 _IsNight = false;
-_Settings = [] call OKS_fnc_Hunt_Settings;
-_Settings Params ["_MinDistance","_UpdateFreqSettings","_SkillVariables","_Skill","_Leaders","_Units","_MaxCargoSeats"];
+_Settings = [_Side] call OKS_fnc_Hunt_Settings;
+_Settings Params ["_MinDistance","_UpdateFreqSettings","_SkillVariables","_Skill","_Leaders","_Units","_MaxCargoSeats","_HeliClass", "_PilotClasses", "_CrewClasses"];
 
+private _Debug = missionNamespace getVariable ["GOL_Hunt_Debug", false];
 private _ForceMultiplier = missionNameSpace getVariable ["GOL_ForceMultiplier",1];
 private _ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];
 private _MaxCount = missionNameSpace getVariable ["GOL_Hunt_MaxCount",1];
@@ -89,21 +91,33 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 	_ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];	
 	
 	if ((dayTime > 04.30) and (dayTime < 19.30)) then {_KnowsAboutValue = 3.975} else {_KnowsAboutValue = 3.975; _IsNight = true;};
-	SystemChat format["Looking for Players in %1..",_HuntZone];
+	
+	if(_Debug) then {
+		format["Looking for Players in %1..",_HuntZone] call OKS_fnc_LogDebug;
+	};
 	if( {(_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)} count list _HuntZone > 0) then {
 		_DetectDelay = round((_RefreshRate * _ResponseMultiplier) + (Random _RefreshRate * _ResponseMultiplier));
-		SystemChat format["Players detected in %1 - Delay %2 seconds",_HuntZone,_DetectDelay];
+		if(_Debug) then {
+			format["Players detected in %1 - Delay %2 seconds",_HuntZone,_DetectDelay] call OKS_fnc_LogDebug;
+		};
 		sleep _DetectDelay;
 
-		SystemChat str [({isTouchingGround (vehicle _X) && (isPlayer _X) && [objNull, "VIEW"] checkVisibility [eyePos _X, getPosASL _EyeCheck] >= 0.6} count AllPlayers < 1),({isTouchingGround (vehicle _X) && (isPlayer _X)} count list _Trigger < 1)];
+		//SystemChat str [({isTouchingGround (vehicle _X) && (isPlayer _X) && [objNull, "VIEW"] checkVisibility [eyePos _X, getPosASL _EyeCheck] >= 0.6} count AllPlayers < 1),({isTouchingGround (vehicle _X) && (isPlayer _X)} count list _Trigger < 1)];
 
 		if( {isTouchingGround (vehicle _X) && (isPlayer _X) && [objNull, "VIEW"] checkVisibility [eyePos _X, getPosASL _EyeCheck] >= 0.6} count AllPlayers > 0 || {isTouchingGround (vehicle _X) && (isPlayer _X)} count list _Trigger > 0 ) then {
-			if({isTouchingGround (vehicle _X) && isPlayer _X} count list _Trigger > 0) exitWith {systemChat "Players Nearby - Exiting Script"};
+			if({isTouchingGround (vehicle _X) && isPlayer _X} count list _Trigger > 0) exitWith {
+				if(_Debug) then {
+					"Players Nearby - Exiting Script" call OKS_fnc_LogDebug;
+				};
+			};
 		}
 		else
 		{
 			if( {(_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)} count list _HuntZone > 0) then {
-				SystemChat format["Players confirmed in %1",_HuntZone];
+				if(_Debug) then {
+					format["Players confirmed in %1",_HuntZone] call OKS_fnc_LogDebug;
+				};
+				
 				if(_ShouldDeployFlare && _IsNight) then {
 					_flare = "F_20mm_Red" createvehicle ((_Base) ModelToWorld [0,0,500]); 
 					_flare setVelocity [0,0,-10];
@@ -150,7 +164,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 						_Group AllowFleeing 0;
 
 						sleep 1;
-						[_Group, nil, _HuntZone, 0, 30, 0, {}] spawn OKS_fnc_HuntRun;
+						[_Group, nil, _HuntZone, 0, 30, 0, {}, _WaypointBehaviour] spawn OKS_fnc_HuntRun;
 					};
 				};
 
@@ -216,11 +230,13 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 					sleep 5;
 					if(!isNil "_Group") then {
 						if(count units _Group > 1) then {
-							[_Group, nil, _HuntZone, 0, 30, 0, {}] spawn OKS_fnc_HuntRun;
+							[_Group, nil, _HuntZone, 0, 30, 0, {}, _WaypointBehaviour] spawn OKS_fnc_HuntRun;
 						} else {
 							deleteVehicle driver _Vehicle;
 							deleteVehicle _vehicle;
-							systemChat "Only Driver Active - Removing Vehicle..";
+							if(_Debug) then {
+								"Only Driver Active - Removing Vehicle.." call OKS_fnc_LogDebug;
+							};							
 						};
 					};
 				};
@@ -238,7 +254,17 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 
 };
 
-if(!alive _Base) exitWith { SystemChat "Base Destroyed - Exiting Script"; deleteVehicle _Base};
-if(_Waves == 0) exitWith { SystemChat "Waves Depleted - Exiting Script"; deleteVehicle _Base};
+if(!alive _Base) exitWith {
+	if(_Debug) then {
+	 	"Base Destroyed - Exiting Script" call OKS_fnc_LogDebug;
+	};
+	 deleteVehicle _Base;
+};
+if(_Waves == 0) exitWith { 
+	if(_Debug) then {
+	 	"Waves Depleted - Exiting Script" call OKS_fnc_LogDebug;
+	};
+	deleteVehicle _Base;
+};
 
 

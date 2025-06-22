@@ -3,7 +3,7 @@
 // Created by Oksman
 /*
 
-		[Base Object, SpawnObject, Trigger, Side , "Helicopter Classname","Type Of Insert",[NumberOfGroups,%ofVehicleCargoSpace]] spawn OKS_fnc_Airbase;
+		[Base Object, SpawnObject, Trigger, Side , "Helicopter Classname","Type Of Insert",[NumberOfGroups,%ofVehicleCargoSpace], RespawnTimer, RandomDistanceLz, RefreshRate, RespawnCount] spawn OKS_fnc_Airbase;
 
 		Script Parameters:
     	Base Object - If this object is destroyed the camp will no longer spawn attacks, use something that can be destroyed such as trucks, tents, buildings etc.
@@ -16,9 +16,12 @@
 			Number of Groups - This is the amount of groups/teams you want the troops to be split into.
 			Procentage of Cargo Space - This takes a scalar value and estimates a procentage of the cargo slots available in the helicopter. If a helicopter has 10 seats and the procentage is at 0.5 (50%) then 5 enemies will be spawned. Use 1 for 100% and 0.1-0.9 for 10% - 90%.
 		]
+		RespawnTimer - How long to wait before the next wave of reinforcements can be spawned, this is in seconds.
+		RandomDistanceLz - How far away from the player the helicopter will spawn, this is in meters.
+		RefreshRate - How often the script will check for players in the trigger area, this is in seconds.
 
 		Examples on code:
-		[Object_1,Spawn_1,Trigger_1,EAST,"O_Heli_Light_02_dynamicLoadout_F","Unload",[2,1]] spawn OKS_fnc_Airbase;
+		[Object_1,Spawn_1,Trigger_1,EAST,"O_Heli_Light_02_dynamicLoadout_F","Unload",[2,1], 900, 100, 90, 5] spawn OKS_fnc_Airbase;
 
 
 		Step-by-Step Guide:
@@ -32,7 +35,7 @@
 		(This is now the trigger area the enemy spawned units will hunt inside, this means if players are detected within this trigger, they will start spawning units and start hunting. When they leave the AI will cease hunting and cease spawning.)
 
 		You now have all the necessary editor placed objects to use the code. You have a base object, spawn object and a trigger. Now open your spawnList.sqf and paste the following:
-		[Object_1, Spawn_1, Trigger_1,EAST,"O_Heli_Light_02_unarmed_F","Unload",[2,1]] spawn OKS_fnc_Airbase;
+		[Object_1, Spawn_1, Trigger_1,EAST,"O_Heli_Light_02_unarmed_F","Unload",[2,1],900, 100, 90, 5] spawn OKS_fnc_Airbase;
 
 		The final properties in the bracket above is:
 		Side, Helicopter Classname, 		Type of Insert, [Number of Groups, Procentage of Cargo Space].
@@ -44,17 +47,24 @@
 
 if (!isServer) exitWith {false};		// Ensures only server
 
-_Object = _this select 0; // Base Object that can be destroyed to stop reinforcements
-_SpawnPos = _this select 1; // Helipad at Airbase that spawns helicopters
-_ReinforcementZone = _this select 2; // Zone that AI will reinforce if contested by players
-_OKS_Side = _this select 3; // Side of Helicopter Reinforcements
-_Classname = _this select 4; // Helicopter Classname
-_Type = _this select 5; // "Unload" or "Drop"
-_Troops = _this select 6; // [2,1] - [ProcentageofCargoSpace,NumberOfTeamsToSplitInto]
+params [
+    "_Object",                    // 0: Base Object that can be destroyed to stop reinforcements
+    "_SpawnPos",                  // 1: Helipad at Airbase that spawns helicopters
+    "_ReinforcementZone",         // 2: Zone that AI will reinforce if contested by players
+    "_Side",                      // 3: Side of Helicopter Reinforcements
+    "_Classname",                 // 4: Helicopter Classname
+    ["_Type","unload"],                   // 5: "unload" or "drop" or "unloadthenpatrol"
+    ["_Troops",[2,0.5]],                  // 6: [ProcentageofCargoSpace, NumberOfTeamsToSplitInto]
+    ["_AirbaseRespawnTimer", 900],        // 7: Timer until allowed to respawn another wave
+    ["_AirbaseRandomDistanceLZ", 200],    // 8: Distance from player for HLS
+    ["_AirbaseRefreshRate", 30],          // 9: Refresh timer
+    ["_AirbaseRespawnCount", 4]           // 10: How many waves of reinforcements
+];
+
 _PlayerTarget = objNull;
 
-Private ["_AirbaseRespawnTimer","_AirbaseRandomDistanceLZ","_AirbaseRefreshRate","_AirbaseRespawnCount","_EgressPos","_playerHunted","_OKS_Side","_VehicleClassName","_VehicleClassNameArray"];
-Private _Side = _OKS_Side;
+Private ["_EgressPos","_playerHunted","_VehicleClassName","_VehicleClassNameArray"];
+private _Debug = missionNamespace getVariable ["GOL_Hunt_Debug", false];
 _type = toLower _type;
 
 #include "fn_Airdrop_Settings.sqf"
@@ -75,7 +85,7 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 	_playerHunted = [];
 
 	{
-		if (([_ReinforcementZone, _x] call BIS_fnc_inTrigger) && (_OKS_Side knowsAbout _X > 3.5 || _OKS_Side knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)))
+		if (([_ReinforcementZone, _x] call BIS_fnc_inTrigger) && (_Side knowsAbout _X > 3.5 || _Side knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)))
 		then
 		{
 			_playerHunted pushBackUnique _X; sleep 0.5;
@@ -83,7 +93,9 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 	} foreach (AllPlayers - (Entities "HeadlessClient_F"));
 
 	sleep 2;
-	SystemChat str _playerHunted;
+	if(_Debug) then {
+		str _playerHunted call OKS_fnc_LogDebug;
+	};
 
 	if (count _playerHunted != 0) then {
 		_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
@@ -101,18 +113,23 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 				_type = ["unloadthenpatrol","unload","slingdrop","fastrope"] call BIS_fnc_selectRandom;
 			};
 
-			switch (_type) do {
+			switch (toLower _type) do {
 				case "unloadthenpatrol": {
-					SystemChat "Running Unload then Patrol";
-					[_OKS_Side, _Classname, true, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
+					if(_Debug) then {
+						"AirBase Running Unload then Patrol" call OKS_fnc_LogDebug;
+					};
+					[_Side, _Classname, true, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
 				};
 				case "unload": {
-					SystemChat "Running Unload";
-					[_OKS_Side, _Classname, False, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
+					if(_Debug) then {
+						"AirBase Running Unload" call OKS_fnc_LogDebug;
+					};					
+					[_Side, _Classname, False, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
 				};
 			};
-
-			SystemChat "Helicopter Spawned...";
+			if(_Debug) then {
+				"Airbase Helicopter Spawned.." call OKS_fnc_LogDebug;
+			};		
 			_Time = _AirbaseRespawnTimer + (Random _AirbaseRespawnTimer);
 			sleep _Time;
 		};
@@ -125,9 +142,13 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 };
 
 if(!alive _Object) then {
-	SystemChat format["%1 Base Destroyed - Script Ending",_Object];
+	if(_Debug) then {
+		format["%1 Base Destroyed - Script Ending",_Object] call OKS_fnc_LogDebug;
+	};			
 };
 
 if(alive _Object) then {
-	SystemChat format["Enemy Respawns Left: %1 - Script Ending.",_AirbaseRespawnCount];
+	if(_Debug) then {
+		format["Enemy Respawns Left: %1 - Script Ending.",_AirbaseRespawnCount] call OKS_fnc_LogDebug;
+	};			
 };

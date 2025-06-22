@@ -37,7 +37,16 @@ if(typename _TriggerOrPosition == "ARRAY") then {
     _Range = ([[(triggerArea _Trigger) select 0,(triggerArea _Trigger) select 1], [], {_x}, "DESCEND"] call BIS_fnc_sortBy) select 0;
 };
 sleep 1;
-_Buildings = nearestTerrainObjects [_Trigger, ["HOUSE"], _Range];
+
+// Get trigger area and position
+private _center = getPosATL _Trigger;
+private _area = triggerArea _Trigger;
+private _a = _area select 0; // width
+private _b = _area select 1; // height
+
+// Get all buildings in a bounding box covering the trigger
+_Buildings = nearestTerrainObjects [_center, ["HOUSE"], (_a max _b)];
+
 {
     if(_X inArea _Trigger && !(_X getVariable ["OKS_Destroy_Blacklist",false])) then {
         if(_RandomDamage && _DamageVariation isNotEqualTo []) then {
