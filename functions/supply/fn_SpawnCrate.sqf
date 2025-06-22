@@ -31,4 +31,8 @@ if (count _safePos == 0) then {
 };
 
 _crate setDir _dir;
+_crate spawn {
+    sleep 3;
+    [_this, true, [0,1,1], 0, true, true] call ace_dragging_fnc_setCarryable;
+};
 _crate

@@ -2,14 +2,14 @@ class CfgAmmo {
     class M_Titan_AA;
     class oks_ammo_9k38_GOL: M_Titan_AA {
 		displayName = "9K38 - GOL";
-		maneuvrability = 15;
+		maneuvrability = 10;
 		irLock = 1;
 		airLock = 2;
 		cmImmunity = 0.5;
 		maxSpeed = 600;
 		thrust = 200;
 		class ace_missileguidance {
-			enabled = 1;                // Enable ACE guidance
+			enabled = 0;                // Enable ACE guidance
 			pitchRate = 15;             // Max pitch rate (deg/sec)
 			yawRate = 15;               // Max yaw rate (deg/sec)
 			canVanillaLock = 1;         // Disables vanilla lock
