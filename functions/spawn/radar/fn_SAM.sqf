@@ -17,7 +17,7 @@ Params [
 {
 	_SAM removeMagazine _x
 } forEach (magazines _SAM);
-removeWeapon (currentWeapon _SAM);
+_SAM removeWeapon (currentWeapon _SAM);
 _SAM addMagazine "gol_magazine_Missile_s750_x4";
 _SAM addWeapon "gol_weapon_s750Launcher";
 

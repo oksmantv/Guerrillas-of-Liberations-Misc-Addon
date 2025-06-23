@@ -365,8 +365,8 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
-		ace_refuel_fuelCargo = 9999;
-		model = "\A3\Supplies_F_Heli\Fuel\FlexibleTank_01_F.p3d";
+        ace_refuel_fuelCargo = 9999;
+		model = "\A3\Structures_F_Heli\Civ\Constructions\WeldingTrolley_01_F.p3d";
 		class TransportMagazines {};
         class TransportWeapons {};
         class TransportItems {};
