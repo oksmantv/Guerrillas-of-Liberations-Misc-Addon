@@ -539,4 +539,11 @@ class CfgVehicles {
 			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [(_this select 0), ['small_box','east']] call GW_Gear_Fnc_Init }";
 		};
 	};
+
+	class O_SAM_System_04_F;
+    class GOL_O_SAM_System_04_F : O_SAM_System_04_F {
+		displayName = "S-400 (Disabled ACE Guidance)"
+        weapons[] = {"gol_weapon_s750Launcher"}; // Replace default weapon
+        magazines[] = {"gol_magazine_Missile_s750_x4"}; // Replace default magazine
+    };
 };

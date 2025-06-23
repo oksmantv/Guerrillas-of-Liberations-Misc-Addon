@@ -13,6 +13,24 @@ switch (_CompositionValue) do {
 	};
 };
 
+if(_CompositionValue isEqualTo 1) exitWith {
+	if(!isNil "wcrew4") exitWith {
+		if((alive wcrew4)) then {	
+			[wcrew4,_OrbatPath,_CustomCallsign,_Composition] spawn OKS_Fnc_Orbat_SetGroupParams;
+		} else {
+			[wcrew4,_OrbatPath] spawn OKS_Fnc_Orbat_SetGroupInactive;
+		};
+	};
+
+	if(!isNil "ecrew4") exitWith {
+		if((alive ecrew4)) then {	
+			[ecrew4,_OrbatPath,_CustomCallsign,_Composition] spawn OKS_Fnc_Orbat_SetGroupParams;
+		} else {
+			[ecrew4,_OrbatPath] spawn OKS_Fnc_Orbat_SetGroupInactive;
+		};
+	};
+};
+
 /// Change Commander name if applicable
 if(!isNil "w2b1") exitWith {
 	if((alive w2b1)) then {	

@@ -160,9 +160,16 @@ class CfgWeapons {
 	};		
 
 	class rhs_weap_igla;
-	class oks_weapon_igla : rhs_weap_igla {
-		displayName = "9K38 Igla - GOL";
-        magazines[] = { "oks_mag_9k38_rocket_GOL" };
+	class gol_weapon_igla : rhs_weap_igla {
+		displayName = "9K38 Igla (Disabled ACE Guidance)";
+        magazines[] = { "gol_mag_9k38_rocket" };
 		scope = 2;
     };
+
+	class weapon_s750Launcher;
+	class gol_weapon_s750Launcher : weapon_s750Launcher {
+		displayName = "S-400 (Disabled ACE Guidance)";
+        magazines[] = { "gol_magazine_Missile_s750_x4" };
+		scope = 2;
+    };	
 };

@@ -14,6 +14,23 @@ switch (_CompositionValue) do {
 };
 
 /// Change Commander name if applicable
+if(_CompositionValue isEqualTo 1) exitWith {
+	if(!isNil "wcrew1") exitWith {
+		if((alive wcrew1)) then {	
+			[wcrew1,_OrbatPath,_CustomCallsign,_Composition] spawn OKS_Fnc_Orbat_SetGroupParams;
+		} else {
+			[wcrew1,_OrbatPath] spawn OKS_Fnc_Orbat_SetGroupInactive;
+		};
+	};
+
+	if(!isNil "ecrew1") exitWith {
+		if((alive ecrew1)) then {	
+			[ecrew1,_OrbatPath,_CustomCallsign,_Composition] spawn OKS_Fnc_Orbat_SetGroupParams;
+		} else {
+			[ecrew1,_OrbatPath] spawn OKS_Fnc_Orbat_SetGroupInactive;
+		};
+	};
+};
 if(!isNil "w1b1") exitWith {
 	if((alive w1b1)) then {	
 		[w1b1,_OrbatPath,_CustomCallsign,_Composition] spawn OKS_Fnc_Orbat_SetGroupParams;

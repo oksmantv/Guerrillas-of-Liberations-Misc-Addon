@@ -13,11 +13,22 @@ Params [
 	["_MaxRange",3000,[0]]
 ];
 
+// Setup GOL SAM Weapon.
+{
+	_SAM removeMagazine _x
+} forEach (magazines _SAM);
+removeWeapon (currentWeapon _SAM);
+_SAM addMagazine "gol_magazine_Missile_s750_x4";
+_SAM addWeapon "gol_weapon_s750Launcher";
+
+sleep 2;
+
 _SAM setVariable ["SAM_Name",_SAM];
 _SAM setVariable ["SAM_ROF",_RateOfFire];
 _SAM setVariable ["SAM_Ammo_Full",_Ammo];
 _SAM setVariable ["SAM_Ammo",_Ammo];
 _SAM setVariable ["SAM_RR",_ReloadRate];
+
 
 OKS_SAM_FIRED =
 {
