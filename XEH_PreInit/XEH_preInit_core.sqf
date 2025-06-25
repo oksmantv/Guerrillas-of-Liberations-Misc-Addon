@@ -139,6 +139,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Convoy_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL_DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_AirDrop_Debug",
     "CHECKBOX",
     ["Enable AirDrop Debug", "When enabled, DEBUG messages will play in the SystemChat."],

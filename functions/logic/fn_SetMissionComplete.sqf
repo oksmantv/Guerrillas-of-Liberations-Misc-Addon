@@ -1,4 +1,8 @@
 // [] spawn OKS_fnc_SetMissionComplete;
+Params [
+    ["_IsMissionSuccess",false,[false]]
+];
+
 #define CURRENT_WEAPONS player, currentWeapon player, currentMuzzle player
 
 if !(serverCommandAvailable "#kick" || isServer) exitWith {};
@@ -11,7 +15,8 @@ private _show = !(missionNamespace getVariable ["GOL_ShowMissionCompleteHint", f
 missionNamespace setVariable ["GOL_ShowMissionCompleteHint", _show];
 
 if (_show) then {
-    [] spawn {
+    [_IsMissionSuccess] spawn {
+        params ["_IsMissionSuccess"];
         while {missionNamespace getVariable ["GOL_ShowMissionCompleteHint", false]} do {
             // Mission name
             private _missionName = getText (missionConfigFile >> "briefingName");
@@ -28,11 +33,11 @@ if (_show) then {
             private _supportPlayers = (allPlayers - entities "HeadlessClient_F") select {str _x in _SupportUnits && alive _x};
             if(isServer && !isDedicated) then {
                 _groundPlayers = allUnits select {!(str _x in _SupportUnits) && alive _x && side group _X == side group player};
-                _groundPlayers = _groundPlayers select [0, 25];
+                _groundPlayers = _groundPlayers select [0, 20];
                 { _Random = (selectRandom [0,0,0,0,1,2,3,4,5]); _x setVariable ["GOL_Player_Deaths",_Random] } foreach _groundPlayers;
 
                 _supportPlayers = allUnits select {(str _x in _SupportUnits) && alive _x && side group _X == side group player};
-                _supportPlayers = _supportPlayers select [0, 8];
+                _supportPlayers = _supportPlayers select [0, 5];
                 { _Random = (selectRandom [0,0,0,0,1,2,3,4,5]); _x setVariable ["GOL_Player_Deaths",_Random] } foreach _supportPlayers;
             };
             _groundPlayers = [_groundPlayers, [], { _x getVariable ["GOL_Player_Deaths", 0] }, "ASCEND"] call BIS_fnc_sortBy;
@@ -84,6 +89,12 @@ if (_show) then {
             private _formattedTime = format ["%1:%2:%3", _hoursStr, _minutesStr, _secondsStr];
             
             // Structured text for hintSilent
+            _MissionStatus = "MISSION COMPLETE";
+            _MissionStatusColor = "#FFD700";
+            if(_IsMissionSuccess isEqualTo false) then {
+                _MissionStatus = "MISSION FAILED";
+                _MissionStatusColor = "#da1616";
+            };
             private _armaPath = "\a3\ui_f\data\Logos\arma3_white_ca.paa";
             private _logoPath = "\OKS_GOL_MISC\data\images\logo.paa";
             private _playerPath = "\a3\ui_f\data\IGUI\Cfg\MPTable\infantry_ca.paa";
@@ -96,7 +107,7 @@ if (_show) then {
             private _captivePath = "\OKS_GOL_MISC\data\UI\Surrender_ca.paa";
             private _hintText = format [
                 "<img image='%1' size='3'/><img image='%2' size='3'/><br/>" +
-                "<t size='1.8' font='RobotoCondensedBold' color='#FFD700'>MISSION COMPLETE</t><br/>" +
+                "<t size='1.8' font='RobotoCondensedBold' color='%24'>%23</t><br/>" +
                 "<t size='1.1' font='RobotoCondensedBold' color='#FFFFFF'>%3</t><br/><br/>" +
                 "<img image='%4' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Active Players: %5</t><br/>" +
                 "<img image='%6' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Enemies Killed: %7</t><br/>" +
@@ -129,7 +140,9 @@ if (_show) then {
                 _supportCasualty,               // 19
                 _supportDeathsList,             // 20
                 _currentPOWs,                   // 21
-                _captivePath                    // 22
+                _captivePath,                   // 22
+                _MissionStatus,                 // 23
+                _MissionStatusColor             // 24
             ];
 
             parseText _hintText remoteExec ["hintSilent",0];

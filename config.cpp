@@ -133,16 +133,28 @@ class OKS_MissionComplete_base: RscButtonMenu  {
 	h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
     action = "(findDisplay 49) closeDisplay 0; [] spawn OKS_fnc_SetMissionComplete;";
 };
+class OKS_MissionFailed_base: RscButtonMenu  {
+    idc = 470215;
+    text = "MISSION FAILED";
+	tooltip="Sets up safety and scoreboards";    
+	x = "1 * (((safezoneW / safezoneH) min 1.2) / 40) + (safezoneX)";
+	y = "8.5 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
+	w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
+	h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
+    action = "(findDisplay 49) closeDisplay 0; [false] spawn OKS_fnc_SetMissionComplete;";
+};
 
 class RscDisplayInterrupt: RscStandardDisplay {
     class controls {
         class OKS_MissionComplete: OKS_MissionComplete_base {};
+        class OKS_MissionFailed: OKS_MissionFailed_base {};
     };
 };
 
 class RscDisplayMPInterrupt: RscStandardDisplay {
 	class controls {
 		class OKS_MissionComplete: OKS_MissionComplete_base {};
+		class OKS_MissionFailed: OKS_MissionFailed_base {};
 	};
 };
 

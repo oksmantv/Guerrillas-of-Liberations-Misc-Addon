@@ -36,7 +36,7 @@ _VehicleArray Params ["_Count","_Vehicles","_SpeedMeterPerSecond","_DispersionIn
 _CargoArray Params ["_ShouldHaveCargo","_Soldiers"];
 
 Private ["_crewClass","_Units","_Leader","_Vehicles","_DismountCode","_Classname"];
-private _Debug_Variable = false;
+private _Debug = missionNamespace getVariable ["GOL_Convoy_Debug",false];
 
 if(isNil "_ConvoyArray") then {
 	_ConvoyArray = [];
@@ -50,28 +50,29 @@ private _WaitUntilCombat = {
 		[_Group,1500,30,[],[],false] spawn lambs_wp_fnc_taskRush;
 	};
 
-	Params ["_Vehicle","_Crew","_CargoGroup","_Debug_Variable"];
+	Params ["_Vehicle","_Crew","_CargoGroup","_Debug"];
+
     waitUntil {sleep 0.5; {behaviour _X isEqualTo "COMBAT"} count units _Crew > 0};
 	_CargoGroup setBehaviour "COMBAT";
 	_Crew setBehaviour "COMBAT";
 	_CargoGroup setCombatMode "RED"; 
 	_Crew setCombatMode "RED"; 
-    if(_Debug_Variable) then {systemChat format [systemChat "Ambush Detected. Halting Convoy.."]};
+    if(_Debug) then {systemChat format [systemChat "Ambush Detected. Halting Convoy.."]};
     _Vehicle forceSpeed 0;
     _Vehicle setFuel 0;
     _Vehicle setVehicleLock "UNLOCKED";
     [_CargoGroup,_Vehicle] spawn _DismountCode;
 
     if(((!isNull gunner _Vehicle) || (_Vehicle emptyPositions "gunner"> 0)) || ((!isNull commander _Vehicle) || (_Vehicle emptyPositions "commander"> 0))) then {
-    	if(_Debug_Variable) then {systemChat format ["Vehicle is armed, will apply hunt."]};
+    	if(_Debug) then {systemChat format ["Vehicle is armed, will apply hunt."]};
     	sleep (30 + (Random 30));
     	_vehicle forceSpeed -1;
     	_Vehicle setFuel 1;
 
-		if(_Debug_Variable) then {systemChat format ["Hunt Applied to %1 in %2 - %3",_Crew,_Vehicle,[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName]};
+		if(_Debug) then {systemChat format ["Hunt Applied to %1 in %2 - %3",_Crew,_Vehicle,[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName]};
     	[_Crew, 1500, 60, [], [], false] spawn lambs_wp_fnc_taskHunt;
     } else {
-    	if(_Debug_Variable) then {systemChat format ["Vehicle is unarmed, dismount and rush."]};
+    	if(_Debug) then {systemChat format ["Vehicle is unarmed, dismount and rush."]};
     	[_Crew,_Vehicle] spawn _DismountCode;
     };
 };
@@ -145,13 +146,13 @@ For "_i" from 1 to _Count do {
 	};
 
 
-	waitUntil {sleep 1; if(_Debug_Variable) then {systemChat "Waiting for clearance near _Spawn"}; (getPos _Spawn nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []};
-	if(_Debug_Variable) then {systemChat format ["Spawning Vehicle.."]};
+	waitUntil {sleep 1; if(_Debug) then {systemChat "Waiting for clearance near _Spawn"}; (getPos _Spawn nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []};
+	if(_Debug) then {systemChat format ["Spawning Vehicle.."]};
 
 	if(_Vehicles isNotEqualTo []) then {
 		_Classname = _Vehicles select 0;
 		_Vehicles deleteAt 0;
-		if(_Debug_Variable) then{
+		if(_Debug) then{
 			systemChat str [_Classname,_Vehicles];
 		}		
 	};
@@ -164,21 +165,21 @@ For "_i" from 1 to _Count do {
     _Group setVariable ["acex_headless_blacklist",true,true];
 	_Group setVariable ["lambs_danger_disableAI", true,true];
 
-    if(_Debug_Variable) then {systemChat format ["Group: %3 Side: %2 - %1 Class Selected",_crewClass,_Side,_Group]};
+    if(_Debug) then {systemChat format ["Group: %3 Side: %2 - %1 Class Selected",_crewClass,_Side,_Group]};
     if(_Vehicle emptyPositions "commander" > 0) then {
-        if(_Debug_Variable) then { systemChat "Creating Commander"};
+        if(_Debug) then { systemChat "Creating Commander"};
         _Commander = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
         _Commander setRank "SERGEANT";
         _Commander moveinCommander _Vehicle;
     };
     if(_Vehicle emptyPositions "gunner" > 0) then {
-        if(_Debug_Variable) then { systemChat "Creating Gunner"};
+        if(_Debug) then { systemChat "Creating Gunner"};
         _Gunner = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
         _Gunner setRank "CORPORAL";
         _Gunner moveinGunner _Vehicle;
     };
     if(_Vehicle emptyPositions "driver" > 0) then {
-        if(_Debug_Variable) then { systemChat "Creating Driver"};
+        if(_Debug) then { systemChat "Creating Driver"};
         _Driver = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
         _Driver setRank "PRIVATE";
         _Driver moveinDriver _Vehicle;
@@ -236,23 +237,19 @@ For "_i" from 1 to _Count do {
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _Group;
 
 	if (!(_ForcedCareless)) then {
-		[_Vehicle,_Group,_CargoGroup,_Debug_Variable] spawn _WaitUntilCombat;
+		[_Vehicle,_Group,_CargoGroup,_Debug] spawn _WaitUntilCombat;
 	};   
 };
 
 waitUntil{
 	sleep 2;
 	{
-		{isTouchingGround (vehicle _X) && isPlayer _X} count ((leader _X) targets [true, 0, [], 20]) > 0;
+		{isTouchingGround (vehicle _X) && isPlayer _X } count ((leader _X) targets [true, 200, [], 3]) > 0;
 	} count _ConvoyArray > 0
 	||
 	{
-		{(vehicle _X) isKindOf "AIR" && isPlayer _X} count ((leader _X) targets [true, 1000, [], 20]) > 0;
+		{(vehicle _X) isKindOf "AIR" && isPlayer _X} count ((leader _X) targets [true, 300, [], 3]) > 0;
 	} count _ConvoyArray > 0
-	||
-	{
-		{!Alive _X} count units _X > 0
-	} count _ConvoyArray > 0;
 };
-if(_Debug_Variable) then {SystemChat "Detected Enemy. Enabling Combat."};
+if(_Debug) then {SystemChat "Detected Enemy. Enabling Combat."};
 {_X setBehaviour "COMBAT"; _X setCombatMode "RED"; } foreach _ConvoyArray;
