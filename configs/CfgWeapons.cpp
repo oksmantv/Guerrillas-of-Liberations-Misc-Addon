@@ -116,7 +116,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\60mm_HE.paa";
 		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 20;
+			mass = 15;
 		};
 	};
 	class GOL_Packed_60mm_HEAB: ACE_ItemCore {
@@ -129,7 +129,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\60mm_HEAB.paa";
 		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 20;
+			mass = 15;
 		};
 	};
 	class GOL_Packed_60mm_FLARE: ACE_ItemCore {
@@ -142,7 +142,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\60mm_Flare.paa";
 		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 20;
+			mass = 15;
 		};
 	};
 	class GOL_Packed_60mm_Smoke: ACE_ItemCore {
@@ -155,7 +155,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\60mm_Smoke.paa";
 		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 20;
+			mass = 15;
 		};
 	};		
 

@@ -8,7 +8,7 @@ params ["_player"];
     {
         _player = _this select 0;
         private _item = "GOL_Packed_Drone_Supply";
-        private _type = missionNamespace getVariable ["GOL_PackedDroneReconClass", "B_UAV_06_F"];
+        private _type = missionNamespace getVariable ["GOL_PackedDroneSupplyClass", "B_UAV_06_F"];
         if (primaryWeapon _player != "") then {
             _player playMoveNow "AmovPknlMstpSlowWrflDnon";
         };
@@ -33,8 +33,8 @@ params ["_player"];
                     _player removeItem _item;
                     _DroneCrew = createVehicleCrew _object;
                     _player connectTerminalToUAV _object;					
-                    _object setPosATL _pos;
                     _object setDir _dir;
+                    _object setPosATL _pos;
                     _object spawn { 
                         sleep 5;
                         params ["_object"];

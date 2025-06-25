@@ -24,8 +24,9 @@ private _actionName = "Deploying Static AT...";
         _object setVariable ["A3TI_Disable", true,true];
         _object setVariable ["GOL_ItemPacked",_item];
         _player removeItem _item;					
-        _object setPosATL _pos;
         _object setDir _dir;
+        _object setPos _pos;
+        [_player, _object] call ace_dragging_fnc_startCarry;
         ["ace_interact_menu_newControllableObject", [typeOf _object]] call CBA_fnc_globalEvent;
     }
 },{},[_player,_item,_type]] call CBA_fnc_progressBar;	

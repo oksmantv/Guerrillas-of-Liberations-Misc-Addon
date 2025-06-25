@@ -8,60 +8,32 @@ class CfgVehicles {
     };
 	class StaticWeapon : LandVehicle
 	{
-		class ACE_Actions {
-			class ACE_MainActions {};
-		};
-	};
-	class StaticMGWeapon : StaticWeapon
-	{
 		class ACE_Actions: ACE_Actions {
-			class ACE_MainActions : ACE_MainActions {		
-				class Pack_Static {
+			class ACE_MainActions : ACE_MainActions {	
+				class Pack_Static_HMG {
 					displayName = "Pack Static HMG";
-					condition = "alive _target && vehicle _player != _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_Packed_HMG']), 1, true] && count crew _target == 0 && (typeOf _target) == (missionNamespace getVariable ['OKS_PackedHMGClass', 'RHS_M2StaticMG_USMC_D'])";
+					condition = "alive _target && vehicle _player != _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_Packed_HMG']), 1, true] && count crew _target == 0 && (typeOf _target) == (missionNamespace getVariable ['GOL_PackedHMGClass', 'RHS_M2StaticMG_USMC_D'])";
 					exceptions[] = {};
 					statement = "[_player,_target] call OKS_fnc_Packing_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\GOL_HMG_Packed.paa";
 				};	
-			};
-		};
-	};
-	class StaticGrenadeLauncher : StaticWeapon
-	{
-		class ACE_Actions: ACE_Actions {
-			class ACE_MainActions : ACE_MainActions {				
-				class Pack_Static {
+				class Pack_Static_GMG {
 					displayName = "Pack Static GMG";
-					condition = "alive _target && vehicle _player != _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_Packed_GMG']), 1, true] && count crew _target == 0 && (typeOf _target) == (missionNamespace getVariable ['OKS_PackedGMGClass', 'RHS_MK19_TriPod_USMC_WD'])";
+					condition = "alive _target && vehicle _player != _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_Packed_GMG']), 1, true] && count crew _target == 0 && (typeOf _target) == (missionNamespace getVariable ['GOL_PackedGMGClass', 'RHS_MK19_TriPod_USMC_WD'])";
 					exceptions[] = {};
 					statement = "[_player,_target] call OKS_fnc_Packing_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\GOL_GMG_Packed.paa";
-				};	
-			};
-		};
-	};
-	class StaticATWeapon : StaticWeapon
-	{
-		class ACE_Actions: ACE_Actions {
-			class ACE_MainActions : ACE_MainActions {			
+				};			
 				class Pack_Static_AT {
 					displayName = "Pack Static AT";
-					condition = "alive _target && vehicle _player != _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_Packed_AT']), 1, true] && count crew _target == 0 && (typeOf _target) == (missionNamespace getVariable ['OKS_PackedATClass', 'RHS_TOW_TriPod_USMC_D'])";
+					condition = "alive _target && vehicle _player != _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_Packed_AT']), 1, true] && count crew _target == 0 && (typeOf _target) == (missionNamespace getVariable ['GOL_PackedATClass', 'RHS_TOW_TriPod_USMC_D'])";
 					exceptions[] = {};
 					statement = "[_player,_target] call OKS_fnc_Packing_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\GOL_AT_Packed.paa";
 				};	
-			};
-		};
-	};
-
-	class StaticMortar : StaticWeapon
-	{
-		class ACE_Actions: ACE_Actions {
-			class ACE_MainActions : ACE_MainActions {			
 				class Pack_Static_Mortar {
 					displayName = "Pack Static Mortar";
-					condition = "alive _target && vehicle _player != _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_Packed_Mortar']), 1, true] && count crew _target == 0 && (typeOf _target) == (missionNamespace getVariable ['OKS_PackedMortarClass', 'B_G_Mortar_01_F'])";
+					condition = "alive _target && vehicle _player != _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_Packed_Mortar']), 1, true] && count crew _target == 0 && (typeOf _target) == (missionNamespace getVariable ['GOL_PackedMortarClass', 'B_G_Mortar_01_F'])";
 					exceptions[] = {};
 					statement = "[_player,_target] call OKS_fnc_Packing_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\GOL_Mortar_Packed.paa";
@@ -82,7 +54,7 @@ class CfgVehicles {
             class ACE_MainActions: ACE_MainActions {
 				class Pack_Drone {
 					displayName = "Pack Drone";
-					condition = "alive _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_PACKED_DRONE_AP']), 1, true] && (typeOf _target) in [(missionNamespace getVariable ['OKS_PackedDroneAPClass', 'B_UAFPV_RKG_AP']),(missionNamespace getVariable ['OKS_PackedDroneATClass', 'B_UAFPV_AT']),(missionNamespace getVariable ['OKS_PackedDroneReconClass', 'B_UAV_01_F']),(missionNamespace getVariable ['OKS_PackedDroneSupplyClass', 'B_UAV_06_F'])]";
+					condition = "alive _target && _player canAdd [(_target getVariable ['GOL_ItemPacked','GOL_PACKED_DRONE_AP']), 1, true] && (typeOf _target) in [(missionNamespace getVariable ['GOL_PackedDroneAPClass', 'B_UAFPV_RKG_AP']),(missionNamespace getVariable ['GOL_PackedDroneATClass', 'B_UAFPV_AT']),(missionNamespace getVariable ['GOL_PackedDroneReconClass', 'B_UAV_01_F']),(missionNamespace getVariable ['GOL_PackedDroneSupplyClass', 'B_UAV_06_F'])]";
 					exceptions[] = {};
 					statement = "[_player,_target] call OKS_fnc_Packing_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";	
