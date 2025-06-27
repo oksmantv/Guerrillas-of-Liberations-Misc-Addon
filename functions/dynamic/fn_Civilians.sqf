@@ -89,10 +89,6 @@ Private _CreateStaticCivilian = {
 	}
 };
 
-if(isNil _Ethnicity) then {
-	_Ethnicity = "caucasian"
-};
-
 if(_Debug_Variable) then { systemChat format ["Civilian Initiated.."]};
 
 _Group = createGroup civilian;
@@ -166,12 +162,6 @@ if(_HouseWaypoints > 0) then {
 		_InArea deleteAt (_InArea find _House);
 		[getPos _House,true,true] call _CreateSafeSpot;
 	};
-};
-
-if(isNil "OKS_FaceSwap") then {
-	waitUntil{sleep 5; !(isNil "GW_Gear_Fnc_Handler")}
-} else {
-	waitUntil{sleep 5; !(isNil "GW_Gear_Fnc_Handler") && !(isNil "OKS_FaceSwap")}
 };
 
 if(_Debug_Variable) then { systemChat format ["Creating Civilian Module.."]};

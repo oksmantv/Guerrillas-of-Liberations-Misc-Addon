@@ -91,7 +91,7 @@ _SpawnTriggers = [];
 _Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 _Settings Params ["_Units","_SideMarker","_SideColor","_Vehicles","_Civilian","_ObjectiveTypes","_Configurations"];
 _Civilian Params ["_CivilianUnits","_HVT","_DynamicCivilianArray"];
-_DynamicCivilianArray Params ["_CivilianTriggerSize","_CivilianCount","_HouseWaypoints","_RandomWaypoints","_ShouldBeAgent","_ShouldPanic","_Ethnicity"];
+_DynamicCivilianArray Params ["_CivilianTriggerSize","_CivilianCount","_HouseWaypoints","_RandomWaypoints","_ShouldBeAgent","_ShouldPanic"];
 _ObjectiveArray Params ["_Objectives","_ObjectivePatrols"];
 _RoadblockArray Params ["_RoadblockCount","_RoadblockTarmac","_RoadblockPatrols","_RoadblockChance"];
 _MortarArray Params ["_MortarCount","_MortarPatrol"];
@@ -152,11 +152,11 @@ _MainTriggerIsRectangle = _MainTriggerArea select 3;
 				}
 			};
 			private _TotalNumber = _CountInfantryNumber + (_WheeledCount * 4) + (_APCCount * 3) + (_TankCount * 3);
-			[_ZoneType,_Side,_ZoneEnemyType,_TotalNumber,0.8] spawn OKS_CreateUnitMarker;
+			[_ZoneType,_Side,_ZoneEnemyType,_TotalNumber,0.8] spawn OKS_fnc_CreateUnitMarker;
 		};
 	} else {
 		if(_EnableEnemyMarkers && _EnableZoneTypeMarker) then {
-			[_ZoneType,_Side,"infantry",_CountInfantryNumber,0.8] spawn OKS_CreateUnitMarker;
+			[_ZoneType,_Side,"infantry",_CountInfantryNumber,0.8] spawn OKS_fnc_CreateUnitMarker;
 		};
 	};
 
@@ -370,7 +370,7 @@ _MainTriggerIsRectangle = _MainTriggerArea select 3;
 		{
 			_trg = createTrigger ["EmptyDetector", _X, true];
 			_trg setTriggerArea [(_CivilianTriggerSize),(_CivilianTriggerSize), 0, false];
-			[_trg,_CivilianCount,_HouseWaypoints,_RandomWaypoints,_ShouldBeAgent,_ShouldPanic,_Ethnicity,_MainTrigger] spawn OKS_fnc_Civilians;
+			[_trg,_CivilianCount,_HouseWaypoints,_RandomWaypoints,_ShouldBeAgent,_ShouldPanic,_MainTrigger] spawn OKS_fnc_Civilians;
 			sleep 10;
 		} foreach _VillagesInTrigger;
 	};

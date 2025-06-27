@@ -213,6 +213,18 @@ Switch (_Faction) do {
 		_Vehicles = [_Wheeled,_APC,_Tank,_Artillery,_Helicopter,_Transport,_Supply,_AntiAir];
 	};
 
+	case "CUSTOM": {
+		_Wheeled    = (missionNamespace getVariable ["GOL_Dynamic_Custom_Wheeled", ""]) splitString ",";
+		_APC        = (missionNamespace getVariable ["GOL_Dynamic_Custom_APC", ""]) splitString ",";
+		_Tank       = (missionNamespace getVariable ["GOL_Dynamic_Custom_Tank", ""]) splitString ",";
+		_Artillery  = (missionNamespace getVariable ["GOL_Dynamic_Custom_Artillery", ""]) splitString ",";
+		_AntiAir    = (missionNamespace getVariable ["GOL_Dynamic_Custom_AntiAir", ""]) splitString ",";
+		_Helicopter = (missionNamespace getVariable ["GOL_Dynamic_Custom_Helicopter", ""]) splitString ",";
+		_Transport  = (missionNamespace getVariable ["GOL_Dynamic_Custom_Transport", ""]) splitString ",";
+		_Supply     = (missionNamespace getVariable ["GOL_Dynamic_Custom_Supply", ""]) splitString ",";
+		_Vehicles   = [_Wheeled,_APC,_Tank,_Artillery,_Helicopter,_Transport,_Supply,_AntiAir];
+	};	
+
 	Default {
 		// Middle Eastern Insurgents 3CB - OPFOR
 		_Wheeled = ["UK3CB_ADE_O_BTR40", "UK3CB_ADE_O_Hilux_Pkm", "UK3CB_ADE_O_V3S_Closed", "UK3CB_ADE_O_Datsun_Pkm", "UK3CB_ADE_O_Datsun_Open", "UK3CB_ADE_O_Hilux_Dshkm", "UK3CB_ADE_O_Offroad_M2", "UK3CB_ADE_O_Hilux_M2", "UK3CB_ADE_O_LR_M2"];
@@ -355,60 +367,34 @@ Switch (_Side) do
 /* ADDITIONAL SETTINGS */
 
 /* ObjectiveTypes: ["cache","artillery","hostage","hvttruck","ammotruck","radiotower","motorpool","antiair"] If you wish to disable just remove them from the array above. */
-_ObjectiveTypes = ["cache","artillery","hostage","hvttruck","ammotruck","radiotower","motorpool","antiair"];
-
-/* If tasks should show have pop-ups when completed */
-_TaskNotification = false;
-
-/* CompoundSize defines in meters how large a compound is conisdered in this mission. Garrisons will spread out at this distance*/
-_CompoundSize = 25;
-
-/* Standard Patrol size */
-_PatrolSize = 4;
-
-/* EnableEnemyMarkers will place markers at enemy strongpoints, compounds, roadblocks & mortar pits populated by Static Targets */
-_EnableEnemyMarkers = false;
-
-/* Mark Trigger Area with Zone Marker*/
-_EnableZoneMarker = false;
-
-/* Mark Trigger Area with Zone Type Marker */
-_EnableZoneTypeMarker = false;
-
-/* Enemy Marker Color - Default SideColor set to _MarkerColor = false*/
-_MarkerColor = false;
-
-/* Enable Tasking on Objectives - False if you want objectives without tasks attached */
-_EnableObjectiveTasks = true;
-
-/* Vehicle Type for Roadblock Vehicles - Options: _Wheeled, _APC, _Tank, _AntiAir */
-_RoadblockVehicleType = _APC;
-
-/* Civilian Units for Hostage Objectives & HVT Objectives */
-_CivilianUnits = ["C_man_polo_1_F","C_man_polo_2_F","C_man_polo_3_F","C_man_polo_4_F","C_man_polo_5_F","C_man_polo_6_F"];
-
-/* Settings for Dynamic Civilian Module */
-_CivilianTriggerSize = 200;
-_CivilianCount = 8;
-_StaticCivilianCount = 8;
-_HouseWaypoints = 15;
-_RandomWaypoints = 5;
-_ShouldBeAgent = false;
-_ShouldPanic = false;
-_Ethnicity = "middleeast";
-/*
-	_Ethnicity - OKS_FaceSwap - Only works if OKS_Ambience is enabled in MissionSettings.sqf & _ShouldBeAgent is false
-	african
-	asian
-	english
-	american
-	middleeast
-	russian
-	french
-*/
+_ObjectiveTypes = (missionNamespace getVariable ["GOL_Dynamic_ObjectiveTypes", "cache,artillery,hostage,hvttruck,ammotruck,radiotower,motorpool,antiair"]) splitString ",";
+_TaskNotification = missionNamespace getVariable ["GOL_Dynamic_TaskNotification", false];
+_CompoundSize = missionNamespace getVariable ["GOL_Dynamic_CompoundSize", 25];
+_PatrolSize = missionNamespace getVariable ["GOL_Dynamic_PatrolSize", 4];
+_EnableEnemyMarkers = missionNamespace getVariable ["GOL_Dynamic_EnableEnemyMarkers", false];
+_EnableZoneMarker = missionNamespace getVariable ["GOL_Dynamic_EnableZoneMarker", false];
+_EnableZoneTypeMarker = missionNamespace getVariable ["GOL_Dynamic_EnableZoneTypeMarker", false];
+_MarkerColor = missionNamespace getVariable ["GOL_Dynamic_MarkerColor", false];
+_EnableObjectiveTasks = missionNamespace getVariable ["GOL_Dynamic_EnableObjectiveTasks", true];
+_RoadblockVehicleTypeName = missionNamespace getVariable ["GOL_Dynamic_RoadblockVehicleType", "_APC"];
+switch (_RoadblockVehicleTypeName) do {
+    case "_Wheeled":   { _RoadblockVehicleType = _Wheeled; };
+    case "_APC":       { _RoadblockVehicleType = _APC; };
+    case "_Tank":      { _RoadblockVehicleType = _Tank; };
+    case "_AntiAir":   { _RoadblockVehicleType = _AntiAir; };
+    default            { _RoadblockVehicleType = _APC; };
+};
+_CivilianUnits = (missionNamespace getVariable ["GOL_Dynamic_CivilianUnits", "C_man_polo_1_F,C_man_polo_2_F,C_man_polo_3_F,C_man_polo_4_F,C_man_polo_5_F,C_man_polo_6_F"]) splitString ",";
+_CivilianTriggerSize = missionNamespace getVariable ["GOL_Dynamic_CivilianTriggerSize", 200];
+_CivilianCount = missionNamespace getVariable ["GOL_Dynamic_CivilianCount", 8];
+_StaticCivilianCount = missionNamespace getVariable ["GOL_Dynamic_StaticCivilianCount", 8];
+_HouseWaypoints = missionNamespace getVariable ["GOL_Dynamic_HouseWaypoints", 15];
+_RandomWaypoints = missionNamespace getVariable ["GOL_Dynamic_RandomWaypoints", 5];
+_ShouldBeAgent = missionNamespace getVariable ["GOL_Dynamic_ShouldBeAgent", false];
+_ShouldPanic = missionNamespace getVariable ["GOL_Dynamic_ShouldPanic", false];
 
 // DO NOT EDIT ANYTHING BELOW \\
-_DynamicCivilianArray = [_CivilianTriggerSize,_CivilianCount,_StaticCivilianCount,_HouseWaypoints,_RandomWaypoints,_ShouldBeAgent,_ShouldPanic,_Ethnicity];
+_DynamicCivilianArray = [_CivilianTriggerSize,_CivilianCount,_StaticCivilianCount,_HouseWaypoints,_RandomWaypoints,_ShouldBeAgent,_ShouldPanic];
 _Civilian = [_CivilianUnits,_Officer,_DynamicCivilianArray];
 _Configuration = [_CompoundSize,_EnableEnemyMarkers,_EnableZoneMarker,_EnableZoneTypeMarker,_RoadblockVehicleType,_EnableObjectiveTasks,_MarkerColor,_PatrolSize,_TaskNotification];
 [_UnitArray,_SideMarker,_SideColor,_Vehicles,_Civilian,_ObjectiveTypes,_Configuration]
