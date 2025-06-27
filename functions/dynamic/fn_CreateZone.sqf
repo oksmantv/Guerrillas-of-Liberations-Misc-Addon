@@ -106,7 +106,7 @@ _MainTriggerAngle = 0;
 _MainTriggerAngle = _MainTriggerArea select 2;
 _MainTriggerIsRectangle = _MainTriggerArea select 3;
 
-	_ZoneType = createMarker [format ["oks_ZoneTypeMarker_%1",str round(random 80000 + random 9999)], getPos _MainTrigger];
+	_ZoneType = createMarker [format ["oks_ZoneTypeMarker_%1",str round(random 9999 + random 9999)], getPos _MainTrigger];
 
 	if(typeName _InfantryNumber isEqualTo "ARRAY") then {
 		_CountInfantryNumber = (_InfantryNumber select 0) + (_InfantryNumber select 1);

@@ -3,7 +3,7 @@
 	if(HasInterface && !isServer) exitWith {};
 
 	Params["_Area","_NumberOfVehicles","_Range","_Type","_Side"];
-	Private ["_SafePos","_nearRoads","_road","_roadConnectedTo","_connectedRoad","_direction","_VehicleWaypoints","_SelectedVehicles","_Debug_Variable","_Dir","_Group"];
+	Private ["_SafePos","_nearRoads","_road","_roadConnectedTo","_connectedRoad","_direction","_VehicleWaypoints","_SelectedVehicles","_Debug_Variable","_Dir","_Group","_Vehicle"];
 
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 	_Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian"];
