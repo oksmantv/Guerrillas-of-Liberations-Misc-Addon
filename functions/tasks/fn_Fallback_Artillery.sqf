@@ -27,7 +27,7 @@ if(_ShouldBeRandom) then {
 
 _TaskIdArray = [];
 _MarkerArray = [];
-["hq","side","1st Platoon be advised, enemy artillery has zeroed in on your position! Check your map, we have intel that suggests this area will be struck! Get out of there!"] remoteExec ["OKS_Chat",0];
+["hq","side","1st Platoon be advised, enemy artillery has zeroed in on your position! Check your map, we have intel that suggests this area will be struck! Get out of there!"] remoteExec ["OKS_fnc_Chat",0];
 
 {
 	_TaskId = format["OKS_Fallback_Task_%1",random 9999 + (random 9999)];
@@ -65,8 +65,7 @@ _Multiplier = 0.1;
 if(isDedicated) then {
 	_Multiplier = 1;
 };
-_Delay = (140 * _Multiplier);
-systemChat str _Delay;
+_Delay = (_DelayUntilStrike * _Multiplier);
 sleep _Delay;
 
 {
