@@ -169,11 +169,17 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 				};
 
 				if(typeName _Soldiers == "STRING" || typeName _Soldiers == "ARRAY") then {
-
 					_AliveNumber  = count (_CurrentHuntCount select {alive _X});
-
 					if((_MaxCount * _ForceMultiplier) >= _AliveNumber) then {
 						_Waves = _Waves - 1;
+						waitUntil {
+							sleep 10;
+							if(_Debug) then {
+								systemChat "Waiting for clearance near _Spawn"
+							};
+							(getPos _SpawnPos nearEntities ["LandVehicle", 15]) isEqualTo []
+						};
+
 						if(typeName _Soldiers == "ARRAY") then {
 							_VehicleClass = _Soldiers call BIS_fnc_selectRandom;
 							_Vehicle = CreateVehicle [_VehicleClass, _SpawnPos, [], 0, "CAN_COLLIDE"];
