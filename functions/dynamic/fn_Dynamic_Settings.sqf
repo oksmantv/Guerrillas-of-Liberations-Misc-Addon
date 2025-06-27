@@ -7,17 +7,7 @@
 Params["_Side"];
 Private ["_Units","_SideMarker","_SideColor","_Vehicles","_Wheeled","_APC","_Tank","_Artillery","_Supply","_Transport","_Civilian","_Officer","_Settings","_AntiAir","_EnableEnemyMarkers","_RoadblockVehicleType","_UnitArray","_MarkerColor"];
 
-/* Faction Selection for Vehicles spawned by OKS_Dynamic
-
-	* = Not updated with 3CB thus broken <<< Important!
-
-BLUFOR FACTIONS:       CDF LDF TANOA
-OPFOR FACTIONS:        CSAT ARDISTAN CHEDAKI COMMUNIST_REBELS DESERT_INSURGENTS DESERT_MILITIA RUSSIA_MODERN SOVIET TKA
-INDEPENDENT FACTIONS:  NAPA
-
-*/
-
-Private _Faction = missionNamespace getVariable ["GOL_Dynamic_Faction","CSAT"];
+Private _Faction = toUpper(missionNamespace getVariable ["GOL_Dynamic_Faction","CSAT"]);
 _Debug = missionNamespace getVariable ["GOL_Dynamic_Debug",false];
 if(_Debug) then {
 	format["[DEBUG] Dynamic Faction Selected - %1",_Faction] call OKS_fnc_LogDebug;
@@ -213,7 +203,8 @@ Switch (_Faction) do {
 		_Vehicles = [_Wheeled,_APC,_Tank,_Artillery,_Helicopter,_Transport,_Supply,_AntiAir];
 	};
 
-	case "CUSTOM": {
+	case "CUSTOM":
+	{
 		_Wheeled    = (missionNamespace getVariable ["GOL_Dynamic_Custom_Wheeled", ""]) splitString ",";
 		_APC        = (missionNamespace getVariable ["GOL_Dynamic_Custom_APC", ""]) splitString ",";
 		_Tank       = (missionNamespace getVariable ["GOL_Dynamic_Custom_Tank", ""]) splitString ",";
@@ -226,16 +217,9 @@ Switch (_Faction) do {
 	};	
 
 	Default {
-		// Middle Eastern Insurgents 3CB - OPFOR
-		_Wheeled = ["UK3CB_ADE_O_BTR40", "UK3CB_ADE_O_Hilux_Pkm", "UK3CB_ADE_O_V3S_Closed", "UK3CB_ADE_O_Datsun_Pkm", "UK3CB_ADE_O_Datsun_Open", "UK3CB_ADE_O_Hilux_Dshkm", "UK3CB_ADE_O_Offroad_M2", "UK3CB_ADE_O_Hilux_M2", "UK3CB_ADE_O_LR_M2"];
-		_APC = ["UK3CB_ADE_O_BTR40_MG", "UK3CB_ADE_O_MTLB_PKT", "UK3CB_ADE_O_BRDM2"];
-		_Tank = ["UK3CB_ADE_O_T34"];
-		_Artillery = ["UK3CB_ADE_O_Hilux_Mortar", "UK3CB_ADE_O_D30", "UK3CB_ADE_O_2b14_82mm"];
-		_AntiAir = ["UK3CB_ADE_O_V3S_Zu23", "UK3CB_ADE_O_ZU23"];
-		_Helicopter = ["UK3CB_ARD_O_Mi8"];
-		_Transport = ["UK3CB_ADE_O_V3S_Closed"];
-		_Supply = ["UK3CB_ADE_O_V3S_Reammo", "UK3CB_ADE_O_V3S_Refuel", "UK3CB_ADE_O_V3S_Repair", "UK3CB_ADE_O_Van_Fuel"];
-		_Vehicles = [_Wheeled,_APC,_Tank,_Artillery,_Helicopter,_Transport,_Supply,_AntiAir];
+		if(_Debug) then {
+			format["[DEBUG] Dynamic Faction - NO MATCHING FACTION: %1",_Faction] call OKS_fnc_LogDebug;
+		};	
 	};
 };
 
