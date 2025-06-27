@@ -131,7 +131,7 @@ class OKS_MissionComplete_base: RscButtonMenu  {
 	y = "7 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
 	w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
 	h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
-    action = "(findDisplay 49) closeDisplay 0; [] spawn OKS_fnc_SetMissionComplete;";
+    action = "(findDisplay 49) closeDisplay 0; [true] spawn OKS_fnc_SetMissionComplete;";
 };
 class OKS_MissionFailed_base: RscButtonMenu  {
     idc = 470215;
