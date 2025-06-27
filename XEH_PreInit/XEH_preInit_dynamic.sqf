@@ -8,7 +8,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Faction", 
         "Select the faction to use for dynamic operations."
     ],
-    "GOL_Dynamic",
+    "GOL Dynamic",
     [
         // Display names
         [

@@ -58,7 +58,7 @@
 		_Group = [_Position,_Direction, selectRandom _VehicleTypes, _Side, 0, _CargoCount] call OKS_fnc_CreateVehicleWithCrew;
 	};
 	if(typeName _InfantryCountOrVehicleArray == "SCALAR") then {
-		for "_i" from 1 to (_NumberInfantry) do
+		for "_i" from 1 to (_InfantryCountOrVehicleArray) do
 		{
 			Private "_Unit";
 			if ( (count (units _Group)) == 0 ) then
@@ -78,7 +78,7 @@
 	};
 	sleep 5;
 	if(count units _Group == 0) exitWith {
-		"Lambs SpawnGroup did not spawn any units. Possibly wrong parameter use." spawn OKS_LogDebug;
+		"Lambs SpawnGroup did not spawn any units. Possibly wrong parameter use." spawn OKS_fnc_LogDebug;
 	};
 
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill"]; _Array pushBackUnique _X } foreach units _Group;

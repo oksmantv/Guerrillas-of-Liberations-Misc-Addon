@@ -42,7 +42,7 @@ if (!_Enabled) exitWith {
                         _Position = (getPosATL _unit) getPos [_distance,_Dir];
                         _camera = "camera" camCreate [_Position select 0,_Position select 1,_height];     
                     };
-                    _camera camSetTarget player;
+                    _camera camSetTarget _unit;
                     _unit setVariable ["GOL_SpectatorCamera",_camera,true];	
                     cutText ["", "BLACK OUT",1]; sleep 1;
                     
@@ -65,7 +65,6 @@ if (!_Enabled) exitWith {
                             ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
                         };
 
-                        private _unit = player;
                         private _startPos = eyePos _unit;
                         private _endPos = _startPos vectorAdd [0, 0, 3]; // 3m above eye level
 
@@ -102,6 +101,12 @@ if (!_Enabled) exitWith {
                         _camera camSetPos [_Position select 0,_Position select 1,_height];
                         _camera camCommit 3;
                         sleep 3;
+                        if([_unit] call ace_common_fnc_isAwake || !Alive _unit) exitWith {
+                            if(_Debug) then {
+                                format["Camera: %1 is now awake or dead. Exiting camera loop.",name _unit] spawn OKS_fnc_LogDebug;
+                            };
+                            ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
+                        };                       
                     };			
                 };
                 sleep 5;
@@ -139,15 +144,14 @@ player addEventHandler ["Killed", {
     _unit setVariable ["UnconsciousCameraActivated",false,true];
     private _camera = _unit getVariable ["GOL_SpectatorCamera", objNull];
     private _Debug = missionNamespace getVariable ["GOL_Unconscious_CameraDebug",false];
-    if (!isNull _camera) then {
-        if(_Debug) then {
-            format["Camera Disabled for %1. Killed.",name _this] spawn OKS_fnc_LogDebug;
-        };    
-        
+    if (!isNull _camera) then {        
         _camera cameraEffect ["terminate", "back"];
         camDestroy _camera;
         _unit setVariable ["GOL_SpectatorCamera", nil, true];
         ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
+        if(_Debug) then {
+            format["Camera Disabled for %1. Killed.",name _unit] spawn OKS_fnc_LogDebug;
+        };    
     } else {
         ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
         if(_Debug) then {
