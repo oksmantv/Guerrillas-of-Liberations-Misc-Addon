@@ -126,7 +126,7 @@ if(_CountStrongpoints > 0) then {
 		{
 			_Stronghold = createMarker [format ["oks_Stronghold_Marker_%1",str round(random 90000)],_X];
 			if(_EnableEnemyMarkers && _Side != civilian) then {
-				[_Compound,_Side,"infantry",_StrongholdNumber,0.8] spawn OKS_fnc_CreateUnitMarker;
+				[_Stronghold,_Side,"infantry",_StrongholdNumber,0.8] spawn OKS_fnc_CreateUnitMarker;
 			};
 
 			_Group = [_StrongholdNumber,nearestBuilding (getPos _X),_Side,_UnitArray] call OKS_fnc_Garrison;
