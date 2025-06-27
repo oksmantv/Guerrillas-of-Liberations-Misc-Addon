@@ -6,7 +6,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "GOL_CORE_Enabled",
     "CHECKBOX",
     ["Enables features from FW Version 2.7", "Enables all features added in the GOL Misc Addon."],
-    "GOL_CORE",
+    "GOL CORE",
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -15,7 +15,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "GOL_Unconscious_CameraEnabled",
     "CHECKBOX",
     ["Enables Unconscious Camera", "Enables Unconscious Camera feature. This will allow players to see their surroundings while unconscious."],
-    "GOL_CORE",
+    "GOL CORE",
     true,
     1
 ] call CBA_fnc_addSetting;
@@ -24,7 +24,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "GOL_DAPS_Enabled",
     "CHECKBOX",
     ["Enables APS Setup", "Enables default DAPS Options for the server. This will allow players to use APS features on vehicles."],
-    "GOL_CORE",
+    "GOL CORE",
     false,
     1
 ] call CBA_fnc_addSetting;
