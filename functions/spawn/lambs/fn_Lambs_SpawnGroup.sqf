@@ -1,12 +1,19 @@
 /*
 	OKS_Lambs_SpawnGroup
 	[SpawnPos,"rush",UnitsPerBase,Side,Range,[]] spawn OKS_fnc_Lambs_SpawnGroup;
+	[SpawnPos,"rush",VehicleArray,Side,Range,[]] spawn OKS_fnc_Lambs_SpawnGroup;
+
+	_VehicleArray = [[vehicleClassname], CrewSelect, CargoCount];
+	[VehicleClassname] // Array of Vehicle classnames (Random Select)
+	CrewSelect // 0 = full crew, 1 = driver only, 2 = gunner only, 3 = commander only
+	CargoCount // Amount of Infantry in Cargo
+	
 */
 
  	if(!isServer) exitWith {};
 
-	Params ["_SpawnPos","_LambsType",["_NumberInfantry",5,[0]],["_Side",east,[sideUnknown]],["_Range",1500,[0]],["_Array",[],[[]]]];
-	private ["_RandomPos","_Center"];
+	Params ["_SpawnPos","_LambsType",["_InfantryCountOrVehicleArray",5,[0,[]]],["_Side",east,[sideUnknown]],["_Range",1500,[0]],["_Array",[],[[]]]];
+	private ["_RandomPos","_Center","_Direction","_Position"];
 
 	private _KnowsAboutTargets = {
 		params ["_Group","_Range"];
@@ -21,30 +28,61 @@
 	_UnitArray Params ["_Leaders","_Units","_Officer"];
 	_Group = CreateGroup _Side;
 	_Group setVariable ["acex_headless_blacklist",true,true];
-	for "_i" from 1 to (_NumberInfantry) do
-	{
-		Private "_Unit";
-		if ( (count (units _Group)) == 0 ) then
-		{
-			_Unit = _Group CreateUnit [(_Leaders call BIS_FNC_selectRandom), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
-			_Unit setRank "SERGEANT";
-		} else {
-			if(count (units _Group) == 1) then {
-				_Unit = _Group CreateUnit [(_Units select 0), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
-			} else {
-				_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
-			};			
-			_Unit setRank "PRIVATE";
-		};
-		sleep 0.5;
+
+	private _GetDirToNearestPlayer = {
+		params ["_OriginPosition"];
+
+		// Filter out headless clients and non-human players
+		private _realPlayers = allPlayers - entities "HeadlessClient_F";
+
+		// Sort players by proximity to _unit
+		private _sortedPlayers = [_realPlayers, [], { _OriginPosition distance _x }, "ASCEND"] call BIS_fnc_sortBy;
+
+		// Get nearest player and direction
+		private _nearestPlayer = _sortedPlayers select 0;
+		private _direction = _OriginPosition getDir _nearestPlayer;
+
+		_direction
 	};
+
+	if(typeName _SpawnPos == "OBJECT") then {
+		_Direction = getDir _SpawnPos;
+		_Position = getPosATL _SpawnPos;
+	} else {
+		_Direction = [_SpawnPos] call _GetDirToNearestPlayer;
+		_Position = _SpawnPos;
+	};
+
+	if(typeName _InfantryCountOrVehicleArray == "ARRAY") then {
+		_InfantryCountOrVehicleArray params ["_VehicleTypes","_CargoCount"];
+		_Group = [_Position,_Direction, selectRandom _VehicleTypes, _Side, 0, _CargoCount] call OKS_fnc_CreateVehicleWithCrew;
+	};
+	if(typeName _InfantryCountOrVehicleArray == "SCALAR") then {
+		for "_i" from 1 to (_NumberInfantry) do
+		{
+			Private "_Unit";
+			if ( (count (units _Group)) == 0 ) then
+			{
+				_Unit = _Group CreateUnit [(_Leaders call BIS_FNC_selectRandom), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
+				_Unit setRank "SERGEANT";
+			} else {
+				if(count (units _Group) == 1) then {
+					_Unit = _Group CreateUnit [(_Units select 0), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
+				} else {
+					_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
+				};			
+				_Unit setRank "PRIVATE";
+			};
+			sleep 0.5;
+		};
+	};
+	sleep 5;
+	if(count units _Group == 0) exitWith {
+		"Lambs SpawnGroup did not spawn any units. Possibly wrong parameter use." spawn OKS_LogDebug;
+	};
+
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill"]; _Array pushBackUnique _X } foreach units _Group;
 	Call Compile Format ["PublicVariable '%1'",_Array];
-
-	private _Suppression = missionNameSpace getVariable ["GOL_Suppression_Enabled",true];
-	if(_Suppression) then {
-		{[_X] remoteExec ["GOL_fnc_Suppressed",0]} foreach units _group;
-	};	
 
 	sleep 5;
 	switch (toLower _LambsType) do {
@@ -113,6 +151,7 @@
 				4: Center Position, if no position or Empty Array is given it uses the Group as Center and updates the position every Cycle, default [] <ARRAY>
 				5: Only Players, default true <BOOL>
 			*/
+
 			waitUntil {sleep 1; !isNil "lambs_wp_fnc_moduleRush"};
 			[_Group,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];	
 		};

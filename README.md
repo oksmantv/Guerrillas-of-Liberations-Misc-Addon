@@ -1428,15 +1428,20 @@ Edited by OksmanTV & Bluwolf.
   |------------------|----------------|---------|--------------------------------------------------------------------|
   | `_SpawnPos`      | Object, Array  | —       | Spawn position for the group (object or array).                    |
   | `_LambsType`     | String         | —       | LAMBS AI behavior type (`"hunt"`, `"rush"`, `"creep"`, etc.).      |
-  | `_NumberInfantry`| Number         | `5`     | Number of infantry to spawn in the group.                          |
+  | `_InfNr/VehArray`| Number, Array  | `5`     | Number of infantry, or VehicleArray [[Classname],CargoCount]       |
   | `_Side`          | Side           | `east`  | Side for the spawned group.                                        |
   | `_Range`         | Number         | `1500`  | Range for LAMBS AI tracking/hunting.                               |
   | `_Array`         | Array          | `[]`    | Array to store spawned units (for public variable use).            |
 
   ### Example Usage
 
-      [SpawnPos, "rush", UnitsPerBase, Side, Range, []] spawn OKS_fnc_Lambs_SpawnGroup;
+    [SpawnPos, "rush", UnitsPerBase, Side, Range, []] spawn OKS_fnc_Lambs_SpawnGroup;
+    [SpawnPos, "rush", *VehicleArray*, Side, Range, []] spawn OKS_fnc_Lambs_SpawnGroup;
 
+    Explained: *VehicleArray* = [[vehicleClassname1,vehicleClassname2], CargoCount];
+    [VehicleClassname] // Array of Vehicle classnames (Random Select)
+    CargoCount         // Amount of Infantry in Cargo
+	
   - Group will use the specified LAMBS AI behavior and engage players dynamically.
   - Supports advanced behaviors such as ambush, creep, hunt, and rush for flexible mission scripting[1][3].
 

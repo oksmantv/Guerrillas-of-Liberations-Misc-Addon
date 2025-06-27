@@ -111,7 +111,8 @@ class CfgFunctions // Defines a function
 			class KilledCaptiveEvent {};
 			class SetSurrendered {};
 			class Has_Sight {};
-			
+			class AddVehicleCrew {};	
+			class CreateVehicleWithCrew {};
 			class HandleChance {};
 			class CheckCooldown {};
 			class Adjust_Shot {};
@@ -194,7 +195,6 @@ class CfgFunctions // Defines a function
 		class OKS_Dynamic {
 			file = "\OKS_GOL_Misc\functions\dynamic";
 			class Dynamic_Settings {};
-			class AddVehicleCrew {};
 			class Check_Waypoints {};
 			class CheckIfTarmac {};
 			class CheckRoadConnections {};
