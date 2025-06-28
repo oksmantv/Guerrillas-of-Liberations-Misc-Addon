@@ -36,6 +36,7 @@ class CfgPatches
 
 #include "BIS_AddonInfo.hpp"
 #include "configs\CfgAmmo.cpp"
+#include "configs\CfgEden.cpp"
 #include "configs\CfgMagazines.cpp"
 #include "configs\CfgWeapons.cpp"
 #include "configs\CfgVehicles.cpp"
@@ -107,7 +108,7 @@ class Extended_PostInit_EventHandlers {
     };
     class OKS_PostInit_Server {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_PostInit_Server.sqf'";
-    };    
+    };     
 };
 
 class CfgSettings {

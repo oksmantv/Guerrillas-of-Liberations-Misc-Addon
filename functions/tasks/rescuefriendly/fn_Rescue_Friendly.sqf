@@ -68,7 +68,7 @@
 		};
 
 		// Create Main Task
-		[true, _TaskArray, [format["We have recieved reports from %1 that they have some casualties that are unable to exfil. They have requested support to stabilize their casualties at this <font color='#84e4ff'><marker name = '%2'>position</marker></font color>. Assist the casualties and stabilize the situation, they do not require relocation.",[str _Group, 2] call BIS_fnc_trimString,_startmarker], format["Assist %1 Casualties",[str _Group, 7] call BIS_fnc_trimString], "Casualties"], _Building,"CREATED",-1, false,"heal", false] call BIS_fnc_taskCreate;
+		[true, _TaskArray, [format["We have recieved reports from %1 that they have some casualties that are unable to exfil. They have requested support to stabilize their casualties at this <font color='#84e4ff'><marker name = '%2'>position</marker></font color>. Treat the casualties and stabilize the situation, they do not require relocation.",[str _Group, 2] call BIS_fnc_trimString,_startmarker], format["Treat %1 Casualties",[str _Group, 7] call BIS_fnc_trimString], "Casualties"], _Building,"CREATED",-1, false,"heal", false] call BIS_fnc_taskCreate;
 		//[true, [_Task], [format["Callsign %3, a squad of infantry located in the area around this <font color='#84e4ff'><marker name = '%1'>location</marker></font color>. They have requested an escort to reach their new <font color='#84e4ff'><marker name = '%2'>positition</marker></font color>. Talk to the Squad leader when you are ready to assist.",_startmarker,_endmarker,[str _Group, 2] call BIS_fnc_trimString], "Escort Squad", "Escort"], _SelectedLeader,"CREATED",-1, false,"help", false] call BIS_fnc_taskCreate;
 
 		for "_i" from 1 to _NumberInfantry do

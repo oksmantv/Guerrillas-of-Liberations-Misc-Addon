@@ -1,5 +1,5 @@
 // [Group HVT_1] spawn OKS_fnc_Hostage;
-// [Group HVT_1,getPos ExfilSite_1,west,false,nil] spawn OKS_fnc_Hostage;
+// [Group HVT_1,nil] spawn OKS_fnc_Hostage;
 if(!isServer) exitWith {};
 
 	Params [

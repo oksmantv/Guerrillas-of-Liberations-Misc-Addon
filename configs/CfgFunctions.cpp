@@ -94,6 +94,16 @@ class CfgFunctions // Defines a function
 			class ServiceAddActions {};
 		};
 
+		class OKS_Eden {
+			file = "\OKS_GOL_Misc\functions\eden";
+			class EdenHuntBase {};
+			class EdenAirBase {};
+			class EdenDestroyTask {};
+			class EdenHostageTask {};
+			class EdenLambsGroup {};
+			class next3DENName {};
+		};
+
 		class OKS_Enemy {
 			file = "\OKS_GOL_Misc\functions\enemy";
 			class EnablePath {};
