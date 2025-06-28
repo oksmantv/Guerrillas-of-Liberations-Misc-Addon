@@ -10,6 +10,23 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     ],
     "GOL Dynamic",
     [
+        // Values
+        [
+            "CSAT",
+            "CDF",
+            "LDF",
+            "TANOA",
+            "ARDISTAN",
+            "CHEDAKI",
+            "COMMUNIST_REBELS",
+            "DESERT_INSURGENTS",
+            "DESERT_MILITIA",
+            "RUSSIA_MODERN",
+            "SOVIET",
+            "TKA",
+            "NAPA",
+            "CUSTOM"          
+        ],
         // Display names
         [
             "CSAT",
@@ -26,23 +43,6 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
             "Takistani Army",
             "National Party (NAPA)",
             "Custom"
-        ],
-        // Values (do not change, used in scripts)
-        [
-            "CSAT",
-            "CDF",
-            "LDF",
-            "TANOA",
-            "ARDISTAN",
-            "CHEDAKI",
-            "COMMUNIST_REBELS",
-            "DESERT_INSURGENTS",
-            "DESERT_MILITIA",
-            "RUSSIA_MODERN",
-            "SOVIET",
-            "TKA",
-            "NAPA",
-            "CUSTOM"
         ],
         0 // Default (CSAT)
     ],

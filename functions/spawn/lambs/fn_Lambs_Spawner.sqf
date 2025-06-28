@@ -21,6 +21,7 @@
 	_Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian","_Trigger"];
 	_UnitArray Params ["_Leaders","_Units","_Officer"];
 	private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
+	private _ResponseMultiplier = missionNamespace getVariable ["GOL_ResponseMultiplier", 1];
 
 	while {true} do {
 
