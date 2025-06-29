@@ -5,6 +5,7 @@ Params ["_SpawnPos","_MoveToPos","_Classname","_Side","_ShouldBeCareless","_Wayp
 
 _SpawnPos = [_SpawnPos#0,_SpawnPos#1,_Height];
 _aircraft = CreateVehicle [_Classname,_SpawnPos, [], -1, "FLY"];
+[_aircraft] spawn OKS_fnc_AirLoadout;
 _aircraft setPosATL _SpawnPos;
 _aircraft setDir (_aircraft getDir _MoveToPos);
 _aircraft setVelocityModelSpace [0, 20, 0];

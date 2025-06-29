@@ -63,29 +63,38 @@ params [
 
 _PlayerTarget = objNull;
 
-Private ["_EgressPos","_playerHunted","_VehicleClassName","_VehicleClassNameArray"];
+Private ["_EgressPos","_playerHunted","_VehicleClassName","_VehicleClassNameArray","_SelectedClassname"];
 private _Debug = missionNamespace getVariable ["GOL_Hunt_Debug", false];
 _type = toLower _type;
 
 #include "fn_Airdrop_Settings.sqf"
 
-if(typeName _Classname == "ARRAY") then {
-	_Classname = selectRandom _Classname
-};
-_Heli = CreateVehicle [_Classname, [0,0,0], [], 0, "CAN_COLLIDE"];
-_Heli enableSimulation false;
-_Heli allowDamage false;
-_EmptyCargoSeats = (_Heli emptyPositions "Cargo");
-_UnitsPerGroup = round ( (round (_EmptyCargoSeats * (_Troops select 1))) / (_Troops select 0) );	// # OF GROUPS = (_Units select 0)  ||  % OF CARGO = (_Units select 1)
-_SpareIndex = ( (round (_EmptyCargoSeats * (_Troops select 1))) - (_UnitsPerGroup * (_Troops select 0)) );
-deleteVehicle _Heli;
-
 While {Alive _Object && _AirbaseRespawnCount > 0 } do {
-
 	_playerHunted = [];
+	if(typeName _Classname == "ARRAY") then {
+		_SelectedClassname = selectRandom _Classname
+	} else {
+		_SelectedClassname = _Classname;
+	};
+
+	_Heli = CreateVehicle [_SelectedClassname, [0,0,100], [], 0, "CAN_COLLIDE"];
+	_Heli enableSimulation false;
+	_Heli allowDamage false;
+	_EmptyCargoSeats = (_Heli emptyPositions "Cargo");
+	_UnitsPerGroup = round ( (round (_EmptyCargoSeats * (_Troops select 1))) / (_Troops select 0) );	// # OF GROUPS = (_Units select 0)  ||  % OF CARGO = (_Units select 1)
+	_SpareIndex = ( (round (_EmptyCargoSeats * (_Troops select 1))) - (_UnitsPerGroup * (_Troops select 0)) );
+	deleteVehicle _Heli;
+
+	_ThirdSide = independent;
+	if(_Side == independent) then {
+		_ThirdSide = east;
+	};
 
 	{
-		if (([_ReinforcementZone, _x] call BIS_fnc_inTrigger) && (_Side knowsAbout _X > 3.5 || _Side knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)))
+		_PlayerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];
+		_KnownPlayerToOriginalSide = ([_ReinforcementZone, _x] call BIS_fnc_inTrigger) && (_Side knowsAbout _X > 3.5 || _Side knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X));
+		_KnownPlayerToThirdSideAndIsEnemy = ([_ReinforcementZone, _x] call BIS_fnc_inTrigger) && (_ThirdSide getFriend _PlayerSide) < 0.6 && (_ThirdSide knowsAbout _X > 3.5 || _ThirdSide knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X));
+		if (_KnownPlayerToOriginalSide || _KnownPlayerToThirdSideAndIsEnemy)
 		then
 		{
 			_playerHunted pushBackUnique _X; sleep 0.5;
@@ -94,10 +103,21 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 
 	sleep 2;
 	if(_Debug) then {
-		str _playerHunted call OKS_fnc_LogDebug;
+		format["[AIRBASE] Looking for Players in %1..",_ReinforcementZone] call OKS_fnc_LogDebug;
 	};
 
 	if (count _playerHunted != 0) then {
+		waitUntil {
+			sleep 5;
+			if(_Debug) then {
+				format["[AIRBASE] Waiting on clearance at spawn position.."] call OKS_fnc_LogDebug;
+			};
+			(getPos _SpawnPos) nearEntities ["AirVehicle", 25] isEqualTo []
+		};
+		if(_Debug) then {
+			format["[AIRBASE] Spawn Clear & Found player %1 in %2",_ReinforcementZone,_playerHunted] call OKS_fnc_LogDebug;
+		};
+
 		_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
 		_MaxCount = missionNameSpace getVariable ["GOL_Hunt_MaxCount",1];
 		_AliveCurrentCount = _CurrentHuntCount select {alive _X};
@@ -110,7 +130,7 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 			sleep 5;
 
 			if(_type == "random") then {
-				_type = ["unloadthenpatrol","unload","slingdrop","fastrope"] call BIS_fnc_selectRandom;
+				_type = ["unloadthenpatrol","unload","paradrop","paradropandpatrol"] call BIS_fnc_selectRandom;
 			};
 
 			switch (toLower _type) do {
@@ -118,14 +138,26 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 					if(_Debug) then {
 						"AirBase Running Unload then Patrol" call OKS_fnc_LogDebug;
 					};
-					[_Side, _Classname, true, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
+					[_Side, _SelectedClassname, true, "unload", _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
 				};
 				case "unload": {
 					if(_Debug) then {
 						"AirBase Running Unload" call OKS_fnc_LogDebug;
 					};					
-					[_Side, _Classname, False, _Type, _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
+					[_Side, _SelectedClassname, False, "unload", _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
 				};
+				case "paradrop": {
+					if(_Debug) then {
+						"AirBase Running Paradrop" call OKS_fnc_LogDebug;
+					};					
+					[_Side, _SelectedClassname, False, "paradrop", _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
+				};
+				case "paradropthenpatrol": {
+					if(_Debug) then {
+						"AirBase Running Paradrop then Patrol" call OKS_fnc_LogDebug;
+					};					
+					[_Side, _SelectedClassname, true, "paradrop", _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
+				};								
 			};
 			if(_Debug) then {
 				"Airbase Helicopter Spawned.." call OKS_fnc_LogDebug;
@@ -138,7 +170,6 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 	{
 		sleep _AirbaseRefreshRate;
 	};
-
 };
 
 if(!alive _Object) then {

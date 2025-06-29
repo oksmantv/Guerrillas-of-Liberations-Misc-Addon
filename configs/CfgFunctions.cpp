@@ -325,6 +325,7 @@ class CfgFunctions // Defines a function
 		class NEKY_Airdrop {
 			file = "\OKS_GOL_Misc\functions\airdrop";
 			class Airbase {};
+			class AirLoadout {};
 			class AirDrop {};
 			class AirDrop_Settings {};
 			class AirDropAISkill {};

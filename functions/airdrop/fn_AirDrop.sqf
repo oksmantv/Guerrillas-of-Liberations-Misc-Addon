@@ -37,7 +37,7 @@ Private ["_HeliType","_WPDistance","_ChuteHeight","_SpareIndex","_SkillVariables
 Params
 [
 	["_Side", west, [SideUnknown]],
-	["_HeliType", "", [""]],
+	["_HeliType", "", ["",[]]],
 	["_SAD", false, [true]],
 	["_UnloadOrDrop", "unload", [""]],
 	["_Ingress", "", ["",[],objNull]],
@@ -89,9 +89,9 @@ if (typeName _Ingress == "OBJECT") then {_OKS_Dir = getDir _Ingress; _Ingress = 
 // Create Heli and Crew
 if (_HeliType == "") then {_HeliType = _HeliClass};
 
-
 if(_Airbase) then {
 	_Heli = CreateVehicle [_HeliType, _Ingress, [], 0, "CAN_COLLIDE"];
+	[_Heli] spawn OKS_fnc_AirLoadout;
 	_Heli setDir _OKS_Dir;
 	_Direction = [_Heli, _UnloadOrDropMarker] call BIS_fnc_dirTo;
 	_Position = [_UnloadOrDropMarker, 150, (_Direction + 180)] call BIS_fnc_relPos;
@@ -99,6 +99,7 @@ if(_Airbase) then {
 else
 {
 	_Heli = CreateVehicle [_HeliType, _Ingress, [], 0, "FLY"];
+	[_Heli] spawn OKS_fnc_AirLoadout;
 	_Direction = [_Heli, _UnloadOrDropMarker] call BIS_fnc_dirTo;
 	_Heli setDir _Direction;
 	_Position = [_UnloadOrDropMarker, 150, (_Direction + 180)] call BIS_fnc_relPos;
@@ -224,7 +225,10 @@ Switch (_UnloadOrDrop) do
 
 	case "paradrop":
 	{
-		_Heli setPosATL [(GetPosATL _Heli select 0), (GetPosATL _Heli select 1), ((GetPosATL _Heli select 2) + 60)];
+		if(!(_Airbase)) then {
+			_Heli setPosATL [(GetPosATL _Heli select 0), (GetPosATL _Heli select 1), ((GetPosATL _Heli select 2) + 60)];
+		};
+			
 		_Heli flyInHeight 200;
 		_Dir = [_Heli, _UnloadOrDropMarker] call BIS_fnc_dirTo;
 		if ((_Units select 0) > 0) then

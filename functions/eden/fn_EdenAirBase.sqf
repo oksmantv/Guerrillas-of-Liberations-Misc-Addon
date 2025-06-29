@@ -21,7 +21,7 @@ private _triggerPos = _basePos getPos [15, _dirToCam];
 _triggerPos set [2, 0];
 private _trigger = create3DENEntity ["Trigger", "EmptyDetector", _triggerPos];
 _trigger set3DENAttribute ["name", _triggerName];
-_trigger set3DENAttribute ["size3", [5000,5000,0]];
+_trigger set3DENAttribute ["size3", [5000,5000,250]];
 _trigger set3DENAttribute ["IsRectangle", false]; 
 _trigger set3DENAttribute ["ActivationBy", "ANYPLAYER"]; 
 _trigger set3DENAttribute ["repeatable", true];
@@ -47,7 +47,7 @@ private _side = "EAST";
 
 private _example = format [
     "[%1, %2, %3, %4, %5, 'Unload', [2,1], 900, 100, 90, 5] spawn OKS_fnc_Airbase;",
-    _baseName, _spawnName, _triggerName, _side, _helicopterClass
+    _baseName, _spawnName, _triggerName, _side, str _helicopterClass
 ];
 
 copyToClipboard _example;

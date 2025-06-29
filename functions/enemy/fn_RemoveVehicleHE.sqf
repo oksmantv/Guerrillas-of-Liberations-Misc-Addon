@@ -51,6 +51,8 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 		_Vehicle removeMagazinesTurret ["rhs_mag_og15v_16",[1]]; // 3CB MTLB BMP1
 		_Vehicle removeMagazinesTurret ["rhs_mag_og15v_20",[0]]; // RHS BMP1
 		_Vehicle removeMagazinesTurret ["rhs_mag_3UOF191_22",[0]]; // RHS BMP3
+		_Vehicle removeMagazinesTurret ["rhs_mag_3UOF17_22",[0]]; // RHS BMP3
+		_Vehicle removeMagazinesTurret ["rhs_mag_3uof8_237",[0]]; // RHS BMP3 Autocanon
 		_Vehicle removeMagazinesTurret ["rhs_mag_3uof8_305",[0]]; // RHS BMP3 Autocanon
 	};
 	if(["T34", typeOf _Vehicle, false] call BIS_fnc_inString) then {

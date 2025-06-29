@@ -95,7 +95,17 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 	if(_Debug) then {
 		format["Looking for Players in %1..",_HuntZone] call OKS_fnc_LogDebug;
 	};
-	if( {(_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)} count list _HuntZone > 0) then {
+
+	_ThirdSide = independent;
+	if(_Side == independent) then {
+		_ThirdSide = east;
+	};
+
+	_PlayerKnownToSpawner = ({
+		((_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)) ||
+		((_ThirdSide knowsAbout _X > _KnowsAboutValue || _ThirdSide knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X) && _ThirdSide getFriend (side group _X) < 0.6 ) 
+	} count list _HuntZone > 0);
+	if(_PlayerKnownToSpawner) then {
 		_DetectDelay = round((_RefreshRate * _ResponseMultiplier) + (Random _RefreshRate * _ResponseMultiplier));
 		if(_Debug) then {
 			format["Players detected in %1 - Delay %2 seconds",_HuntZone,_DetectDelay] call OKS_fnc_LogDebug;
@@ -113,7 +123,11 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 		}
 		else
 		{
-			if( {(_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)} count list _HuntZone > 0) then {
+			_PlayerKnownToSpawner = ({
+				((_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)) ||
+				((_ThirdSide knowsAbout _X > _KnowsAboutValue || _ThirdSide knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X) && _ThirdSide getFriend (side group _X) < 0.6 ) 
+			} count list _HuntZone > 0);
+			if(_PlayerKnownToSpawner) then {
 				if(_Debug) then {
 					format["Players confirmed in %1",_HuntZone] call OKS_fnc_LogDebug;
 				};

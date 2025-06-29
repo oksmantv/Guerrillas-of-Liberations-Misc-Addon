@@ -83,6 +83,8 @@
 			_Aircraft setPylonLoadout [_i, _X];
 			_i = _i + 1;
 		} foreach _Loadout;
+	} else {
+		[_Aircraft] spawn OKS_fnc_AirLoadout;
 	};
 
 	while {alive _Aircraft && {Alive _X} count crew _Aircraft >= 1} do {
