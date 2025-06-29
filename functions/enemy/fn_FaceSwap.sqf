@@ -12,23 +12,26 @@ params [
 if(hasInterface && !isServer) exitWith {};
 
 private _faceswapDebug = missionNamespace getVariable ["GOL_FaceSwap_Debug", false];
-_faceType = [_unit] call OKS_fnc_GetEthnicity;
+
+if(isNil "_faceType") then {
+    _faceType = [_unit] call OKS_fnc_GetEthnicity;
+};
 
 if(isNull _unit) exitWith {
     if(_faceswapDebug) then {
-        "FaceSwap Exited - Unit is null" spawn OKS_fnc_LogDebug;
+        "[FaceSwap] Exited - Unit is null" spawn OKS_fnc_LogDebug;
     };
 };
 if (isNil "_faceType") exitWith {
     if(_faceswapDebug) then {
-        format["FaceSwap Exited on %1 - Type is null"] spawn OKS_fnc_LogDebug;
+        format["[FaceSwap] Exited on %1 - Type is null"] spawn OKS_fnc_LogDebug;
     };
 };
 
 private _faces = [];
 private _speakers = [];
 
-switch (_faceType) do {
+switch (toLower _faceType) do {
     case "polish": {
         _faces = [
             "LivonianHead_5","LivonianHead_2","Ioannou","LivonianHead_7","LivonianHead_6",
@@ -97,7 +100,7 @@ switch (_faceType) do {
     default {
         _faces = ["AsianHead_A3_01","AsianHead_A3_07","AsianHead_A3_03","AsianHead_A3_04","AsianHead_A3_02","AsianHead_A3_05"];
         _speakers = ["Male01CHI","Male02CHI","Male03CHI"];
-        systemChat "GOL_FACESWAP - No face type found - Default";
+        "[FaceSwap] No face type found - Default" spawn OKS_fnc_LogDebug;
     };
 };
 
@@ -106,8 +109,8 @@ _unit setVariable ["GOL_FaceSwap", true, true];
 private _face = selectRandom _faces;
 private _voice = selectRandom _speakers;
 
-_unit setSpeaker _voice;
-_unit setFace _face;
+[_unit,_voice] remoteExec ["setSpeaker", 0];
+[_unit,_face] remoteExec ["setFace", 0];
 if(_faceswapDebug) then {
-    format ["%2 FaceSwap Executed on %1",_unit,(toupper _faceType)] spawn OKS_fnc_LogDebug;
+    format ["[FaceSwap] %2 Executed on %1",_unit,(toupper _faceType)] spawn OKS_fnc_LogDebug;
 };
