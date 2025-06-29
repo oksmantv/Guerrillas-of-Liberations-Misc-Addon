@@ -24,7 +24,6 @@ _vehicle = createVehicle [_VehicleType, _SpawnPosition, [], 0, "CAN_COLLIDE"];
 _civilianGroup = createGroup civilian;
 _driver = _civilianGroup createUnit ["C_man_polo_1_F", [0,0,0], [], 0, "NONE"];
 _driver moveInDriver _vehicle;
-[_driver] spawn OKS_fnc_FaceSwap;
 
 _waypoint = _civilianGroup addWaypoint [_EndPosition,0];
 _waypoint setWaypointType "MOVE";

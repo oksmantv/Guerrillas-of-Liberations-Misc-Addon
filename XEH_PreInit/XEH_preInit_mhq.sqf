@@ -18,3 +18,12 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     false,
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "GOL_Vehicle_Flag",
+    "EDITBOX",
+    ["Vehicle Flag Texture", "If defined will put a flag texture on the vehicle. Use the full path to the texture, e.g. a3\ui_f\data\flag_usa_co.paa. (No quotation marks)"],
+    "GOL Vehicle",
+    "",
+    1
+] call CBA_fnc_addSetting;

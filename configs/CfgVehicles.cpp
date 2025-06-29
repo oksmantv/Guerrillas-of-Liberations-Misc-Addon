@@ -330,7 +330,7 @@ class CfgVehicles {
 		};
 	};
 	
-    class GOL_MobileServiceStation: FlexibleTank_base_F
+    class GOL_MobileServiceStation: Box_Syndicate_Ammo_F
 	{
         displayName = "Mobile Service Station";
 		scope = 2;

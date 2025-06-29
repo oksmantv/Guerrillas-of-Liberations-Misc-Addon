@@ -7,7 +7,7 @@ if(!isServer) exitWith {};
 Params
 [
 	["_Vehicle", ObjNull, [ObjNull]],
-	["_Flag",nil,[""]],
+	["_Flag",(missionNamespace getVariable ["GOL_Vehicle_Flag",nil]),[""]],
 	["_AddMortar", false, [true]],
 	["_ServiceStation", true, [true]],
 	["_ShouldDisableThermal", true, [true]],
@@ -108,16 +108,29 @@ if(_AddMortar) then {
 	};
 };
 
-
-if (["FV432_Mk3_GPMG",(typeOf _Vehicle)] call BIS_fnc_inString || ["Panther_GPMG",(typeOf _Vehicle)] call BIS_fnc_inString || ["WMIK_GPMG",(typeOf _Vehicle)] call BIS_fnc_inString ) then {
+if (["FV432_Mk3_GPMG",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["Panther_GPMG",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["WMIK_GPMG",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["Passenger_GPMG",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["Logistics_GPMG",(typeOf _Vehicle)] call BIS_fnc_inString) then 
+{
 	_Vehicle AddMagazineCargoGlobal ["UK3CB_BAF_762_200Rnd_T",10];
 };
 
-if (["Passenger_HMG",(typeOf _Vehicle)] call BIS_fnc_inString || ["L111A1",(typeOf _Vehicle)] call BIS_fnc_inString || ["FV432_Mk3_RWS",(typeOf _Vehicle)] call BIS_fnc_inString || ["LandRover_WMIK_HMG",(typeOf _Vehicle)] call BIS_fnc_inString ) then {
+if (["Passenger_HMG",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["Logistics_HMG",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["L111A1",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["FV432_Mk3_RWS",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["LandRover_WMIK_HMG",(typeOf _Vehicle)] call BIS_fnc_inString) then 
+{
 	_Vehicle AddMagazineCargoGlobal ["UK3CB_BAF_127_100Rnd",10];
 };
 
-if(["L134A1",(typeOf _Vehicle)] call BIS_fnc_inString || ["WMIK_GMG",(typeOf _Vehicle)] call BIS_fnc_inString || ["Passenger_GMG",(typeOf _Vehicle)] call BIS_fnc_inString) then {
+if(["L134A1",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["WMIK_GMG",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["Logistics_GMG",(typeOf _Vehicle)] call BIS_fnc_inString ||
+	["Passenger_GMG",(typeOf _Vehicle)] call BIS_fnc_inString) then 
+{
 	_Vehicle AddMagazineCargoGlobal ["UK3CB_BAF_32Rnd_40mm_G_Box",10];
 };
 
