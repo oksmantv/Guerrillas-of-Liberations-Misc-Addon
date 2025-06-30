@@ -49,7 +49,9 @@ if(true) then {
                     };
                 };
             };
-        } forEach Vehicles;
+        } forEach (Vehicles select {
+            (_x isKindOf "LandVehicle" || _x isKindOf "Helicopter")
+        });
     };
 
     /* RemoveVehicleHE from Current and spawned Vehicles. */
@@ -141,7 +143,7 @@ if(true) then {
                     // Apply ethnicity and face swap
                     _unit spawn {
                         params ["_unit"];
-                        sleep 1;
+                        sleep 5;
                         [_unit] spawn OKS_fnc_FaceSwap;
                     };
                 };

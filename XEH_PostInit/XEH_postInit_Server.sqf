@@ -87,8 +87,10 @@ if(GOL_Core_Enabled isEqualTo true) then {
             publicVariable "GOL_Arsenal_GL";
         };   
     
-        NEKY_Hunt_CurrentCount = [];
-        publicVariable "NEKY_Hunt_CurrentCount";
+        if(isNil "NEKY_Hunt_CurrentCount") then {
+            NEKY_Hunt_CurrentCount = [];
+            publicVariable "NEKY_Hunt_CurrentCount";
+        };
 
         /* Enable NEKY Casualty */
         _EnableNekyTasks = missionNamespace getVariable ["GOL_Neky_Tasks_Enabled", false];
