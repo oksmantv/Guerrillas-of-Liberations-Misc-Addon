@@ -60,9 +60,7 @@
 	_Aircraft setPos [_SpawnPosition select 0,_SpawnPosition select 1,_Altitude + 100];
 	_Aircraft setDir (_Aircraft getDir _TargetArea);
 
-	
 	_Crew = _Side createVehicleCrew _Aircraft;
-	
 	_WP = _Crew addWaypoint [_TargetArea,200];
 	_WP setWaypointType _WaypointType;
 
@@ -96,17 +94,17 @@
 			!(vehicle _Player isKindOf "air")
 		};
 		if(count _NearPlayers > 0) then {
-			systemChat format["Scout Spotted: %1",_NearPlayers];
+			format["[SCOUT] Scout Spotted: %1",_NearPlayers] spawn OKS_fnc_LogDebug;
 		};
 		{
 			_requiredValueForSpotting = 0.5;
 			_ValueSpotted = [objNull, "VIEW"] checkVisibility [getPosASL _Aircraft, (getPosASL vehicle _X)];
 			_nearConcealment = count (nearestTerrainObjects [_X, [], 10]);
 			if(stance _X == "PRONE" && _nearConcealment >= 1) then {
-				systemChat "Player is prone and near concealment. Required value is 0.65";
+				"[SCOUT] Player is prone and near concealment. Required value is 0.65" spawn OKS_fnc_LogDebug;
 				_requiredValueForSpotting = 0.65;
 			} else {
-				systemChat "Player isn't prone. Required value is 0.5";
+				"[SCOUT] Player isn't prone. Required value is 0.5" spawn OKS_fnc_LogDebug;
 			};
 			
 			if(_ValueSpotted >= _requiredValueForSpotting) then {
@@ -114,7 +112,7 @@
 				(leader _crew) doTarget _X;
 				_WP setWaypointPosition [getPos _X,0];
 				_WP setWaypointLoiterRadius (_LoiterDistance * 0.5);
-				systemChat format ["%1 was revealed (%2) by %3.",name _X,_SpottingValue,[configFile >> "CfgVehicles" >> typeOf _Aircraft] call BIS_fnc_displayName];
+				format ["[SCOUT] %1 was revealed (%2) by %3.",name _X,_SpottingValue,[configFile >> "CfgVehicles" >> typeOf _Aircraft] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 			};		
 		} foreach _NearPlayers;
 
@@ -127,11 +125,11 @@
 					((side _crew) GetFriend (side _x) > 0.6)
 				}) <= 3;
 				if(_nofriendlyNear) then {
-					systemChat format ["%1 was targeted by mortar.",name _targetPlayer];
+					format ["[SCOUT] %1 was targeted by mortar.",name _targetPlayer] spawn OKS_fnc_LogDebug;
 					missionNamespace setVariable ["Active_UAV_Mortar",true,true];
 					["OffMap", _Side, "Precise", "light", [getPos _targetPlayer, 5]] spawn OKS_Fnc_Mortars;
 				} else {
-					systemChat "Friendly forces too close to strike. Aborting.";
+					"[SCOUT] Friendly forces too close to strike. Aborting." spawn OKS_fnc_LogDebug;
 				}
 			};
 
@@ -139,8 +137,8 @@
 				_targetPlayer = (selectRandom _NearPlayers);
 				_WP setWaypointPosition [getPos _targetPlayer,0];
 				_WP setWaypointType "SAD";
-				systemChat format ["%1 was spotted (%2) by %3. Not careless - Adding SAD waypoint.",name _targetPlayer,_ValueSpotted,[configFile >> "CfgVehicles" >> typeOf _Aircraft] call BIS_fnc_displayName];
+				format ["[SCOUT] %1 was spotted (%2) by %3. Not careless - Adding SAD waypoint.",name _targetPlayer,_ValueSpotted,[configFile >> "CfgVehicles" >> typeOf _Aircraft] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 			};
 		};
-		sleep 2;
+		sleep 5;
 	};

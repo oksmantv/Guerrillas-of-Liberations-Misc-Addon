@@ -53,10 +53,9 @@
 	_Crew join grpNull;
 	_Crew join _CrewGroup;
 	
-	waitUntil {sleep 1; !isNil "lambs_wp_fnc_moduleRush"};
 	[_CrewGroup, nil, _HuntTrigger, 0, 30] spawn OKS_fnc_HuntRun;
 
-	waitUntil {sleep 1; {behaviour _X == "COMBAT"} count units _CrewGroup > 0 || {behaviour _X == "COMBAT"} count units _InfantryGroup > 0};
+	waitUntil {sleep 5; {behaviour _X == "COMBAT"} count units _CrewGroup > 0 || {behaviour _X == "COMBAT"} count units _InfantryGroup > 0};
 	_CrewGroup setVariable ["Disable_Hunt",true,true];
 	_CrewGroup setVariable ["NEKY_Hunt_GroupEnabled",true,true];
 
@@ -72,29 +71,9 @@
 		unassignVehicle _X;	
 	} foreach units _InfantryGroup;
 
-	waitUntil {sleep 1; count (fullCrew [_Vehicle, "cargo", false]) == 0};
-	[_InfantryGroup,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];
+	waitUntil {sleep 5; count (fullCrew [_Vehicle, "cargo", false]) == 0};
+	[_InfantryGroup,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskHunt",0];
 	sleep 10;
 	_Vehicle lock true;
-	
-	_FollowSquad = {
-		params ["_VehicleCrew","_InfantryScreen","_Vehicle"];
-		Private ["_WP"];
-		while { {Alive _X} count units _VehicleCrew > 0 && canMove _Vehicle && {Alive _X} count units _InfantryScreen > 0} do {
-			
-			if({_X distance _Vehicle < 50} count units _InfantryScreen == 0) then {
-				_WP = _VehicleCrew addWaypoint [getPos (leader _InfantryScreen),10];
-				_WP setWaypointType "HOLD";
-			};
-			
-			if(!isNil "_WP") then {
-				waitUntil { sleep 2; {_X distance (waypointPosition _WP) < 50} count units _InfantryScreen == 0};
-				deleteWaypoint _WP;
-			} else {
-				sleep 5;
-			};	
-		};
 
-	};
-
-	[_CrewGroup,_InfantryGroup,_Vehicle] spawn _FollowSquad;
+	[_CrewGroup,_InfantryGroup,_Vehicle] spawn OKS_fnc_Follow_Squad;

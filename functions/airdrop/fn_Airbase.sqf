@@ -69,7 +69,7 @@ _type = toLower _type;
 
 #include "fn_Airdrop_Settings.sqf"
 
-While {Alive _Object && _AirbaseRespawnCount > 0 } do {
+While {Alive _Object && _AirbaseRespawnCount > 0} do {
 	_playerHunted = [];
 	if(typeName _Classname == "ARRAY") then {
 		_SelectedClassname = selectRandom _Classname
@@ -92,14 +92,14 @@ While {Alive _Object && _AirbaseRespawnCount > 0 } do {
 
 	{
 		_PlayerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];
-		_KnownPlayerToOriginalSide = ([_ReinforcementZone, _x] call BIS_fnc_inTrigger) && (_Side knowsAbout _X > 3.5 || _Side knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X));
-		_KnownPlayerToThirdSideAndIsEnemy = ([_ReinforcementZone, _x] call BIS_fnc_inTrigger) && (_ThirdSide getFriend _PlayerSide) < 0.6 && (_ThirdSide knowsAbout _X > 3.5 || _ThirdSide knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X));
+		_KnownPlayerToOriginalSide = ((_Side knowsAbout _X > 3.5 || _Side knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)));
+		_KnownPlayerToThirdSideAndIsEnemy = ((_ThirdSide getFriend _PlayerSide) < 0.6 && (_ThirdSide knowsAbout _X > 3.5 || _ThirdSide knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)));
 		if (_KnownPlayerToOriginalSide || _KnownPlayerToThirdSideAndIsEnemy)
 		then
 		{
 			_playerHunted pushBackUnique _X; sleep 0.5;
 		};
-	} foreach (AllPlayers - (Entities "HeadlessClient_F"));
+	} foreach (list _ReinforcementZone);
 
 	sleep 2;
 	if(_Debug) then {

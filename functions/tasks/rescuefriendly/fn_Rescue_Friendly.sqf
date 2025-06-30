@@ -122,11 +122,10 @@
 		};
 		Private _Count = _NumberOfCasualties;
 
-		waitUntil { sleep 5; {_X distance _Building < 100 && vehicle _X == _X} count AllPlayers >= 1 || {Alive _X} count units _Group < 1};
+		waitUntil { sleep 10; {_X distance _Building < 100 && vehicle _X == _X} count AllPlayers >= 1 || {Alive _X} count units _Group < 1};
 		if({Alive _X} count units _Group < 1) exitWith {
-				[_Task,"FAILED"] call BIS_fnc_taskSetState;
-			};
-
+			[_Task,"FAILED"] call BIS_fnc_taskSetState;
+		};
 
 		if(!isNil "_RushPositions") then {
 			_trigger = createTrigger ["EmptyDetector", getPos (leader _Group)];
@@ -139,7 +138,7 @@
 		};
 
 		{_X setCaptive false; _X setCombatMode "RED"} foreach units _Group;
-		waitUntil { sleep 5; {_X distance _Building < 50} count AllPlayers >= 1 || {Alive _X} count units _Group < 1};
+		waitUntil { sleep 10; {_X distance _Building < 50} count AllPlayers >= 1 || {Alive _X} count units _Group < 1};
 
 		private _tier1 = 0;
 		private _tier2 = 0;

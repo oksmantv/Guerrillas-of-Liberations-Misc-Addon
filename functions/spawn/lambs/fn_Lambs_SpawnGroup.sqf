@@ -98,7 +98,6 @@
 				* 6: enable dynamic reinforcement <BOOL>
 				* 7: Enable Flare <BOOL> or <NUMBER> where 0 disabled, 1 enabled (if Units cant fire it them self a flare is created via createVehicle), 2 Only if Units can Fire UGL them self
 			*/	
-			waitUntil {sleep 1; !(isNil "lambs_wp_fnc_taskHunt")};
 			[_Group, _Range, 30, [], [], true,false,false] remoteExec ["lambs_wp_fnc_taskHunt",0];
 		};
 		case "creep":{
@@ -113,13 +112,12 @@
 				* 4: Center Position, if no position or Empty Array is given it uses the Group as Center and updates the position every Cycle, default [] <ARRAY>
 				* 5: Only Players, default true <BOOL>
 			*/
-			waitUntil {sleep 1; !(isNil "lambs_wp_fnc_taskCreep")};
 			[_Group, _Range, 30, [], [], true] remoteExec ["lambs_wp_fnc_taskCreep",0];
 			{_X setUnitPos "AUTO"; _X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
 		};
 		case "ambushattack": {		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
-			waitUntil {sleep 1; ([_Group,_Range] call _KnowsAboutTargets) select 0};
+			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
 			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
 			_SADWaypoint = _Group addWaypoint [getPos (([_Group,_Range] call _KnowsAboutTargets) select 1),0];
 			_SADWaypoint setWaypointType "SAD";
@@ -127,17 +125,14 @@
 
 		case "ambushrush": {		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
-			waitUntil {sleep 1; ([_Group,_Range] call _KnowsAboutTargets) select 0};
+			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
 			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
-
-			waitUntil {sleep 1; !isNil "lambs_wp_fnc_moduleRush"};
 			[_Group,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];	
 		};
 		case "ambushhunt":{		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
-			waitUntil {sleep 1; ([_Group,_Range] call _KnowsAboutTargets) select 0};
+			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
 			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
-			waitUntil {sleep 1; !(isNil "lambs_wp_fnc_taskHunt")};
 			[_Group, _Range, 30, [], [], true,false,false] remoteExec ["lambs_wp_fnc_taskHunt",0];
 		};
 

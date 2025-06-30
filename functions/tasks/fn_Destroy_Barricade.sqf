@@ -90,7 +90,7 @@
 			[]
 		] call ace_interact_menu_fnc_createAction;
 
-		[_Barricade, 0, ["ACE_MainActions"], _plantBombAction] call ace_interact_menu_fnc_addActionToObject;
+		[_Barricade, 0, ["ACE_MainActions"], _plantBombAction] remoteExec ["ace_interact_menu_fnc_addActionToObject", 0];
 	};
 
 	waitUntil {sleep 10; {_X call BIS_fnc_taskCompleted} count (_TaskMain call BIS_fnc_taskChildren) == count (_TaskMain call BIS_fnc_taskChildren)};

@@ -257,6 +257,7 @@ class CfgFunctions // Defines a function
 			class Civilian_Vehicle {};
 			class Hold_Waypoint {};
 			class Mechanized_Spawn {};
+			class Follow_Squad {};
 			class Scout {};
 			class SpawnPatrol {};
 			class SpawnStatic {};
@@ -291,6 +292,7 @@ class CfgFunctions // Defines a function
 			class Ambient_AAA {};
 			class Radar {};
 			class SAM {};
+			class SAM_Fired {};
 		};	
 
 		class OKS_Spawn_Arty {

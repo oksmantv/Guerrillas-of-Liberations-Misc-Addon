@@ -90,10 +90,10 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 	_MaxCount = missionNameSpace getVariable ["GOL_Hunt_MaxCount",1];
 	_ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];	
 	
-	if ((dayTime > 04.30) and (dayTime < 19.30)) then {_KnowsAboutValue = 3.975} else {_KnowsAboutValue = 3.975; _IsNight = true;};
+	if ((dayTime > 04.30) and (dayTime < 19.30)) then {_KnowsAboutValue = 3.6} else {_KnowsAboutValue = 3.975; _IsNight = true;};
 	
 	if(_Debug) then {
-		format["Looking for Players in %1..",_HuntZone] call OKS_fnc_LogDebug;
+		format["[HUNT] Looking for Players in %1..",_HuntZone] call OKS_fnc_LogDebug;
 	};
 
 	_ThirdSide = independent;
@@ -108,7 +108,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 	if(_PlayerKnownToSpawner) then {
 		_DetectDelay = round((_RefreshRate * _ResponseMultiplier) + (Random _RefreshRate * _ResponseMultiplier));
 		if(_Debug) then {
-			format["Players detected in %1 - Delay %2 seconds",_HuntZone,_DetectDelay] call OKS_fnc_LogDebug;
+			format["[HUNT] Players detected in %1 - Delay %2 seconds",_HuntZone,_DetectDelay] call OKS_fnc_LogDebug;
 		};
 		sleep _DetectDelay;
 
@@ -117,7 +117,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 		if( {isTouchingGround (vehicle _X) && (isPlayer _X) && [objNull, "VIEW"] checkVisibility [eyePos _X, getPosASL _EyeCheck] >= 0.6} count AllPlayers > 0 || {isTouchingGround (vehicle _X) && (isPlayer _X)} count list _Trigger > 0 ) then {
 			if({isTouchingGround (vehicle _X) && isPlayer _X} count list _Trigger > 0) exitWith {
 				if(_Debug) then {
-					"Players Nearby - Exiting Script" call OKS_fnc_LogDebug;
+					"[HUNT] Players Nearby - Exiting Script" call OKS_fnc_LogDebug;
 				};
 			};
 		}
@@ -129,7 +129,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 			} count list _HuntZone > 0);
 			if(_PlayerKnownToSpawner) then {
 				if(_Debug) then {
-					format["Players confirmed in %1",_HuntZone] call OKS_fnc_LogDebug;
+					format["[HUNT] Players confirmed in %1",_HuntZone] call OKS_fnc_LogDebug;
 				};
 				
 				if(_ShouldDeployFlare && _IsNight) then {
@@ -189,7 +189,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 						waitUntil {
 							sleep 10;
 							if(_Debug) then {
-								systemChat "Waiting for clearance near _Spawn"
+								"[HUNT] Waiting for clearance near _Spawn" spawn OKS_fnc_LogDebug;
 							};
 							(getPos _SpawnPos nearEntities ["LandVehicle", 15]) isEqualTo []
 						};
@@ -205,8 +205,9 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 
 						_Vehicle setDir getDir _SpawnPos;
 						if((_Vehicle emptyPositions "gunner" == 0)) then {
-
-							SystemChat "Vehicle is a transport";
+							if(_Debug) then {
+								"[HUNT] Vehicle is a transport" call OKS_fnc_LogDebug;
+							};
 							_CargoSeats = ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - (["TypeOf _Vehicle",false] call BIS_fnc_crewCount);
 							if(_CargoSeats > _MaxCargoSeats) then { _CargoSeats = _MaxCargoSeats };
 
@@ -215,8 +216,9 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 
 							if((_AliveNumber + (_CargoSeats + 1)) <= _MaxCount && _Vehicle emptyPositions "cargo" > 0) then {
 									_Group = [_Vehicle,_Side] call OKS_fnc_AddVehicleCrew;
-
-									SystemChat "Creating Transport Cargo...";
+									if(_Debug) then {
+										"[HUNT] Creating Transport Cargo..." call OKS_fnc_LogDebug;
+									};
 									_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), [0,0,50], [], 0, "NONE"];
 									_Unit setRank "SERGEANT";
 									_Unit MoveInCargo _Vehicle;
@@ -255,14 +257,14 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 							deleteVehicle driver _Vehicle;
 							deleteVehicle _vehicle;
 							if(_Debug) then {
-								"Only Driver Active - Removing Vehicle.." call OKS_fnc_LogDebug;
+								"[HUNT] Only Driver Active - Removing Vehicle.." call OKS_fnc_LogDebug;
 							};							
 						};
 					};
 				};
 
 				sleep 5;
-				_AliveNumber  = count (_CurrentHuntCount select {alive _X});
+				_AliveNumber = count (_CurrentHuntCount select {alive _X});
 				sleep (_RespawnDelay * _ResponseMultiplier);
 			};
 		};
@@ -276,13 +278,13 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 
 if(!alive _Base) exitWith {
 	if(_Debug) then {
-	 	"Base Destroyed - Exiting Script" call OKS_fnc_LogDebug;
+	 	"[HUNT] Base Destroyed - Exiting Script" call OKS_fnc_LogDebug;
 	};
 	 deleteVehicle _Base;
 };
 if(_Waves == 0) exitWith { 
 	if(_Debug) then {
-	 	"Waves Depleted - Exiting Script" call OKS_fnc_LogDebug;
+	 	"[HUNT] Waves Depleted - Exiting Script" call OKS_fnc_LogDebug;
 	};
 	deleteVehicle _Base;
 };
