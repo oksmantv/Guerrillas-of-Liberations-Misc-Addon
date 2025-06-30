@@ -13,11 +13,11 @@ _unit setVariable ["GOL_SetSurrendered",true,true];
 
 _random = random 1;
 if(_surrenderDebug) then {
-    format ["SetSurrender Random %1%% value",round(_random * 100)] spawn OKS_fnc_LogDebug;
+    format ["[SURRENDER] SetSurrender Random %1%% value",round(_random * 100)] spawn OKS_fnc_LogDebug;
 };
 if(_random < 0.8 && {_X distance _Unit < 10} count AllPlayers == 0 && _Unit checkAIFeature "PATH") then {
     if(_surrenderDebug) then {
-        format ["SetSurrender Unit set to flee."] spawn OKS_fnc_LogDebug;
+        format ["[SURRENDER] SetSurrender Unit set to flee."] spawn OKS_fnc_LogDebug;
     };
     _CivilianGroup = createGroup CIVILIAN;
     [_Unit] join _CivilianGroup;
@@ -38,6 +38,6 @@ if(_random < 0.8 && {_X distance _Unit < 10} count AllPlayers == 0 && _Unit chec
 } else {
     [_unit, true] call ACE_captives_fnc_setSurrendered;
     if(_surrenderDebug) then {
-        format ["SetSurrender Unit set to surrender."] spawn OKS_fnc_LogDebug;
+        format ["[SURRENDER] SetSurrender Unit set to surrender."] spawn OKS_fnc_LogDebug;
     };
 };

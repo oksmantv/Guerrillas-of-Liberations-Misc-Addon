@@ -31,6 +31,16 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     1
 ] call CBA_fnc_addSetting;
 
+// Checkbox: Allow Surrender by Threat
+[
+    "GOL_Surrender_Threat",
+    "CHECKBOX",
+    ["Allow Surrender by Threat", "When enabled, AI can surrender when threatened (aimed at)"],
+    "GOL Surrender",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
 // Slider: Near Friendly Distance (20 to 300, default 200, 2 decimals)
 [
     "GOL_Surrender_FriendlyDistance",

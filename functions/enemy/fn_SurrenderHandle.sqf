@@ -9,7 +9,7 @@ if(isNil "_unit") exitWith {};
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
 
 if(_surrenderDebug) then {
-    format["%1 Surrender Handle triggered", name _unit] spawn OKS_fnc_LogDebug;
+    format["[SURRENDER] %1 Surrender Handle triggered", name _unit] spawn OKS_fnc_LogDebug;
 };
 
 [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;

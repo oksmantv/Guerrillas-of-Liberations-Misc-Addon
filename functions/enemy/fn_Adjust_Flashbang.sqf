@@ -5,7 +5,7 @@ private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", f
 _adjustedChance = _adjustedChance * 1.3;
 if(_surrenderDebug) then {
     format [
-        "Surrender chance increased by 150%% (flashbang). New chance: %1%%",
+        "[SURRENDER] Surrender chance increased by 150%% (flashbang). New chance: %1%%",
         round(_adjustedChance * 100)
     ] spawn OKS_fnc_LogDebug;           
 };
