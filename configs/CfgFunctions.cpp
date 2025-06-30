@@ -296,6 +296,7 @@ class CfgFunctions // Defines a function
 		class OKS_Spawn_Arty {
 			file = "\OKS_GOL_Misc\functions\spawn\arty";
 			class ArtyFire {};
+			class Check_Travel {};
 			class ArtySuppression {};
 		};		
 

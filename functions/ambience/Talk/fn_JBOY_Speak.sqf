@@ -1,6 +1,7 @@
 		if (!isServer)  exitwith {};
 
 		params["_unit","_soundFileName","_Debug_Variable"];
+ 		Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 
 		if (isNull _unit or !alive _unit) exitWith {};
 
@@ -12,6 +13,9 @@
 
 		if (["CARELESS","AWARE"] find _behaviour >= 0) then {_behaviour = "NORMAL";}; // No sound file path exists for "CARELESS","AWARE"
 		_s = format["JBOY_Speak: No match found for _soundFileName %1",_soundFileName];
+		if(_Debug) then {
+			_s spawn OKS_fnc_LogDebug;
+		};		
 
 		_lastSubDir = "100_Commands"; // most stack related commands are in this subdirectory
 		switch (true) do 
@@ -44,8 +48,8 @@
 
 		if (!isNull _unit and alive _unit) then
 		{
-			if(_Debug_Variable) then {
-				format["[DEBUG] %1 spoke %2",_unit,_soundFileName] remoteExec ["systemChat",0];
+			if(_Debug) then {
+				format["[DEBUG] %1 spoke %2",_unit,_soundFileName] spawn OKS_fnc_LogDebug;
 			};
 			playSound3D [_s, _unit];
 		};

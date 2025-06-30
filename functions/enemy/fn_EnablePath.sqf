@@ -16,7 +16,7 @@
 
  	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 	if(_Debug) then {
-		format["%1 ran code for OKS_fnc_EnablePath, Chance: %2, Time: %3",_Group,_Chance,_Sleep] spawn OKS_fnc_LogDebug;
+		format["[EnablePath] %1 ran code, chance: %2, Time: %3",_Group,_Chance,_Sleep] spawn OKS_fnc_LogDebug;
 	};
 	
 	_group setVariable ["OKS_EnablePath_Active",true,true];
@@ -55,12 +55,9 @@
 
 						[_Unit, "PATH"] remoteExec ["enableAI",0];
 
-						//waitUntil {sleep 1; !isNil "lambs_wp_fnc_taskRush"};	
-						//[_newGroup,200,15,[],getPos _Unit,true] remoteExec ["lambs_wp_fnc_taskRush",0];
-
-						if(_Debug) then { format ["Garrison Unit Detached: %1",_Unit] spawn OKS_fnc_LogDebug;};
+						if(_Debug) then { format ["[EnablePath]Garrison Unit Detached: %1",_Unit] spawn OKS_fnc_LogDebug;};
 					} else {
-						if(_Debug) then { format ["Ignored (Unit in Vehicle): %1",_Unit] spawn OKS_fnc_LogDebug;};
+						if(_Debug) then { format ["[EnablePath] Ignored (Unit in Vehicle): %1",_Unit] spawn OKS_fnc_LogDebug;};
 					};
 				};
 			};

@@ -9,19 +9,6 @@ if(HasInterface && !isServer) exitWith {false};
 if (!HasInterface || isServer) then
 {
 
-	OKS_CHECK_TRAVEL = {
-
-		_Debug = 0;
-		Params["_Projectile","_Launcher"];
-
-		_TargetPos = _Launcher getVariable ["OKS_Arty_Target",false];		
-		WaitUntil {sleep 1; (_Projectile distance2D _Launcher > 2000 || _Projectile distance2D _TargetPos < 500)};
-		if(_Debug == 1) then {
-			systemChat format["Deleted Projectile - Away from Tube: %2 - Near Target: %3",_Projectile distance2D _Launcher,_Projectile distance2D _Launcher > 1000,_Projectile distance2D _TargetPos < 500];
-		};
-		deleteVehicle _Projectile;
-	};
-
 		params[
 			["_side",east,[sideUnknown]],
 			["_arty",objNull,[objNull]],
@@ -230,7 +217,7 @@ if (!HasInterface || isServer) then
 	*/
 
 	if (_Debug == 1) then {SystemChat "Disable AI"};
-	_arty addEventHandler ["Fired",{ [(_this select 6),(_this select 0)] remoteExec ["OKS_CHECK_TRAVEL",0]}];
+	[_arty,["Fired",{ [(_this select 6),(_this select 0)] remoteExec ["OKS_fnc_Check_Travel",0]}]] remoteExec ["addEventHandler",0];
 	_arty spawn {
 		waitUntil{sleep 5; { _X distance2d _this < 30 && (side _this) getFriend (side _X) < 0.5} count AllPlayers > 0};
 		systemChat "Enemy Players nearby, exiting artillery..";
@@ -256,7 +243,7 @@ if (!HasInterface || isServer) then
 	        if(_Debug == 1) then {
         		systemChat "Firing Artillery..";
 	        };
-	        _arty setVariable ["OKS_Arty_Target",_target];
+	        _arty setVariable ["OKS_Arty_Target",_target, true];
 	        _arty doArtilleryFire [_target, _CfgMagazine,_rof];
 	        sleep _reload;
 		};
