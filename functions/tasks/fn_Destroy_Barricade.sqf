@@ -51,46 +51,7 @@
 
 	if(_ShouldAddActionToDestroy && count _Barricades == 1) then {
 		_Barricade = _Barricades select 0;
-		_plantBombAction = [
-			"Plant_Bomb",
-			"Place Satchel Charge",
-			"\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\destroy_ca.paa",
-			{ 
-				_relPos = [-1.53137,10.0522,198.065];
-				_explosivePos = _target modelToWorld _relPos;
-
-				if ([_player, "SatchelCharge_Remote_Mag"] call BIS_fnc_hasItem && [_player, "ACE_M26_Clacker"] call BIS_fnc_hasItem) then {
-					_player removeMagazine "SatchelCharge_Remote_Mag";
-					_explosive = [
-						_player,
-						_player modelToWorldVisual [0,1.5,0.1],
-						getDir _player,
-						"SatchelCharge_Remote_Mag",
-						"Command",
-						[]
-					] call ace_explosives_fnc_placeExplosive;
-					[_player, _explosive, "ACE_M26_Clacker"] call ace_explosives_fnc_connectExplosive;
-
-
-					[_explosive,_target] spawn {
-						params ["_explosive","_barricade"];
-						waitUntil {sleep 0.01; !Alive _explosive};
-						sleep 0.05;
-						deleteVehicle _barricade;
-					};
-					systemChat "Satchel placed and linked to your clacker.";
-				} else {
-					systemChat "A Satchel Charge and M26 Firing Device is required to plant the explosives.";
-				};
-			},
-			{ 
-				true
-			},
-			{},
-			[]
-		] call ace_interact_menu_fnc_createAction;
-
-		[_Barricade, 0, ["ACE_MainActions"], _plantBombAction] remoteExec ["ace_interact_menu_fnc_addActionToObject", 0];
+		[_Barricade] remoteExec ["OKS_fnc_Destroy_Barricade_Action", 0];
 	};
 
 	waitUntil {sleep 10; {_X call BIS_fnc_taskCompleted} count (_TaskMain call BIS_fnc_taskChildren) == count (_TaskMain call BIS_fnc_taskChildren)};

@@ -25,6 +25,7 @@ class CfgFunctions // Defines a function
 			class ClearImmediateArea {};
 			class Defuse_Explosive {};
 			class Destroy_Barricade {};
+			class Destroy_Barricade_Action {};
 			class Destroy_Task {};
 			class Evacuate_HVT {};
 			class Fallback_Artillery {};			
