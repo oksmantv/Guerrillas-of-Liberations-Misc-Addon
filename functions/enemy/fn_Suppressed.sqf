@@ -27,6 +27,13 @@ _Unit addEventHandler ["Suppressed", {
 	params ["_Unit"];
     private ["_SuppressedStance"];
     _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug",false];
+
+    if(_Unit getVariable ["GOL_IsSuppressed",false]) exitWith {
+        if(_Suppressed_Debug) then {
+            format["%1 is already suppressed. Exiting.",name _Unit] spawn OKS_fnc_LogDebug;
+        };
+    };
+    
     private _PreviousPosition = _Unit getVariable ["GOL_DefaultStance","up"];
     switch (toLower _PreviousPosition) do {
         case "up": {
