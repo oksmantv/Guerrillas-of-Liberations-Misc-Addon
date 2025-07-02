@@ -5,7 +5,13 @@
 
  	if(!isServer) exitWith {};
 
-	Params ["_Area","_NumberInfantry","_Range","_Side"];
+	Params [
+		"_Area",
+		["_NumberInfantry",5,[0]],
+		["_Range",250,[0]],
+		["_Side",east,[sideUnknown]]
+	];
+	
 	private ["_Spawnpos","_RandomPos"];
 	private _Exit = false;
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;

@@ -4,9 +4,22 @@ Params [
 ];
 
 #define CURRENT_WEAPONS player, currentWeapon player, currentMuzzle player
+_uid = getPlayerUID (player);
+_isNCO = false;
+switch _uid do {
+    case "76561198013929549": { _isNCO = true }; // Oksman
+    case "76561198086056020": { _isNCO = true }; // Blu.
+    case "76561199681025229": { _isNCO = true }; // Rutters
+    case "76561198005972885": { _isNCO = true }; // Pilgrim
+    case "76561198014971848": { _isNCO = true }; // Filth
+    case "76561198091519166": { _isNCO = true }; // Juan Sanchez
+    case "76561198058521961": { _isNCO = true }; // Joona
+    case "76561198210159148": { _isNCO = true }; // Eric
+    default { _isNCO = false; };
+};
 
-if !(serverCommandAvailable "#kick" || isServer) exitWith {};
 
+if (!(serverCommandAvailable "#kick" || isServer || _isNCO)) exitWith {};
 if (isNil {missionNamespace getVariable "GOL_ShowMissionCompleteHint"}) then {
     missionNamespace setVariable ["GOL_ShowMissionCompleteHint", false];
 };
