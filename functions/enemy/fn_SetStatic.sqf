@@ -1,4 +1,4 @@
-	// OKS_SetStatic
+	// OKS_fnc_SetStatic
 	// [_Group] spawn OKS_fnc_SetStatic;
 
 	Params ["_Group"];

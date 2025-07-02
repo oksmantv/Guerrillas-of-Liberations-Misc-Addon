@@ -229,7 +229,6 @@ class CfgFunctions // Defines a function
 			class Populate_StaticWeapons {};
 			class Populate_Strongpoints {};
 			class RoadConnected {};
-			class SetStatic {};
 			class Vehicle_Patrol {};
 			class Vehicle_Waypoints {};
 		};	

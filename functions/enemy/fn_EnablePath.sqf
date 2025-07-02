@@ -10,8 +10,8 @@
 	if(hasInterface && !isServer) exitWith {};
 
 	Private ["_Units","_Unit"];
-	if(_group getVariable ["OKS_EnablePath_Active",false]) exitWith {
-		// Exit if already enabled on Group level.
+	if(_group getVariable ["OKS_EnablePath_Active",false] || _Chance == 0) exitWith {
+		// Exit if already enabled on Group level or zero chance.
 	};
 
  	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
