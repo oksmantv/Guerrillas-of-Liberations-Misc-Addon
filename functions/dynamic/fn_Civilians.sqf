@@ -10,10 +10,9 @@
 	5: Count of Random Outside Waypoints (Number)
 	6: Use Agents? (TRUE/FALSE)
 	7: Use Panic Mode? (TRUE/FALSE)
-	8: Ethnicity - (STRING) Refer to OKS_FACESWAP (Optional: Default "Caucasian")
-	9: MainTrigger - Trigger Object - Will delete all civilians when told in this area.
-
-	[Trigger_1,15,5,12,15,true,true] spawn OKS_fnc_Civilians;
+	
+	Example:
+	[Trigger_1,15,5,12,15,false,true] spawn OKS_fnc_Civilians;
 */
 
 if(HasInterface && !isServer) exitWith {};

@@ -67,4 +67,11 @@ if(_surrenderDebug) then {
 };
 
 sleep 2;
+_ThrownWeaponsOnGround = _unit getVariable ["GOL_ThrownWeaponOnGround",false];
+if(_ThrownWeaponsOnGround) exitWith {
+    // If weapons have already been thrown on the ground once, exits the function.
+};
+
+// Set the variable to indicate that weapons have been thrown on the ground once already.
+_unit setVariable ["GOL_ThrownWeaponOnGround",true,true];
 [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;

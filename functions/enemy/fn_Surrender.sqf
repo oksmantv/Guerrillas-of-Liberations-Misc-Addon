@@ -42,6 +42,11 @@ _Unit setVariable ["GOL_NearFriendliesDistance",_NearFriendliesDistance,true];
 if (_SurrenderByShot) then {
     _Unit addEventHandler ["Hit", {
         params ["_unit", "_source", "_damage", "_instigator"];
+
+        if(!isPlayer _instigator) exitWith {
+            // If the instigator is not a player, do not check for surrender.
+        };
+
         private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];
         private _baseChance = _unit getVariable ["GOL_ChanceSurrender", 0];
         private _surrenderDistance = _Unit getVariable ["GOL_SurrenderDistance",50];
@@ -93,6 +98,10 @@ if (_SurrenderByFlashbang) then {
 // Add FiredNear Event for Surrender.
 _Unit addEventHandler ["Suppressed", {
     params ["_unit", "_distance", "_firer", "_instigator", "_ammoObject", "_ammoClassname", "_ammoConfig"];
+
+    if(!isPlayer _firer) exitWith {
+        // If the firer is not a player, do not check for surrender.
+    };
 
     if (_distance > 20) exitWith {}; // Skip if round is far from the unit.
     if (!isPlayer _firer) exitWith {}; // Skip if round is not fired from player;

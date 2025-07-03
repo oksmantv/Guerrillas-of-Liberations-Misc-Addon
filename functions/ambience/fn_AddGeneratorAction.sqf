@@ -14,8 +14,8 @@ private _codeDisableGenerator = {
             params ["_args", "_pfhID"];
             _args params ["_target", "_TurnOffNearbyLights", "_RangeOfPowerSupply"];
 
-            systemChat str _args; // For debugging: will show [generator, true, 1000] etc.
-            copyToClipboard str _args;
+            //systemChat str _args; // For debugging: will show [generator, true, 1000] etc.
+            //copyToClipboard str _args;
 
             systemChat "Generator shutting down..";
             _target setVariable ["GeneratorActive", false, true];

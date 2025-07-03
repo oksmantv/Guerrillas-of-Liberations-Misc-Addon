@@ -24,7 +24,12 @@ _Unit setVariable ["GOL_SuppressedMin",_MinimumTime,true];
 _Unit setVariable ["GOL_SuppressedMax",_MaximumTime,true];
 
 _Unit addEventHandler ["Suppressed", {
-	params ["_Unit"];
+	params ["_unit", "_distance", "_shooter", "_instigator", "_ammoObject", "_ammoClassName", "_ammoConfig"];
+
+    if(!isPlayer _shooter) exitWith {
+        // If the shooter is not a player, do not suppress the unit.
+    };
+
     private ["_SuppressedStance"];
     _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug",false];
 

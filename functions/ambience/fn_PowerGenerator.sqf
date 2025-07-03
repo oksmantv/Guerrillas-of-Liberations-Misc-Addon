@@ -7,13 +7,13 @@ if (_AddAction) then {
 
 private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
 if(_Debug) then {
-    format["[DEBUG] Power Generator Started"] remoteExec ["systemChat",0];
+    format["[Generator] Power Generator Started"] spawn OKS_fnc_logDebug;
 };
 
 playSound3D ["\OKS_GOL_Misc\sounds\GeneratorOn.wav", _Generator, false, getPosASL _Generator, 4, 1, 40];
 sleep 8.66;
 _Generator setVariable ["GeneratorActive", true, true];
-systemChat format["[DEBUG] Power Generator Active"];
+format["[Generator] Power Generator Active"] spawn OKS_fnc_logDebug;
 
 [{
     params ["_args","_pfhID"];
@@ -22,7 +22,7 @@ systemChat format["[DEBUG] Power Generator Active"];
     
     if (!(_Generator getVariable ["GeneratorActive", false]) || !alive _Generator) exitWith {
         if(_Debug) then {
-            format["[DEBUG] Power Generator Off"] remoteExec ["systemChat",0];
+            format["[Generator] Power Generator Off"] spawn OKS_fnc_logDebug;
         };        
 
         playSound3D ["\OKS_GOL_Misc\sounds\GeneratorOff.wav", _Generator, false, getPosASL _Generator, 4, 1, 40];
@@ -30,7 +30,7 @@ systemChat format["[DEBUG] Power Generator Active"];
     };
 
     if(_Debug) then {
-        format["[DEBUG] Power Generator Idling"] remoteExec ["systemChat",0];
+        format["[Generator] Power Generator Idling"] spawn OKS_fnc_logDebug;
     };        
     playSound3D ["\OKS_GOL_Misc\sounds\GeneratorIdle.wav", _Generator, false, getPosASL _Generator, 4, 1, 40];
 }, 5.88, [_Generator]] call CBA_fnc_addPerFrameHandler;
