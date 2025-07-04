@@ -29,7 +29,7 @@ Params [
 ];
 
 private ["_TaskInfo","_TargetDisplayName","_TaskId"];
-private _TaskPosition = nil;
+private _TaskPosition = objNull;
 private _TaskIcon = "destroy";
 private _TargetArray = [];
 
