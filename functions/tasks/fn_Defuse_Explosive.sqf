@@ -76,7 +76,7 @@ if(!isServer) exitWith {};
 		true,
 		_TaskId,
 		[
-			format["An explosive charge has been placed to destroy a %3. You must defuse the explosive before it detonates. We suspect the charge is set to go off in %2 minutes, local time: %1",_targetDayTimeAsString,_TimeInMinutes,_targetString],
+			format["An explosive charge has been placed to destroy a %3. You must defuse the explosive before it detonates. We suspect the charge is set to go off in %2 minutes, approximate local time: %1",_targetDayTimeAsString,_TimeInMinutes,_targetString],
 			"Defuse Explosive",
 			"Defuse"
 		],

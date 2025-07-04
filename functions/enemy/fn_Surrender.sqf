@@ -30,6 +30,12 @@ if(isNull _Unit) exitWith {
         format ["[SURRENDER] Surrender Script Unit is null, exiting..",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
     };
 };
+if(vehicle _Unit != _Unit) exitWith {
+    if(_surrenderDebug) then {
+        format ["[SURRENDER] Surrender Script Unit is in a vehicle, exiting..",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
+    };
+};
+
 if(_surrenderDebug) then {
     format ["[SURRENDER] Surrender Script Activated for %1 - %2",_Unit, name _Unit] spawn OKS_fnc_LogDebug;
 };

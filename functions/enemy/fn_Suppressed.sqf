@@ -13,9 +13,16 @@ params [
 if(hasInterface && !isServer) exitWith {};
 
 _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug",false];
+if(vehicle _Unit != _Unit) exitWith {
+    if(_Suppressed_Debug) then {
+        format["[SUPPRESS] %1 is in a vehicle. Exiting.",name _Unit] spawn OKS_fnc_LogDebug;
+    };
+};
+
 if(_Suppressed_Debug) then {
-    format["Suppressed added to %1.",name _unit] spawn OKS_fnc_LogDebug;
-};  
+    format["[SUPPRESS] Script added to %1.",name _unit] spawn OKS_fnc_LogDebug;
+}; 
+
 
 _Unit setVariable ["lambs_danger_disableAI", true,true];
 _Unit setVariable ["GOL_DefaultStance",UnitPos _Unit,true];
@@ -35,7 +42,7 @@ _Unit addEventHandler ["Suppressed", {
 
     if(_Unit getVariable ["GOL_IsSuppressed",false]) exitWith {
         if(_Suppressed_Debug) then {
-            format["%1 is already suppressed. Exiting.",name _Unit] spawn OKS_fnc_LogDebug;
+            format["[SUPPRESS] %1 is already suppressed. Exiting.",name _Unit] spawn OKS_fnc_LogDebug;
         };
     };
     
@@ -63,7 +70,7 @@ _Unit addEventHandler ["Suppressed", {
         private _Delay = (_MinimumTime + (random _RandomTime));  
 
         if(_Suppressed_Debug) then {
-            format["Suppressed for %1 in stance %2",_Delay,_SuppressedStance] spawn OKS_fnc_LogDebug;
+            format["[SUPPRESS] Suppressed for %1 in stance %2",_Delay,_SuppressedStance] spawn OKS_fnc_LogDebug;
         };  
 
         [_Unit,_SuppressedStance,_Delay,_PreviousPosition,_Debug_Variable,_SuppressThreshold] spawn {
@@ -84,7 +91,7 @@ _Unit addEventHandler ["Suppressed", {
                 sleep (random [1,2,3]); 
                 [_Unit,"UP"] remoteExec ["setUnitPos",0];   
                 if(_Suppressed_Debug) then {
-                    format["Suppress reset to %1",_PreviousPosition] spawn OKS_fnc_LogDebug;
+                    format["[SUPPRESS] Suppress reset to %1",_PreviousPosition] spawn OKS_fnc_LogDebug;
                 };                          
             };
             _Unit setVariable ["GOL_IsSuppressed",false,true];
