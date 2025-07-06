@@ -27,14 +27,25 @@ Params [
 ];
 
 private _Trigger = _TriggerOrPosition;
+private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
+
 if(typeName _TriggerOrPosition == "OBJECT") then {
     _TriggerOrPosition = getPos _TriggerOrPosition;
+    if(_Debug) then {
+        format["[DESTROYHOUSES] Destroy Houses activated at %1 as object.",_TriggerOrPosition] spawn OKS_fnc_LogDebug;
+    };
 };
 if(typename _TriggerOrPosition == "ARRAY") then {
     _Trigger = createTrigger ["EmptyDetector", getPos player];
     _Trigger setTriggerArea [_Range, _Range, 0, false];
+    if(_Debug) then {
+        format["[DESTROYHOUSES] Destroy Houses activated at %1 as array.",_TriggerOrPosition] spawn OKS_fnc_LogDebug;
+    };
 } else {
     _Range = ([[(triggerArea _Trigger) select 0,(triggerArea _Trigger) select 1], [], {_x}, "DESCEND"] call BIS_fnc_sortBy) select 0;
+    if(_Debug) then {
+        format["[DESTROYHOUSES] Destroy Houses activated at %1 as trigger.",_TriggerOrPosition] spawn OKS_fnc_LogDebug;
+    };
 };
 sleep 1;
 
@@ -48,7 +59,7 @@ private _b = _area select 1; // height
 _Buildings = nearestTerrainObjects [_center, ["HOUSE"], (_a max _b)];
 
 {
-    if(_X inArea _Trigger && !(_X getVariable ["OKS_Destroy_Blacklist",false])) then {
+    if(_House = _X; _House inArea _Trigger && !(_House getVariable ["OKS_Destroy_Blacklist",false]) && {_X distance _House < 500} count allPlayers == 0) then {
         if(_RandomDamage && _DamageVariation isNotEqualTo []) then {
             _X setDamage (([_DamageVariation#0, _DamageVariation#1] call BIS_fnc_randomInt) / 10);
         } else {
@@ -58,7 +69,6 @@ _Buildings = nearestTerrainObjects [_center, ["HOUSE"], (_a max _b)];
     }
 } foreach _Buildings;
 
-private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
 if(_Debug) then {
     format["Destroy Houses activated at %1",_TriggerOrPosition] spawn OKS_fnc_LogDebug;
 };

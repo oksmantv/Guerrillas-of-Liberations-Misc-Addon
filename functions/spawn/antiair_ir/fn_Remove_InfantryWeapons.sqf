@@ -9,5 +9,5 @@ Params ["_Unit"];
 	if(secondaryWeapon _Unit == "rhs_weap_igla") then {
 		_Unit removeWeapon secondaryWeapon _Unit;
 		_Unit addMagazines ["gol_mag_9k38_rocket",1];
-		_Unit addWeapon "oks_weapon_igla";
+		_Unit addWeapon "gol_weapon_igla";
 	};
