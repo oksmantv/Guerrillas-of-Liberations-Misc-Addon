@@ -90,18 +90,3 @@ if(_Debug && _AppearanceArray isEqualTo []) then {
 	format ["Vehicle Appearance Script, no appearance defined. Exiting.."] spawn OKS_fnc_LogDebug;
 };
 [_Vehicle, "", _AppearanceArray] call BIS_fnc_initVehicle;
-
-
-_veh = createVehicle ["rhsgref_ins_bmd2",position player,[],0,"NONE"];
-[
-	_veh,
-	["Camo",1], 
-	["9p135_hide_source",0,"crate_l1_unhide",0,"crate_l2_unhide",1,"crate_l3_unhide",1,"crate_r1_unhide",1,"crate_r2_unhide",1,"crate_r3_unhide",0,"wood_1_unhide",1,"wood_2_unhide",0,"antena2_hide",1]
-] call BIS_fnc_initVehicle;
-[
-	_veh,
-	[
-		["rhsgref_ins_crew","driver"],
-		["rhsgref_ins_crew","gunner",[0]]
-	]
-] call BIS_fnc_initVehicleCrew;

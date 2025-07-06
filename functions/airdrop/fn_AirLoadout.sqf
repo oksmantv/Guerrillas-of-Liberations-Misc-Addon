@@ -27,11 +27,14 @@ if (_aircraftTypeClass == "") exitWith {}; // Exit if no match
 
 switch (_aircraftTypeClass) do {
     case "mtv3": {
-		_loadout = [[1,"rhs_mag_ub16_s5k1",8],[2,"rhs_mag_ub16_s5k1",8],[3,"rhs_mag_upk23_mixed",250],[4,"",-1],[5,"",-1],[6,"",-1],[7,"rhs_ASO2_CMFlare_Chaff_Magazine_x6",96]];
+		  _loadout = [[1,"rhs_mag_ub16_s5k1",8],[2,"rhs_mag_ub16_s5k1",8],[3,"rhs_mag_upk23_mixed",250],[4,"",-1],[5,"",-1],[6,"",-1],[7,"rhs_ASO2_CMFlare_Chaff_Magazine_x6",96]];
     };
-    case "mi24p": {
-		_loadout = [[1,"rhs_mag_ub16_s5k1",4],[2,"rhs_mag_ub16_s5k1",4],[3,"rhs_mag_ub16_s5k1",4],[4,"rhs_mag_ub16_s5k1",4],[5,"",-1],[6,"",-1],[7,"rhs_ASO2_CMFlare_Chaff_Magazine_x4",64]];
+    case "mi24": {
+		  _loadout = [[1,"rhs_mag_ub16_s5k1",4],[2,"rhs_mag_ub16_s5k1",4],[3,"rhs_mag_ub16_s5k1",4],[4,"rhs_mag_ub16_s5k1",4],[5,"",-1],[6,"",-1],[7,"rhs_ASO2_CMFlare_Chaff_Magazine_x4",64]];
     };
+    case "mi_24": {
+		  _loadout = [[1,"rhs_mag_ub16_s5k1",4],[2,"rhs_mag_ub16_s5k1",4],[3,"rhs_mag_ub16_s5k1",4],[4,"rhs_mag_ub16_s5k1",4],[5,"",-1],[6,"",-1],[7,"rhs_ASO2_CMFlare_Chaff_Magazine_x4",64]];
+    };    
     case "amtsh": {
         _loadout = [[1,"",-1],[2,"",-1],[3,"rhs_mag_ub16_s5k1",8],[4,"rhs_mag_ub16_s5k1",8],[5,"",-1],[6,"rhs_mag_upk23_mixed",250],[7,"rhs_ASO2_CMFlare_Chaff_Magazine_x4",64]]
     };

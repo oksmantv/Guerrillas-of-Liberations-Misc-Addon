@@ -29,12 +29,6 @@ Params [
 private _Trigger = _TriggerOrPosition;
 private _Debug = missionNamespace getVariable ["GOL_Ambience_Debug", false];
 
-if(typeName _TriggerOrPosition == "OBJECT") then {
-    _TriggerOrPosition = getPos _TriggerOrPosition;
-    if(_Debug) then {
-        format["[DESTROYHOUSES] Destroy Houses activated at %1 as object.",_TriggerOrPosition] spawn OKS_fnc_LogDebug;
-    };
-};
 if(typename _TriggerOrPosition == "ARRAY") then {
     _Trigger = createTrigger ["EmptyDetector", getPos player];
     _Trigger setTriggerArea [_Range, _Range, 0, false];
@@ -67,9 +61,12 @@ _Buildings = nearestTerrainObjects [_center, ["HOUSE"], (_a max _b)];
             _X setDamage 1;
         };
         sleep 0.1;
+        if(_Debug) then {
+            format["[DESTROYHOUSES] Destroyed House %1 at %2", _House, getPos _House] spawn OKS_fnc_LogDebug;
+        };
     }
 } foreach _Buildings;
 
 if(_Debug) then {
-    format["Destroy Houses activated at %1",_TriggerOrPosition] spawn OKS_fnc_LogDebug;
+    format["Destroy Houses completed at %1",_TriggerOrPosition] spawn OKS_fnc_LogDebug;
 };

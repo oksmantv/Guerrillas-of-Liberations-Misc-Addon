@@ -44,7 +44,7 @@ waitUntil {_Repetitions = _Repetitions + 1; sleep 2; count (crew _vehicle) > 1 |
 if(_Repetitions > 10) exitWith {
  	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 	if(_Debug) then {
-		"Vehicle crew did not exist after 20 seconds. Exiting.." spawn OKS_fnc_LogDebug;
+		//"Vehicle crew did not exist after 20 seconds. Exiting.." spawn OKS_fnc_LogDebug;
 	};
 };
 

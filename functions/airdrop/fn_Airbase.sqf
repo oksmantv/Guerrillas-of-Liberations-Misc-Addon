@@ -168,7 +168,7 @@ While {Alive _Object && _AirbaseRespawnCount > 0} do {
 	}
 	else
 	{
-		sleep _AirbaseRefreshRate;
+		sleep (_AirbaseRefreshRate + (random _AirbaseRefreshRate));
 	};
 };
 
