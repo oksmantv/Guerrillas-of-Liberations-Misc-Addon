@@ -59,7 +59,8 @@ private _b = _area select 1; // height
 _Buildings = nearestTerrainObjects [_center, ["HOUSE"], (_a max _b)];
 
 {
-    if(_House = _X; _House inArea _Trigger && !(_House getVariable ["OKS_Destroy_Blacklist",false]) && {_X distance _House < 500} count allPlayers == 0) then {
+    _House = _X;
+    if(_House inArea _Trigger && !(_House getVariable ["OKS_Destroy_Blacklist",false]) && {_X distance _House < 500} count allPlayers == 0) then {
         if(_RandomDamage && _DamageVariation isNotEqualTo []) then {
             _X setDamage (([_DamageVariation#0, _DamageVariation#1] call BIS_fnc_randomInt) / 10);
         } else {
