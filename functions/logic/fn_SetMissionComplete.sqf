@@ -21,11 +21,11 @@ switch _uid do {
 
 if (!(serverCommandAvailable "#kick" || isServer || _isNCO)) exitWith {};
 if (isNil {missionNamespace getVariable "GOL_ShowMissionCompleteHint"}) then {
-    missionNamespace setVariable ["GOL_ShowMissionCompleteHint", false];
+    missionNamespace setVariable ["GOL_ShowMissionCompleteHint", false, true];
 };
 
 private _show = !(missionNamespace getVariable ["GOL_ShowMissionCompleteHint", false]);
-missionNamespace setVariable ["GOL_ShowMissionCompleteHint", _show];
+missionNamespace setVariable ["GOL_ShowMissionCompleteHint", _show, true];
 
 if (_show) then {
     [_IsMissionSuccess] spawn {
@@ -90,6 +90,7 @@ if (_show) then {
             private _civiliansKilled = missionNamespace getVariable ["GOL_CiviliansKilled", 0];
             private _currentPOWs = missionNamespace getVariable ["GOL_CapturedPOWs", 0];
             private _totalSeconds = time; // Or your own elapsed seconds value
+            private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
 
             private _hours = floor (_totalSeconds / 3600);
             private _minutes = floor ((_totalSeconds % 3600) / 60);
@@ -118,6 +119,8 @@ if (_show) then {
             private _heliPath = "\a3\ui_f\data\GUI\Rsc\RscDisplayGarage\helicopter_ca.paa";
             private _tankPath = "\a3\ui_f\data\GUI\Rsc\RscDisplayGarage\tank_ca.paa";
             private _captivePath = "\OKS_GOL_MISC\data\UI\Surrender_ca.paa";
+            private _captivePath = "\OKS_GOL_MISC\data\UI\Surrender_ca.paa";
+            private _friendlyFirePath = "\a3\ui_f\data\IGUI\Cfg\Cursors\unitInjured_ca.paa";
             private _hintText = format [
                 "<img image='%1' size='3'/><img image='%2' size='3'/><br/>" +
                 "<t size='1.8' font='RobotoCondensedBold' color='%24'>%23</t><br/>" +
@@ -125,6 +128,7 @@ if (_show) then {
                 "<img image='%4' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Active Players: %5</t><br/>" +
                 "<img image='%6' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Enemies Killed: %7</t><br/>" +
                 "<img image='%8' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Non-Combatants Killed: %9</t><br/>" +
+                "<img image='%26' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Friendly Fire Incidents: %25</t><br/>" +
                 "<img image='%22' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> POWs Captured: %21</t><br/>" +                
                 "<img image='%10' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Time Elapsed: %11</t><br/><br/>" +
                 "<img image='%12' size='1.4'/><t size='1.0' font='RobotoCondensedBold'>Platoon Casualty Rate: <t color='%13'> %14%%</t></t><br/>" +
@@ -156,16 +160,19 @@ if (_show) then {
                 _captivePath,                   // 22
                 _MissionStatus,                 // 23
                 _MissionStatusColor             // 24
+                _friendlyFireKills,             // 25
+                _friendlyFirePath               // 26
             ];
 
             parseText _hintText remoteExec ["hintSilent",0];
 
             // Safety Zone
             {
-                _Player = _X;
+                private _Player = _X;
                 _Player allowDamage false;
                 _Player setCaptive true;
-                _Player addEventHandler ["FiredMan",{
+                true call GW_GameLoop_Fnc_WeaponLock;
+                _Player addEventHandler ["Fired",{
                     params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_vehicle"];
                     deleteVehicle _projectile;
                 }];
@@ -216,7 +223,7 @@ if (_show) then {
             _Player = _X;
             _Player allowDamage true;
             _Player setCaptive false;
-            _Player removeAllEventHandlers "FiredMan";
+            _Player removeAllEventHandlers "Fired";
             _Player setVariable ["ReplacedSecondaryWeapon",false,true]; 
             _LauncherArray = _Player getVariable ["GOL_RestoreSecondaryArray", []];
             if(_LauncherArray isNotEqualTo []) then {
@@ -237,7 +244,8 @@ if (_show) then {
         _Player = _X;
         _Player allowDamage true;
         _Player setCaptive false;
-        _Player removeAllEventHandlers "FiredMan";
+        _Player removeAllEventHandlers "Fired";
+        false call GW_GameLoop_Fnc_WeaponLock;
         _Player setVariable ["ReplacedSecondaryWeapon",false,true]; 
         _LauncherArray = _Player getVariable ["GOL_RestoreSecondaryArray", []];
         if(_LauncherArray isNotEqualTo []) then {

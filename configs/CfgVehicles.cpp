@@ -1,5 +1,19 @@
 
 class CfgVehicles {
+
+	class RHS_Heli;
+	class GOL_AH6M: RHS_Heli {
+        class Components : Components {
+            class TransportPylonsComponent : TransportPylonsComponent {
+                class Pylons {
+                    class Pylon1 {
+                        compatibleMagazines[] += { "Your_New_Pylon_Magazine" };
+                    };
+                };
+            };
+        };
+	};
+
     class Land;
     class LandVehicle: Land {
         class ACE_Actions {
