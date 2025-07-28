@@ -7,9 +7,9 @@ if(!isServer) exitWith {};
 Params
 [
 	["_Helicopter", ObjNull, [ObjNull]],
-	["_ShouldDisableThermal", true, [true]],
-	["_shouldDisableNVG", false, [true]],
-	["_ShouldReplaceDoorguns", true, [true]],
+	["_ShouldDisableThermal", (missionNamespace getVariable ["GOL_Helicopter_TI",false]), [true]],
+	["_shouldDisableNVG", (missionNamespace getVariable ["GOL_Helicopter_NVG",false]), [true]],
+	["_ShouldReplaceDoorguns", (missionNamespace getVariable ["GOL_Helicopter_DoorgunReplace",true]), [true]],
 	["_DoorgunClasses",["RHS_weap_gau19","rhsusf_mag_gau19_melb_right"],[[]]],
 	["_DoorgunAmmo",4,[0]]
 ];
