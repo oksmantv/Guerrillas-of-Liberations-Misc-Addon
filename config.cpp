@@ -127,22 +127,22 @@ class RscStandardDisplay;
 class OKS_MissionComplete_base: RscButtonMenu  {
     idc = 470215;
     text = "MISSION COMPLETE";
-	tooltip="Sets up safety and scoreboards";    
-	x = "1 * (((safezoneW / safezoneH) min 1.2) / 40) + (safezoneX)";
-	y = "7 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
-	w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
-	h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
-    action = "(findDisplay 49) closeDisplay 0; [true] spawn OKS_fnc_SetMissionComplete;";
+    tooltip="Sets up safety and scoreboards";    
+    x = "1 * (((safezoneW / safezoneH) min 1.2) / 40) + (safezoneX)";
+    y = "7 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
+    w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
+    h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
+    action = "createDialog 'OKS_ConfirmationDialog'; missionNamespace setVariable ['OKS_MissionAction', true];";
 };
 class OKS_MissionFailed_base: RscButtonMenu  {
     idc = 470215;
     text = "MISSION FAILED";
-	tooltip="Sets up safety and scoreboards";    
-	x = "1 * (((safezoneW / safezoneH) min 1.2) / 40) + (safezoneX)";
-	y = "8.5 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
-	w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
-	h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
-    action = "(findDisplay 49) closeDisplay 0; [false] spawn OKS_fnc_SetMissionComplete;";
+    tooltip="Sets up safety and scoreboards";    
+    x = "1 * (((safezoneW / safezoneH) min 1.2) / 40) + (safezoneX)";
+    y = "8.5 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
+    w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
+    h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
+    action = "createDialog 'OKS_ConfirmationDialog'; missionNamespace setVariable ['OKS_MissionAction', false];";
 };
 
 class RscDisplayInterrupt: RscStandardDisplay {
@@ -153,10 +153,47 @@ class RscDisplayInterrupt: RscStandardDisplay {
 };
 
 class RscDisplayMPInterrupt: RscStandardDisplay {
-	class controls {
-		class OKS_MissionComplete: OKS_MissionComplete_base {};
-		class OKS_MissionFailed: OKS_MissionFailed_base {};
-	};
+    class controls {
+        class OKS_MissionComplete: OKS_MissionComplete_base {};
+        class OKS_MissionFailed: OKS_MissionFailed_base {};
+    };
+};
+
+// Confirmation Dialog
+class OKS_ConfirmationDialog {
+    idd = -1;
+    movingEnable = false;
+    enableSimulation = true;
+    class controlsBackground {
+        class Background: RscText {
+            idc = -1;
+            x = 0.4; y = 0.4;
+            w = 0.2; h = 0.2;
+            colorBackground[] = {0, 0, 0, 0.7};
+        };
+    };
+    class controls {
+        class Text: RscText {
+            idc = -1;
+            text = "Are you sure?";
+            x = 0.41; y = 0.42;
+            w = 0.18; h = 0.04;
+        };
+        class ButtonOK: RscButton {
+            idc = -1;
+            text = "OK";
+            x = 0.41; y = 0.48;
+            w = 0.08; h = 0.04;
+            action = "closeDialog 0; missionNamespace getVariable ['OKS_MissionAction', false] spawn OKS_fnc_SetMissionComplete;";
+        };
+        class ButtonCancel: RscButton {
+            idc = -1;
+            text = "Cancel";
+            x = 0.51; y = 0.48;
+            w = 0.08; h = 0.04;
+            action = "closeDialog 0;";
+        };
+    };
 };
 
 
