@@ -56,7 +56,7 @@ _Unit addEventHandler ["Suppressed", {
         };       
         default {
             _SuppressedStance = "down";
-        }
+        };
     };
 
     private _SuppressThreshold = _Unit getVariable ["GOL_SuppressedThreshold",0.8];

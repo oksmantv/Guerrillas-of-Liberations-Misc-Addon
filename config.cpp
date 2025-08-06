@@ -73,6 +73,9 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Dynamic {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_dynamic.sqf'";
     };
+    class OKS_PreInit_Enemy {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_enemy.sqf'";
+    };
     class OKS_PreInit_MHQ {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_mhq.sqf'";
     };
