@@ -128,7 +128,7 @@ if (_show) then {
                 "<img image='%4' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Active Players: %5</t><br/>" +
                 "<img image='%6' size='1.3'/><t color='#FFFFFF' font='RobotoCondensedBold'> Enemies Killed: %7</t><br/>" +
                 "<img image='%8' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Non-Combatants Killed: %9</t><br/>" +
-                "<img image='%26' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Friendly Fire Incidents: %25</t><br/>" +
+                "<img image='%26' size='1.4'/><t color='#FFFFFF' font='RobotoCondensedBold'> Friendly Fire Incidents: %25</t><br/>" +
                 "<img image='%22' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> POWs Captured: %21</t><br/>" +                
                 "<img image='%10' size='1.2'/><t color='#FFFFFF' font='RobotoCondensedBold'> Time Elapsed: %11</t><br/><br/>" +
                 "<img image='%12' size='1.4'/><t size='1.0' font='RobotoCondensedBold'>Platoon Casualty Rate: <t color='%13'> %14%%</t></t><br/>" +
@@ -159,7 +159,7 @@ if (_show) then {
                 _currentPOWs,                   // 21
                 _captivePath,                   // 22
                 _MissionStatus,                 // 23
-                _MissionStatusColor             // 24
+                _MissionStatusColor,            // 24
                 _friendlyFireKills,             // 25
                 _friendlyFirePath               // 26
             ];
@@ -169,40 +169,42 @@ if (_show) then {
             // Safety Zone
             {
                 private _Player = _X;
-                _Player allowDamage false;
-                _Player setCaptive true;
-                true call GW_GameLoop_Fnc_WeaponLock;
-                _Player addEventHandler ["Fired",{
-                    params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_vehicle"];
-                    deleteVehicle _projectile;
-                }];
+                if(_Player getVariable ["GOL_SafetyZoneActive", false]) then {
+                    _Player setVariable ["GOL_SafetyZoneActive", true, true];
+                    _Player allowDamage false;
+                    _Player setCaptive true;
+                    _Player addEventHandler ["Fired",{
+                        params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_vehicle"];
+                        deleteVehicle _projectile;
+                    }];
 
-                private _launcher = secondaryWeapon _Player;
-                if(_launcher != "") then {
-                    private _launcherReplaced = _Player getVariable ["ReplacedSecondaryWeapon",false];
-                    if(!(_launcherReplaced)) then {
-                        private _launcherAmmo = (_Player weaponState (secondaryWeapon _Player)) select 3;
-                        private _RestoreAmmoArray = [];
-                        if(_launcherAmmo != "") then {
-                            _RestoreAmmoArray pushBack _launcherAmmo;
-                        };
-
-                        _Player setVariable ["ReplacedSecondaryWeapon",true,true];
-                        _Player removeWeapon _launcher;
-
-                        private _magTypes = getArray (configFile >> "CfgWeapons" >> _launcher >> "magazines");
-                        {
-                            _magType = _X;
-                            while {(_magType in (magazines _Player))} do {
-                                _Player removeMagazine _magType;
-                                _RestoreAmmoArray pushBack _magType;
+                    private _launcher = secondaryWeapon _Player;
+                    if(_launcher != "") then {
+                        private _launcherReplaced = _Player getVariable ["ReplacedSecondaryWeapon",false];
+                        if(!(_launcherReplaced)) then {
+                            private _launcherAmmo = (_Player weaponState (secondaryWeapon _Player)) select 3;
+                            private _RestoreAmmoArray = [];
+                            if(_launcherAmmo != "") then {
+                                _RestoreAmmoArray pushBack _launcherAmmo;
                             };
-                        } forEach _magTypes;
 
-                        // Add the launcher back without magazines
-                        _Player addWeapon _launcher;
-                        _RestoreLauncherArray = [_launcher,_RestoreAmmoArray];
-                        _Player setVariable ["GOL_RestoreSecondaryArray", _RestoreLauncherArray, true];
+                            _Player setVariable ["ReplacedSecondaryWeapon",true,true];
+                            _Player removeWeapon _launcher;
+
+                            private _magTypes = getArray (configFile >> "CfgWeapons" >> _launcher >> "magazines");
+                            {
+                                _magType = _X;
+                                while {(_magType in (magazines _Player))} do {
+                                    _Player removeMagazine _magType;
+                                    _RestoreAmmoArray pushBack _magType;
+                                };
+                            } forEach _magTypes;
+
+                            // Add the launcher back without magazines
+                            _Player addWeapon _launcher;
+                            _RestoreLauncherArray = [_launcher,_RestoreAmmoArray];
+                            _Player setVariable ["GOL_RestoreSecondaryArray", _RestoreLauncherArray, true];
+                        };
                     };
                 };
             } foreach AllPlayers; 
@@ -245,7 +247,6 @@ if (_show) then {
         _Player allowDamage true;
         _Player setCaptive false;
         _Player removeAllEventHandlers "Fired";
-        false call GW_GameLoop_Fnc_WeaponLock;
         _Player setVariable ["ReplacedSecondaryWeapon",false,true]; 
         _LauncherArray = _Player getVariable ["GOL_RestoreSecondaryArray", []];
         if(_LauncherArray isNotEqualTo []) then {

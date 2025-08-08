@@ -152,7 +152,7 @@ class OKS_MissionComplete_base: RscButtonMenu  {
     y = "7 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
     w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
     h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
-    action = "createDialog 'OKS_ConfirmationDialog'; missionNamespace setVariable ['OKS_MissionAction', true];";
+    action = "(findDisplay 49) closeDisplay 0; createDialog 'OKS_ConfirmationDialog'; missionNamespace setVariable ['OKS_MissionAction', true, true];";
 };
 class OKS_MissionFailed_base: RscButtonMenu  {
     idc = 470215;
@@ -162,7 +162,7 @@ class OKS_MissionFailed_base: RscButtonMenu  {
     y = "8.5 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) + safezoneY";
     w = "15 * (((safezoneW / safezoneH) min 1.2) / 40)";
     h = "1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
-    action = "createDialog 'OKS_ConfirmationDialog'; missionNamespace setVariable ['OKS_MissionAction', false];";
+    action = "(findDisplay 49) closeDisplay 0; createDialog 'OKS_ConfirmationDialog'; missionNamespace setVariable ['OKS_MissionAction', false, true];";
 };
 
 class RscDisplayInterrupt: RscStandardDisplay {
@@ -188,28 +188,28 @@ class OKS_ConfirmationDialog {
         class Background: RscText {
             idc = -1;
             x = 0.4; y = 0.4;
-            w = 0.2; h = 0.2;
+            w = 0.25; h = 0.15;
             colorBackground[] = {0, 0, 0, 0.7};
         };
     };
     class controls {
         class Text: RscText {
             idc = -1;
-            text = "Are you sure?";
-            x = 0.41; y = 0.42;
-            w = 0.18; h = 0.04;
+            text = "Confirm Mission End?";
+            x = 0.42; y = 0.42;
+            w = 0.25; h = 0.04;
         };
         class ButtonOK: RscButton {
             idc = -1;
-            text = "OK";
-            x = 0.41; y = 0.48;
+            text = "YES";
+            x = 0.43; y = 0.48;
             w = 0.08; h = 0.04;
             action = "closeDialog 0; missionNamespace getVariable ['OKS_MissionAction', false] spawn OKS_fnc_SetMissionComplete;";
         };
         class ButtonCancel: RscButton {
             idc = -1;
-            text = "Cancel";
-            x = 0.51; y = 0.48;
+            text = "NO";
+            x = 0.52; y = 0.48;
             w = 0.08; h = 0.04;
             action = "closeDialog 0;";
         };
