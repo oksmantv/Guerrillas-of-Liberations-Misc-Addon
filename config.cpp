@@ -28,7 +28,24 @@ class CfgPatches
 			"GOL_Packed_60mm_HE",
 			"GOL_Packed_60mm_HEAB",
 			"GOL_Packed_60mm_FLARE",
-			"GOL_Packed_60mm_Smoke"
+			"GOL_Packed_60mm_Smoke",
+            "GOL_ResupplyStation_WEST",
+            "GOL_ResupplyStation_EAST",
+            "GOL_Helipad",
+            "GOL_MobileServiceStation",
+            "GOL_GearBox_WEST",
+            "GOL_GearBox_EAST",
+            "GOL_MedicalResupply_WEST",
+            "GOL_MedicalResupply_EAST",
+            "GOL_TeamResupplybox_WEST",
+            "GOL_TeamResupplybox_EAST",
+            "GOL_SpecialistResupplybox_WEST",
+            "GOL_SpecialistResupplybox_EAST",
+            "GOL_SquadResupplybox_WEST",
+            "GOL_SquadResupplybox_EAST",
+            "GOL_O_SAM_System_04_F",
+            "GOL_B_SAM_System_03_F",
+            "GOL_I_E_SAM_System_03_F"
 		};
 		weapons[] = {};
 	}
