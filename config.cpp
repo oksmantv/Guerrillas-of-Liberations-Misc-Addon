@@ -197,7 +197,7 @@ class OKS_ConfirmationDialog {
             idc = -1;
             text = "Confirm Mission End?";
             x = 0.42; y = 0.42;
-            w = 0.25; h = 0.04;
+            w = 0.24; h = 0.04;
         };
         class ButtonOK: RscButton {
             idc = -1;
