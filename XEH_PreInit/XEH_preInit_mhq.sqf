@@ -27,3 +27,30 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "",
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "GOL_Helicopter_TI",
+    "CHECKBOX",
+    ["Disable Helicopter Thermals", "If disabled helicopters will no longer receive thermal vision in cameras."],
+    "GOL Helicopters",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Helicopter_NVG",
+    "CHECKBOX",
+    ["Disable Helicopter NVGs", "If disabled helicopters will no longer receive night vision in cameras."],
+    "GOL Helicopters",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Helicopter_DoorgunReplace",
+    "CHECKBOX",
+    ["Enable Doorgun Replacement", "If enabled helicopters will receive other door guns."],
+    "GOL Helicopters",
+    true,
+    1
+] call CBA_fnc_addSetting;

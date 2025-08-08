@@ -288,8 +288,17 @@ if(true) then {
             [] spawn OKS_fnc_Ace_MHQDrop;
         };	
 
-        /* Reset Radio Transmit upon death handler */
-        player addEventHandler ["Killed", {
+        /* Reset Radio Transmit upon death handler and add friendly fire score. */
+        player addMPEventHandler ["MPKilled", {
+            params ["_unit","_killer","_instigator","_useEffects"];
+
+            if(isPlayer _instigator) then {
+                private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
+                _friendlyFireKills = _friendlyFireKills + 1;
+                missionNamespace setVariable ["GOL_FriendlyFireKills", _friendlyFireKills, true];
+                format["Friendly Fire: %1 killed by %2", name _unit, name _instigator] spawn OKS_fnc_LogDebug;
+            };
+
             // Get the player's current SR radio info
             private _radio = player call TFAR_fnc_activeSwRadio;
             if(!isNil "_radio") then {

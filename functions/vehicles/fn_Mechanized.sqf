@@ -97,13 +97,13 @@ if(_AddMortar) then {
 	if(_Debug_Variable) then {SystemChat "Adding Mortar Equipment"};
 	Switch (_MortarType) do {
 		case "light": {
-			_Vehicle addWeaponCargoGlobal ["UK3CB_BAF_M6",1];
+			_Vehicle addWeaponCargoGlobal ["UK3CB_BAF_M6",2];
 			_Vehicle addItemCargoGlobal ["Packed_60mm_HE",6];
 			_Vehicle addItemCargoGlobal ["Packed_60mm_HEAB",4];
 			_Vehicle addItemCargoGlobal ["Packed_60mm_Smoke",4];
 		};
 		case "heavy":{
-			_Vehicle addItemCargoGlobal ["GOL_Packed_Mortar",1];
+			_Vehicle addItemCargoGlobal ["GOL_Packed_Mortar",2];
 		};
 	};
 };
@@ -148,10 +148,11 @@ if(_Debug_Variable) then {SystemChat "Add Smoke Generator and Smoke Ammo"};
 _Vehicle addweaponTurret ["rhs_weap_smokegen",[-1]];
 _Vehicle AddMagazineTurret ["rhs_mag_smokegen",[-1]];
 
-for [{private _i = 0}, {_i < 6}, {_i = _i + 1}] do {
-	_Vehicle addMagazineTurret ["SmokeLauncherMag",[0,0]];
-	_Vehicle addMagazineTurret ["rhsusf_mag_L8A3_8",[0,0]];
-};
+// Disabled - Causes potentially game-breaking issues with Smoke Launchers
+// for [{private _i = 0}, {_i < 6}, {_i = _i + 1}] do {
+// 	_Vehicle addMagazineTurret ["SmokeLauncherMag",[0,0]];
+// 	_Vehicle addMagazineTurret ["rhsusf_mag_L8A3_8",[0,0]];
+// };
 
 waitUntil {sleep 1; !(isNil "ace_cargo_fnc_loadItem") && !(isNil "ace_cargo_fnc_removeCargoItem")};
 if(!(_Vehicle getVariable ["GOL_isMHQ",false])) then {
