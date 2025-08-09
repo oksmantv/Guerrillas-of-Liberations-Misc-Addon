@@ -10,7 +10,10 @@ class CfgPatches
             "UK3CB_BAF_Weapons_Static",
             "rhs_main",
             "rhs_weapons",
-            "rhs_c_weapons"
+            "rhs_c_weapons",
+            "rhsusf_main",
+            "rhsusf_c_airweapons",
+            "rhsusf_c_heavyweapons"
         };
         requiredVersion = 2.14;
 		author = "OksmanTV";

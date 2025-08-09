@@ -7,6 +7,9 @@
 	[VehicleClassname] // Array of Vehicle classnames (Random Select)
 	CrewSelect // 0 = full crew, 1 = driver only, 2 = gunner only, 3 = commander only
 	CargoCount // Amount of Infantry in Cargo
+
+	Types = "hunt", "creep", "ambushattack", "ambushrush", "ambushhunt", "ambushcqb" or "rush"
+	_Range for tracking range, and ambush trigger range.
 	
 */
 
@@ -83,8 +86,6 @@
 
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill"]; _Array pushBackUnique _X } foreach units _Group;
 	Call Compile Format ["PublicVariable '%1'",_Array];
-
-	sleep 5;
 	switch (toLower _LambsType) do {
 		case "hunt": {
 			/* 
@@ -129,12 +130,21 @@
 			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
 			[_Group,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];	
 		};
+
 		case "ambushhunt":{		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
 			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
 			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
 			[_Group, _Range, 30, [], [], true,false,false] remoteExec ["lambs_wp_fnc_taskHunt",0];
 		};
+
+		case "ambushcqb":{		
+			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; _X disableAI "PATH"; _X setUnitPos "MIDDLE"; } foreach units _Group;
+			[_SpawnPos, nil, units _Group, 15, 1, false, true] call ace_ai_fnc_garrison;
+			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
+			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; _X enableAI "PATH"; _X setUnitPos "AUTO"; } foreach units _Group;
+			[_Group,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];
+		};		
 
 		default {
 			/* 
