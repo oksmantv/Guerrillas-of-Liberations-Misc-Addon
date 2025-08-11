@@ -244,6 +244,10 @@ if(true) then {
     ACE_maxWeightDrag = 2500;
 
     if (hasInterface) then {
+        
+        /* Add Paradrop Action to Gearboxes */
+        [] spawn OKS_fnc_ParadropActions;
+
         /* Setup TFAR Radios */
         [] spawn OKS_fnc_TFAR_RadioSetup;
 

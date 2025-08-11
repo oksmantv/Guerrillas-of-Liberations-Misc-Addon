@@ -7,7 +7,7 @@ if(!isServer) exitWith {};
 Params
 [
 	["_Vehicle", ObjNull, [ObjNull]],
-	["_Flag",(missionNamespace getVariable ["GOL_Vehicle_Flag",nil]),[""]],
+	["_Flag",(missionNamespace getVariable ["GOL_Vehicle_Flag",""]),[""]],
 	["_AddMortar", false, [true]],
 	["_ServiceStation", true, [true]],
 	["_ShouldDisableThermal", true, [true]],
@@ -17,7 +17,7 @@ Params
 
 sleep 5;
 
-if(!isNil "_Flag") then {
+if(_Flag != "" && flagTexture _Vehicle == "") then {
 	_Vehicle forceFlagTexture _Flag;
 };
 

@@ -168,6 +168,8 @@ class CfgFunctions // Defines a function
 			class BLU_SetChannel {};
 			class CheckFrameworkObjects {};
 			class TFAR_RadioSetup {};
+			class SetupParadrop {};
+			class ParadropActions {};
 		};
 
 		class OKS_PlayerSetup_ORBAT {
