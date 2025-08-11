@@ -67,6 +67,16 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_MissileWarning_Debug",
+    "CHECKBOX",
+    ["Enable Missile DEBUG", "Enables debugging for missile warnings."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+
+[
     "GOL_RotorProtection_Debug",
     "CHECKBOX",
     ["Enable Rotor DEBUG", "Enables debugging for the handleDamage scripts for Mi-8/Mi-24 rotors."],

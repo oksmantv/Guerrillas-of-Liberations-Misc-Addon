@@ -13,5 +13,15 @@ class CfgSounds {
         name = "Generator Idle";
         sound[] = {"\OKS_GOL_Misc\sounds\GeneratorIdle.wav", 4, 1, 40};
         titles[] = {};
-    };		
+    };	
+    class GOL_MissileBeep {
+        name = "Missile Beep";
+        sound[] = {"\OKS_GOL_Misc\sounds\MissileBeep.wav", 4, 1, 40};
+        titles[] = {};
+    };
+    class GOL_MissileHit {
+        name = "Missile Hit";
+        sound[] = {"\OKS_GOL_Misc\sounds\MissileHit.wav", 4, 1, 40};
+        titles[] = {};
+    };		        		    	
 };
