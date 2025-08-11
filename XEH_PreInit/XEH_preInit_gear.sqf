@@ -74,6 +74,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_gear.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "STATIC_PARACHUTE_ENABLED",
+    "CHECKBOX",
+    ["Set Paradrop to Static", "Sets the given parachute to static parachute, if disabled, steerable parachute will be used."],
+    "GOL Gear",
+    false, // default value (true/false)
+    1    // isGlobal (1 = global, 0 = local)
+] call CBA_fnc_addSetting;
+
+[
     "ForceNVG",
     "CHECKBOX",
     ["Force NVGs", "Forces addition of NVGs."],
