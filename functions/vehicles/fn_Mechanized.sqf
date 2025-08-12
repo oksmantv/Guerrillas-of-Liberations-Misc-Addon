@@ -1,4 +1,4 @@
-/// [this, true,true] spawn OKS_fnc_Mechanized;
+/// [this] spawn OKS_fnc_Mechanized;
 /// [vehicle,ShouldAddMortar,AddServiceStationInCargo,ShouldDisableThermals,ShouldDisableNVG]
 /// Add MSS Box true/false
 
@@ -44,11 +44,11 @@ if(missionNamespace getVariable ["GOL_MissileWarning_Enabled",false]) then {
 			_unit spawn {
 				params ["_unit"];
 				_Position = getpos _unit;
-				sleep 2;
+				sleep 1;
 				_unit setVariable ["GOL_FiredSmoke", true, true];
 				_Debug = missionNamespace getVariable ["GOL_MissileWarning_Debug", false];
 
-				_Timeout = 10;
+				_Timeout = 30;
 				waitUntil { sleep 1; _Timeoout = _Timeout - 1; getPos _unit distance2d _Position > 50 || _Timeout <= 0 };
 				
 				_unit setVariable ["GOL_FiredSmoke", false, true];
@@ -75,7 +75,7 @@ if(missionNamespace getVariable ["GOL_MissileWarning_Enabled",false]) then {
 			if(_Debug) then {
 				format["[MISSILEWARNING] Matching Round: %1",_ammo] call OKS_fnc_LogDebug;
 			};
-			[_target,_missile] remoteExec ["OKS_fnc_MissileWarning", crew _target];
+			[_target,_missile,_instigator] remoteExec ["OKS_fnc_MissileWarning", crew _target];
 		} else {
 			if(_Debug) then {
 				format["[MISSILEWARNING] Match %1: %2 - Active: %3",_ammo, _ammo in _atgmAmmo, _target getVariable ["GOL_MissileWarning", false]] call OKS_fnc_LogDebug;

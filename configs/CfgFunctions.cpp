@@ -48,7 +48,7 @@ class CfgFunctions // Defines a function
 			class DecreaseMultiplier {};				
 			class Ranks {};				
 			class RespawnHandler {};				
-			class DisableAPS {};				
+			class DisableAPS {};		
 		};			
 
 		class OKS_Supply {
@@ -104,6 +104,14 @@ class CfgFunctions // Defines a function
 			class EdenLambsGroup {};
 			class next3DENName {};
 		};
+
+		class OKS_Zeus {
+			file = "\OKS_GOL_Misc\functions\zeus";
+			class SetupMechanized {};				
+			class SetupHelicopter {};				
+			class SetupMHQ {};				
+			class ApplyUnitGear {};				
+		};				
 
 		class OKS_Enemy {
 			file = "\OKS_GOL_Misc\functions\enemy";

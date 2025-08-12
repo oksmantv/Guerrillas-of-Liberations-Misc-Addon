@@ -3,17 +3,18 @@ class CfgPatches
 	class GOL_MISC_ADDON {
         requiredAddons[] = { 
             "A3_UI_F", 
-            "ace_main",
+            "A3_Modules_F",
             "cba_main",
             "cba_ui",
             "cba_xeh_a3",
-            "UK3CB_BAF_Weapons_Static",
+            "ace_main",
             "rhs_main",
             "rhs_weapons",
             "rhs_c_weapons",
             "rhsusf_main",
             "rhsusf_c_airweapons",
-            "rhsusf_c_heavyweapons"
+            "rhsusf_c_heavyweapons",
+            "UK3CB_BAF_Weapons_Static"
         };
         requiredVersion = 2.14;
 		author = "OksmanTV";
@@ -48,7 +49,11 @@ class CfgPatches
             "GOL_SquadResupplybox_EAST",
             "GOL_O_SAM_System_04_F",
             "GOL_B_SAM_System_03_F",
-            "GOL_I_E_SAM_System_03_F"
+            "GOL_I_E_SAM_System_03_F",
+            "OKS_Module_MechanizedSetup",
+            "OKS_Module_HelicopterSetup",
+            "OKS_Module_MHQ",
+            "OKS_Module_ApplyUnitGear"
 		};
 		weapons[] = {};
 	}
@@ -75,6 +80,14 @@ class CfgEditorSubcategories {
     class GOL_Resupply {
         displayName = "Resupply";
     };  
+};
+
+class CfgFactionClasses {
+    class GOL_Modules {
+        displayName = "GOL Modules";
+        priority = 1;
+        side = 7;
+    };
 };
 
 class Extended_PreInit_EventHandlers {

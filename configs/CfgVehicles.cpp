@@ -531,4 +531,50 @@ class CfgVehicles {
         weapons[] = {"gol_weapon_s750Launcher"}; // Replace default weapon
         magazines[] = {"gol_magazine_Missile_s750_x4"}; // Replace default magazine
     };	
+
+	class Module_F;
+    class OKS_Module_MechanizedSetup : Module_F {
+        scope = 2;
+        scopeCurator = 2;
+        displayName = "Mechanized Setup";
+        category = "GOL_Modules";
+        function = "OKS_fnc_SetupMechanized"; // Your function
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 1;
+        curatorCanAttach = 1;
+    };
+    class OKS_Module_HelicopterSetup : Module_F {
+        scope = 2;
+        scopeCurator = 2;
+        displayName = "Helicopter Setup";
+        category = "GOL_Modules";
+        function = "OKS_fnc_SetupHelicopter"; // Your function
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 1;
+        curatorCanAttach = 1;
+    };
+    class OKS_Module_MHQ : Module_F {
+        scope = 2;
+        scopeCurator = 2;
+        displayName = "MHQ Setup";
+        category = "GOL_Modules";
+        function = "OKS_fnc_SetupMHQ"; // Your function
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 1;
+        curatorCanAttach = 1;
+    };	
+    class OKS_Module_ApplyUnitGear : Module_F {
+        scope = 2;
+        scopeCurator = 2;
+        displayName = "OKS Apply Unit Gear";
+        category = "GOL_Modules";
+        function = "OKS_fnc_ApplyUnitGear"; // Your function
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 1;
+        curatorCanAttach = 1;
+    };
 };

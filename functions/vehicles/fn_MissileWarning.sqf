@@ -1,4 +1,4 @@
-params ["_target", "_missile"];
+params ["_target", "_missile","_instigator"];
 
 if(hasInterface) then {
 	_Debug = missionNamespace getVariable ["GOL_MissileWarning_Debug", false];
@@ -11,7 +11,7 @@ if(hasInterface) then {
 		"[MISSILEWARNING] Missile Inbound" call OKS_fnc_LogDebug;
 	};
 
-	[_target, _missile] spawn OKS_fnc_MissileDeflect;
+	[_target, _missile,_instigator] spawn OKS_fnc_MissileDeflect;
 	_target setVariable ["GOL_MissileWarning", true, true];
 	private _message = format ["<t color='#ff0000' size='1.5'>INCOMING MISSILE DETECTED!</t>"];
 	cutText [_message, "PLAIN DOWN", 0, true, true];	
@@ -31,8 +31,8 @@ if(hasInterface) then {
 	};	
 	private _message = format ["<t color='#ff0000' size='2'>INCOMING MISSILE IMMINENT!</t>"];
 	cutText [_message, "PLAIN DOWN", 0, true, true];
-
-	waitUntil {sleep 0.1; !alive _missile};
+	waitUntil {sleep 0.01; !alive _missile || (_missile distance2d _target < 100)};
+	waitUntil {sleep 0.1; !alive _missile || (_missile distance2d _target > 100)};
 	cutText ["", "PLAIN DOWN", 0, true, true];
 	_target setVariable ["GOL_MissileWarning", false, true];
 	if(_Debug) then {
