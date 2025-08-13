@@ -31,10 +31,11 @@ if(hasInterface) then {
 	};	
 	private _message = format ["<t color='#ff0000' size='2'>INCOMING MISSILE IMMINENT!</t>"];
 	cutText [_message, "PLAIN DOWN", 0, true, true];
+	_target setVariable ["GOL_MissileWarning", false, true];
 	waitUntil {sleep 0.01; !alive _missile || (_missile distance2d _target < 100)};
 	waitUntil {sleep 0.1; !alive _missile || (_missile distance2d _target > 100)};
 	cutText ["", "PLAIN DOWN", 0, true, true];
-	_target setVariable ["GOL_MissileWarning", false, true];
+	
 	if(_Debug) then {
 		"[MISSILEWARNING] Missile Reset" call OKS_fnc_LogDebug;
 	};

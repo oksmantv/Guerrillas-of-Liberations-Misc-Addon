@@ -69,12 +69,20 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 [
     "GOL_MissileWarning_Debug",
     "CHECKBOX",
-    ["Enable Missile DEBUG", "Enables debugging for missile warnings."],
+    ["Enable Missile Warning DEBUG", "Enables debugging for missile warnings."],
     "GOL DEBUG",
     true,
     1
 ] call CBA_fnc_addSetting;
 
+[
+    "GOL_MissileDeflect_Debug",
+    "CHECKBOX",
+    ["Enable Missile Deflect DEBUG", "Enables debugging for missile deflection."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
 
 [
     "GOL_RotorProtection_Debug",
