@@ -27,9 +27,10 @@ _Helicopter setVariable ["gw_gear_blackList",true,true];
 if(_Debug_Variable) then { "Setting Cargo Space" spawn OKS_fnc_LogDebug; };
 waitUntil {sleep 1; !(isNil "ace_cargo_fnc_setSpace")};
 [_Helicopter, 30] call ace_cargo_fnc_setSpace;
-
+[_Helicopter] call ace_fastroping_fnc_equipFRIES;
 _Helicopter setVariable ["ace_repair_canRepair", 1, true];
 _Helicopter setVariable ["ace_isRepairFacility", 1, true];
+_Helicopter setVariable ["ace_repair_canRefuel", 1, true];
 
 _Helicopter addItemCargoGlobal ["Toolkit",2];
 _Helicopter addMagazineCargoGlobal ["SatchelCharge_Remote_Mag",5];
