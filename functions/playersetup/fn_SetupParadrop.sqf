@@ -13,10 +13,10 @@ _Player unlinkItem "ItemWatch";
 _Player linkItem "ACE_Altimeter";
 
 if(_StaticParachuteEnabled) then {
-    _Player addItem "ACE_NonSteerableParachute";
+    _Player addBackpack "ACE_NonSteerableParachute";
     _Text = "static";
 } else {
-    _Player addItem "B_Parachute";
+    _Player addBackpack "B_Parachute";
     _Text = "steerable";
 };
 
