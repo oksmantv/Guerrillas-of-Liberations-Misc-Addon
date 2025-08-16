@@ -108,3 +108,12 @@ diag_log "OKS_GOL_Misc: XEH_preInit_gear.sqf executed";
     false,
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "GOL_IRFlaresEnabled",
+    "CHECKBOX",
+    ["Switch to IR Flares", "Switches the default white illumination flares for IR flares. These flares only provide illumination for NVG users."],
+    "GOL Gear",
+    false,
+    1
+] call CBA_fnc_addSetting;
