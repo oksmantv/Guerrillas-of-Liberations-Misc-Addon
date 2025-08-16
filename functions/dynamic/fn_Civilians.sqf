@@ -20,6 +20,8 @@
 if(HasInterface && !isServer) exitWith {};
 
 Params ["_Trigger","_CivilianCount","_StaticCivilianCount","_HouseWaypoints","_RandomWaypoints","_UseAgents","_UsePanicMode",["_UnderCover",false,[false]]];
+if(isNil "_Trigger") exitWith {};
+
 Private _Debug_Variable = false;
 Private _Spawns = 0;
 Private _AllModules = [];
