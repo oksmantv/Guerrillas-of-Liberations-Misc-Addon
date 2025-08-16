@@ -41,13 +41,17 @@ if(typeName _target == "OBJECT") then {
     if(_target isKindOf "LandVehicle") then {
         _TargetDisplayName = [configFile >> "CfgVehicles" >> typeOf _target] call BIS_fnc_displayName;
         _TaskIcon = "destroy";
-    };
+    } else {
+        _TargetDisplayName = [configFile >> "CfgVehicles" >> typeOf _target] call BIS_fnc_displayName;
+        _TaskIcon = "destroy";
+    };  
     _TargetArray pushBackUnique _target;
 	if(_ShouldShowPosition) then {	
 		_TaskPosition = getPos _target;
 	}
 };
 if(typeName _target == "ARRAY") then {
+    _TargetArray = _target;
     _selectedTarget = selectRandom _target;
     if(_selectedTarget isKindOf "Man") then {
         _TargetDisplayName = name _selectedTarget;
@@ -56,9 +60,11 @@ if(typeName _target == "ARRAY") then {
     if(_selectedTarget isKindOf "LandVehicle") then {
         _TargetDisplayName = [configFile >> "CfgVehicles" >> typeOf _selectedTarget] call BIS_fnc_displayName;
         _TaskIcon = "destroy";
-    };
+    } else {
+        _TargetDisplayName = [configFile >> "CfgVehicles" >> typeOf _selectedTarget] call BIS_fnc_displayName;
+        _TaskIcon = "destroy";
+    };    
 	if(_ShouldShowPosition) then {
-		_TargetArray = _target;
 		_TaskPosition = [0, 0, 0];
 		{
 			_TaskPosition = _TaskPosition vectorAdd (getPosWorld _x);
@@ -71,7 +77,7 @@ if(isNil "_CustomTitle") then {
     _CustomTitle = format["Eliminate %1",_TargetDisplayName];
 };
 if(isNil "_CustomDescription") then {
-    _CustomDescription = format["You have been tasked with eliminating a valueable target, the target: %1",_TargetDisplayName];
+    _CustomDescription = format["You have been tasked with eliminating %2 valueable targets: %1",_TargetDisplayName, count _TargetArray];
 };
 if(!isNil "_CustomDisplayName") then {
     _TargetDisplayName = _CustomDisplayName;

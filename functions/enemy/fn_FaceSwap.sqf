@@ -6,14 +6,15 @@
 
 params [
     ["_unit", objNull, [objNull]],
-    ["_faceType", nil, [""]]
+    ["_faceType", nil, [""]],
+    ["_ForceSide", sideUnknown, [sideUnknown]]
 ];
 
 if(hasInterface && !isServer) exitWith {};
 private _faceswapDebug = missionNamespace getVariable ["GOL_FaceSwap_Debug", false];
 
 if(isNil "_faceType") then {
-    _faceType = [_unit] call OKS_fnc_GetEthnicity;
+    _faceType = [_unit, _ForceSide] call OKS_fnc_GetEthnicity;
 };
 
 if (isNil "_faceType") exitWith {

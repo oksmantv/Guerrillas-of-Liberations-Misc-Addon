@@ -10,14 +10,16 @@
 	5: Count of Random Outside Waypoints (Number)
 	6: Use Agents? (TRUE/FALSE)
 	7: Use Panic Mode? (TRUE/FALSE)
+	8: Undercover? (TRUE/FALSE)
 	
 	Example:
 	[Trigger_1,15,5,12,15,false,true] spawn OKS_fnc_Civilians;
+
 */
 
 if(HasInterface && !isServer) exitWith {};
 
-Params ["_Trigger","_CivilianCount","_StaticCivilianCount","_HouseWaypoints","_RandomWaypoints","_UseAgents","_UsePanicMode"];
+Params ["_Trigger","_CivilianCount","_StaticCivilianCount","_HouseWaypoints","_RandomWaypoints","_UseAgents","_UsePanicMode",["_UnderCover",false,[false]]];
 Private _Debug_Variable = false;
 Private _Spawns = 0;
 Private _AllModules = [];
@@ -42,10 +44,11 @@ Private _CreateSafeSpot = {
 };
 
 Private _CreateStaticCivilian = {
-	Params ["_BuildingPositions","_UsePanicMode"];
+	Params ["_BuildingPositions","_UsePanicMode","_UnderCover"];
+
 	_Group = createGroup civilian;
 	_Position = selectRandom _BuildingPositions;
-	systemChat "Static Civilian Spawned";
+	"[CIV] Static Civilian Spawned" spawn OKS_fnc_LogDebug;
 	_StaticCivilian = _Group createUnit ["C_man_polo_1_F", _Position, [], 0, "CAN_COLLIDE"];
 	_StaticCivilian setPosATL _Position;
 	[_StaticCivilian,"PATH"] remoteExec ["disableAI",0];
@@ -85,10 +88,18 @@ Private _CreateStaticCivilian = {
 		[_StaticCivilian,selectRandom["middle","up","middle","middle"]] spawn _AnimationLoop;
 	} else {
 		[_StaticCivilian,"UP"] remoteExec ["setUnitPos",0];
-	}
+	};
+
+	if(_UnderCover) then {
+		[_StaticCivilian] spawn OKS_fnc_UndercoverAI;
+	};
+
+	
 };
 
-if(_Debug_Variable) then { systemChat format ["Civilian Initiated.."]};
+if(_Debug_Variable) then {
+	format ["[CIV] Civilian Initiated.."] spawn OKS_fnc_LogDebug;
+};
 
 _Group = createGroup civilian;
 
@@ -115,7 +126,7 @@ if(_RandomWaypoints > 0) then {
 if (_StaticCivilianCount > 0) then {
     for "_i" from 0 to _StaticCivilianCount do {
         if (count _InAreaStatic == 0) exitWith {
-            systemChat "No valid buildings remaining";
+            "[CIV] No valid buildings remaining" spawn OKS_fnc_LogDebug;
         };
 
         private _House = selectRandom _InAreaStatic;
@@ -135,14 +146,14 @@ if (_StaticCivilianCount > 0) then {
         if (count _validPositions == 0) then {
             if (_House in _InAreaStatic) then {
                 _InAreaStatic deleteAt (_InAreaStatic find _House);
-                systemChat format ["Removed building %1 with no valid positions", _House];
+                format ["[CIV] Removed building %1 with no valid positions", _House] spawn OKS_fnc_LogDebug;
             };
             _i = _i - 1; // Retry for this civilian
             continue;
         };
 
         // Spawn civilian at a random valid position
-        [_validPositions, _UsePanicMode] call _CreateStaticCivilian;
+        [_validPositions, _UsePanicMode,_UnderCover] call _CreateStaticCivilian;
 
         // Optionally remove building to avoid re-use
         if (count _InAreaStatic > _StaticCivilianCount) then {
@@ -163,15 +174,34 @@ if(_HouseWaypoints > 0) then {
 	};
 };
 
-if(_Debug_Variable) then { systemChat format ["Creating Civilian Module.."]};
+if(_Debug_Variable) then { 
+	format ["[CIV] Creating Civilian Module.."] spawn OKS_fnc_LogDebug;
+};
 if(_CivilianCount > 0) then {
 	_Module = _Group createUnit ["ModuleCivilianPresence_F", [0,0,0], [], 0, "NONE"];
+	_Trigger setVariable ["GOL_Civilians_Module", _Module, true];
+
 	_AllModules pushBackUnique _Module;
 	_Module setVariable ["#area",[getPos _Trigger,_Area#0,_Area#1,0,true,-1]];  // Fixed! this gets passed to https://community.bistudio.com/wiki/inAreaArray
 	_Module setVariable ["#debug",_Debug_Variable]; // Debug mode on
-	_Module setVariable ["#useagents",_UseAgents];
-	_Module setVariable ["#usepanicmode",_UsePanicMode];
 	_Module setVariable ["#unitcount",_CivilianCount];
-	_Module getVariable ["#onCreated",{[_this, "r"] call GW_Gear_Fnc_Handler;}];
-	if(_Debug_Variable) then { systemChat format ["Area %1 - %2 - Count %3",_Area#0,_Area#1,_CivilianCount]};
+	if(_Undercover) then {
+		if(_Debug_Variable) then { 
+			format ["[UNDERCOVER] Undercover: %1",_Trigger] spawn OKS_fnc_LogDebug
+		};
+		_Module setVariable ["#onCreated",{
+			format["[Undercover] Undercover Spawned %1",_this] spawn OKS_fnc_LogDebug;
+			_this setVariable ["GOL_UndercoverAI",true,true];
+			[_this] spawn OKS_fnc_UndercoverAI;
+		}];
+		_Module setVariable ["#useagents",false];
+		_Module setVariable ["#usepanicmode",false];
+	} else {
+		_Module setVariable ["#onCreated",{
+			format["[CIV] Civilian Spawned %1",_this] spawn OKS_fnc_LogDebug;
+		}];
+		_Module setVariable ["#useagents",_UseAgents];
+		_Module setVariable ["#usepanicmode",_UsePanicMode];
+	};
 };
+if(_Debug_Variable) then { format ["[UNDERCOVER] Area %1 - %2 - Count %3",_Area#0,_Area#1,_CivilianCount] spawn OKS_fnc_LogDebug};

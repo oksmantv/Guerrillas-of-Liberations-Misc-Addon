@@ -40,6 +40,7 @@ if(!isServer) exitWith {};
 			};			
 		};			
 		_X setVariable ["GOL_IsStatic",true,true];
+		_x setVariable ["GOL_HVT",true,true];
 	} forEach _Units;
 	
 	Private _TaskId = format["HostageTask_%1",(random 9999)];

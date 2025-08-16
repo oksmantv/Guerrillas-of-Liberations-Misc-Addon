@@ -91,8 +91,8 @@ if(_Debug) then {
 
 for "_i" from 0 to _ticks do {
     if (!alive _missile) exitWith {};
-
 	private _currentVel = velocity _missile; // [vx, vy, vz]
+
 	// Add random horizontal and vertical deviation
 	private _deviation = [
 		(random 2 - 1) * 1.5, // X axis: left/right
@@ -107,7 +107,7 @@ for "_i" from 0 to _ticks do {
 	_missile setVelocity _newVel;
 
 	if(_Debug) then {
-		//format ["[MISSILEDEFLECT] Missile Adjusted | Current Vel: %1 | New Vel: %2",_currentVel,_newVel] call OKS_fnc_LogDebug;
+		format ["[MISSILEDEFLECT] Missile Adjusted | Current Vel: %1 | New Vel: %2",_currentVel,_newVel] call OKS_fnc_LogDebug;
 	};
 
     sleep 0.075;

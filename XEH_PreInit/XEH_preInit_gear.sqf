@@ -99,3 +99,12 @@ diag_log "OKS_GOL_Misc: XEH_preInit_gear.sqf executed";
     "",
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "GOL_ForceNightStuff",
+    "CHECKBOX",
+    ["Force Night Equipment", "Forces night equipment regardless of night/day cycle."],
+    "GOL Gear",
+    false,
+    1
+] call CBA_fnc_addSetting;

@@ -67,6 +67,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_UndercoverAI_Debug",
+    "CHECKBOX",
+    ["Enable UndercoverAI DEBUG", "Enables debugging for undercover AI scripts."],
+    "GOL DEBUG",
+    true,
+    1    
+] call CBA_fnc_addSetting;
+
+[
     "GOL_MissileWarning_Debug",
     "CHECKBOX",
     ["Enable Missile Warning DEBUG", "Enables debugging for missile warnings."],

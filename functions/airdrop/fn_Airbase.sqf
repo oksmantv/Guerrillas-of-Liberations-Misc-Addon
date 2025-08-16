@@ -11,7 +11,7 @@
 		Trigger - Set up a trigger used to define the hunting space for these reinforcements, set it to Any Players and repeatable for best effect.
 		Side - The side of the faction you wanted spawned
 		Classname - The classname of the helicopter to spawn
-		Type of Insert - Unload/Paradrop (Unload makes the helicopter land, while Paradrop is paradrop, unloadthenpatrol lands the infantry then send the helicopter to patrol)
+		Type of Insert - Fastrope/Unload/Paradrop (Unload makes the helicopter land, while Paradrop is paradrop, unloadthenpatrol lands the infantry then send the helicopter to patrol)
 		[
 			Number of Groups - This is the amount of groups/teams you want the troops to be split into.
 			Procentage of Cargo Space - This takes a scalar value and estimates a procentage of the cargo slots available in the helicopter. If a helicopter has 10 seats and the procentage is at 0.5 (50%) then 5 enemies will be spawned. Use 1 for 100% and 0.1-0.9 for 10% - 90%.
@@ -63,7 +63,7 @@ params [
 
 _PlayerTarget = objNull;
 
-Private ["_EgressPos","_playerHunted","_VehicleClassName","_VehicleClassNameArray","_SelectedClassname"];
+Private ["_EgressPos","_playerHunted","_VehicleClassName","_VehicleClassNameArray","_SelectedClassname","_KnownPlayerToOriginalSide","_KnownPlayerToThirdSideAndIsEnemy"];
 private _Debug = missionNamespace getVariable ["GOL_Hunt_Debug", false];
 _type = toLower _type;
 
@@ -71,6 +71,8 @@ _type = toLower _type;
 
 While {Alive _Object && _AirbaseRespawnCount > 0} do {
 	_playerHunted = [];
+	_KnownPlayerToOriginalSide = false;
+	_KnownPlayerToThirdSideAndIsEnemy = false;
 	if(typeName _Classname == "ARRAY") then {
 		_SelectedClassname = selectRandom _Classname
 	} else {
@@ -94,8 +96,7 @@ While {Alive _Object && _AirbaseRespawnCount > 0} do {
 		_PlayerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];
 		_KnownPlayerToOriginalSide = ((_Side knowsAbout _X > 3.5 || _Side knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)));
 		_KnownPlayerToThirdSideAndIsEnemy = ((_ThirdSide getFriend _PlayerSide) < 0.6 && (_ThirdSide knowsAbout _X > 3.5 || _ThirdSide knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)));
-		if (_KnownPlayerToOriginalSide || _KnownPlayerToThirdSideAndIsEnemy)
-		then
+		if (_KnownPlayerToOriginalSide || _KnownPlayerToThirdSideAndIsEnemy) then
 		{
 			_playerHunted pushBackUnique _X; sleep 0.5;
 		};
@@ -103,7 +104,12 @@ While {Alive _Object && _AirbaseRespawnCount > 0} do {
 
 	sleep 2;
 	if(_Debug) then {
-		format["[AIRBASE] Looking for Players in %1..",_ReinforcementZone] call OKS_fnc_LogDebug;
+		if(count (list _ReinforcementZone) > 0) then {
+			format["[AIRBASE] Looking for Players in %1 | Main Side: %2 | Known: %3",_ReinforcementZone,_Side,_KnownPlayerToOriginalSide] call OKS_fnc_LogDebug;
+			format["[AIRBASE] Looking for Players in %1 | Secondary Side: %2 | Known: %3",_ReinforcementZone,_ThirdSide,_KnownPlayerToThirdSideAndIsEnemy] call OKS_fnc_LogDebug;
+		} else {
+			format["[AIRBASE] Looking for Players in %1 | No Players In Reinforcement Zone.",_ReinforcementZone] call OKS_fnc_LogDebug;
+		};
 	};
 
 	if (count _playerHunted != 0) then {
@@ -134,17 +140,23 @@ While {Alive _Object && _AirbaseRespawnCount > 0} do {
 			};
 
 			switch (toLower _type) do {
-				case "unloadthenpatrol": {
+				case "fastrope": {
 					if(_Debug) then {
-						"AirBase Running Unload then Patrol" call OKS_fnc_LogDebug;
-					};
-					[_Side, _SelectedClassname, true, "unload", _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
-				};
+						"AirBase Running Fastrope" call OKS_fnc_LogDebug;
+					};					
+					[_Side, _SelectedClassname, False, "fastrope", _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
+				};				
 				case "unload": {
 					if(_Debug) then {
 						"AirBase Running Unload" call OKS_fnc_LogDebug;
 					};					
 					[_Side, _SelectedClassname, False, "unload", _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
+				};
+				case "unloadthenpatrol": {
+					if(_Debug) then {
+						"AirBase Running Unload then Patrol" call OKS_fnc_LogDebug;
+					};
+					[_Side, _SelectedClassname, true, "unload", _SpawnPos, _CalculatedIngress, _EgressPos, _Troops, [_CalculatedIngress],False,true,_ReinforcementZone] spawn OKS_fnc_AirDrop;
 				};
 				case "paradrop": {
 					if(_Debug) then {

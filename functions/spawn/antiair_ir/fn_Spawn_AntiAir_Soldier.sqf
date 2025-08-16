@@ -21,6 +21,7 @@ Private _Debug = missionNamespace getVariable ["OKS_AA_Debug", false];
 		};
 		_Group = createGroup _Side;
 		_Unit = _Group createUnit [_Classname, _Position, [], 0, "CAN_COLLIDE"];
+		_Position set [2, (_Position select 2 + 0.3)];
 		_Unit setPosATL _Position;
 	} else {
 		_Unit = _Position;

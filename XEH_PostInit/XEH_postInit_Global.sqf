@@ -117,7 +117,11 @@ if(true) then {
 
                 if (_unit isKindOf "CAManBase" && side group _unit == civilian) then 
                 {
-                    [_unit] call OKS_fnc_AddCivilianKilled;    
+                    if(_unit getVariable ["GOL_UndercoverAI",false]) then {
+                        [_unit] call OKS_fnc_AddKilledScore;
+                    } else {
+                        [_unit] call OKS_fnc_AddCivilianKilled;
+                    };
                 };        
 
                 private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];

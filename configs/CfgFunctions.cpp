@@ -34,6 +34,7 @@ class CfgFunctions // Defines a function
 			class Task_Settings {};
 			class TaskRun {};
 			class NekyTasks {};
+			class SetupIntel {};
 		};	
 
 		class OKS_Logic {
@@ -139,6 +140,8 @@ class CfgFunctions // Defines a function
 			class Adjust_Unarmed {};
 			class Adjust_Suppressed {};
 			class Adjust_Flashbang {};	
+			class UndercoverAI {};	
+			class UndercoverAI_Activate {};	
 		};		
 
 		class OKS_Vehicles {
@@ -226,6 +229,7 @@ class CfgFunctions // Defines a function
 			class CheckIfTarmac {};
 			class CheckRoadConnections {};
 			class Civilians {};
+			class ClearCivilians {};
 			class CreateMarker {};
 			class CreateObjectives {};
 			class CreateTrigger {};

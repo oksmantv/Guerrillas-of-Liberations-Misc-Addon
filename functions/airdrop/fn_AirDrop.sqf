@@ -157,6 +157,7 @@ if (_UnloadOrDrop isEqualTo "paradrop") then
 	_Pilot = _HeliGroup CreateUnit [(_PilotClasses call BIS_FNC_selectRandom), [0,0,200], [], 0, "NONE"];
 	_Pilot assignAsDriver _Heli;
 	_Pilot MoveInDriver _Heli;
+	_Heli addItemCargoGlobal ["ACE_rope36", 4];
 	_Pilot SetRank "SERGEANT";
 	_Pilot setVariable ["oks_disable_hunt",true];
 	[_Pilot, "Pilot",_Side] call OKS_fnc_AirDropAISkill;
@@ -222,7 +223,84 @@ Switch (_UnloadOrDrop) do
 			[_HeliGroup, 4] SetWaypointType "MOVE";
 		};
 	};
+	case "fastrope":
+	{
+		_Heli flyInHeight [50, true];
+		
+		_StepPosition = _UnloadOrDropMarker getPos [1500, (_UnloadOrDropMarker getDir _Heli)];
+		_HeliGroup addWaypoint [_StepPosition, 0, 1];
+		[_HeliGroup, 1] SetWaypointType "MOVE";
+		[_HeliGroup, 1] SetWaypointCombatMode "YELLOW";
 
+		_HeliGroup addWaypoint [_UnloadOrDropMarker, 0, 2];
+		[_HeliGroup, 2] SetWaypointType "MOVE";
+		[_HeliGroup, 2] SetWaypointSpeed "LIMITED";
+		[_HeliGroup, 2] setWaypointStatements ["true","(vehicle this) flyInHeight [25,true];"];	
+
+		waitUntil {sleep 1; _Heli distance2D _UnloadOrDropMarker < 250};
+		deleteWaypoint [_HeliGroup, 2];
+		
+		[_Heli, _Pilot, _HeliGroup,_UnloadOrDropMarker,_SAD,_Egress] spawn {
+			params ["_Heli","_Pilot","_HeliGroup","_UnloadOrDropMarker","_SAD","_Egress"];
+			private ["_fastRopePos","_helipad"];
+			_CargoGroup = fullCrew [_Heli, "Cargo"];
+
+			// Find a helipad for fast roping
+			private _helipads = nearestObjects [_UnloadOrDropMarker, ["GOL_FastRope_DZ"], 1000];
+			private _filteredHelipads = _helipads select { !(_X getVariable ["GOL_UsedHLS",false]) };
+			if (count _filteredHelipads > 0) then {
+				_helipad = selectRandom _filteredHelipads;
+				_helipad setVariable ["GOL_UsedHLS", true, true];
+				_fastRopePos = getPosATL _helipad;
+			} else {
+				_fastRopePos = [
+					_UnloadOrDropMarker, // Center reference
+					0,        // Minimum search radius
+					1000,      // Maximum search radius around center
+					70,       // Clearance: minimum distance from obstacles
+					0,        // Avoid water (0 = yes)
+					0.1,       // Slope (ignore)
+					0,        // Avoid shores (0 = ignore)
+					[],       // Blacklist positions (none)
+					_UnloadOrDropMarker // Fallback position
+				] call BIS_fnc_findSafePos;
+				if(_fastRopePos isEqualType []) then {
+					_fastRopePos set [2, 25]; // Add height for the fast rope
+				} else {
+					_fastRopePos = _UnloadOrDropMarker;
+				};
+			};
+
+			_Pilot doMove _fastRopePos;
+			_Pilot flyInHeight [25,true];
+			_Pilot SetBehaviour "CARELESS";
+
+			waitUntil {sleep 1; _Heli flyInHeight [20,true]; _Heli distance2D _fastRopePos < 120};
+			waitUntil {sleep 1; _Heli flyInHeight [20,true]; vectorMagnitude (velocity _Heli) < 3};
+			waitUntil {sleep 1; _Heli flyInHeight [20,true]; (getPosATL _Heli select 2) < 40 && vectorMagnitude (velocity _Heli) < 3};
+			[_Heli, false, false] call ace_fastroping_fnc_deployAI;
+			waitUntil {sleep 2; {_X in _Heli} count _CargoGroup == 0};
+			_helipad setVariable ["GOL_UsedHLS", false, true];
+			sleep 10;
+			if (_SAD) then
+			{
+				_HeliGroup addWaypoint [_Egress, 0, 3];
+				[_HeliGroup, 3] SetWaypointType "SAD";
+				[_HeliGroup, 3] SetWaypointBehaviour "AWARE";
+				[_HeliGroup, 3] SetWaypointCombatMode "RED";
+				[_HeliGroup, 3] SetWaypointSpeed "NORMAL";
+
+			} else {
+				_HeliGroup addWaypoint [_Egress, 0, 3];
+				[_HeliGroup, 3] SetWaypointType "MOVE";
+				[_HeliGroup, 3] SetWaypointSpeed "NORMAL";
+				sleep 1;
+
+				_HeliGroup addWaypoint [[0,0,100], 0, 4];
+				[_HeliGroup, 4] SetWaypointType "MOVE";
+			};
+		};
+	};
 	case "paradrop":
 	{
 		if(!(_Airbase)) then {
@@ -397,22 +475,25 @@ if ((_Units Select 0) > 0) then
 		};
 
 		//	Waypoints
-		for "_i" from 1 to (count _UnitsWPs -1) do
+		if(_UnloadOrDrop isEqualTo "unload" || _UnloadOrDrop isEqualTo "paradrop") then
 		{
-			_Group addWaypoint [(_UnitsWPs select _Index), 20, _WPIndex];
-			[_Group,_WPIndex] SetWaypointType "MOVE";
+			for "_i" from 1 to (count _UnitsWPs -1) do
+			{
+				_Group addWaypoint [(_UnitsWPs select _Index), 20, _WPIndex];
+				[_Group,_WPIndex] SetWaypointType "MOVE";
+				[_Group,_WPIndex] setWaypointBehaviour "AWARE";
+				[_Group,_WPIndex] setWaypointCombatMode "YELLOW";
+				[_Group,_WPIndex] setWaypointSpeed "NORMAL";
+				[_Group,_WPIndex] SetWaypointFormation "WEDGE";
+				_WPIndex = _WPIndex +1;
+				_Index = _Index +1;
+			};
+			_Group addWaypoint [(_UnitsWPs select _Index), 30, _WPIndex];
+			[_Group,_WPIndex] SetWaypointType "SAD";
 			[_Group,_WPIndex] setWaypointBehaviour "AWARE";
-			[_Group,_WPIndex] setWaypointCombatMode "YELLOW";
-			[_Group,_WPIndex] setWaypointSpeed "NORMAL";
+			[_Group,_WPIndex] setWaypointCombatMode "RED";
 			[_Group,_WPIndex] SetWaypointFormation "WEDGE";
-			_WPIndex = _WPIndex +1;
-			_Index = _Index +1;
 		};
-		_Group addWaypoint [(_UnitsWPs select _Index), 30, _WPIndex];
-		[_Group,_WPIndex] SetWaypointType "SAD";
-		[_Group,_WPIndex] setWaypointBehaviour "AWARE";
-		[_Group,_WPIndex] setWaypointCombatMode "RED";
-		[_Group,_WPIndex] SetWaypointFormation "WEDGE";
 		sleep 1;
 
 		// 	Add waypoints around the target area
@@ -445,6 +526,21 @@ if ((_Units Select 0) > 0) then
 		sleep 10;
 		_Group LockWP false;
 		_Group SetCurrentWaypoint [_Group, 2];
+	};
+
+	if (_UnloadOrDrop isEqualTo "fastrope") then
+	{
+		_Sectors = [_UnloadOrDropMarker, (_UnitsWPs select 0)] call BIS_fnc_dirTo;
+		_Position = [_UnloadOrDropMarker, 20, _Sectors] call BIS_fnc_relPos;
+		WaitUntil {sleep 1; ( !((Alive _Pilot) or (Alive _Heli)) or ({_x in _Heli} count units _Group == 0) )};
+		sleep 10;
+		_Group = _Groups select 0;
+		_Group addWaypoint [_Position, 20, 1];
+		[_Group,1] SetWaypointType "MOVE";
+		[_Group,1] setWaypointBehaviour "AWARE";
+		[_Group,1] setWaypointCombatMode "GREEN";
+		[_Group,1] setWaypointSpeed "FULL";
+		[_Group,1] SetWaypointFormation "WEDGE";
 	};
 
 	// Ejecting paradrop units

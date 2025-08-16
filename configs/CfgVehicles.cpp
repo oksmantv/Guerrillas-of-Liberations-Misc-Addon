@@ -577,4 +577,13 @@ class CfgVehicles {
         isTriggerActivated = 1;
         curatorCanAttach = 1;
     };
+
+	class Land_ClutterCutter_small_F;
+	class GOL_FastRope_DZ : Land_ClutterCutter_small_F {
+		displayName = "AI Fast Rope DZ";
+		scope = 2;
+		scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Objects";
+	};
 };

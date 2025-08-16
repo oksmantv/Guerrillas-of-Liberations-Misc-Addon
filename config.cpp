@@ -53,7 +53,8 @@ class CfgPatches
             "OKS_Module_MechanizedSetup",
             "OKS_Module_HelicopterSetup",
             "OKS_Module_MHQ",
-            "OKS_Module_ApplyUnitGear"
+            "OKS_Module_ApplyUnitGear",
+            "GOL_FastRope_DZ"
 		};
 		weapons[] = {};
 	}
@@ -80,6 +81,9 @@ class CfgEditorSubcategories {
     class GOL_Resupply {
         displayName = "Resupply";
     };  
+    class GOL_Objects {
+        displayName = "Objects";
+    };      
 };
 
 class CfgFactionClasses {

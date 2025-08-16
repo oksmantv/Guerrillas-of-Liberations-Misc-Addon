@@ -20,7 +20,7 @@ private _objectNames = [];
 
 private _example = format [
     "[%1] spawn OKS_fnc_Destroy_Task;",
-    str _objectNames
+    _objectNames
 ];
 copyToClipboard _example;
 systemChat format["CopiedToClipboard: %1",_example];

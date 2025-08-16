@@ -34,12 +34,12 @@ private _example = "";
 if (_vehicleClasses isNotEqualTo []) then {
     _vehicleArray = [_vehicleClasses, 6];
     _example = format [
-        "[%1, %2, %3, %4, 500] spawn OKS_fnc_Lambs_SpawnGroup;",
+        "[gtpos %1, %2, %3, %4, 500] spawn OKS_fnc_Lambs_SpawnGroup;",
         _spawnName, str _lambsType, _vehicleArray, _side
     ]
 } else {
     _example = format [
-        "[%1, %2, %3, %4, 500] spawn OKS_fnc_Lambs_SpawnGroup;",
+        "[getpos %1, %2, %3, %4, 500] spawn OKS_fnc_Lambs_SpawnGroup;",
         _spawnName, str _lambsType, _unitCount, _side
     ]
 };

@@ -50,6 +50,7 @@ if(!isServer) exitWith {};
 
 	{
 		_x setVariable ["GOL_SurrenderEnabled",true,true];
+		_x setVariable ["GOL_HVT",true,true];
 		if([_X] call GW_Common_Fnc_getSide != civilian) then {
 			waitUntil {sleep 1; primaryWeapon _X != ""};
 			removeAllWeapons _X;
