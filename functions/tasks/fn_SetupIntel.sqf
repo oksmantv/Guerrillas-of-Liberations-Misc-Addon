@@ -39,7 +39,7 @@
 	};
 
 	_MergedText = format[_CustomText, _AssetList];
-	[_IntelPiece, _MergedText] remoteExec ["ace_intelitems_fnc_setObjectData",0];
+	[_IntelPiece, _MergedText] remoteExec ["ace_intelitems_fnc_setObjectData",2];
 
 	waitUntil {sleep 1; !alive _IntelPiece};
 	private _NearPlayers = (_TaskPosition nearEntities ["Man",15]);
