@@ -21,9 +21,12 @@ if(!(_unit getVariable ["HasHandleScoreEvent",false])) then {
     _unit addEventHandler ["Killed", {
         params ["_unit", "_killer"];
         if(isPlayer _killer) then {
+
+            if(_unit getVariable ["GOL_NonCombatant", false]) exitWith {};
+
             private _enemyKilledCount = missionNamespace getVariable ["GOL_EnemiesKilled", 0];
             _enemyKilledCount = _enemyKilledCount + 1;
-            missionNamespace setVariable ["GOL_EnemiesKilled", _enemyKilledCount + 1, true];
+            missionNamespace setVariable ["GOL_EnemiesKilled", _enemyKilledCount, true];
 
             _name = name _unit;
             if(isNil "_name" || _name isEqualTo "") then {

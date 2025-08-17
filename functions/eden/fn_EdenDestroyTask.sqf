@@ -18,9 +18,10 @@ private _objectNames = [];
     };
 } forEach _selected;
 
+private _objectNamesStr = _objectNames joinString ",";
 private _example = format [
-    "[%1] spawn OKS_fnc_Destroy_Task;",
-    _objectNames
+    "[[%1]] spawn OKS_fnc_Destroy_Task;",
+    _objectNamesStr
 ];
 copyToClipboard _example;
 systemChat format["CopiedToClipboard: %1",_example];

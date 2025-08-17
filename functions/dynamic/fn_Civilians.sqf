@@ -194,6 +194,7 @@ if(_CivilianCount > 0) then {
 		_Module setVariable ["#onCreated",{
 			format["[Undercover] Undercover Spawned %1",_this] spawn OKS_fnc_LogDebug;
 			_this setVariable ["GOL_UndercoverAI",true,true];
+			_this setVariable ["GOL_NonCombatant", true, true];
 			[_this] spawn OKS_fnc_UndercoverAI;
 		}];
 		_Module setVariable ["#useagents",false];
@@ -201,6 +202,7 @@ if(_CivilianCount > 0) then {
 	} else {
 		_Module setVariable ["#onCreated",{
 			format["[CIV] Civilian Spawned %1",_this] spawn OKS_fnc_LogDebug;
+			_this setVariable ["GOL_NonCombatant", true, true];
 		}];
 		_Module setVariable ["#useagents",_UseAgents];
 		_Module setVariable ["#usepanicmode",_UsePanicMode];

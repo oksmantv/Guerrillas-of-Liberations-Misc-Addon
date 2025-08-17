@@ -11,7 +11,7 @@ private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", f
 if(_surrenderDebug) then {
     format["[SURRENDER] %1 Surrender Handle triggered", name _unit] spawn OKS_fnc_LogDebug;
 };
-
+_unit setVariable ["GOL_NonCombatant", true, true];
 [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;
 sleep 0.5;
 [_unit] call OKS_fnc_SetSurrendered;

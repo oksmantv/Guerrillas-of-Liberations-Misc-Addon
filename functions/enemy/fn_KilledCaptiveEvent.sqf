@@ -17,7 +17,7 @@ _unit addEventHandler ["Killed", {
     if(_unit getVariable ["GOL_CaptiveKilled",false]) exitWith {};
     if (isPlayer _killer) then {
         _unit setVariable ["GOL_CaptiveKilled",true,true];
-
+        
         [15] call OKS_fnc_IncreaseMultiplier;
     };
 }];

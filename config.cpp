@@ -71,6 +71,21 @@ class CfgPatches
 #include "configs\CfgUnitInsignia.cpp"
 #include "configs\CfgOrbat.cfg"
 
+class CfgMods {
+    class GOL_MISC_ADDON {
+        name = "Guerrillas of Liberation Misc";
+        author = "Oksman";
+        url = "https://gol-clan.com/home";
+    };
+};
+
+class CBA_VERSIONING {
+    class GOL_MISC_ADDON {
+        version = "1.0.0";
+        server = 1; // Server must have matching version
+    };
+};
+
 class CfgEditorCategories {
     class GOL_GuerrillasOfLiberation {
         displayName = "GOL Guerrillas of Liberation";

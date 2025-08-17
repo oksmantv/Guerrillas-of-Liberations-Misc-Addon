@@ -33,7 +33,7 @@ if(_Debug) then {
             if(_random > _ChanceForArms) then {
                 _NewEnemyGroup = createGroup _EnemySide;
                 [_X] joinSilent _NewEnemyGroup;
-
+                
                 _NewEnemyGroup setCombatMode "RED";
                 _NewEnemyGroup setBehaviour "AWARE";
                 _X setCombatMode "RED";
@@ -42,10 +42,12 @@ if(_Debug) then {
                 _X addWeapon _StoredWeapon;
                 _X addMagazine "MiniGrenade";
                 _X selectWeapon _StoredWeapon;
-            };
-
-            if (_X checkAIFeature "PATH") then {
-                [_NewEnemyGroup, 400, 15, [], [], true, false, false] remoteExec ["lambs_wp_fnc_taskHunt", 0];
+                _X setVariable ["GOL_NonCombatant", false, true];
+                [_X] call OKS_fnc_AddKilledScore;
+                
+                if (_X checkAIFeature "PATH") then {
+                    [_NewEnemyGroup, 400, 15, [], [], true, false, false] remoteExec ["lambs_wp_fnc_taskHunt", 0];
+                };
             };
         };
         sleep 1 + (random 2);
