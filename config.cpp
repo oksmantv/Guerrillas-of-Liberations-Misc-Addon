@@ -81,7 +81,7 @@ class CfgMods {
 
 class CBA_VERSIONING {
     class GOL_MISC_ADDON {
-        version = "1.0.0";
+        version = "1.1.0";
         server = 1; // Server must have matching version
     };
 };
