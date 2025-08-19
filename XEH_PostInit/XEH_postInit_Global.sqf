@@ -296,11 +296,11 @@ if(true) then {
         player addMPEventHandler ["MPKilled", {
             params ["_unit","_killer","_instigator","_useEffects"];
 
-            if(isPlayer _instigator) then {
+            if(isPlayer _instigator || isPlayer _killer) then {
                 private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
                 _friendlyFireKills = _friendlyFireKills + 1;
                 missionNamespace setVariable ["GOL_FriendlyFireKills", _friendlyFireKills, true];
-                format["Friendly Fire: %1 killed by %2", name _unit, name _instigator] spawn OKS_fnc_LogDebug;
+                format["Friendly Fire: %1 killed by %2 (%3)", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
             };
 
             // Get the player's current SR radio info
