@@ -586,4 +586,28 @@ class CfgVehicles {
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Objects";
 	};
+
+	class Plane {
+		class ACE_SelfActions {
+			class GOL_StaticLine {
+				displayName = "Static Line";
+					condition = "(_target getcargoindex _player != -1)";
+                statement = "";
+				icon = "\OKS_GOL_Misc\Data\UI\UI_StaticLine.paa";
+
+				class GOL_HookTrue {
+					displayName = "Hook Up";
+					condition = "!(_player getVariable ['GOL_Hooked',false])";
+					statement = "[_target,_player, true] call OKS_fnc_StaticJump_Hook;";
+				    icon = "\OKS_GOL_Misc\Data\UI\UI_Hook.paa";
+				};
+				class GOL_HookFalse {
+					displayName = "Unhook";
+					condition = "(_player getVariable ['GOL_Hooked',false])";
+					statement = "[_target,_player, false] call OKS_fnc_StaticJump_Hook;";
+					icon = "\OKS_GOL_Misc\Data\UI\UI_Unhook.paa";
+				};
+			};
+		};
+	};
 };

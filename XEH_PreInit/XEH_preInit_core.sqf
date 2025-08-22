@@ -7,7 +7,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "CHECKBOX",
     ["Enables features from FW Version 2.7", "Enables all features added in the GOL Misc Addon."],
     "GOL CORE",
-    false,
+    true,
     1
 ] call CBA_fnc_addSetting;
 
@@ -187,6 +187,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "GOL_AA_Debug",
     "CHECKBOX",
     ["Enable AA Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Paradrop_Debug",
+    "CHECKBOX",
+    ["Enable Paradrop DEBUG", "Enables debugging for paradrop scripts such as Hook, Static Jump, Eject etc."],
     "GOL DEBUG",
     true,
     1

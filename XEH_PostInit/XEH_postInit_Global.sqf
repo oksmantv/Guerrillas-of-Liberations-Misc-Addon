@@ -248,6 +248,9 @@ if(true) then {
         /* Add Paradrop Action to Gearboxes */
         [] spawn OKS_fnc_ParadropActions;
 
+        /* Add Static Line EventHandler */
+        ["RHS_C130J_BASE", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+
         /* Setup TFAR Radios */
         [] spawn OKS_fnc_TFAR_RadioSetup;
 

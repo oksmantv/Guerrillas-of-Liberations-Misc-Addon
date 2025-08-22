@@ -175,6 +175,16 @@ class CfgFunctions // Defines a function
 			class Treat_Casualty {};
 		};
 
+		class OKS_Paradrop {
+			file = "\OKS_GOL_Misc\functions\paradrop";
+			class SetupParadrop {};
+			class ParadropActions {};
+			class StaticJump_Hook {};
+			class StaticJump_Action {};
+			class StaticJump_Code {};
+			class StaticJump_EventCode {};
+		};
+
 		class OKS_PlayerSetup {
 			file = "\OKS_GOL_Misc\functions\playersetup";
 			class SetupUnconsciousCamera {};
@@ -185,8 +195,6 @@ class CfgFunctions // Defines a function
 			class BLU_SetChannel {};
 			class CheckFrameworkObjects {};
 			class TFAR_RadioSetup {};
-			class SetupParadrop {};
-			class ParadropActions {};
 		};
 
 		class OKS_PlayerSetup_ORBAT {
