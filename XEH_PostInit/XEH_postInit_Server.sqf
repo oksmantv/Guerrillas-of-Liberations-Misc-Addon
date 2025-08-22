@@ -7,6 +7,10 @@ if(GOL_Core_Enabled isEqualTo true) then {
         Server Side Executions
     */
     if(isServer) then {
+
+        GOL_MiscAddon_ServerVersion = getText(configFile >> "CBA_VERSIONING" >> "GOL_MISC_ADDON" >> "version");
+        publicVariable "GOL_MiscAddon_ServerVersion";
+
         _EnabledDaps = missionNamespace getVariable ["GOL_DAPS_Enabled", false];
         if(!_EnabledDaps) then {
             /* DAPS Options */

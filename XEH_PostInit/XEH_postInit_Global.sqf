@@ -331,6 +331,15 @@ if(true) then {
         [] call OKS_fnc_Ranks;
 
         /* Handle Respawn */
-        [] call OKS_fnc_RespawnHandler;        
+        [] call OKS_fnc_RespawnHandler;   
+
+        /* Version Check */     
+        waitUntil { !isNil "GOL_MiscAddon_ServerVersion" };
+        private _GOL_MiscAddon_LocalVersion = getText(configFile >> "CBA_VERSIONING" >> "GOL_MISC_ADDON" >> "version");
+        if (_GOL_MiscAddon_LocalVersion != GOL_MiscAddon_ServerVersion) then {
+            _PlayerName = name player;
+            format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] spawn OKS_fnc_LogDebug;
+            format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] remoteExec ["systemChat",0];
+        };
     };
 };
