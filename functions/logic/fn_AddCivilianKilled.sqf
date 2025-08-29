@@ -20,10 +20,10 @@ if(!(_unit getVariable ["HasHandleScoreEventCivilian",false])) then {
     };
 
     _unit addEventHandler ["Killed", {
-        params ["_unit", "_killer"];
+        params ["_unit", "_killer", "_instigator"];
         if(!(_unit getVariable ["GOL_NonCombatant", true])) exitWith {};
-        if(isPlayer _killer) then {
-            
+        if(isPlayer _killer || isPlayer _instigator) then {
+
             _name = name _unit;
             if(isNil "_name" || _name isEqualTo "") then {
                 _name = typeof _unit;

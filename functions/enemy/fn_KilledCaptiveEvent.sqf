@@ -13,9 +13,9 @@ if(hasInterface && !isServer) exitWith {};
 sleep 1;
        
 _unit addEventHandler ["Killed", {
-    params ["_unit", "_killer"];
+    params ["_unit", "_killer", "_instigator"];
     if(_unit getVariable ["GOL_CaptiveKilled",false]) exitWith {};
-    if (isPlayer _killer) then {
+    if (isPlayer _killer || isPlayer _instigator) then {
         _unit setVariable ["GOL_CaptiveKilled",true,true];
         
         [15] call OKS_fnc_IncreaseMultiplier;

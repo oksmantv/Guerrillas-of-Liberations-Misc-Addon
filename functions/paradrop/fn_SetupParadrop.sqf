@@ -4,7 +4,7 @@
 
 Params [
     "_Player",
-    ["_StaticParachuteEnabled", (missionNamespace getVariable ["STATIC_PARACHUTE_ENABLED", false]), [true]]
+    ["_StaticParachuteEnabled", false, [true]]
 ];
 
 private _Text = "";

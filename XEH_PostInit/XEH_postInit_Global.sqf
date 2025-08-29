@@ -110,7 +110,7 @@ if(true) then {
             if (!isPlayer _unit) then {
                 // Add Killed EventHandler for Scores.
                 private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
-                if (_unit isKindOf "CAManBase" && side _unit getFriend _playerSide < 0.6 && side group _unit != civilian) then 
+                if (_unit isKindOf "CAManBase" && side group _unit != civilian) then 
                 {
                     [_unit] call OKS_fnc_AddKilledScore;    
                 };
@@ -182,7 +182,6 @@ if(true) then {
             // Add Killed EventHandler for Scores.    
             if (_x isKindOf "CAManBase" &&
                 !isPlayer _x &&
-                side _x getFriend _playerSide < 0.6 &&
                 side group _x != civilian) then 
             {
                 [_X] call OKS_fnc_AddKilledScore;    
@@ -196,7 +195,6 @@ if(true) then {
             if (
                 _x isKindOf "CAManBase" &&
                 !isPlayer _x &&
-                side _x getFriend _playerSide < 0.6 &&
                 side group _x != civilian &&
                 vehicle _X == _X
             ) then {
@@ -300,6 +298,9 @@ if(true) then {
             params ["_unit","_killer","_instigator","_useEffects"];
 
             if(isPlayer _instigator || isPlayer _killer) then {
+                if(_unit in [_killer, _instigator]) exitWith {
+                    format["Friendly Fire: Deemed as suicide", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
+                };
                 private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
                 _friendlyFireKills = _friendlyFireKills + 1;
                 missionNamespace setVariable ["GOL_FriendlyFireKills", _friendlyFireKills, true];
@@ -307,10 +308,10 @@ if(true) then {
             };
 
             // Get the player's current SR radio info
-            private _radio = player call TFAR_fnc_activeSwRadio;
+            private _radio = _unit call TFAR_fnc_activeSwRadio;
             if(!isNil "_radio") then {
-                private _channel = player getVariable ["TFAR_currentSwChannel", 1];
-                private _frequency = player getVariable ["TFAR_currentSwFrequency", ""];
+                private _channel = _unit getVariable ["TFAR_currentSwChannel", 1];
+                private _frequency = _unit getVariable ["TFAR_currentSwFrequency", "10"];
                 private _isAdditional = false;
 
                 if (!isNil "_radio") then {
@@ -318,9 +319,9 @@ if(true) then {
                 };
 
                 // Optionally, also handle LR radios:
-                private _lrRadio = player call TFAR_fnc_activeLrRadio;
-                private _lrChannel = player getVariable ["TFAR_currentLrChannel", 1];
-                private _lrFrequency = player getVariable ["TFAR_currentLrFrequency", ""];
+                private _lrRadio = _unit call TFAR_fnc_activeLrRadio;
+                private _lrChannel = _unit getVariable ["TFAR_currentLrChannel", 1];
+                private _lrFrequency = _unit getVariable ["TFAR_currentLrFrequency", "10"];
                 if (!isNil "_lrRadio") then {
                     [_lrRadio, _lrChannel, _lrFrequency, false] call TFAR_fnc_doLRTransmitEnd;
                 };
@@ -333,13 +334,17 @@ if(true) then {
         /* Handle Respawn */
         [] call OKS_fnc_RespawnHandler;   
 
-        /* Version Check */     
-        waitUntil { !isNil "GOL_MiscAddon_ServerVersion" };
-        private _GOL_MiscAddon_LocalVersion = getText(configFile >> "CBA_VERSIONING" >> "GOL_MISC_ADDON" >> "version");
-        if (_GOL_MiscAddon_LocalVersion != GOL_MiscAddon_ServerVersion) then {
-            _PlayerName = name player;
-            format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] spawn OKS_fnc_LogDebug;
-            format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] remoteExec ["systemChat",0];
-        };
+        /* Version Check */
+        [player] spawn {
+            Params ["_Player"];
+
+            waitUntil { !isNil "GOL_MiscAddon_ServerVersion" };
+            private _GOL_MiscAddon_LocalVersion = getText(configFile >> "CBA_VERSIONING" >> "GOL_MISC_ADDON" >> "version");
+            if (_GOL_MiscAddon_LocalVersion != GOL_MiscAddon_ServerVersion) then {
+                _PlayerName = name _Player;
+                format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] spawn OKS_fnc_LogDebug;
+                format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] remoteExec ["systemChat",0];
+            };
+        };  
     };
 };
