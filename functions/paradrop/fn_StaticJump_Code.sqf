@@ -36,7 +36,15 @@ if(_Debug) then {
 	format["[StaticLine] Static Jump Code - Saved Threshold: %1 - New Threshold: %2", _currentDamageThreshold, ace_medical_playerDamageThreshold] spawn OKS_fnc_LogDebug;
 };
 
-_offsetPosition = _aircraft modelToWorld [-10, -5, -5];
+_SwitchSide = _aircraft getVariable ["GOL_Paradrop_SwitchSide", false];
+private _offsetPosition = _aircraft modelToWorld [-10, -5, -5];
+if(_SwitchSide) then {
+	_offsetPosition = _aircraft modelToWorld [10, -5, -5];
+	_aircraft setVariable ["GOL_Paradrop_SwitchSide", false];
+} else {
+	_aircraft setVariable ["GOL_Paradrop_SwitchSide", true];
+};
+
 _player disableCollisionWith _aircraft;
 _player setPos _offsetPosition;
 _player setDir (_aircraftDir  - 180);

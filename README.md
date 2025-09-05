@@ -1825,13 +1825,12 @@ Edited by OksmanTV & Bluwolf.
   - Trigger zones can be enabled/disabled dynamically using `SetVariable ["NEKY_Hunt_Disabled", true/false, true]`.
   - Custom code can be passed and will execute on each spawn, with `[AI Group, Player, Zone]` as arguments.
   - Designed for robust, dynamic AI hunting and reinforcement scenarios in Arma 3.
-
+  </details>
 </details>
-
 </details>  
 <details>
   <summary>🚩 Dynamic Framework</summary>
-<details>
+  <details>
   <summary>OKS_CreateZone</summary>
 
   ### Description

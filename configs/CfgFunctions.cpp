@@ -228,6 +228,7 @@ class CfgFunctions // Defines a function
 			class Destroy_Houses {};
 			class PowerGenerator {};
 			class AddGeneratorAction {};
+			class aaAmbient {};
 		};	
 
 		class OKS_Dynamic {

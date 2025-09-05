@@ -7,7 +7,7 @@ _Helicopter setVariable ["NEKY_OldDamage",0];
 private _isWhiteList = {
 	Params ["_Helicopter"];
 	Private "_return";
-	_WhiteListWords = ["mi24","mi8"];
+	_WhiteListWords = ["mi24","mi8","Mi_24","Mi_8"];
 	{
 		if (((ToLower typeOf _Helicopter) find _X) == -1) then {
 			_return = false;
