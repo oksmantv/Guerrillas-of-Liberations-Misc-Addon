@@ -207,7 +207,7 @@ if(true) then {
                     };
                 };  
             };
-            
+
             // Add Killed EventHandler for Scores.    
             if (_x isKindOf "CAManBase" &&
                 !isPlayer _x &&
@@ -241,7 +241,7 @@ if(true) then {
     [] spawn OKS_fnc_VehicleDropSetup;
 
     /* Setup ACE Carrying Limits */
-    ACE_maxWeightCarry = 1600; 
+    ACE_maxWeightCarry = 1900; 
     ACE_maxWeightDrag = 2500;
 
     if (hasInterface) then {

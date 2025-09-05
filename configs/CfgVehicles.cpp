@@ -165,20 +165,20 @@ class CfgVehicles {
 		};
 	};
 
-	class Land_RepairDepot_01_green_F;
 	class ACE_medicalSupplyCrate;
-	class FlexibleTank_base_F;
-	class Box_Syndicate_Ammo_F;
-	class Box_Syndicate_Wps_F;
 	class B_CargoNet_01_ammo_F;
 	class B_supplyCrate_F;	
+	class Box_Syndicate_Ammo_F;
+	class Box_Syndicate_Wps_F;
+	class FlexibleTank_base_F;
 	class Land_HelipadSquare_F;
+	class Land_RepairDepot_01_green_F;
 	class ReammoBox_F {
 		class ACE_Actions
 		{
 			class ACE_MainActions {};
 		};
-	};		
+	};			
 
 	class GOL_ResupplyStation_WEST: ReammoBox_F  {
 		displayName = "GOL Resupply Station (WEST)";
@@ -190,7 +190,10 @@ class CfgVehicles {
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
-		class TransportBackpacks {};			
+		class TransportBackpacks {};	
+		class EventHandlers {
+			init = "(_this select 0) allowDamage false; (_this select 0) enableSimulation false;";
+		};				
 		class ACE_Actions : ACE_Actions
 		{
 			class ACE_MainActions : ACE_MainActions
@@ -200,7 +203,7 @@ class CfgVehicles {
 					exceptions[] = {};
 					condition = "alive _target";
 					statement = "";
-					icon = "\A3\ui_f\data\igui\cfg\actions\unloadVehicle_ca.paa";
+					icon = "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\use_ca.paa";
 					class GOL_TeamResupply
 					{
 						displayName = "Team Resupply";
@@ -256,55 +259,64 @@ class CfgVehicles {
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
-		class TransportBackpacks {};			
+		class TransportBackpacks {};	
+		class EventHandlers {
+			init = "(_this select 0) allowDamage false; (_this select 0) enableSimulation false;";
+		};						
 		class ACE_Actions : ACE_Actions
 		{
 			class ACE_MainActions : ACE_MainActions
 			{
 				class OKS_CreateResupply {
 					displayName = "Create Resupply";
+					distance = 10;
 					exceptions[] = {};
 					condition = "alive _target";
 					statement = "";
-					icon = "\A3\ui_f\data\igui\cfg\actions\unloadVehicle_ca.paa";
+					icon = "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\use_ca.paa";
 					class GOL_TeamResupply
 					{
 						displayName = "Team Resupply";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_TeamResupplybox_EAST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_TeamResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_SpecialistResupply
 					{
 						displayName = "Specialist Resupply";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_SpecialistResupplybox_EAST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_SpecialistResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_SquadResupply
 					{
 						displayName = "Squad Resupply";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_SquadResupplybox_EAST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_SquadResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_MobileServiceStation
 					{
 						displayName = "Mobile Service Station";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_MobileServiceStation'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_MobileServiceStation', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\repair_ca.paa";
 					};	
 					class GOL_MedicResupply
 					{
 						displayName = "Medical Resupply";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_MedicalResupply_EAST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\heal_ca.paa";
 					};											
 				};
@@ -312,7 +324,7 @@ class CfgVehicles {
 		};
 	};
 
-	class GOL_ResupplyStation_WEST_Small: Box_Syndicate_Ammo_F  {
+	class GOL_ResupplyStation_WEST_Small: ReammoBox_F  {
 		displayName = "GOL Small Resupply Station (WEST)";
 		scope = 2;
 		scopeCurator = 2;
@@ -322,55 +334,65 @@ class CfgVehicles {
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
-		class TransportBackpacks {};			
+		class TransportBackpacks {};		
+		class EventHandlers {
+			init = "(_this select 0) allowDamage false; (_this select 0) enableSimulation false;";
+		};					
 		class ACE_Actions : ACE_Actions
 		{
 			class ACE_MainActions : ACE_MainActions
 			{
+				position = "[0, 0, -1.5]";
 				class OKS_CreateResupply {
 					displayName = "Create Resupply";
+					distance = 10;
 					exceptions[] = {};
 					condition = "alive _target";
 					statement = "";
-					icon = "\A3\ui_f\data\igui\cfg\actions\unloadVehicle_ca.paa";
+					icon = "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\use_ca.paa";
 					class GOL_TeamResupply
 					{
 						displayName = "Team Resupply";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_TeamResupplybox_WEST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_TeamResupplybox_WEST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_SpecialistResupply
 					{
 						displayName = "Specialist Resupply";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_SpecialistResupplybox_WEST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_SpecialistResupplybox_WEST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_SquadResupply
 					{
 						displayName = "Squad Resupply";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_SquadResupplybox_WEST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_SquadResupplybox_WEST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_MobileServiceStation
 					{
 						displayName = "Mobile Service Station";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_MobileServiceStation'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_MobileServiceStation', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\repair_ca.paa";
 					};	
 					class GOL_MedicResupply
 					{
 						displayName = "Medical Resupply";
+						distance = 10;
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_MedicalResupply_WEST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_MedicalResupply_WEST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};										
 				};
@@ -378,7 +400,7 @@ class CfgVehicles {
 		};
 	};
 	
-	class GOL_ResupplyStation_EAST_Small: Box_Syndicate_Ammo_F  {
+	class GOL_ResupplyStation_EAST_Small: ReammoBox_F  {
 		displayName = "GOL Small Resupply Station (EAST)";
 		scope = 2;
 		scopeCurator = 2;
@@ -388,23 +410,27 @@ class CfgVehicles {
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
-		class TransportBackpacks {};			
+		class TransportBackpacks {};
+		class EventHandlers {
+			init = "(_this select 0) allowDamage false; (_this select 0) enableSimulation false;";
+		};			
 		class ACE_Actions : ACE_Actions
 		{
 			class ACE_MainActions : ACE_MainActions
 			{
+				position = "[0, 0, -1.5]";
 				class OKS_CreateResupply {
 					displayName = "Create Resupply";
 					exceptions[] = {};
 					condition = "alive _target";
 					statement = "";
-					icon = "\A3\ui_f\data\igui\cfg\actions\unloadVehicle_ca.paa";
+					icon = "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\use_ca.paa";
 					class GOL_TeamResupply
 					{
 						displayName = "Team Resupply";
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_TeamResupplybox_EAST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_TeamResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_SpecialistResupply
@@ -412,7 +438,7 @@ class CfgVehicles {
 						displayName = "Specialist Resupply";
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_SpecialistResupplybox_EAST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_SpecialistResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_SquadResupply
@@ -420,7 +446,7 @@ class CfgVehicles {
 						displayName = "Squad Resupply";
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_SquadResupplybox_EAST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_SquadResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
 					};
 					class GOL_MobileServiceStation
@@ -428,7 +454,7 @@ class CfgVehicles {
 						displayName = "Mobile Service Station";
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_MobileServiceStation'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_MobileServiceStation', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\actions\repair_ca.paa";
 					};	
 					class GOL_MedicResupply
@@ -436,7 +462,7 @@ class CfgVehicles {
 						displayName = "Medical Resupply";
 						exceptions[] = {};
 						condition = "alive _target";
-						statement = "[_target, 'GOL_MedicalResupply_EAST'] call OKS_fnc_spawnCrate;";
+						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\heal_ca.paa";
 					};											
 				};
