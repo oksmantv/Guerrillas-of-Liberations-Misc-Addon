@@ -31,23 +31,16 @@ if (count _safePos == 0) then {
 };
 
 _crate setDir _dir;
-
-if(_crateClass in [
-    "GOL_MobileServiceStation",
-    "GOL_MedicalResupply_WEST","GOL_TeamResupplybox_WEST","GOL_SpecialistResupplybox_WEST",
-    "GOL_MedicalResupply_EAST","GOL_TeamResupplybox_EAST","GOL_SpecialistResupplybox_EAST"
-]) then {
-    [_crate, _player] spawn {
-        Params ["_crate", "_player"];
-        _crate disableCollisionWith _crate;
-        _crate allowDamage false;
-        sleep 0.1;
-        _crate setPosATL (_player modelToWorld [0,1.5,0]);
-        sleep 0.1;
-        [_player, _crate] call ace_dragging_fnc_startCarry;
-        sleep 3;
-        _crate allowDamage true;
-    };
+[_crate, _player] spawn {
+    Params ["_crate", "_player"];
+    _crate disableCollisionWith _crate;
+    _crate allowDamage false;
+    sleep 0.1;
+    _crate setPosATL (_player modelToWorld [0,1.5,0]);
+    sleep 0.1;
+    [_player, _crate] call ace_dragging_fnc_startCarry;
+    sleep 3;
+    _crate allowDamage true;
 };
 
 _crate
