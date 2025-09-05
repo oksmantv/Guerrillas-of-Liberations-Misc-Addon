@@ -1114,6 +1114,43 @@ Edited by OksmanTV & Bluwolf.
       [5, 1, getPos player, east, true, ["lot", "large", "fatal"]] spawn OKS_fnc_Rescue_Friendly;
 
 </details>
+<details>
+  <summary>OKS_fnc_SetupIntel</summary>
+
+  ### Description
+  Provides content for readable ACE-Intel items.
+
+  ### Parameters
+
+  | Name                | Type             | Default | Description                                                                 |
+  |---------------------|------------------|---------|-----------------------------------------------------------------------------|
+  | `_IntelPiece`       | Object           | —       | The variable ID for the intel document.                                     |
+  | `_Target`           | Object, Array    | `nil`   | Target or array of targets.                                                 |
+  | `_Parent`           | String           | `nil`   | Task Id in string for the parent task.                                      |
+  | `_CustomText`       | String           | —       | Formated text using %1 (Asset/Assets) and %2 (Details). \n = New Line       |
+  | `_CustomHeader`     | String           | `nil`   | Custom Intel Name in Map Screen (Enumerates Intel #X if not defined)        |
+  | `_CustomDetails`    | String           | ""      | Description of location or other details. %2 in the CustomText format       |
+
+  ### Example Usage
+
+      [
+        intel_1,
+        target_1,
+        "Task_Intel",
+        "ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n\n%2",
+        "Critical SCUD Intel",
+        "Located in a warehouse at the end of the pier."
+      ] spawn OKS_fnc_SetupIntel;
+
+      [
+        intel_2,
+        [destroy_1,destroy_2,destroy_3],
+        "Task_Intel",
+        nil,
+        nil
+      ] spawn OKS_fnc_SetupIntel;
+
+</details>
 </details>
 <details>
   <summary>🚩 Spawn Scripts</summary>
