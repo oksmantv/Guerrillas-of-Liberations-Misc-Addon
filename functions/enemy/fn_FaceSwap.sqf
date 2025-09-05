@@ -19,7 +19,7 @@ if(isNil "_faceType") then {
 
 if (isNil "_faceType") exitWith {
     if(_faceswapDebug) then {
-        format["[FaceSwap] Exited on %1 - Type is null"] spawn OKS_fnc_LogDebug;
+        format["[FaceSwap] Exited on %1 - Type is null",name _unit] spawn OKS_fnc_LogDebug;
     };
 };
 
@@ -198,7 +198,8 @@ private _name = format ["%1 %2", _firstName, _surname];
 [_unit,_face] remoteExec ["setFace", 0];
 [_unit,""] remoteExec ["setNameSound",0];
 [_unit,_name] remoteExec ["setUnitName",0];
+[_unit,_name] remoteExec ["setName",0];
 
 if(_faceswapDebug) then {
-    format ["[FaceSwap] %2 Executed on %1",_unit,(toupper _faceType)] spawn OKS_fnc_LogDebug;
+    format ["[FaceSwap] %2 Executed on %1",name _unit,(toupper _faceType)] spawn OKS_fnc_LogDebug;
 };

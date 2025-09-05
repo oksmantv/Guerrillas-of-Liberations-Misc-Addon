@@ -108,6 +108,17 @@ if(true) then {
             params ["_unit"];
             sleep 5;
             if (!isPlayer _unit) then {
+
+                private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+                if(_FaceSwapEnabled) then {
+                    // Apply ethnicity and face swap
+                    _unit spawn {
+                        params ["_unit"];
+                        sleep 5;
+                        [_unit] spawn OKS_fnc_FaceSwap;
+                    };
+                };
+
                 // Add Killed EventHandler for Scores.
                 private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
                 if (_unit isKindOf "CAManBase" && side group _unit != civilian) then 
@@ -138,15 +149,6 @@ if(true) then {
                     };
                 };
 
-                private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-                if(_FaceSwapEnabled) then {
-                    // Apply ethnicity and face swap
-                    _unit spawn {
-                        params ["_unit"];
-                        sleep 5;
-                        [_unit] spawn OKS_fnc_FaceSwap;
-                    };
-                };
 
                 if(side group _unit != civilian || vehicle _unit == _unit) then {
                     _unit spawn {
@@ -179,31 +181,6 @@ if(true) then {
             private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];   
             sleep 5; // Ensure all units are initialized
 
-            // Add Killed EventHandler for Scores.    
-            if (_x isKindOf "CAManBase" &&
-                !isPlayer _x &&
-                side group _x != civilian) then 
-            {
-                [_X] call OKS_fnc_AddKilledScore;    
-            };
-
-            if (_X isKindOf "CAManBase" && side group _X == civilian) then 
-            {
-                [_X] call OKS_fnc_AddCivilianKilled;    
-            };        
-
-            if (
-                _x isKindOf "CAManBase" &&
-                !isPlayer _x &&
-                side group _x != civilian &&
-                vehicle _X == _X
-            ) then {
-                private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-                if(_SurrenderEnabled) then {                                
-                    [_x] spawn OKS_fnc_Surrender
-                };
-            };
-
             if(_X isKindOf "CAManBase" && !isPlayer _X) then {
                 private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
                 if(_SuppressionEnabled && vehicle _X == _X) then {
@@ -230,6 +207,32 @@ if(true) then {
                     };
                 };  
             };
+            
+            // Add Killed EventHandler for Scores.    
+            if (_x isKindOf "CAManBase" &&
+                !isPlayer _x &&
+                side group _x != civilian) then 
+            {
+                [_X] call OKS_fnc_AddKilledScore;    
+            };
+
+            if (_X isKindOf "CAManBase" && side group _X == civilian) then 
+            {
+                [_X] call OKS_fnc_AddCivilianKilled;    
+            };        
+
+            if (
+                _x isKindOf "CAManBase" &&
+                !isPlayer _x &&
+                side group _x != civilian &&
+                vehicle _X == _X
+            ) then {
+                private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+                if(_SurrenderEnabled) then {                                
+                    [_x] spawn OKS_fnc_Surrender
+                };
+            };
+
         };
     } forEach allUnits;
     };       
@@ -248,6 +251,9 @@ if(true) then {
 
         /* Add Static Line EventHandler */
         ["RHS_C130J_BASE", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+        ["UK3CB_Antonov_An2_Base", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+        ["UK3CB_DC3_Base", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+        ["VTOL_01_base_F", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
 
         /* Setup TFAR Radios */
         [] spawn OKS_fnc_TFAR_RadioSetup;

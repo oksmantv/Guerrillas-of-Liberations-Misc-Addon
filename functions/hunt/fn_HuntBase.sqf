@@ -55,7 +55,7 @@ Params
 	["_Soldiers", 0, ["",0,[]]],
 	["_RefreshRate", 0, [0]],
 	["_ShouldDeployFlare",true,[true]],
-	["_WaypointBehaviour","SAFE",[""]]
+	["_WaypointBehaviour",nil,[""]]
 ];
 
 Private ["_Group","_Leaders","_Units","_Vehicle","_VehicleClass",
@@ -81,6 +81,15 @@ _EyeCheck = createVehicle ["Land_ClutterCutter_small_F", [getPos _SpawnPos selec
 _EyeCheck hideObject true;
 _EyeCheck enableSimulation false;
 
+if(typeName _Soldiers == "SCALAR" && isNil "_WaypointBehaviour") then {
+	_WaypointBehaviour = "AWARE";
+};
+if(typeName _Soldiers != "SCALAR" && isNil "_WaypointBehaviour") then {
+	_WaypointBehaviour = "SAFE";
+};
+if(isNil "_WaypointBehaviour") then {
+	_WaypointBehaviour = "SAFE";
+};
 
 while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 {

@@ -24,6 +24,12 @@ if(!(_ejected)) then {
 	};
 };
 
+if(_player getVariable ["GOL_HasJumped", false]) exitWith {
+	if(_Debug) then {
+		format["[StaticLine] Static Jump Code - Already Jumped, exiting..",_aircraft, name _player] spawn OKS_fnc_LogDebug;
+	};
+};
+_player setVariable ["GOL_HasJumped", true, true];
 _aircraftVelocity = velocity _aircraft;
 _aircraftDir = direction _aircraft;
 
@@ -39,10 +45,13 @@ if(_Debug) then {
 _SwitchSide = _aircraft getVariable ["GOL_Paradrop_SwitchSide", false];
 private _offsetPosition = _aircraft modelToWorld [-10, -5, -5];
 if(_SwitchSide) then {
+	format["[StaticLine] Static Jump Code - Jumped out right side.",_aircraft,_player] spawn OKS_fnc_LogDebug;
 	_offsetPosition = _aircraft modelToWorld [10, -5, -5];
 	_aircraft setVariable ["GOL_Paradrop_SwitchSide", false];
 } else {
 	_aircraft setVariable ["GOL_Paradrop_SwitchSide", true];
+	format["[StaticLine] Static Jump Code - Jumped out left side.",_aircraft,_player] spawn OKS_fnc_LogDebug;
+
 };
 
 _player disableCollisionWith _aircraft;
@@ -67,6 +76,7 @@ if((backpack _player) in ["rhsusf_eject_Parachute_backpack"]) then {
 };
 
 [_aircraft, _player, false] call OKS_fnc_StaticJump_Hook;
+_player setVariable ["GOL_HasJumped", false, true];
 
 waitUntil {sleep 1; vehicle _player == _player || !Alive _player};
 ace_medical_playerDamageThreshold = _currentDamageThreshold;
