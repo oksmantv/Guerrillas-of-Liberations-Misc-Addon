@@ -51,9 +51,11 @@
 
 						_newGroup = createGroup (side _Unit);
 						_Unit joinAs [_newGroup,0];
+						_newGroup setVariable ["GOL_isStatic",false,true];
 						[_Unit,selectRandom ["moveUp_1","moveUp_2","advance","OnTheWay_1"],_Debug] remoteExec ["OKS_Fnc_JBOY_Speak",0]; 
 
 						[_Unit, "PATH"] remoteExec ["enableAI",0];
+						[_Unit] spawn OKS_fnc_Suppressed;
 
 						if(_Debug) then { format ["[EnablePath]Garrison Unit Detached: %1",_Unit] spawn OKS_fnc_LogDebug;};
 					} else {

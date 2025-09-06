@@ -5,31 +5,44 @@
     Returns: true if unit is exposed to outside (not fully enclosed), false otherwise
 */
 
-params ["_unit"];
-
-private _origin = getPosATL _unit;
-_origin set [2, (_origin select 2) + 1.5]; // Rifle height
+params [
+    "_unit",
+    ["_AddDebug",false,[false]]
+];
 
 private _clearCount = 0;
-private _angleStep = 20;
 private _maxDistance = 10;
+private _angleStep = 15;
 
-for "_i" from 0 to 340 step _angleStep do {
-    private _rad = _i * (pi / 180);
-    private _dx = sin _rad;
-    private _dy = cos _rad;
+private _origin = getPosASL _unit;
+_origin set [2, (_origin select 2) + 0.8];
 
+private _nearestBuilding = nearestBuilding _unit;
+if(!isNil "_nearestBuilding") then {
+    _Size = sizeOf (typeOf _nearestBuilding);
+    _Positions = ([_nearestBuilding] call BIS_fnc_buildingPositions);
+    if(!isNil "_Positions") then {
+        _NearestPosition = ([_Positions, [], {_unit distance _x}, "ASCEND"] call BIS_fnc_sortBy) select 0;
+        if(!isNil "_NearestPosition") then {
+            if(_NearestPosition distance _unit < 10) then {
+                _maxDistance = (_Size * 0.6);
+            };
+        };
+    };
+};
+
+for "_i" from 0 to 360 step _angleStep do {
+    _NewPosition = _origin getPos [_maxDistance,_i];
     private _targetPos = [
-        (_origin select 0) + _dx * _maxDistance,
-        (_origin select 1) + _dy * _maxDistance,
-        _origin select 2
+        (_NewPosition select 0),
+        (_NewPosition select 1),
+        0
     ];
-
-    // Optional: Visual debug
-    // drawLine3D [_origin, _targetPos, [1,1,0,1]];
+    _targetPos = AGLToASL _targetPos;
+    _targetPos set [2, (_origin select 2)];
 
     private _hitData = lineIntersectsSurfaces [
-        AGLToASL _origin,
+        _origin,
         AGLToASL _targetPos,
         _unit,
         objNull,
@@ -41,11 +54,22 @@ for "_i" from 0 to 340 step _angleStep do {
 
     if (_hitData isEqualTo []) then {
         _clearCount = _clearCount + 1;
+        if(_AddDebug) then {
+            _Arrow = "Sign_Arrow_Direction_Green_F" createVehicle _targetPos;
+            _Arrow setPosASL _targetPos;
+            _Arrow setDir (_origin getDir _targetPos);
+        };           
+    } else {
+        if(_AddDebug) then {
+            _Arrow = "Sign_Arrow_Direction_F" createVehicle _targetPos;
+            _Arrow setPosASL _targetPos;
+            _Arrow setDir (_origin getDir _targetPos);
+        };     
     };
 };
 
 // Final evaluation
-private _isExposed = _clearCount >= 3;
+private _isExposed = _clearCount >= 5;
 
 if (_isExposed) then {
     systemChat "Exposed: TRUE";
