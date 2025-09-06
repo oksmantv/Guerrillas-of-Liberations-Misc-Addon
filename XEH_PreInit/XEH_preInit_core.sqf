@@ -49,6 +49,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Server_Debug",
+    "CHECKBOX",
+    ["Enable Server DEBUG", "Allows for any debug messages to be broadcasted on the server. If disabled, no messages will show for the server (Local Host if editing)."],
+    "GOL DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_Ambience_Debug",
     "CHECKBOX",
     ["Enable Ambience DEBUG", "Enables debugging for enemy scripts such as the PowerGenerator, Death Score, House Destruction scripts."],

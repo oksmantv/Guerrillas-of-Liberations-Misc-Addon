@@ -188,7 +188,11 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 
 						sleep 1;
 						[_Group, nil, _HuntZone, 0, 30, 0, {}, _WaypointBehaviour] spawn OKS_fnc_HuntRun;
-					};
+					} else {
+						if(_Debug) then {
+							"[HUNT] Max Units Reached - Not Spawning" call OKS_fnc_LogDebug;
+						};
+					}
 				};
 
 				if(typeName _Soldiers == "STRING" || typeName _Soldiers == "ARRAY") then {
@@ -257,6 +261,10 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 						};
 
 						{_CurrentHuntCount pushBackUnique _X} foreach crew _Vehicle;
+					} else {
+						if(_Debug) then {
+							"[HUNT] Max Units Reached - Not Spawning" call OKS_fnc_LogDebug;
+						};
 					};
 					sleep 5;
 					if(!isNil "_Group") then {

@@ -17,7 +17,7 @@ _forceMultiplier = _forceMultiplier * (1 - _percent);
 _responseMultiplier = _responseMultiplier * (1 + _percent);
 
 // Clamp values
-_forceMultiplier = (_forceMultiplier max 1) min 3;
+_forceMultiplier = (_forceMultiplier max 1) min 2;
 _responseMultiplier = (_responseMultiplier max 0.5) min 3;
 
 // Update global variables

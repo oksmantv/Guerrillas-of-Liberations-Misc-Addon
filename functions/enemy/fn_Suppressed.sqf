@@ -53,19 +53,18 @@ _Unit setVariable ["GOL_SuppressedMax",_MaximumTime,true];
 _Unit addEventHandler ["Suppressed", {
 	params ["_unit", "_distance", "_shooter", "_instigator", "_ammoObject", "_ammoClassName", "_ammoConfig"];
 
-    if(!isPlayer _shooter) exitWith {
+    if((!isPlayer _shooter && !isPlayer _instigator) || (_distance < 3)) exitWith {
         // If the shooter is not a player, do not suppress the unit.
     };
 
-    private ["_SuppressedStance"];
-    _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug",false];
-
+    private _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug",false];
     if(_Unit getVariable ["GOL_IsSuppressed",false]) exitWith {
         if(_Suppressed_Debug) then {
             format["[SUPPRESS] %1 is already suppressed. Exiting.",name _Unit] spawn OKS_fnc_LogDebug;
         };
     };
     
+    private ["_SuppressedStance"];
     private _PreviousPosition = _Unit getVariable ["GOL_DefaultStance","up"];
     switch (toLower _PreviousPosition) do {
         case "up": {
