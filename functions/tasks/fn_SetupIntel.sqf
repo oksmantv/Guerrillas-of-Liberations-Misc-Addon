@@ -1,6 +1,6 @@
 /*
-	Example Short: [intel_1,nil,nil,"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello","Special Intel",nil,nil] spawn OKS_fnc_SetupIntel;
-	
+	Example Short: [intel_1,nil,nil,"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello","Special Intel",nil,false] spawn OKS_fnc_SetupIntel;
+
 	Example Detailed:
 	[
 		intel_1, 																// ACE Intel Document Piece (object)
