@@ -1149,7 +1149,7 @@ Edited by OksmanTV & Bluwolf.
         nil,
         nil,
         "Custom Text",
-        "Custom Header"
+        "Custom Header",
         nil,
         false
       ] spawn OKS_fnc_SetupIntel;
