@@ -1122,15 +1122,15 @@ Edited by OksmanTV & Bluwolf.
 
   ### Parameters
 
-  | Name                | Type             | Default | Description                                                                 |
-  |---------------------|------------------|---------|-----------------------------------------------------------------------------|
-  | `_IntelPiece`       | Object           | —       | The variable ID for the intel document.                                     |
-  | `_Target`           | Object, Array    | `nil`   | Target or array of targets.                                                 |
-  | `_Parent`           | String           | `nil`   | Task Id in string for the parent task.                                      |
-  | `_CustomText`       | String           | —       | Formated text using %1 (Asset/Assets) and %2 (Details). \n = New Line       |
-  | `_CustomHeader`     | String           | `nil`   | Custom Intel Name in Map Screen (Enumerates Intel #X if not defined)        |
-  | `_CustomDetails`    | String           | ""      | Description of location or other details. %2 in the CustomText format       |
-
+  | Name                          | Type             | Default | Description                                                                 |
+  |-------------------------------|------------------|---------|-----------------------------------------------------------------------------|
+  | `_IntelPiece`                 | Object           | —       | The variable ID for the intel document.                                     |
+  | `_Target`                     | Object, Array    | `nil`   | Target or array of targets.                                                 |
+  | `_Parent`                     | String           | `nil`   | Task Id in string for the parent task.                                      |
+  | `_CustomText`                 | String           | —       | Formated text using %1 (Asset/Assets) and %2 (Details). \n = New Line       |
+  | `_CustomHeader`               | String           | `nil`   | Custom Intel Name in Map Screen (Enumerates Intel #X if not defined)        |
+  | `_CustomDetails`              | String           | ""      | Description of location or other details. %2 in the CustomText format       |
+  | `_EnableIntelTaskComplete`    | Bool             | true    | Enable Task Intel found task completion upon securing the intel.            |
   ### Example Usage
 
       [
@@ -1139,15 +1139,19 @@ Edited by OksmanTV & Bluwolf.
         "Task_Intel",
         "ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n\n%2",
         "Critical SCUD Intel",
-        "Located in a warehouse at the end of the pier."
+        "Located in a warehouse at the end of the pier.",
+        true
       ] spawn OKS_fnc_SetupIntel;
 
+      // Barebones Text only Intel.
       [
         intel_2,
-        [destroy_1,destroy_2,destroy_3],
-        "Task_Intel",
         nil,
-        nil
+        nil,
+        "Custom Text",
+        "Custom Header"
+        nil,
+        false
       ] spawn OKS_fnc_SetupIntel;
 
 </details>

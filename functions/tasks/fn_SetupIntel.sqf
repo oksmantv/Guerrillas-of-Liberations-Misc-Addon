@@ -1,5 +1,16 @@
 /*
-	[intel_1,destroy_1,"Task_Intel",nil,nil] spawn OKS_fnc_SetupIntel;
+	Example Short: [intel_1,nil,nil,"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello","Special Intel",nil,nil] spawn OKS_fnc_SetupIntel;
+	
+	Example Detailed:
+	[
+		intel_1, 																// ACE Intel Document Piece (object)
+		nil,     																// Target or Target Array (objNull or nil for no target)													
+		nil,																	// Parent Task ID or Array [Task ID, Parent Task ID] (nil for no parent)		
+		"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello",		// Custom Text (use %1 for target/targets list, %2 for custom details)
+		"Special Intel",														// Custom Header (Text when opening intel on map, nil for "Intel #X")
+		nil,																	// Custom Details (Text inserted as %2 in Custom Text, "" for none)
+		nil																		// Enable Intel Task Complete (true/false)	
+	] spawn OKS_fnc_SetupIntel;
 
 	"ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n%2"
 
@@ -9,37 +20,47 @@
 	_CustomText Parameter: %2 is the Custom Details parameter.
 	_CustomHeader is the header text for the intel item. If left nil, it will be set to "Intel #X" where X is the number of intel items created so far + 1.
 	_CustomDetails is the text that will be inserted in the _CustomText parameter as %2.
+
+
+	If you want intel with only text and no target, set _Target to objNull or nil, and set _CustomText to your desired text.
 */
 
-	Params [
-		["_IntelPiece",[],[[],grpNull,objNull]],
-		["_Target",nil,[objNull,[]]],
-		["_Parent",nil,[""]],
-		["_CustomText","ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n\n%2",[""]],
-		["_CustomHeader", nil, [""]],
-		["_CustomDetails", "", [""]]
-	];
-	Private ["_AssetText","_AssetList"];
+Params [
+	["_IntelPiece",[],[[],grpNull,objNull]],
+	["_Target",nil,[objNull,[]]],
+	["_Parent",nil,[""]],
+	["_CustomText","ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n\n%2",[""]],
+	["_CustomHeader",nil, [""]],
+	["_CustomDetails","", [""]],
+	["_EnableIntelTaskComplete",true, [false]]
+];
 
+if(!isServer) exitWith {
+	// Only run on server
+};
+
+Private _AssetText = "";
+Private _AssetList = "";
+
+_AllIntel = missionNamespace getVariable ["GOL_IntelPieces",[]];
+_AllIntel pushBack _IntelPiece;
+missionNamespace setVariable ["GOL_IntelPieces",_AllIntel,true];
+
+_GetKeyPadPosition = {
+	Params ["_Position"];
+	_gridX = floor(_Position select 0 / 100);
+	_gridY = floor(_Position select 1 / 100);
+	_withinGridX = (_Position select 0) % 100;
+	_withinGridY = (_Position select 1) % 100;
+	_keypadX = floor(_withinGridX / 33.33);
+	_keypadY = floor(_withinGridY / 33.33);
+	_keypadNum = 1 + _keypadY * 3 + _keypadX;
+	_keypadNum;
+};
+
+_TaskPosition = getPos _IntelPiece;
+if(!isNil "_Target") then {
 	_IntelPiece setVariable ["GOL_TargetIntel",_Target,true];
-	_AllIntel = missionNamespace getVariable ["GOL_IntelPieces",[]];
-	_AllIntel pushBack _IntelPiece;
-	missionNamespace setVariable ["GOL_IntelPieces",_AllIntel,true];
-
-	_GetKeyPadPosition = {
-		Params ["_Position"];
-		_gridX = floor(_Position select 0 / 100);
-		_gridY = floor(_Position select 1 / 100);
-		_withinGridX = (_Position select 0) % 100;
-		_withinGridY = (_Position select 1) % 100;
-		_keypadX = floor(_withinGridX / 33.33);
-		_keypadY = floor(_withinGridY / 33.33);
-		_keypadNum = 1 + _keypadY * 3 + _keypadX;
-		_keypadNum;
-	};
-
-	_TaskPosition = getPos _IntelPiece;
-
 	if(typeName _Target == "OBJECT") then {
 		if(_target isKindOf "Man") then {
 			private _ManType = "Enemy HVT";
@@ -105,13 +126,16 @@
 			} forEach _Target;
 		};
 	};
+};
 
-	_MergedText = format[_CustomText, _AssetList, _CustomDetails];
-	if(isNil "_CustomHeader") then {
-		_CustomHeader = format["Intel #%1",(count _AllIntel + 1)];
-	};
+_MergedText = format[_CustomText, _AssetList, _CustomDetails];
+if(isNil "_CustomHeader") then {
+	_CustomHeader = format["Intel #%1",(count _AllIntel + 1)];
+};
 
-	[_IntelPiece, _MergedText, _CustomHeader] remoteExec ["ace_intelitems_fnc_setObjectData",2];
+[_IntelPiece, _MergedText, _CustomHeader] call ace_intelitems_fnc_setObjectData;
+
+if(_EnableIntelTaskComplete) then {
 	waitUntil {sleep 10; (_TaskPosition nearEntities ["Man",100]) select {isPlayer _X} isNotEqualTo []};
 	waitUntil {sleep 1; !alive _IntelPiece};
 	private _NearPlayers = (_TaskPosition nearEntities ["Man",15]) select {isPlayer _X};
@@ -160,4 +184,5 @@
 	{
 		deleteVehicle _X;
 	} foreach _FilteredIntels;
+};
 		
