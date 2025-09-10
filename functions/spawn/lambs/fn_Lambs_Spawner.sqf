@@ -23,6 +23,8 @@
 	private _forceMultiplier = missionNamespace getVariable ["GOL_ForceMultiplier", 1];
 	private _ResponseMultiplier = missionNamespace getVariable ["GOL_ResponseMultiplier", 1];
 
+	waitUntil {sleep 1; {_X distance _SpawnPos < _Range} count allPlayers > 0};
+
 	while {true} do {
 
 		if(typeName _ActivatedToDisableSpawner == "OBJECT") then {

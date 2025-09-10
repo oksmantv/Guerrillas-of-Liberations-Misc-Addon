@@ -103,6 +103,7 @@ class CfgFunctions // Defines a function
 			class EdenDestroyTask {};
 			class EdenHostageTask {};
 			class EdenLambsGroup {};
+			class EdenExtractGearFromAI {};
 			class next3DENName {};
 		};
 
@@ -227,6 +228,7 @@ class CfgFunctions // Defines a function
 			class DeleteDeadAndObjects {};
 			class Destroy_Houses {};
 			class PowerGenerator {};
+			class Fire {};
 			class AddGeneratorAction {};
 			class aaAmbient {};
 		};	

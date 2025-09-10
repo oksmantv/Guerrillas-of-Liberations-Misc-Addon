@@ -1,0 +1,13 @@
+name = "Guerrillas of Liberation Misc";
+picture = "data\images\logo_big.paa";          // Large picture for expansion menu (usually 2048x1024)
+logoSmall = "data\images\logo_small.paa";  // Smaller logo (usually 64x64)
+logo = "data\images\logo_medium.paa";             // Main logo shown in the menu (usually 128x128)
+logoOver = "data\images\logo_medium.paa";    // Mouse-over logo (usually 128x128)
+tooltipOwned = "Guerrillas of Liberation Misc by OksmanTV";  // Tooltip on mouse hover
+overview = "This is the Guerrillas of Liberation Misc Arma 3 mod."; // Description in expansions menu (HTML supported)
+author = "OksmanTV";
+actionName = "Visit website";
+action = "https://gol-clan.com";
+dlcColor[] = {0.1, 0.5, 0.9, 1}; // Color for DLC stripes (RGBA)
+hideName = 0;
+hidePicture = 0;

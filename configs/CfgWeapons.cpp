@@ -172,4 +172,387 @@ class CfgWeapons {
         magazines[] = { "gol_magazine_Missile_s750_x4" };
 		scope = 2;
     };	
+
+	class UK3CB_V_Invisible_Plate;
+	class UK3CB_V_Invisible_Plate_Low : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "Invisible Chestrig + Plate (Low)";
+		descriptionShort = "Armor Level I";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "\A3\weapons_f\empty";
+			uniformType = "Default";
+
+			class HitpointsProtectionInfo {
+				class Abdomen {
+					armor = 8;
+					hitpointName = "HitAbdomen";
+					passThrough = 0.3;
+				};
+				class Body {
+					hitpointName = "HitBody";
+					passThrough = 0.3;
+				};
+				class Chest {
+					armor = 8;
+					hitpointName = "HitChest";
+					passThrough = 0.3;
+				};		
+				class Diaphragm {
+					armor = 8;
+					hitpointName = "HitDiaphragm";
+					passThrough = 0.3;
+				};	
+			};
+		};
+	};
+
+	class UK3CB_V_Invisible_Plate_Medium : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "Invisible Chestrig + Plate (Medium)";
+		descriptionShort = "Armor Level II";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "\A3\weapons_f\empty";
+			uniformType = "Default";
+
+			class HitpointsProtectionInfo {
+				class Abdomen {
+					armor = 10;
+					hitpointName = "HitAbdomen";
+					passThrough = 0.3;
+				};
+				class Body {
+					hitpointName = "HitBody";
+					passThrough = 0.3;
+				};
+				class Chest {
+					armor = 10;
+					hitpointName = "HitChest";
+					passThrough = 0.3;
+				};		
+				class Diaphragm {
+					armor = 10;
+					hitpointName = "HitDiaphragm";
+					passThrough = 0.3;
+				};	
+			};
+		};
+	};	
+	
+	class UK3CB_V_Invisible_Plate_High : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "Invisible Chestrig + Plate (High)";
+		descriptionShort = "Armor Level IV";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "\A3\weapons_f\empty";
+			uniformType = "Default";
+
+			class HitpointsProtectionInfo {
+				class Abdomen {
+					armor = 12;
+					hitpointName = "HitAbdomen";
+					passThrough = 0.3;
+				};
+				class Body {
+					hitpointName = "HitBody";
+					passThrough = 0.3;
+				};
+				class Chest {
+					armor = 12;
+					hitpointName = "HitChest";
+					passThrough = 0.3;
+				};		
+				class Diaphragm {
+					armor = 12;
+					hitpointName = "HitDiaphragm";
+					passThrough = 0.3;
+				};	
+			};
+		};
+	};
+
+	class rhs_6b2_GOL : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "62B (GOL)";
+		descriptionShort = "Armor Level 4";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_ca.paa";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2";
+			uniformType = "Default";
+			class HitpointsProtectionInfo {
+				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
+				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
+				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
+				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
+			};
+		};
+	};
+
+	class rhs_6b2_AK_GOL : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "6B2 (6Sh46)";
+		descriptionShort = "Armor Level 4";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_AK_ca.paa";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_AK";
+			uniformType = "Default";
+			class HitpointsProtectionInfo {
+				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
+				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
+				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
+				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
+			};
+		};
+	};
+
+	class rhs_6b2_chicom_GOL : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "6B2 (Chicom)";
+		descriptionShort = "Armor Level 4";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_chicom_ca.paa";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_chicom";
+			uniformType = "Default";
+			class HitpointsProtectionInfo {
+				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
+				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
+				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
+				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
+			};
+		};
+	};
+
+	class rhs_6b2_holster_GOL : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "6B2 (Holster)";
+		descriptionShort = "Armor Level 4";
+		dlc = "RHS_AFRF";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_holster_ca.paa";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_holster";
+			uniformType = "Default";
+			class HitpointsProtectionInfo {
+				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
+				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
+				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
+				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
+			};
+		};
+	};
+
+	class rhs_6b2_lifchik_GOL : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "6B2 (Lifchik)";
+		descriptionShort = "Armor Level 4";
+		dlc = "RHS_AFRF";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_lifchik_ca.paa";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_lichifka";
+			uniformType = "Default";
+			class HitpointsProtectionInfo {
+				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
+				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
+				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
+				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
+			};
+		};
+	};
+
+	class rhs_6b2_RPK_GOL : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "6B2 (RPK)";
+		descriptionShort = "Armor Level 4";
+		dlc = "RHS_AFRF";		
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_RPK_ca.paa";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_RPK";
+			uniformType = "Default";
+			class HitpointsProtectionInfo {
+				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
+				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
+				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
+				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
+			};
+		};
+	};
+
+	class rhs_6b2_SVD_GOL : UK3CB_V_Invisible_Plate {
+		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "6B2 (Sniper)";
+		descriptionShort = "Armor Level 4";
+		dlc = "RHS_AFRF";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_SVD_ca.paa";
+		class ItemInfo {
+			_generalMacro = "VestItem";
+			author = "Bohemia Interactive";
+			containerClass = "Supply180";
+			hiddenSelections[] = {};
+			mass = 80;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			showHolsteredPistol = 0;
+			type = 701;
+			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_SVD";
+			uniformType = "Default";
+			class HitpointsProtectionInfo {
+				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
+				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
+				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
+				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
+			};
+		};
+	};
+
+	class rhs_beret_vdv1;
+	class rhs_beret_vdv2;
+	class rhs_beret_vdv3;
+	class rhs_beret_vdv1_GOL : rhs_beret_vdv1 {
+		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "Beret VDV (GOL)";
+		hiddenSelectionsTextures[] = {"\rhsafrf\addons\rhs_infantry2\gear\head\data\rhs_vdv_beret_co.paa"};
+		descriptionShort = "Armored Beret";
+		dlc = "RHS_AFRF";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\headgear\rhs_beret_vdv1_ca.paa";
+		class ItemInfo {
+			_generalMacro = "HeadgearItem";
+			author = "Bohemia Interactive";
+			allowedSlots[] = {801,901,701,605};
+			hiddenSelections[] = {"Camo1"};
+			mass = 5;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			modelSides[] = {6};
+			type = 605;
+			uniformModel = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_vdv_beret2";
+			class HitpointsProtectionInfo {
+				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
+			};
+		};		
+	};
+	class rhs_beret_vdv2_GOL : rhs_beret_vdv2 {
+		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "Beret VDV (GOL)";
+		hiddenSelectionsTextures[] = {"\rhsafrf\addons\rhs_infantry2\gear\head\data\rhs_vdv_beret2_co.paa"};
+		descriptionShort = "Armored Beret";
+		dlc = "RHS_AFRF";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\headgear\rhs_beret_vdv2_ca.paa";
+		class ItemInfo {
+			_generalMacro = "HeadgearItem";
+			author = "Bohemia Interactive";
+			allowedSlots[] = {801,901,701,605};
+			hiddenSelections[] = {"Camo1"};
+			mass = 5;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			modelSides[] = {6};
+			type = 605;
+			uniformModel = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_vdv_beret";
+			class HitpointsProtectionInfo {
+				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
+			};
+		};		
+	};
+	class rhs_beret_vdv3_GOL : rhs_beret_vdv3 {
+		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "Beret VDV (GOL)";
+		hiddenSelectionsTextures[] = {"\rhsafrf\addons\rhs_infantry2\gear\head\data\rhs_vdv_beret3_co.paa"};
+		descriptionShort = "Armored Beret";
+		dlc = "RHS_AFRF";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\headgear\rhs_beret_vdv3_ca.paa";
+		class ItemInfo {
+			_generalMacro = "HeadgearItem";
+			author = "Bohemia Interactive";
+			allowedSlots[] = {801,901,701,605};
+			hiddenSelections[] = {"Camo1"};
+			mass = 25;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			modelSides[] = {6};
+			type = 605;
+			uniformModel = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_milp_beret";
+			class HitpointsProtectionInfo {
+				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
+			};
+		};		
+	};	
 };

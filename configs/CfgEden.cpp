@@ -16,7 +16,7 @@ class Display3DEN {
                 text = "GOL SCRIPTS";
 				picture = "\OKS_GOL_Misc\data\images\logo.paa";
                 value = 0;
-                items[] = {"GOL_SCRIPTS_SPAWN","GOL_SCRIPTS_TASK"};
+                items[] = {"GOL_SCRIPTS_SPAWN","GOL_SCRIPTS_TASK", "GOL_SCRIPTS_GEAR"};
             };
             class GOL_SCRIPTS_SPAWN {
                 text = "SPAWN";
@@ -75,6 +75,20 @@ class Display3DEN {
                 action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushhunt'] call OKS_fnc_EdenLambsGroup;";
                 conditionShow = "hoverGround"; // Only show when right-clicking terrain
             };  
+
+            class GOL_SCRIPTS_GEAR {
+                text = "GEAR";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_GEAR_EXTRACT"
+                };
+            };
+
+            class GOL_SCRIPTS_GEAR_EXTRACT {
+                text = "Extract Gear from selected AI";
+                action = "[] call OKS_fnc_EdenExtractGearFromAI;";
+                conditionShow = "hoverObject"; // Only show when right-clicking terrain
+            };      
 
             class GOL_SCRIPTS_TASK {
                 text = "TASK";

@@ -5,7 +5,7 @@ Params [
 	"_Helicopter",
 	["_ShouldDisableThermal",false,[false]],
 	["_shouldDisableNVG",false,[false]],
-	["_ShouldAddExtraFlares",true,[true]]
+	["_ShouldAddExtraFlares",false,[true]]
 ];
 
 _Helicopter setVariable ["GW_Disable_autoRemoveCargo",true,true];

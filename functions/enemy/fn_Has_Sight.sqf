@@ -70,11 +70,4 @@ for "_i" from 0 to 360 step _angleStep do {
 
 // Final evaluation
 private _isExposed = _clearCount >= 5;
-
-if (_isExposed) then {
-    systemChat "Exposed: TRUE";
-} else {
-    systemChat "Exposed: FALSE";
-};
-
 _isExposed

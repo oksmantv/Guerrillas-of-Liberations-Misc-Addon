@@ -58,7 +58,21 @@ class CfgPatches
             "OKS_Module_ApplyUnitGear",
             "GOL_FastRope_DZ"
 		};
-		weapons[] = {};
+		weapons[] = {
+            "UK3CB_V_Invisible_Plate_Low",
+            "UK3CB_V_Invisible_Plate_Medium",
+            "UK3CB_V_Invisible_Plate_High",
+            "rhs_6b2_GOL",
+            "rhs_6b2_AK_GOL",
+            "rhs_6b2_chicom_GOL",
+            "rhs_6b2_holster_GOL",
+            "rhs_6b2_lifchik_GOL",
+            "rhs_6b2_RPK_GOL",
+            "rhs_6b2_SVD_GOL",
+            "rhs_beret_vdv1_GOL",
+            "rhs_beret_vdv2_GOL",
+            "rhs_beret_vdv3_GOL"
+        };
 	}
 };
 
@@ -83,7 +97,7 @@ class CfgMods {
 
 class CBA_VERSIONING {
     class GOL_MISC_ADDON {
-        version = "1.1.6";
+        version = "1.1.7";
         server = 1; // Server must have matching version
     };
 };
