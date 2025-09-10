@@ -25,4 +25,5 @@ sleep 1;
 [_Helicopter] spawn OKS_fnc_Helicopter_Protection;
 
 _Helicopter enableSimulationGlobal true;
+sleep 5;
 _Helicopter allowDamage true;

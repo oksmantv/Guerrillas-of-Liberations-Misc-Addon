@@ -103,6 +103,8 @@
 		};
 		case "creep":{
 			{_X setUnitPos "DOWN"; _X setBehaviour "STEALTH"; _X setCombatMode "GREEN"; } foreach units _Group;
+			_Group setBehaviour "STEALTH";
+			_Group setCombatMode "GREEN";	
 			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
 			/* 
 				* Arguments:
@@ -114,36 +116,59 @@
 				* 5: Only Players, default true <BOOL>
 			*/
 			[_Group, _Range, 30, [], [], true] remoteExec ["lambs_wp_fnc_taskCreep",0];
+			sleep 5;
 			{_X setUnitPos "AUTO"; _X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
+			sleep 5;
+			_Group setBehaviour "AWARE";
+			_Group setCombatMode "RED";
 		};
 		case "ambushattack": {		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
+			_Group setBehaviour "STEALTH";
+			_Group setCombatMode "YELLOW";			
 			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
 			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
 			_SADWaypoint = _Group addWaypoint [getPos (([_Group,_Range] call _KnowsAboutTargets) select 1),0];
 			_SADWaypoint setWaypointType "SAD";
+			_Group setBehaviour "AWARE";
+			_Group setCombatMode "RED";
 		};
 
 		case "ambushrush": {		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
+			_Group setBehaviour "STEALTH";
+			_Group setCombatMode "YELLOW";					
 			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
-			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
 			[_Group,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];	
+			sleep 5;
+			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
+			_Group setBehaviour "AWARE";
+			_Group setCombatMode "RED";
 		};
 
 		case "ambushhunt":{		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
+			_Group setBehaviour "STEALTH";
+			_Group setCombatMode "YELLOW";					
 			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
-			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
 			[_Group, _Range, 30, [], [], true,false,false] remoteExec ["lambs_wp_fnc_taskHunt",0];
+			sleep 5;
+			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
+			_Group setBehaviour "AWARE";
+			_Group setCombatMode "RED";
 		};
 
 		case "ambushcqb":{		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; _X disableAI "PATH"; _X setUnitPos "MIDDLE"; } foreach units _Group;
+			_Group setBehaviour "STEALTH";
+			_Group setCombatMode "YELLOW";		
 			[_SpawnPos, nil, units _Group, 15, 1, false, true] call ace_ai_fnc_garrison;
 			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
-			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; _X enableAI "PATH"; _X setUnitPos "AUTO"; } foreach units _Group;
 			[_Group,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];
+			sleep 5;
+			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; _X enableAI "PATH"; _X setUnitPos "AUTO"; } foreach units _Group;
+			_Group setBehaviour "AWARE";
+			_Group setCombatMode "RED";
 		};		
 
 		default {
