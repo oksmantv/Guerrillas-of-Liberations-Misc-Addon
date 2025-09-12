@@ -209,6 +209,8 @@ _Vehicle AddMagazineTurret ["rhs_mag_smokegen",[-1]];
 // 	_Vehicle addMagazineTurret ["rhsusf_mag_L8A3_8",[0,0]];
 // };
 
+[_Vehicle] spawn OKS_fnc_VehicleEmpty;
+
 waitUntil {sleep 1; !(isNil "ace_cargo_fnc_loadItem") && !(isNil "ace_cargo_fnc_removeCargoItem")};
 if(!(_Vehicle getVariable ["GOL_isMHQ",false])) then {
 	["ACE_Wheel", _Vehicle, 4] call ace_cargo_fnc_removeCargoItem;

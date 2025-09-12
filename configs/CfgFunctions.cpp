@@ -109,10 +109,10 @@ class CfgFunctions // Defines a function
 
 		class OKS_Zeus {
 			file = "\OKS_GOL_Misc\functions\zeus";
+			class ApplyUnitGear {};
 			class SetupMechanized {};				
 			class SetupHelicopter {};				
-			class SetupMHQ {};				
-			class ApplyUnitGear {};				
+			class SetupMHQ {};							
 		};				
 
 		class OKS_Enemy {
@@ -151,6 +151,7 @@ class CfgFunctions // Defines a function
 			class MissileWarning {};
 			class MissileDeflect {};				
 			class Retexture {};
+			class VehicleEmpty {};	
 		};	
 		
 		class OKS_Helicopters {
