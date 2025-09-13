@@ -3,12 +3,14 @@ private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug",false];
 
 if(_ConvoyDebug) then {
 	format [
-		"[CONVOY] Checking and adjusting speed for %1; prev=%2; target dispersion=%3m (band: %4–%5m)",
+		"[CONVOY] Adjusting %1; prev=%2; D=%3m | thresholds: DC=%4m, C=%5m, F=%6m, DF=%7m",
 		_Vehicle,
 		_PreviousVehicle,
 		_DispersionInMeters,
+		(_DispersionInMeters * 0.3),
 		(_DispersionInMeters * 0.5),
-		(_DispersionInMeters * 1.5)
+		(_DispersionInMeters * 1.5),
+		(_DispersionInMeters * 2.0)
 	] spawn OKS_fnc_LogDebug;
 };
 
@@ -18,6 +20,7 @@ waitUntil {
 };
 while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 	_SpeedKph = _Vehicle getVariable ["OKS_LimitSpeedBase", 20];
+	
 	// Lead vehicle: keep base speed
 	if (isNull _PreviousVehicle) then {
 		_NewSpeedMps = _SpeedKph / 3.6;
@@ -27,43 +30,69 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 		continue;
 	};
 	_Distance = _Vehicle distance _PreviousVehicle;
-	_LowerLimit = _DispersionInMeters * 0.5; // too close threshold
-	_UpperLimit = _DispersionInMeters * 1.5; // too far threshold
+	_DangerClose = _DispersionInMeters * 0.5;  	 // Very close
+	_Close = _DispersionInMeters * 0.75;       	 // Close
+	_Far = _DispersionInMeters * 1.5;          	 // Far
+	_DangerFar = _DispersionInMeters * 2.0;   	 // Very far
 
-	// Too close: slow down
-	if (_Distance < _LowerLimit) then {
-		_NewSpeed = (_SpeedKph * 0.25);
+	// 1) Very close: strong slow-down (crawl)
+	if (_Distance < _DangerClose) then {
+		_NewSpeed = (_SpeedKph * 0.25) max 5;
 		_NewSpeedMps = _NewSpeed / 3.6;
 		_Vehicle limitSpeed _NewSpeed;
 		_Vehicle forceSpeed _NewSpeedMps;
 		if(_ConvoyDebug) then {
 			format [
-				"[CONVOY] %1 Too close (%2m < %3m) - Decreasing speed to %4 kph from %5 kph",
-				_Vehicle,
-				_Distance,
-				_LowerLimit,
-				_NewSpeed,
-				_SpeedKph
+				"[CONVOY] %1 VERY CLOSE (%2m < %3m) -> %4 kph (base=%5)",
+				_Vehicle, _Distance, _DangerClose, _NewSpeed, _SpeedKph
 			] spawn OKS_fnc_LogDebug;
 		};
 		sleep 0.5;
 		continue;
 	};
 
-	// Too far: speed up
-	if (_Distance > _UpperLimit) then {
+	// 2) Close: moderate slow-down
+	if (_Distance < _Close) then {
+		_NewSpeed = (_SpeedKph * 0.6) max 10;
+		_NewSpeedMps = _NewSpeed / 3.6;
+		_Vehicle limitSpeed _NewSpeed;
+		_Vehicle forceSpeed _NewSpeedMps;
+		if(_ConvoyDebug) then {
+			format [
+				"[CONVOY] %1 CLOSE (%2m < %3m) -> %4 kph (base=%5)",
+				_Vehicle, _Distance, _Close, _NewSpeed, _SpeedKph
+			] spawn OKS_fnc_LogDebug;
+		};
+		sleep 0.5;
+		continue;
+	};
+
+	// 3) Very far: strong catch-up
+	if (_Distance > _DangerFar) then {
+		_NewSpeed = (_SpeedKph * 1.5);
+		_NewSpeedMps = _NewSpeed / 3.6;
+		_Vehicle limitSpeed _NewSpeed;
+		_Vehicle forceSpeed _NewSpeedMps;
+		if(_ConvoyDebug) then {
+			format [
+				"[CONVOY] %1 VERY FAR (%2m > %3m) -> %4 kph (base=%5)",
+				_Vehicle, _Distance, _DangerFar, _NewSpeed, _SpeedKph
+			] spawn OKS_fnc_LogDebug;
+		};
+		sleep 0.5;
+		continue;
+	};
+
+	// 4) Far: modest catch-up
+	if (_Distance > _Far) then {
 		_NewSpeed = (_SpeedKph * 1.25);
 		_NewSpeedMps = _NewSpeed / 3.6;
 		_Vehicle limitSpeed _NewSpeed;
 		_Vehicle forceSpeed _NewSpeedMps;
 		if(_ConvoyDebug) then {
 			format [
-				"[CONVOY] %1 Too far (%2m > %3m) - Increasing speed to %4 kph from %5 kph",
-				_Vehicle,
-				_Distance,
-				_UpperLimit,
-				_NewSpeed,
-				_SpeedKph
+				"[CONVOY] %1 FAR (%2m > %3m) -> %4 kph (base=%5)",
+				_Vehicle, _Distance, _Far, _NewSpeed, _SpeedKph
 			] spawn OKS_fnc_LogDebug;
 		};
 		sleep 0.5;
@@ -77,12 +106,8 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 	_Vehicle forceSpeed _NewSpeedMps;
 	if(_ConvoyDebug) then {
 		format [
-			"[CONVOY] %1 Dispersion acceptable (%2m within %3–%4m) - Maintaining %5 kph",
-			_Vehicle,
-			_Distance,
-			_LowerLimit,
-			_UpperLimit,
-			_NewSpeed
+			"[CONVOY] %1 OK (%2m in %3–%4m) -> maintain %5 kph",
+			_Vehicle, _Distance, _Close, _Far, _NewSpeed
 		] spawn OKS_fnc_LogDebug;
 	};
 	sleep 0.5;

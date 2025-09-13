@@ -306,12 +306,13 @@ class CfgFunctions // Defines a function
 
 		class OKS_Spawn_Convoy {
 			file = "\OKS_GOL_Misc\functions\spawn\convoy";
+			class Convoy_CheckAndAdjustSpeeds {};
 			class Convoy_Reinforce {};
+			class Convoy_SetupHerringBone {};
 			class Convoy_Spawn {};
 			class Convoy_WaitUntilCombat {};
 			class Convoy_WaitUntilCasualties {};
 			class Convoy_WaitUntilTargets {};
-			class Convoy_CheckAndAdjustSpeeds {};
 		};	
 					
 		class OKS_Spawn_AntiAir_IR {

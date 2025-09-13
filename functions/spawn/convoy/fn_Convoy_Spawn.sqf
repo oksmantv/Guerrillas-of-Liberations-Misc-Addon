@@ -36,6 +36,7 @@ Params [
 Private ["_Vehicles","_Classname"];
 private _VehicleArray = [];
 private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug",false];
+private _NextPreferLeft = true;
 
 _VehicleParams Params ["_Count","_Vehicles","_SpeedKph","_DispersionInMeters"];
 _CargoParams Params ["_ShouldHaveCargo","_CargoCount"];
@@ -70,6 +71,7 @@ For "_i" from 0 to (_Count - 1) do {
 	_VehicleArray pushBack _Vehicle;
 
 	private _PreviousVehicle = objNull;
+	private _CargoGroup = grpNull;
 	if(count _VehicleArray > 1) then {
 		_PreviousVehicle = _VehicleArray select (_i - 1);
 	};
@@ -86,14 +88,25 @@ For "_i" from 0 to (_Count - 1) do {
 	_Vehicle forceSpeed _NewSpeedMps;
 
     _Group setBehaviour "CARELESS"; _Group setCombatMode "BLUE";
-
     _WP = _Group addWaypoint [getPos _Waypoint,0]; _WP setWaypointType "MOVE";
-    _EndWP = _Group addWaypoint [getPos _End,1]; _EndWP setWaypointType "MOVE";
+
+	private _FirstVehicle = false;
+	if(_i == 0) then {
+		_FirstVehicle = true;
+	};
+	private _hbResult = [_End, _FirstVehicle, _NextPreferLeft] call OKS_fnc_Convoy_SetupHerringBone; // returns [posATL, isLeft]
+	private _EndPosition = _hbResult select 0;
+	private _ActualIsLeft = _hbResult select 1;
+	// Alternate side for next vehicle based on actual chosen side (handles obstacle flips)
+	_NextPreferLeft = !_ActualIsLeft;
+
+	_EndWP = _Group addWaypoint [_EndPosition,1]; _EndWP setWaypointType "MOVE";
+
 	if(_DeleteAtFinalWP) then {
 		_EndWP setWaypointCompletionRadius 200;
 		_EndWP setWaypointStatements ["true","{ _unit = this; if(_unit != _X) then {deleteVehicle _X}}foreach crew (vehicle this); deleteVehicle (objectParent this); deleteVehicle (this); "];
 	} else {
-		_EndWP setWaypointCompletionRadius 20;
+		_EndWP setWaypointCompletionRadius 2;
 		_EndWP setWaypointStatements ["true","{_x setBehaviour 'COMBAT'; _x setCombatMode 'RED';} foreach units this;"];
 	};
 
@@ -109,12 +122,23 @@ For "_i" from 0 to (_Count - 1) do {
 		{_X setCaptive true; _X setBehaviour "CARELESS"; _X setCombatMode "BLUE"; } foreach units _CargoGroup;
 		_Vehicle setBehaviour "CARELESS"; _Vehicle setCombatMode "BLUE";
 	} else {
-		[_Vehicle,_Group,_CargoGroup] spawn OKS_fnc_Convoy_WaitUntilCombat;
+		[_Vehicle, _Group, _CargoGroup] spawn OKS_fnc_Convoy_WaitUntilCombat;
 	};
 
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _Group;
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _CargoGroup; 
 };
+
+_LeadVehicle = _VehicleArray select 0;
+_LeadVehicle setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
+{
+	deleteVehicle _x
+} forEach (nearestObjects [_End, ["Land_ClutterCutter_large_F"], 500] select {
+	_x getVariable ["GOL_Convoy_Cutter", false]
+});
+{
+	deleteVehicle _X
+} foreach [_Spawn, _Waypoint, _End];
 
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilTargets;

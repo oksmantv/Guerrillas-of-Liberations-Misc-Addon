@@ -9,9 +9,9 @@ private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug",false];
 Params ["_Vehicle","_Crew","_CargoGroup"];
 waitUntil {
 	sleep 0.5;
-	{behaviour _X isEqualTo "COMBAT"} count units _Crew > 0 || 
-	{behaviour _X isEqualTo "COMBAT"} count units _Cargo > 0
-	
+	{behaviour _X isEqualTo "COMBAT"} count units _Crew > 0
+	||
+	{behaviour _X isEqualTo "COMBAT"} count units _CargoGroup > 0
 };
 _CargoGroup setBehaviour "COMBAT";
 _Crew setBehaviour "COMBAT";
@@ -25,7 +25,7 @@ _Vehicle setFuel 0;
 _Vehicle setVehicleLock "UNLOCKED";
 [_CargoGroup,_Vehicle] spawn _DismountCode;
 
-if(((!isNull gunner _Vehicle) || (_Vehicle emptyPositions "gunner"> 0)) || ((!isNull commander _Vehicle) || (_Vehicle emptyPositions "commander"> 0))) then {
+if(((!isNull gunner _Vehicle) || (_Vehicle emptyPositions "gunner" > 0)) || ((!isNull commander _Vehicle) || (_Vehicle emptyPositions "commander" > 0))) then {
 	if(_ConvoyDebug) then {
 		format ["[CONVOY] Vehicle is armed, will apply hunt."] spawn OKS_fnc_LogDebug;
 	};

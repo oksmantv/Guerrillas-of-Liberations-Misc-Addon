@@ -37,6 +37,7 @@ Params [
 	["_ShouldCreateTask",true,[false]],
 	["_ShouldResupply",true,[true]]
 ];
+
 _CargoArray Params ["_ShouldHaveCargo","_Soldiers"];
 _VehicleArray Params ["_Count","_Vehicles","_SpeedMeterPerSecond","_DispersionInMeters"];
 _ConvoyArray = [];

@@ -20,11 +20,11 @@ Private ["_Roads","_FirstPairRoads","_SecondPairRoads","_ThirdPairRoads","_Fourt
 	//if(count _FirstPairRoads == 1) exitWith {SystemChat "First Connection is only 1. Exiting.."; false};
 
 	//SystemChat str count _FirstPairRoads;
-	{ if(!(isNull _X)) then {_Roads pushBackUnique _X}}foreach _FirstPairRoads;
+	{ if(!(isNull _X)) then {_Roads pushBackUnique _X} }foreach _FirstPairRoads;
 
 	if(count _FirstPairRoads >= 1) then {
 	  {{_SecondPairRoads pushBackUnique _X} foreach (roadsConnectedTo _X)} foreach _FirstPairRoads;
-	  { if(!(isNull _X)) then {_Roads pushBackUnique _X}} foreach _SecondPairRoads;
+	  { if(!(isNull _X)) then {_Roads pushBackUnique _X} } foreach _SecondPairRoads;
 	};
 
 	if(count _SecondPairRoads >= 1) then {
