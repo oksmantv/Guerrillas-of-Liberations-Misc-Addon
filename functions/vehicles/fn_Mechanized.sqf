@@ -131,9 +131,9 @@ if(_ServiceStation) then {
 } else {
 	{
 		_fuelCan = "FlexibleTank_01_forest_F" createVehicle [0,0,0];
-		[_fuelCan,1000] call ace_refuel_fnc_makeJerryCan;
+		[_fuelCan,1000] call ace_refuel_fnc_setFuel;
 		[_fuelCan,_Vehicle,true] call ace_cargo_fnc_loadItem;
-	} foreach [1,2,3];
+	} foreach [1,2];
 };
 
 if(_Vehicle getVariable ["GOL_isMHQ",false]) then {

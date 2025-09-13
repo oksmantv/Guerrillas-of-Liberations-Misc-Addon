@@ -26,10 +26,16 @@ if(_shouldDisableNVG) then {
 _Helicopter setVariable ["gw_gear_blackList",true,true];
 if(_Debug_Variable) then { "Setting Cargo Space" spawn OKS_fnc_LogDebug; };
 waitUntil {sleep 1; !(isNil "ace_cargo_fnc_setSpace")};
-[_Helicopter, 30] call ace_cargo_fnc_setSpace;
+[_Helicopter, 40] call ace_cargo_fnc_setSpace;
 if(getText (configFile >> "CfgVehicles" >> typeOf _Helicopter >> "ace_fastroping_friesType") isNotEqualTo "") then {
 	[_Helicopter] call ace_fastroping_fnc_equipFRIES;
 };
+
+{
+	_fuelCan = "FlexibleTank_01_forest_F" createVehicle [0,0,0];
+	[_fuelCan,1000] call ace_refuel_fnc_setFuel;
+	[_fuelCan,_Helicopter,true] call ace_cargo_fnc_loadItem;
+} foreach [1,2];
 
 _Helicopter setVariable ["ace_repair_canRepair", 1, true];
 _Helicopter setVariable ["ace_isRepairFacility", 1, true];

@@ -53,7 +53,7 @@ _Unit setVariable ["GOL_SuppressedMax",_MaximumTime,true];
 _Unit addEventHandler ["Suppressed", {
 	params ["_unit", "_distance", "_shooter", "_instigator", "_ammoObject", "_ammoClassName", "_ammoConfig"];
 
-    if((!isPlayer _shooter && !isPlayer _instigator) || (_distance < 3)) exitWith {
+    if((!isPlayer _shooter && !isPlayer _instigator) || (_distance < 5)) exitWith {
         // If the shooter is not a player, do not suppress the unit.
     };
 
