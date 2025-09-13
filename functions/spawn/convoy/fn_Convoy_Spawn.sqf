@@ -26,230 +26,95 @@ Params [
 	["_Waypoint",objNull,[objNull]],
 	["_End",objNull,[objNull]],
 	["_Side",east,[sideUnknown]],
-	["_VehicleArray",[3,["UK3CB_ARD_O_BMP1"],6,25],[[]]],
-	["_CargoArray",[true,4],[[]]],
+	["_VehicleParams",[3,["UK3CB_ARD_O_BMP1"],6,25],[[]]],
+	["_CargoParams",[true,4],[[]]],
 	["_ConvoyArray",[],[[]]],
 	["_ForcedCareless",false,[false]],
 	["_DeleteAtFinalWP",false,[false]]
 ];
-_VehicleArray Params ["_Count","_Vehicles","_SpeedMeterPerSecond","_DispersionInMeters"];
-_CargoArray Params ["_ShouldHaveCargo","_Soldiers"];
 
-Private ["_crewClass","_Units","_Leader","_Vehicles","_DismountCode","_Classname"];
-private _Debug = missionNamespace getVariable ["GOL_Convoy_Debug",false];
+Private ["_Vehicles","_Classname"];
+private _VehicleArray = [];
+private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug",false];
 
+_VehicleParams Params ["_Count","_Vehicles","_SpeedKph","_DispersionInMeters"];
+_CargoParams Params ["_ShouldHaveCargo","_CargoCount"];
 if(isNil "_ConvoyArray") then {
 	_ConvoyArray = [];
 };
-private _WaitUntilCombat = {
 
-	private _DismountCode = {
-		Params ["_Group","_Vehicle"];
-		_Group leaveVehicle _Vehicle;
-		{unassignVehicle _X; doGetOut _X;} foreach units _Group;
-		[_Group,1500,30,[],[],false] spawn lambs_wp_fnc_taskRush;
+For "_i" from 0 to (_Count - 1) do {
+	waitUntil {
+		sleep 1;
+		if(_ConvoyDebug) then {
+			"[CONVOY] Waiting for clearance near _Spawn" spawn OKS_fnc_LogDebug;
+		};
+		(getPos _Spawn nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []
 	};
-
-	Params ["_Vehicle","_Crew","_CargoGroup","_Debug"];
-
-    waitUntil {sleep 0.5; {behaviour _X isEqualTo "COMBAT"} count units _Crew > 0};
-	_CargoGroup setBehaviour "COMBAT";
-	_Crew setBehaviour "COMBAT";
-	_CargoGroup setCombatMode "RED"; 
-	_Crew setCombatMode "RED"; 
-    if(_Debug) then {systemChat format [systemChat "Ambush Detected. Halting Convoy.."]};
-    _Vehicle forceSpeed 0;
-    _Vehicle setFuel 0;
-    _Vehicle setVehicleLock "UNLOCKED";
-    [_CargoGroup,_Vehicle] spawn _DismountCode;
-
-    if(((!isNull gunner _Vehicle) || (_Vehicle emptyPositions "gunner"> 0)) || ((!isNull commander _Vehicle) || (_Vehicle emptyPositions "commander"> 0))) then {
-    	if(_Debug) then {systemChat format ["Vehicle is armed, will apply hunt."]};
-    	sleep (30 + (Random 30));
-    	_vehicle forceSpeed -1;
-    	_Vehicle setFuel 1;
-
-		if(_Debug) then {systemChat format ["Hunt Applied to %1 in %2 - %3",_Crew,_Vehicle,[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName]};
-    	[_Crew, 1500, 60, [], [], false] spawn lambs_wp_fnc_taskHunt;
-    } else {
-    	if(_Debug) then {systemChat format ["Vehicle is unarmed, dismount and rush."]};
-    	[_Crew,_Vehicle] spawn _DismountCode;
-    };
-};
-
-For "_i" from 1 to _Count do {
-
-	Switch (_Side) do
-	{
-		case blufor:	// BLUFOR settings
-		{
-			_crewClass = "B_crew_F";
-			_Leader = "B_soldier_TL_F";
-			_Units = [
-				"B_Soldier_A_F",
-				"B_Soldier_AR_F",
-				"B_Soldier_AR_F",
-				"B_medic_F",
-				"B_medic_F",
-				"B_Soldier_GL_F",
-				"B_HeavyGunner_F",
-				"B_soldier_M_F",
-				"B_Soldier_F",
-				"B_Soldier_F",
-				"B_Soldier_F",
-				"B_Soldier_LAT_F"
-			];
-		};
-		case opfor:	// BLUFOR settings
-		{
-			_crewClass = "O_crew_F";
-			_Leader = "O_soldier_TL_F";
-			_Units = [
-				"O_Soldier_A_F",
-				"O_Soldier_AR_F",
-				"O_Soldier_AR_F",
-				"O_medic_F",
-				"O_medic_F",
-				"O_Soldier_GL_F",
-				"O_HeavyGunner_F",
-				"O_soldier_M_F",
-				"O_Soldier_F",
-				"O_Soldier_F",
-				"O_Soldier_F",
-				"O_Soldier_LAT_F"
-			];
-		};
-		case independent:	// BLUFOR settings
-		{
-			_crewClass = "I_crew_F";
-			_Leader = "I_soldier_TL_F";
-			_Units = [
-				"I_Soldier_A_F",
-				"I_Soldier_AR_F",
-				"I_Soldier_AR_F",
-				"I_medic_F",
-				"I_medic_F",
-				"I_Soldier_GL_F",
-				"I_HeavyGunner_F",
-				"I_soldier_M_F",
-				"I_Soldier_F",
-				"I_Soldier_F",
-				"I_Soldier_F",
-				"I_Soldier_LAT_F"
-			];
-		};
-		// DO NOT EDIT ANYTHING BELOW \\
-		default
-		{
-			_Units = "";
-		};
+	if(_ConvoyDebug) then {
+		"[CONVOY] Spawning Vehicle.." spawn OKS_fnc_LogDebug;
 	};
-
-
-	waitUntil {sleep 1; if(_Debug) then {systemChat "Waiting for clearance near _Spawn"}; (getPos _Spawn nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []};
-	if(_Debug) then {systemChat format ["Spawning Vehicle.."]};
 
 	if(_Vehicles isNotEqualTo []) then {
 		_Classname = _Vehicles select 0;
 		_Vehicles deleteAt 0;
-		if(_Debug) then{
-			systemChat str [_Classname,_Vehicles];
+		if(_ConvoyDebug) then{
+			format ["[CONVOY] Vehicle Class: %1 Remaining Vehicles: %2",_Classname,_Vehicles] spawn OKS_fnc_LogDebug;
 		}		
 	};
 	_Vehicle = CreateVehicle [_Classname,getPos _Spawn];
 	_Vehicle setVariable ["OKS_ForceSpeedActive", true, true];
+	_Vehicle setVariable ["OKS_LimitSpeedBase", _SpeedKph, true];
 	_Vehicle setDir (getDir _Spawn);
 	_Vehicle setVehicleLock "LOCKED";
+	_VehicleArray pushBack _Vehicle;
 
-    _Group = createGroup _Side;
-    _Group setVariable ["acex_headless_blacklist",true,true];
-	_Group setVariable ["lambs_danger_disableAI", true,true];
-
-    if(_Debug) then {systemChat format ["Group: %3 Side: %2 - %1 Class Selected",_crewClass,_Side,_Group]};
-    if(_Vehicle emptyPositions "commander" > 0) then {
-        if(_Debug) then { systemChat "Creating Commander"};
-        _Commander = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
-        _Commander setRank "SERGEANT";
-        _Commander moveinCommander _Vehicle;
-    };
-    if(_Vehicle emptyPositions "gunner" > 0) then {
-        if(_Debug) then { systemChat "Creating Gunner"};
-        _Gunner = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
-        _Gunner setRank "CORPORAL";
-        _Gunner moveinGunner _Vehicle;
-    };
-    if(_Vehicle emptyPositions "driver" > 0) then {
-        if(_Debug) then { systemChat "Creating Driver"};
-        _Driver = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
-        _Driver setRank "PRIVATE";
-        _Driver moveinDriver _Vehicle;
-    };
-    _Vehicle forceSpeed _SpeedMeterPerSecond;
-
-    _Group setBehaviour "CARELESS";
-	_Group setCombatMode "BLUE";
-    _WP = _Group addWaypoint [getPos _Waypoint,0];
-    _WP setWaypointType "MOVE";
-
-	_CargoGroup = createGroup [_Side,true];
-	_CargoGroup setVariable ["acex_headless_blacklist",true,true];
-	Private ["_Position"];
-	if(_DeleteAtFinalWP) then {
-		_Position = getPos _End;
-	} else {
-		_Position = _End getPos [25+(random 15),round(random 360)];
+	private _PreviousVehicle = objNull;
+	if(count _VehicleArray > 1) then {
+		_PreviousVehicle = _VehicleArray select (_i - 1);
 	};
-    Private ["_EndWP"];
-    _EndWP = _Group addWaypoint [_Position,1];
-    _EndWP setWaypointType "MOVE";
+	[_Vehicle, _PreviousVehicle, _SpeedKph, _DispersionInMeters] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
+
+    _Group = createGroup [_Side,true];
+	_CargoGroup = createGroup [_Side,true];
+    if(_ConvoyDebug) then {
+		format ["[CONVOY] Group: %1 Side: %2",_Group,_Side] spawn OKS_fnc_LogDebug;
+	};
+	_Group = [_Vehicle,_Side, 0, 0, true] call OKS_fnc_AddVehicleCrew;
+    _Vehicle limitSpeed _SpeedKph;
+	_NewSpeedMps = _SpeedKph / 3.6;
+	_Vehicle forceSpeed _NewSpeedMps;
+
+    _Group setBehaviour "CARELESS"; _Group setCombatMode "BLUE";
+
+    _WP = _Group addWaypoint [getPos _Waypoint,0]; _WP setWaypointType "MOVE";
+    _EndWP = _Group addWaypoint [getPos _End,1]; _EndWP setWaypointType "MOVE";
 	if(_DeleteAtFinalWP) then {
 		_EndWP setWaypointCompletionRadius 200;
 		_EndWP setWaypointStatements ["true","{ _unit = this; if(_unit != _X) then {deleteVehicle _X}}foreach crew (vehicle this); deleteVehicle (objectParent this); deleteVehicle (this); "];
+	} else {
+		_EndWP setWaypointCompletionRadius 20;
+		_EndWP setWaypointStatements ["true","{_x setBehaviour 'COMBAT'; _x setCombatMode 'RED';} foreach units this;"];
 	};
 
-    if(_ShouldHaveCargo && ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount) >= 4) then {
-		_CargoSeats = ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount);
-		if(_CargoSeats > _Soldiers) then { _CargoSeats = _Soldiers };
-			/// Create Leader
-			_Unit = _CargoGroup CreateUnit [_Leader, [0,0,0], [], 0, "NONE"];
-			_Unit setRank "SERGEANT";
-			_Unit MoveInCargo _Vehicle;
-			_CargoGroup selectLeader _Unit;
-		for "_i" from 1 to (_CargoSeats - 1) do
-		{
-			Private "_Unit";
-			_Unit = _CargoGroup CreateUnit [(_Units call BIS_FNC_selectRandom), [0,0,0], [], 0, "NONE"];
-			_Unit setRank "PRIVATE";
-			_Unit MoveInCargo _Vehicle;
-		};
+    if(_ShouldHaveCargo) then {
+		_CargoGroup = [_Vehicle, _Side, -1, _CargoCount, true] call OKS_fnc_AddVehicleCrew;
     };
-	_CargoGroup setBehaviour "CARELESS";
-	_CargoGroup setCombatMode "BLUE";
-    _ConvoyArray pushBackUnique _Group;
-	_ConvoyArray pushBackUnique _CargoGroup;
+	_CargoGroup setBehaviour "CARELESS"; _CargoGroup setCombatMode "BLUE";
+    _ConvoyArray pushBackUnique _Group; _ConvoyArray pushBackUnique _CargoGroup;
+
 	if(_ForcedCareless) then {
 		_Vehicle setCaptive true;
 		{_X setCaptive true; _X setBehaviour "CARELESS"; _X setCombatMode "BLUE"; } foreach units _Group;
 		{_X setCaptive true; _X setBehaviour "CARELESS"; _X setCombatMode "BLUE"; } foreach units _CargoGroup;
 		_Vehicle setBehaviour "CARELESS"; _Vehicle setCombatMode "BLUE";
-	};	
-	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _CargoGroup;
+	} else {
+		[_Vehicle,_Group,_CargoGroup] spawn OKS_fnc_Convoy_WaitUntilCombat;
+	};
+
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _Group;
-
-	if (!(_ForcedCareless)) then {
-		[_Vehicle,_Group,_CargoGroup,_Debug] spawn _WaitUntilCombat;
-	};   
+	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _CargoGroup; 
 };
 
-waitUntil{
-	sleep 2;
-	{
-		{isTouchingGround (vehicle _X) && isPlayer _X } count ((leader _X) targets [true, 200, [], 3]) > 0;
-	} count _ConvoyArray > 0
-	||
-	{
-		{(vehicle _X) isKindOf "AIR" && isPlayer _X} count ((leader _X) targets [true, 300, [], 3]) > 0;
-	} count _ConvoyArray > 0
-};
-if(_Debug) then {SystemChat "Detected Enemy. Enabling Combat."};
-{_X setBehaviour "COMBAT"; _X setCombatMode "RED"; } foreach _ConvoyArray;
+[_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
+[_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
