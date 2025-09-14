@@ -675,21 +675,21 @@ class CfgVehicles {
 
 	class O_SAM_System_04_F;
     class GOL_O_SAM_System_04_F : O_SAM_System_04_F {
-		displayName = "S-400 (Disabled ACE Guidance)"
+	displayName = "S-400 (Disabled ACE Guidance)";
         weapons[] = {"gol_weapon_s750Launcher"}; // Replace default weapon
         magazines[] = {"gol_magazine_Missile_s750_x4"}; // Replace default magazine
     };
 
 	class I_E_SAM_System_03_F;
     class GOL_I_E_SAM_System_03_F : I_E_SAM_System_03_F {
-		displayName = "MIM-104 Patriot (Disabled ACE Guidance)"
+	displayName = "MIM-104 Patriot (Disabled ACE Guidance)";
         weapons[] = {"gol_weapon_s750Launcher"}; // Replace default weapon
         magazines[] = {"gol_magazine_Missile_s750_x4"}; // Replace default magazine
     };	
 
 	class B_SAM_System_03_F;
     class GOL_B_SAM_System_03_F : B_SAM_System_03_F {
-		displayName = "MIM-104 Patriot (Disabled ACE Guidance)"
+	displayName = "MIM-104 Patriot (Disabled ACE Guidance)";
         weapons[] = {"gol_weapon_s750Launcher"}; // Replace default weapon
         magazines[] = {"gol_magazine_Missile_s750_x4"}; // Replace default magazine
     };	

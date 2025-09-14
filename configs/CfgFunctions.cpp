@@ -43,14 +43,14 @@ class CfgFunctions // Defines a function
 			class LogDebug {};
 			class FlagTeleport {};
 			class SetMissionComplete {};
-			class AddKilledScore {};	
-			class AddCivilianKilled {};				
-			class IncreaseMultiplier {};				
-			class DecreaseMultiplier {};				
-			class Ranks {};				
-			class RespawnHandler {};				
-			class DisableAPS {};		
-		};			
+			class AddKilledScore {};
+			class AddCivilianKilled {};
+			class IncreaseMultiplier {};
+			class DecreaseMultiplier {};
+			class Ranks {};
+			class RespawnHandler {};
+			class DisableAPS {};
+		};
 
 		class OKS_Supply {
 			file = "\OKS_GOL_Misc\functions\supply";
@@ -306,15 +306,39 @@ class CfgFunctions // Defines a function
 
 		class OKS_Spawn_Convoy {
 			file = "\OKS_GOL_Misc\functions\spawn\convoy";
-			class Convoy_CheckAndAdjustSpeeds {};
 			class Convoy_Reinforce {};
-			class Convoy_SetupHerringBone {};
 			class Convoy_Spawn {};
-			class Convoy_WaitUntilAirTarget {};
+
+		};
+
+		class OKS_Spawn_Convoy_ConvoyHelper {
+			file = "\OKS_GOL_Misc\functions\spawn\convoy\helper";
+			class Convoy_AssignParkingAtEnd {};
+			class Convoy_CatchUpBooster {};
+			class Convoy_CheckAndAdjustSpeeds {};
+			class Convoy_EndParking_AssignIndices {};
+			class Convoy_InitIntendedSlots {};
+			class Convoy_LeadArrivalMonitor {};
+			class Convoy_MonitorReserveActivation {};
+			class Convoy_PlaceDebugObject {};
+			class Convoy_SetupHerringBone {};
 			class Convoy_WaitUntilCasualties {};
 			class Convoy_WaitUntilCombat {};
 			class Convoy_WaitUntilTargets {};
-		};	
+		};
+		
+		class OKS_Spawn_Convoy_AirDefence {
+			file = "\OKS_GOL_Misc\functions\spawn\convoy\airdefence";
+			class Convoy_AAMergeGapHandler {};
+			class Convoy_EnsureMinRoadDistance {};
+			class Convoy_FindEnemyAirTargets {};
+			class Convoy_IsEnemySide {};
+			class Convoy_IsClearOfObstacles {};
+			class Convoy_IsOffRoad {};
+			class Convoy_IsFlatTerrain {};
+			class Convoy_SelectAAVehicle {};
+			class Convoy_WaitUntilAirTarget {};
+		};
 					
 		class OKS_Spawn_AntiAir_IR {
 			file = "\OKS_GOL_Misc\functions\spawn\antiair_ir";

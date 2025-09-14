@@ -20,6 +20,31 @@ waitUntil {
 	{behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0
 };
 while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
+	// Calculate waypoint and distance to waypoint for stuck vehicle logic
+	private _group = group _Vehicle;
+	private _wpIdx = currentWaypoint _group;
+	private _wpPos = waypointPosition [_group, _wpIdx];
+	private _distToWp = _Vehicle distance _wpPos;
+
+	// Stuck vehicle detection and nudge using sendSimpleCommand
+	private _stuckTimer = _Vehicle getVariable ["OKS_Convoy_StuckTimer", -1];
+	if (_distToWp <= 20) then {
+		if ((vectorMagnitude (velocity _Vehicle)) < 0.5) then {
+			if (_stuckTimer < 0) then { _stuckTimer = time; _Vehicle setVariable ["OKS_Convoy_StuckTimer", _stuckTimer]; };
+			if ((time - _stuckTimer) > 2) then {
+				_Vehicle sendSimpleCommand "STOPTURNING";
+				_Vehicle sendSimpleCommand "FORWARD";
+				if (_ConvoyDebug) then {
+					format ["[CONVOY] Nudge: %1 stuck near WP, issued sendSimpleCommand FORWARD", _Vehicle] spawn OKS_fnc_LogDebug;
+				};
+				_Vehicle setVariable ["OKS_Convoy_StuckTimer", time];
+			};
+		} else {
+			_Vehicle setVariable ["OKS_Convoy_StuckTimer", -1];
+		};
+	} else {
+		_Vehicle setVariable ["OKS_Convoy_StuckTimer", -1];
+	};
 	private _SpeedKph = _Vehicle getVariable ["OKS_LimitSpeedBase", 20];
 
 	// Rebind leader if the current one is AA-engaging or disabled/cannot move
@@ -44,9 +69,9 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 							&& {!(_cand getVariable ["OKS_Convoy_AAEngaging", false])}
 						) exitWith { _newLeader = _cand };
 					};
-						if (!isNull _newLeader) then {
+					if (!isNull _newLeader) then {
 						if (_ConvoyDebug) then {
-								private _reason = if (_engagingAA) then {"AA-engaging"} else {"disabled"};
+							private _reason = if (_engagingAA) then {"AA-engaging"} else {"disabled"};
 							format [
 								"[CONVOY] Rebinding leader for %1 -> %2 (reason: %3)",
 								_Vehicle,
@@ -55,6 +80,22 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 							] spawn OKS_fnc_LogDebug;
 						};
 						_leader = _newLeader; _PreviousVehicle = _newLeader;
+
+						// PATCH: Reassign the follower of the AA vehicle to follow the AA vehicle's previous leader
+						// Only applies if the disabled/AA vehicle is not the lead vehicle
+						if (_idx < (count _arr) - 1) then {
+							private _follower = _arr select (_idx + 1);
+							if (!isNull _follower) then {
+								_follower setVariable ["OKS_Convoy_Leader", _newLeader, true];
+								if (_ConvoyDebug) then {
+									format [
+										"[CONVOY] Follower %1 now follows %2 after AA/disabled event",
+										_follower,
+										_newLeader
+									] spawn OKS_fnc_LogDebug;
+								};
+							};
+						};
 					};
 				};
 			};
@@ -69,8 +110,33 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 		sleep 1;
 		continue;
 	};
+
+	// PATCH: Dynamically increase dispersion near waypoints, reset when waypoint is cleared (per-vehicle variable)
+	private _group = group _Vehicle;
+	private _wpIdx = currentWaypoint _group;
+	private _wpPos = waypointPosition [_group, _wpIdx];
+	private _distToWp = _Vehicle distance _wpPos;
+	private _dispMod = 1;
+	private _dispersionOriginal = _DispersionInMeters;
+	private _lastWpIdx = _Vehicle getVariable ["OKS_Convoy_LastWaypointIdx", _wpIdx];
+	if (_distToWp <= 200) then { _dispMod = 1.5; };
+	// Reset dispersion when waypoint index changes (waypoint cleared)
+	if (_wpIdx != _lastWpIdx) then {
+		_dispMod = 1;
+		_Vehicle setVariable ["OKS_Convoy_LastWaypointIdx", _wpIdx];
+		if (_ConvoyDebug) then {
+			format ["[CONVOY] %1 cleared WP, dispersion reset to %2m", _Vehicle, _dispersionOriginal] spawn OKS_fnc_LogDebug;
+		};
+	} else {
+		_Vehicle setVariable ["OKS_Convoy_LastWaypointIdx", _wpIdx];
+	};
+	private _DispersionInMeters = _dispersionOriginal * _dispMod;
+	if (_ConvoyDebug && {_dispMod > 1}) then {
+		format ["[CONVOY] %1 near WP (%2m): dispersion increased to %3m", _Vehicle, _distToWp, _DispersionInMeters] spawn OKS_fnc_LogDebug;
+	};
+
 	private _Distance = _Vehicle distance _leader;
-	private _DangerClose = _DispersionInMeters * 0.5;   	// Very close
+	private _DangerClose = _DispersionInMeters * 0.5;    	// Very close
 	private _Close = _DispersionInMeters * 0.75;       	// Close
 	private _Far = _DispersionInMeters * 1.5;          	// Far
 	private _DangerFar = _DispersionInMeters * 2.0;    	// Very far

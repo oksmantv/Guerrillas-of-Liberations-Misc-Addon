@@ -75,30 +75,10 @@ For "_i" from 0 to (_Count - 1) do {
 	if(count _VehicleArray > 1) then {
 		_PreviousVehicle = _VehicleArray select (_i - 1);
 	};
-	[_Vehicle, _PreviousVehicle, _SpeedKph, _DispersionInMeters] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
+	[_Vehicle, _PreviousVehicle, _DispersionInMeters] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
 
-	// Catch-up booster: if this vehicle falls behind its leader by more than 1.5x dispersion,
-	// temporarily uncap speed until within dispersion range again.
 	if (!isNull _PreviousVehicle) then {
-		[_Vehicle, _PreviousVehicle, _SpeedKph, _DispersionInMeters] spawn {
-			params ["_veh","_prev","_baseKph","_disp"];
-			private _boosting = false;
-			while { alive _veh && {canMove _veh} } do {
-				if (isNull _prev || {!alive _prev}) exitWith {};
-				private _dist = _veh distance _prev;
-				private _thresh = (_disp max 10) * 1.5;
-				if (!_boosting && {_dist > _thresh}) then { _boosting = true; };
-				if (_boosting && {_dist <= _disp}) then { _boosting = false; };
-				if (_boosting) then {
-					// Let it run free to catch up
-					_veh limitSpeed 999; _veh forceSpeed -1;
-				} else {
-					// Hand control back to normal speed control
-					_veh forceSpeed -1; _veh limitSpeed (_baseKph max 10);
-				};
-				sleep 0.5;
-			};
-		};
+		[_Vehicle, _PreviousVehicle, _SpeedKph, _DispersionInMeters] spawn OKS_fnc_Convoy_CatchUpBooster;
 	};
 
     _Group = createGroup [_Side,true];
@@ -106,7 +86,14 @@ For "_i" from 0 to (_Count - 1) do {
     if(_ConvoyDebug) then {
 		format ["[CONVOY] Group: %1 Side: %2",_Group,_Side] spawn OKS_fnc_LogDebug;
 	};
-	_Group = [_Vehicle,_Side, 0, 0, true] call OKS_fnc_AddVehicleCrew;
+
+	private _crewSlots = 0;
+	if ((_Vehicle emptyPositions "driver" > 0) && (_Vehicle emptyPositions "gunner" == 0) && (_Vehicle emptyPositions "commander" == 0)) then {
+		_crewSlots = 1;
+	};
+
+	private _addCargoCommander = (_crewSlots == 1);
+	_Group = [_Vehicle, _Side, _crewSlots, 0, true, _addCargoCommander] call OKS_fnc_AddVehicleCrew;
     _Vehicle limitSpeed _SpeedKph;
 	_NewSpeedMps = _SpeedKph / 3.6;
 	_Vehicle forceSpeed _NewSpeedMps;
@@ -118,10 +105,9 @@ For "_i" from 0 to (_Count - 1) do {
 	if(_i == 0) then {
 		_FirstVehicle = true;
 	};
-	private _hbResult = [_End, _FirstVehicle, _NextPreferLeft] call OKS_fnc_Convoy_SetupHerringBone; // returns [posATL, isLeft]
+	private _hbResult = [_End, _FirstVehicle, _NextPreferLeft] call OKS_fnc_Convoy_SetupHerringBone;
 	private _EndPosition = _hbResult select 0;
 	private _ActualIsLeft = _hbResult select 1;
-	// Alternate side for next vehicle based on actual chosen side (handles obstacle flips)
 	_NextPreferLeft = !_ActualIsLeft;
 
 	_EndWP = _Group addWaypoint [_EndPosition,1]; _EndWP setWaypointType "MOVE";
@@ -153,22 +139,30 @@ For "_i" from 0 to (_Count - 1) do {
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _CargoGroup; 
 };
 
+
 _LeadVehicle = _VehicleArray select 0;
 _LeadVehicle setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
-// Store a pointer to the lead vehicle on every convoy vehicle for quick access later
 {
 	_x setVariable ["OKS_Convoy_LeadVehicle", _LeadVehicle, true];
 } forEach _VehicleArray;
+
+[_LeadVehicle] call OKS_fnc_Convoy_InitIntendedSlots;
+_ReserveQueue = _LeadVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
+
+[_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
+
+_primarySlots = _LeadVehicle getVariable ["OKS_Convoy_PrimarySlotCount", count _VehicleArray];
+_reserveSlots = 5;
+_endPos = _End;
+[_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
+[_LeadVehicle, _endPos, _primarySlots, _reserveSlots] spawn OKS_fnc_Convoy_LeadArrivalMonitor;
+
 {
 	deleteVehicle _x
 } forEach (nearestObjects [_End, ["Land_ClutterCutter_large_F"], 500] select {
 	_x getVariable ["GOL_Convoy_Cutter", false]
 });
-{
-	deleteVehicle _X
-} foreach [_Spawn, _Waypoint, _End];
 
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
-// Start monitoring for enemy air targets (AA handler)
 [_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;
