@@ -1,3 +1,4 @@
+// Config file for GOL Misc Addon
 class CfgPatches
 {
 	class GOL_MISC_ADDON {

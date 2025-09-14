@@ -77,6 +77,30 @@ For "_i" from 0 to (_Count - 1) do {
 	};
 	[_Vehicle, _PreviousVehicle, _SpeedKph, _DispersionInMeters] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
 
+	// Catch-up booster: if this vehicle falls behind its leader by more than 1.5x dispersion,
+	// temporarily uncap speed until within dispersion range again.
+	if (!isNull _PreviousVehicle) then {
+		[_Vehicle, _PreviousVehicle, _SpeedKph, _DispersionInMeters] spawn {
+			params ["_veh","_prev","_baseKph","_disp"];
+			private _boosting = false;
+			while { alive _veh && {canMove _veh} } do {
+				if (isNull _prev || {!alive _prev}) exitWith {};
+				private _dist = _veh distance _prev;
+				private _thresh = (_disp max 10) * 1.5;
+				if (!_boosting && {_dist > _thresh}) then { _boosting = true; };
+				if (_boosting && {_dist <= _disp}) then { _boosting = false; };
+				if (_boosting) then {
+					// Let it run free to catch up
+					_veh limitSpeed 999; _veh forceSpeed -1;
+				} else {
+					// Hand control back to normal speed control
+					_veh forceSpeed -1; _veh limitSpeed (_baseKph max 10);
+				};
+				sleep 0.5;
+			};
+		};
+	};
+
     _Group = createGroup [_Side,true];
 	_CargoGroup = createGroup [_Side,true];
     if(_ConvoyDebug) then {
@@ -131,6 +155,10 @@ For "_i" from 0 to (_Count - 1) do {
 
 _LeadVehicle = _VehicleArray select 0;
 _LeadVehicle setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
+// Store a pointer to the lead vehicle on every convoy vehicle for quick access later
+{
+	_x setVariable ["OKS_Convoy_LeadVehicle", _LeadVehicle, true];
+} forEach _VehicleArray;
 {
 	deleteVehicle _x
 } forEach (nearestObjects [_End, ["Land_ClutterCutter_large_F"], 500] select {
@@ -142,3 +170,5 @@ _LeadVehicle setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
 
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
+// Start monitoring for enemy air targets (AA handler)
+[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;

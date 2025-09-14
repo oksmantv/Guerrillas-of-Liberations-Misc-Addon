@@ -184,6 +184,24 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Convoy_Speed_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Speed Debug", "When enabled, DEBUG messages will play in the SystemChat speed checks."],
+    "GOL DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Convoy_Markers_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Markers Debug", "When enabled, DEBUG Arrow markers will be spawned on the convoy end waypoints."],
+    "GOL DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_AirDrop_Debug",
     "CHECKBOX",
     ["Enable AirDrop Debug", "When enabled, DEBUG messages will play in the SystemChat."],

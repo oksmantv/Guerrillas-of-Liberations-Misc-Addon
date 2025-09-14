@@ -9,7 +9,7 @@ private _ValidRoad = objNull;
 private _cutterClass = "Land_ClutterCutter_large_F";
 private _PlaceDebugObject = {
 	Params ["_Road"];
-	_DebugObjects = true;
+	private _DebugObjects = missionNamespace getVariable ["GOL_Convoy_Markers_Debug", false];
 
 	if(_DebugObjects) then {
 		_Arrow = createVehicle ["Sign_Arrow_F", [getPos _Road select 0, getPos _Road select 1, 1], [], 0, "CAN_COLLIDE"];
@@ -68,6 +68,7 @@ private _makeSlot = {
 };
 
 if(_FirstWaypoint) exitWith {
+	// Lead vehicle: stay on road and face forward; do not alternate off-road
 	private _centerATL = getPos _nearestRoad;
 	private _roadDir = _TravelDirection;
 	private _ri = getRoadInfo _nearestRoad;
@@ -75,14 +76,18 @@ if(_FirstWaypoint) exitWith {
 		private _d = _ri select 4;
 		if (_d isEqualType 0) then { _roadDir = _d; };
 	};
-	private _slot0 = [_centerATL, _roadDir, _PreferLeft] call _makeSlot;
-	private _posATL0 = _slot0 select 0;
-	private _dir0 = _slot0 select 1;
 	[_nearestRoad] call _PlaceDebugObject;
-	private _arrow0 = createVehicle ["Sign_Arrow_F", _posATL0, [], 0, "CAN_COLLIDE"];
-	_arrow0 setPosATL _posATL0;
-	_arrow0 setDir _dir0;
-	[_posATL0, (_slot0 select 2)]
+	private _arrow0 = createVehicle ["Sign_Arrow_F", _centerATL, [], 0, "CAN_COLLIDE"];
+	_arrow0 setPosATL _centerATL;
+	_arrow0 setDir _roadDir;
+	// Place a cutter at the lead position so subsequent vehicles respect spacing
+	private _cutter0 = createVehicle [_cutterClass, _centerATL, [], 0, "CAN_COLLIDE"];
+	_cutter0 setPosATL _centerATL;
+	_cutter0 setVariable ["GOL_Convoy_Cutter", true, false];
+	// Remember last used road for subsequent calls
+	_EndWP setVariable ["OKS_Convoy_LastRoad", _nearestRoad, false];
+	// Return center position; propagate current preference for subsequent alternation
+	[_centerATL, _PreferLeft]
 };
 
 private _NearestRoadTowardsOrigin = {
@@ -113,10 +118,12 @@ private _NearestRoadTowardsOrigin = {
 };
 
 private _cutterRadius = 5;
-private _spacingMin = 25;
+private _spacingMin = missionNamespace getVariable ["GOL_Convoy_HerringboneSpacingMin", 35];
 private _maxHops = 30;
 
-private _currentRoad = _nearestRoad;
+// Continue from last used road if present, else start from nearest to EndWP
+private _lastRoad = _EndWP getVariable ["OKS_Convoy_LastRoad", objNull];
+private _currentRoad = if (!isNull _lastRoad) then {_lastRoad} else {_nearestRoad};
 private _selectedRoad = objNull;
 
 
@@ -159,9 +166,14 @@ if (isNull _selectedRoad) then {
 	private _slot = [_centerATL, _stopDir, _PreferLeft] call _makeSlot;
 	_slot params ["_slotPosATL", "_slotDir", "_isLeft"];
 
-	private _arrow = createVehicle ["Sign_Arrow_F", _slotPosATL, [], 0, "CAN_COLLIDE"];
-	_arrow setPosATL _slotPosATL;
-	_arrow setDir _slotDir;
+	private _DebugObjects = missionNamespace getVariable ["GOL_Convoy_Markers_Debug", false];
+	if(_DebugObjects) then {
+		private _arrow = createVehicle ["Sign_Arrow_F", _slotPosATL, [], 0, "CAN_COLLIDE"];
+		_arrow setPosATL _slotPosATL;
+		_arrow setDir _slotDir;
+	};
+	// Remember last used road for subsequent calls
+	_EndWP setVariable ["OKS_Convoy_LastRoad", _selectedRoad, false];
 	[_slotPosATL, _isLeft]
 };
 

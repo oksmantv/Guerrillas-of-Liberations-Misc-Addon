@@ -1,15 +1,12 @@
 params ["_ConvoyArray"];
-private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug",false];
-waitUntil{
+private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
+
+// Detect any enemy ground targets (exclude AIR) known to any convoy group within 500m
+waitUntil {
 	sleep 1;
 	{
-		_ConvoyAvailableTargets = _X targets [true, 300, [sideEnemy]];
-		{
-			isTouchingGround (vehicle _X) &&
-			(isPlayer _X) &&
-			(vehicle _X isKindOf "AIR")
-		} count _ConvoyAvailableTargets > 0;
-
+		private _ConvoyAvailableTargets = _x targets [true, 300, [sideEnemy]];
+		({ alive _x && {!(vehicle _x isKindOf "AIR")} } count _ConvoyAvailableTargets) > 0
 	} count _ConvoyArray > 0
 };
 if(_ConvoyDebug) then {
@@ -17,5 +14,4 @@ if(_ConvoyDebug) then {
 };
 {
 	_X setBehaviour "COMBAT";
-	_X setCombatMode "RED"; 
 } foreach _ConvoyArray;

@@ -310,8 +310,9 @@ class CfgFunctions // Defines a function
 			class Convoy_Reinforce {};
 			class Convoy_SetupHerringBone {};
 			class Convoy_Spawn {};
-			class Convoy_WaitUntilCombat {};
+			class Convoy_WaitUntilAirTarget {};
 			class Convoy_WaitUntilCasualties {};
+			class Convoy_WaitUntilCombat {};
 			class Convoy_WaitUntilTargets {};
 		};	
 					

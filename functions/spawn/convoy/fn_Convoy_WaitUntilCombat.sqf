@@ -1,48 +1,101 @@
-private _DismountCode = {
-	Params ["_Group","_Vehicle"];
-	_Group leaveVehicle _Vehicle;
-	{unassignVehicle _X; doGetOut _X;} foreach units _Group;
-	[_Group,1500,30,[],[],false] spawn lambs_wp_fnc_taskRush;
+private _DismountAndRushCode = {
+	params ["_Group", "_VehicleObject"];
+	_Group leaveVehicle _VehicleObject;
+	{
+		unassignVehicle _x;
+		doGetOut _x;
+	} forEach (units _Group);
+	[
+		_Group,
+		1500,
+		30,
+		[],
+		[],
+		false
+	] spawn lambs_wp_fnc_taskRush;
 };
-private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug",false];
 
-Params ["_Vehicle","_Crew","_CargoGroup"];
+private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
+
+params ["_VehicleObject", "_CrewGroup", "_CargoGroup"];
+
+// Early-out guard: if this vehicle is currently handling AA engagement, skip ambush logic entirely
+if (_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false]) exitWith {
+	if (_ConvoyDebug) then {
+		format [
+			"[CONVOY] Skipping ambush handler for AA-engaging vehicle: %1",
+			_VehicleObject
+		] spawn OKS_fnc_LogDebug;
+	};
+};
+
 waitUntil {
 	sleep 0.5;
-	{behaviour _X isEqualTo "COMBAT"} count units _Crew > 0
-	||
-	{behaviour _X isEqualTo "COMBAT"} count units _CargoGroup > 0
+	(_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false])
+	|| ({behaviour _x isEqualTo "COMBAT"} count (units _CrewGroup) > 0)
+	|| ({behaviour _x isEqualTo "COMBAT"} count (units _CargoGroup) > 0)
 };
+
+// If AA engagement kicked in while waiting, abort safely
+if (_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false]) exitWith {
+	if (_ConvoyDebug) then {
+		format [
+			"[CONVOY] Ambush handler aborted due to AA engagement for %1",
+			_VehicleObject
+		] spawn OKS_fnc_LogDebug;
+	};
+};
+
 _CargoGroup setBehaviour "COMBAT";
-_Crew setBehaviour "COMBAT";
-_CargoGroup setCombatMode "RED"; 
-_Crew setCombatMode "RED"; 
-if(_ConvoyDebug) then {
-	format [systemChat "[CONVOY] Ambush Detected. Halting Convoy.."] spawn OKS_fnc_LogDebug;
+_CrewGroup setBehaviour "COMBAT";
+_CargoGroup setCombatMode "RED";
+_CrewGroup setCombatMode "RED";
+
+if (_ConvoyDebug) then {
+	"[CONVOY] Ambush detected. Halting convoy." spawn OKS_fnc_LogDebug;
 };
-_Vehicle forceSpeed 0;
-_Vehicle setFuel 0;
-_Vehicle setVehicleLock "UNLOCKED";
-[_CargoGroup,_Vehicle] spawn _DismountCode;
 
-if(((!isNull gunner _Vehicle) || (_Vehicle emptyPositions "gunner" > 0)) || ((!isNull commander _Vehicle) || (_Vehicle emptyPositions "commander" > 0))) then {
-	if(_ConvoyDebug) then {
-		format ["[CONVOY] Vehicle is armed, will apply hunt."] spawn OKS_fnc_LogDebug;
-	};
-	sleep (30 + (Random 30));
-	_vehicle limitSpeed 15;
-	_vehicle forceSpeed (15 / 3.6);
-	_Vehicle setFuel 1;
+_VehicleObject forceSpeed 0;
+_VehicleObject setFuel 0;
+_VehicleObject setVehicleLock "UNLOCKED";
+[_CargoGroup, _VehicleObject] spawn _DismountAndRushCode;
 
-	if(_ConvoyDebug) then {
-		format ["[CONVOY] Hunt Applied to %1 in %2 - %3",_Crew,_Vehicle,[configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug
+private _IsArmedVehicle = (
+	(!isNull (gunner _VehicleObject)) || ((_VehicleObject emptyPositions "gunner") > 0)
+) || (
+	(!isNull (commander _VehicleObject)) || ((_VehicleObject emptyPositions "commander") > 0)
+);
+
+if (_IsArmedVehicle) then {
+	if (_ConvoyDebug) then {
+		"[CONVOY] Vehicle is armed, applying hunt task." spawn OKS_fnc_LogDebug;
 	};
-	[_Crew, 1500, 60, [], [], false] spawn lambs_wp_fnc_taskHunt;
+	sleep (30 + (random 30));
+	_VehicleObject limitSpeed 15;
+	_VehicleObject forceSpeed (15 / 3.6);
+	_VehicleObject setFuel 1;
+
+	if (_ConvoyDebug) then {
+		format [
+			"[CONVOY] Hunt applied to %1 in %2 - %3",
+			_CrewGroup,
+			_VehicleObject,
+			[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName
+		] spawn OKS_fnc_LogDebug;
+	};
+	[
+		_CrewGroup,
+		1500,
+		60,
+		[],
+		[],
+		false
+	] spawn lambs_wp_fnc_taskHunt;
 	sleep 5;
-	_Crew setBehaviour "AWARE";
+	_CrewGroup setBehaviour "AWARE";
 } else {
-	if(_ConvoyDebug) then {
-		format ["[CONVOY] Vehicle is unarmed, dismount and rush."] spawn OKS_fnc_LogDebug;
+	if (_ConvoyDebug) then {
+		"[CONVOY] Vehicle is unarmed, dismount and rush." spawn OKS_fnc_LogDebug;
 	};
-	[_Crew,_Vehicle] spawn _DismountCode;
+	[_CrewGroup, _VehicleObject] spawn _DismountAndRushCode;
 };
