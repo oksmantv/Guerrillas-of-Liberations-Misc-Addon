@@ -315,6 +315,7 @@ class CfgFunctions // Defines a function
 		class OKS_Spawn_Convoy_ConvoyHelper {
 			file = "\OKS_GOL_Misc\functions\spawn\convoy\helper";
 			class Convoy_AssignParkingAtEnd {};
+			class Convoy_AssignReserveWaypoint {};
 			class Convoy_CheckAndAdjustSpeeds {};
 			class Convoy_EndParking_AssignIndices {};
 			class Convoy_InitIntendedSlots {};

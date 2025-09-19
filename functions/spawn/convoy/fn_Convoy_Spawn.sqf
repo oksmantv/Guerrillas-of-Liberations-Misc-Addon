@@ -44,7 +44,22 @@ if (isNil "_ConvoyArray") then {
 	_ConvoyArray = [];
 };
 
-for "_i" from 0 to (_Count - 1) do {
+for "_i" from 0 to ((_Count - 1) + ((_Count - 1) / 2)) do {
+
+	if(_i >= _Count) then {
+		_herringBoneResult = [_End, false, _NextPreferLeft, true] call OKS_fnc_Convoy_SetupHerringBone;
+		private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { getPos _End };
+		private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
+		_NextPreferLeft = !_actualIsLeft;
+
+		private _LeadVehicle = _VehicleArray select 0;
+		_ReserveQueue = _LeadVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
+		_ReserveQueue pushBack [_endPosition, false]; // [position, isOccupied]
+		_LeadVehicle setVariable ["OKS_Convoy_ReserveQueue", _ReserveQueue, true];
+
+		continue;
+	};
+
 	waitUntil {
 		sleep 1;
 		if (_ConvoyDebug) then {
@@ -149,7 +164,7 @@ _LeadVehicle setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
 [_LeadVehicle] call OKS_fnc_Convoy_InitIntendedSlots;
 _ReserveQueue = _LeadVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
 _primarySlots = _LeadVehicle getVariable ["OKS_Convoy_PrimarySlotCount", count _VehicleArray];
-_reserveSlots = 5;
+_reserveSlots = count _ReserveQueue;
 _endPos = _End;
 [_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
 [_LeadVehicle, _endPos, _primarySlots, _reserveSlots] spawn OKS_fnc_Convoy_LeadArrivalMonitor;

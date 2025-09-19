@@ -1,6 +1,7 @@
 params ["_Vehicle", "_PreviousVehicle", "_DispersionInMeters"]; 
 private _ConvoySpeedDebug = missionNamespace getVariable ["GOL_Convoy_Speed_Debug", false];
 private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
+private _ConvoyDispersionDebug = missionNamespace getVariable ["GOL_Convoy_Dispersion_Debug", false];
 
 if(_ConvoySpeedDebug) then {
 	format [
@@ -137,14 +138,14 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 	if (_wpIdx != _lastWpIdx) then {
 		_dispMod = 1;
 		_Vehicle setVariable ["OKS_Convoy_LastWaypointIdx", _wpIdx];
-		if (_ConvoyDebug) then {
+		if (_ConvoyDispersionDebug) then {
 		format ["[CONVOY-DISPERSION-RESET] %1 cleared WP, dispersion reset to %2m (param=%3m)", _Vehicle, _dispersionOriginal, _dispersionOriginal] spawn OKS_fnc_LogDebug;
 		};
 	} else {
 		_Vehicle setVariable ["OKS_Convoy_LastWaypointIdx", _wpIdx];
 	};
 	private _DispersionInMeters = _dispersionOriginal * _dispMod;
-	if (_ConvoyDebug && {_dispMod > 1}) then {
+	if (_ConvoyDispersionDebug && {_dispMod > 1}) then {
 	format ["[CONVOY-DISPERSION-INCREASED] %1 near WP (%2m): dispersion increased to %3m (param=%4m)", _Vehicle, _distToWp, _DispersionInMeters, _dispersionOriginal] spawn OKS_fnc_LogDebug;
 	};
 

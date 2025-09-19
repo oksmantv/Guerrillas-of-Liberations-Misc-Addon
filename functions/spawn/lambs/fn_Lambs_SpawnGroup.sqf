@@ -100,6 +100,10 @@
 				* 7: Enable Flare <BOOL> or <NUMBER> where 0 disabled, 1 enabled (if Units cant fire it them self a flare is created via createVehicle), 2 Only if Units can Fire UGL them self
 			*/	
 			[_Group, _Range, 30, [], [], true,false,false] remoteExec ["lambs_wp_fnc_taskHunt",0];
+			sleep 5;
+			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
+			_Group setBehaviour "AWARE";
+			_Group setCombatMode "RED";
 		};
 		case "creep":{
 			{_X setUnitPos "DOWN"; _X setBehaviour "STEALTH"; _X setCombatMode "GREEN"; } foreach units _Group;

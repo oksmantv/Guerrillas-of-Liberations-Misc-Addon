@@ -7,6 +7,7 @@
 */
 
 params ["_vehicleArray", "_isConvoyDebugEnabled"];
+private _aaSelectionDebug = missionNamespace getVariable ["GOL_Convoy_AASelection_Debug", false];
 private _bestAAVehicle = objNull;
 private _bestScore = -1e9;
 private _debugScores = [];
@@ -86,13 +87,19 @@ private _debugScores = [];
     if (_score > _bestScore) then { _bestScore = _score; _bestAAVehicle = _x; };
 } forEach _vehicleArray;
 if (_isConvoyDebugEnabled) then {
-    private _sortedScores = [_debugScores, [], { _x select 1 }, "ASCEND"] call BIS_fnc_sortBy;
-    private _topScore = if ((count _sortedScores) > 0) then { _sortedScores select ((count _sortedScores) - 1) } else { [] };
     format [
-        "[CONVOY_AIR] AA selection scores (sorted): %1 | picked=%2 score=%3 | top=%4",
-        _sortedScores,
+        "[CONVOY_AIR] Selected AA vehicle: %1 (score=%2) from %3 candidates",
         typeOf _bestAAVehicle,
         _bestScore,
+        count _vehicleArray
+    ] spawn OKS_fnc_LogDebug;
+};
+if (_aaSelectionDebug) then {
+    private _sortedScores = [_debugScores, [], { _x select 1 }, "DESCEND"] call BIS_fnc_sortBy;
+    private _topScore = if ((count _sortedScores) > 0) then { _sortedScores select 0 } else { [] };
+    format [
+        "[CONVOY_AASelection] Detailed scores: %1 | top=%2",
+        _sortedScores,
         _topScore
     ] spawn OKS_fnc_LogDebug;
 };

@@ -202,6 +202,24 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Convoy_Dispersion_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Dispersion Debug", "When enabled, DEBUG messages will show dispersion changes near waypoints."],
+    "GOL DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Convoy_AASelection_Debug",
+    "CHECKBOX",
+    ["Enable Convoy AA Selection Debug", "When enabled, DEBUG messages will show detailed AA vehicle selection scoring."],
+    "GOL DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_AirDrop_Debug",
     "CHECKBOX",
     ["Enable AirDrop Debug", "When enabled, DEBUG messages will play in the SystemChat."],

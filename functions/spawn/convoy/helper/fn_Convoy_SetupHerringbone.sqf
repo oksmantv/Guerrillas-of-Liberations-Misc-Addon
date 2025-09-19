@@ -4,7 +4,7 @@
 	[convoy_3] execVM "fn_Convoy_SetupHerringbone.sqf";
 */
 
-params ["_EndWP", "_FirstWaypoint", ["_PreferLeft", true]];
+params ["_EndWP", "_FirstWaypoint", ["_PreferLeft", true], ["_IsReserveSlot", false, [false]]];
 private _cutterClass = "Land_ClutterCutter_large_F";
 
 private _travelDirection = getDir _EndWP;
@@ -68,7 +68,7 @@ if (isNull _selectedRoad) then {
 	// Fallback: use nearest road and slot logic for consistent return
 	private _fallbackSlot = [getPos _nearestRoad, _travelDirection, _PreferLeft] call OKS_fnc_Convoy_MakeSlot;
 	_fallbackSlot params ["_slotPosATL", "_slotDirection", "_isLeft"];
-	[_slotPosATL, _isLeft]
+	[_slotPosATL, _isLeft, _IsReserveSlot]
 } else {
 	private _cutterPositionATL = getPos _selectedRoad;
 	private _cutterObject = createVehicle [_cutterClass, _cutterPositionATL, [], 0, "CAN_COLLIDE"];
@@ -77,13 +77,11 @@ if (isNull _selectedRoad) then {
 
 	private _cuttersNearSelectedRoad = nearestObjects [_selectedRoad, [_cutterClass], _cutterRadius];
 	private _cuttersNearSelectedRoadSpacing = nearestObjects [_selectedRoad, [_cutterClass], _minimumSpacing];
-	[_selectedRoad, false] call OKS_fnc_Convoy_PlaceDebugObject;
 	private _leadVehicle = _selectedRoad getVariable ["OKS_Convoy_LeadVehicle", objNull];
-	if (!isNull _leadVehicle) then {
-		private _reserveQueue = _leadVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
-		{
-			[_x, true] call OKS_fnc_Convoy_PlaceDebugObject;
-		} forEach _reserveQueue;
+	if (_IsReserveSlot) then {
+		[_selectedRoad, true] call OKS_fnc_Convoy_PlaceDebugObject;
+	} else {
+		[_selectedRoad, false] call OKS_fnc_Convoy_PlaceDebugObject;
 	};
 
 	private _stopDirection = (getPosWorld _currentRoad) getDir (getPosWorld _selectedRoad);
@@ -99,7 +97,7 @@ if (isNull _selectedRoad) then {
 	};
 
 	_EndWP setVariable ["OKS_Convoy_LastRoad", _selectedRoad, false];
-	[_slotPosATL, _isLeft]
+	[_slotPosATL, _isLeft, _IsReserveSlot]
 };
 
 
