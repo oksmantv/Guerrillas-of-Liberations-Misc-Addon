@@ -50,6 +50,7 @@ class CfgFunctions // Defines a function
 			class Ranks {};
 			class RespawnHandler {};
 			class DisableAPS {};
+			class SelectRandomPosition {};
 		};
 
 		class OKS_Supply {

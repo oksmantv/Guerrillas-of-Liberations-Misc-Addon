@@ -81,19 +81,20 @@ if(typeName _ExfilSite == "OBJECT") then {
 		if(_HVTDebug) then {
 			format["[HVT TASK] %1 set to captive HVT.", name _X] call OKS_fnc_LogDebug;
 		};
-		_X disableAI "ALL";
+		_X disableAI "MOVE";
+		_X disableAI "AUTOTARGET";
+		_X disableAI "TARGET";
 		_X setUnitPos "MIDDLE";
 		_X setCaptive true;
-
-		waitUntil {sleep 2; _X getVariable ["GW_Gear_Applied",false]};
-		removeAllWeapons _X;
-		removeGoggles _X;
-		removeBackpack _X;
-		removeHeadgear _X;
-		_X addGoggles "G_Blindfold_01_black_F";
-		_X playMove "acts_aidlpsitmstpssurwnondnon04";
-
 		_X spawn {
+			waitUntil {sleep 2; _this getVariable ["GW_Gear_appliedGear",false]};
+			removeAllWeapons _this;
+			removeGoggles _this;
+			removeBackpack _this;
+			removeHeadgear _this;
+			_this addGoggles "G_Blindfold_01_black_F";
+			_this playMove "acts_aidlpsitmstpssurwnondnon04";
+
 			waitUntil {sleep 1; _this getVariable ["ace_captives_isHandcuffed", false] || !Alive _this};
 			if(alive _this) then {
 				removeGoggles _this;
@@ -117,7 +118,7 @@ if(_HVTDebug) then {
 
 Private _TaskId = format["RescueHVTTask_%1",(random 9999)];
 
-waitUntil {sleep 5; {_X getVariable ["ace_captives_isHandcuffed", false]} count _Units > 0 || {!Alive _X} count _Units == count _Units || _TaskOnStart};
+waitUntil {sleep 1; {_X getVariable ["ace_captives_isHandcuffed", false]} count _Units > 0 || {!Alive _X} count _Units == count _Units || _TaskOnStart};
 
 if(_HVTDebug) then {
 	format["[HVT TASK] Wait condition met. Handcuffed units: %1, Dead units: %2, TaskOnStart: %3", {_X getVariable ["ace_captives_isHandcuffed", false]} count _Units, {!Alive _X} count _Units, _TaskOnStart] call OKS_fnc_LogDebug;
