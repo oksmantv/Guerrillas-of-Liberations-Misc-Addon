@@ -51,7 +51,6 @@ waitUntil {
 	} forEach _ConvoyArray;
 
 	private _enough = (_confirmedTotal >= _minCount);
-
 	if (_enough) then {
 		if (_steadySince < 0) then { _steadySince = time; };
 	} else {
@@ -59,15 +58,6 @@ waitUntil {
 	};
 
 	private _ready = _enough && ((time - _steadySince) >= _window);
-
-	if (_ConvoyDebug) then {
-		format ["[CONVOY] Ground threat check: confirmed=%1 steady=%2s ready=%3",
-			_confirmedTotal,
-			if (_steadySince < 0) then { 0 } else { round (time - _steadySince) },
-			_ready
-		] spawn OKS_fnc_LogDebug;
-	};
-
 	_ready
 };
 

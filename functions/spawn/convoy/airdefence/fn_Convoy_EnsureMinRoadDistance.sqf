@@ -1,5 +1,6 @@
 // Ensures position is at least minDist from nearest road, nudges laterally if needed
 params ["_position", "_lateralDirection", "_minRoadDistance"];
+private _maxSlopeDeg = missionNamespace getVariable ["GOL_Convoy_PullOffMaxSlopeDeg", 15];
 private _resultPosition = _position;
 private _nearestRoad = [_position, 50] call BIS_fnc_nearestRoad;
 private _ok = false;
@@ -18,7 +19,7 @@ if (!isNull _nearestRoad) then {
 			getPosATL _nearRoad
 		};
         private _okRoad = (_candidate distance2D _nearRoadPos) >= _minRoadDistance;
-        if (_okRoad && ([_candidate] call OKS_fnc_Convoy_IsOffRoad) && ([_candidate] call OKS_fnc_Convoy_IsClearOfObstacles) && ([_candidate, _minRoadDistance] call OKS_fnc_Convoy_IsFlatTerrain)) exitWith {
+        if (_okRoad && ([_candidate] call OKS_fnc_Convoy_IsOffRoad) && (!([_candidate, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_candidate, _maxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) exitWith {
 			_resultPosition = _candidate; _ok = true; 
 		};
     } forEach _steps;

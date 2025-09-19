@@ -30,6 +30,10 @@ while {true} do {
             _leadVeh setVariable ["OKS_Convoy_VehicleArray", _arr, true];
             _reserveVeh setVariable ["OKS_Convoy_LeadVehicle", _leadVeh, true];
             _reserveVeh setVariable ["OKS_Convoy_Catchup", true, true];
+            // Debug: Reserve activated
+            if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
+                format ["[CONVOY-RESERVE-ACTIVATED] Reserve vehicle %1 activated for dead/immobile slot %2", _reserveVeh, _idx] spawn OKS_fnc_LogDebug;
+            };
         };
     } forEach _deadIdxs;
 }

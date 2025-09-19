@@ -227,3 +227,12 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     true,
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "GOL_HVT_Debug",
+    "CHECKBOX",
+    ["Enable HVT Tasks DEBUG", "Enables debugging for HVT and Hostage task scripts."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;

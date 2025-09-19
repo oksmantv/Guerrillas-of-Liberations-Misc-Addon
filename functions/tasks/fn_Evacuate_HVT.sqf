@@ -14,149 +14,208 @@
 	6: Boolean - Whether the task should be created in the "ASSIGNED" state immediately. If true, the task will be created and set to "ASSIGNED" state. (Type: Boolean)
 
 	Example Usage:
-	[Group HVT_1, getPos ExfilSite_1, west, false, nil] spawn OKS_fnc_Evacuate_HVT;
+	[Group HVT_1, getPos ExfilSite_1, west, false, nil, true, false] spawn OKS_fnc_Evacuate_HVT;
 */
 
 if(!isServer) exitWith {};
 
-	Params [
-		["_UnitsOrGroupOrArray",[],[[],grpNull,objNull]],
-		["_ExfilSite",[0,0,0],[[],objNull]],
-		["_Side",west,[sideUnknown]],
-		["_HelicopterEvac",false,[false]],
-		["_ParentTask","",[""]],
-		["_IsCaptive",true,[true]],
-		["_TaskOnStart",false,[false]]
-	];
+Private _HVTDebug = missionNamespace getVariable ["GOL_HVT_Debug",false];
 
-	Private ["_Units","_ExfilPosition","_TaskDescription"];
-	if(typeName _UnitsOrGroupOrArray == "OBJECT") then {
-		_Units = [_UnitsOrGroupOrArray];
-		group _UnitsOrGroupOrArray setVariable ["acex_headless_blacklist",true,true];
-	};
-	if(typeName _UnitsOrGroupOrArray == "GROUP") then {
-		_Units = units _UnitsOrGroupOrArray;
-		_UnitsOrGroupOrArray setVariable ["acex_headless_blacklist",true,true];
-	};
-	if(typeName _UnitsOrGroupOrArray == "ARRAY") then {
-		_Units = _UnitsOrGroupOrArray;
-		(Group (_Units select 0)) setVariable ["acex_headless_blacklist",true,true];
-	};
-	if(typeName _ExfilSite == "OBJECT") then {
-		_ExfilPosition = getPos _ExfilSite;
-	} else {
-		_ExfilPosition = _ExfilSite;
-	};
+Params [
+	["_UnitsOrGroupOrArray",[],[[],grpNull,objNull]],
+	["_ExfilSite",[0,0,0],[[],objNull]],
+	["_Side",west,[sideUnknown]],
+	["_HelicopterEvac",false,[false]],
+	["_ParentTask","",[""]],
+	["_IsCaptive",true,[true]],
+	["_TaskOnStart",false,[false]]
+];
 
-	{
-		_x setVariable ["GOL_SurrenderEnabled",true,true];
-		_x setVariable ["GOL_HVT",true,true];
-		if([_X] call GW_Common_Fnc_getSide != civilian) then {
-			waitUntil {sleep 1; primaryWeapon _X != ""};
-			removeAllWeapons _X;
-		};	
+if(_HVTDebug) then {
+	format["[HVT TASK] fn_Evacuate_HVT started with params: Units=%1, ExfilSite=%2, Side=%3, HelicopterEvac=%4, ParentTask=%5, IsCaptive=%6, TaskOnStart=%7", _UnitsOrGroupOrArray, _ExfilSite, _Side, _HelicopterEvac, _ParentTask, _IsCaptive, _TaskOnStart] call OKS_fnc_LogDebug;
+};
 
-		if(_isCaptive) then {		
+Private ["_Units","_ExfilPosition","_TaskDescription"];
+if(typeName _UnitsOrGroupOrArray == "OBJECT") then {
+	_Units = [_UnitsOrGroupOrArray];
+	group _UnitsOrGroupOrArray setVariable ["acex_headless_blacklist",true,true];
+	if(_HVTDebug) then {
+		format["[HVT TASK] Processing single unit: %1", name _UnitsOrGroupOrArray] call OKS_fnc_LogDebug;
+	};
+};
+if(typeName _UnitsOrGroupOrArray == "GROUP") then {
+	_Units = units _UnitsOrGroupOrArray;
+	_UnitsOrGroupOrArray setVariable ["acex_headless_blacklist",true,true];
+	if(_HVTDebug) then {
+		format["[HVT TASK] Processing group with %1 units", count _Units] call OKS_fnc_LogDebug;
+	};
+};
+if(typeName _UnitsOrGroupOrArray == "ARRAY") then {
+	_Units = _UnitsOrGroupOrArray;
+	(Group (_Units select 0)) setVariable ["acex_headless_blacklist",true,true];
+	if(_HVTDebug) then {
+		format["[HVT TASK] Processing array with %1 units", count _Units] call OKS_fnc_LogDebug;
+	};
+};
+if(typeName _ExfilSite == "OBJECT") then {
+	_ExfilPosition = getPos _ExfilSite;
+	if(_HVTDebug) then {
+		format["[HVT TASK] Exfil site is object at position %1", _ExfilPosition] call OKS_fnc_LogDebug;
+	};
+} else {
+	_ExfilPosition = _ExfilSite;
+	if(_HVTDebug) then {
+		format["[HVT TASK] Exfil site is position %1", _ExfilPosition] call OKS_fnc_LogDebug;
+	};
+};
+
+{
+	_x setVariable ["GOL_SurrenderEnabled",true,true];
+	_x setVariable ["GOL_HVT",true,true];
+	if([_X] call GW_Common_Fnc_getSide != civilian) then {
+		waitUntil {sleep 1; primaryWeapon _X != ""};
+		removeAllWeapons _X;
+	};	
+
+	if(_isCaptive) then {		
+		if(_HVTDebug) then {
 			format["[HVT TASK] %1 set to captive HVT.", name _X] call OKS_fnc_LogDebug;
-			_X disableAI "ALL";
-			_X setUnitPos "MIDDLE";
-			_X setCaptive true;
+		};
+		_X disableAI "ALL";
+		_X setUnitPos "MIDDLE";
+		_X setCaptive true;
 
-			waitUntil {sleep 2; _X getVariable ["GW_Gear_Applied",false]};
-			removeAllWeapons _X;
-			removeGoggles _X;
-			removeBackpack _X;
-			removeHeadgear _X;
-			_X addGoggles "G_Blindfold_01_black_F";
-			_X playMove "acts_aidlpsitmstpssurwnondnon04";
+		waitUntil {sleep 2; _X getVariable ["GW_Gear_Applied",false]};
+		removeAllWeapons _X;
+		removeGoggles _X;
+		removeBackpack _X;
+		removeHeadgear _X;
+		_X addGoggles "G_Blindfold_01_black_F";
+		_X playMove "acts_aidlpsitmstpssurwnondnon04";
 
-			_X spawn {
-				waitUntil {sleep 1; _this getVariable ["ace_captives_isHandcuffed", false] || !Alive _this};
-				if(alive _this) then {
-					removeGoggles _this;
-				};			
+		_X spawn {
+			waitUntil {sleep 1; _this getVariable ["ace_captives_isHandcuffed", false] || !Alive _this};
+			if(alive _this) then {
+				removeGoggles _this;
 			};			
-		} else {
-			format["[HVT TASK] %1 set to hostile HVT.", name _X] call OKS_fnc_LogDebug;
-			_X disableAI "PATH";
-			if(!isNil "OKS_fnc_Surrender") then {
-				[_x, 0.5, 0.25, 50, 25, true, true, 25, true] spawn OKS_fnc_Surrender;
-			};
-		};
-		_X setVariable ["GOL_IsStatic",true,true];
-	} forEach _Units;
-	
-	Private _TaskId = format["RescueHVTTask_%1",(random 9999)];
-
-	waitUntil {sleep 5; {_X getVariable ["ace_captives_isHandcuffed", false]} count _Units > 0 || {!Alive _X} count _Units == count _Units || _TaskOnStart};
-
-	Private _TaskState = "ASSIGNED";
-	if({!Alive _X} count _Units == count _Units) then {
-		_TaskState = "FAILED";
-	};
-
-	private _markerName = format ["OKS_ExfilSite_%1", round (random 99999)];
-	private _exfilMarker = createMarker [_markerName, _ExfilPosition];
-	private _descriptionText = "You have found HVTs to extract";
-	if(_TaskOnStart) then {
-		_descriptionText = "You have been tasked with finding and extracting HVTs";
-	};
-
-	if(_HelicopterEvac) then {
-		_TaskDescription = format["%2, there are %1 in total. Transport them to the <marker name='%3'>exfil site</marker> and await the helicopter that will extract them.",count _Units,_descriptionText,_exfilMarker];
+		};			
 	} else {
-		_TaskDescription = format["%2, there are %1 in total. Transport them to the <marker name='%3'>exfil site</marker>.",count _Units,_descriptionText,_exfilMarker];
-	};
-
-	_TaskArray = [_TaskId];
-	if(!isNil "_ParentTask") then {
-		_TaskArray pushBack _ParentTask;
-	};
-
-	_UnitsArray = _Units;
-	_TaskPosition = [0, 0, 0];
-	{
-		_TaskPosition = _TaskPosition vectorAdd (getPosWorld _x);
-	} forEach _UnitsArray;
-	_TaskPosition = _TaskPosition vectorMultiply (1 / (count _UnitsArray));	
-
-	[
-		true,
-		_TaskArray,
-		[
-			_TaskDescription,
-			"Extract HVT",
-			"Extract"
-		],
-		_TaskPosition,
-		_TaskState,
-		-1,
-		true,
-		"exit",
-		false
-	] call BIS_fnc_taskCreate;
-
-	if(_TaskState == "FAILED") exitWith {false};
-
-	waitUntil {sleep 15; {!Alive _X || _X distance _ExfilPosition < 100 && vehicle _X == _x} count _Units == count _Units};
-
-	if(_HelicopterEvac) then {
-		if({!Alive _X} count _Units == count _Units) exitWith {
-			// Fail
-			[_TaskId, "FAILED", true] call BIS_fnc_taskSetState;			
+		if(_HVTDebug) then {
+			format["[HVT TASK] %1 set to hostile HVT.", name _X] call OKS_fnc_LogDebug;
 		};
-
-		["hq","side","Be advised, extraction helicopter is inbound for your HVTs. Load them up when it arrives, HQ out"] remoteExec ["OKS_fnc_Chat",0];
-		[_Side,"",["helicopter_Spawn",_ExfilPosition,"helicopter_despawn","helicopter_despawn"],false] execVM "Scripts\NEKY_PickUp\NEKY_PickUp.sqf";
-
-		waitUntil{sleep 15; {!Alive _X || (ObjectParent _X) isKindOf "Helicopter"} count _Units == count _Units};
+		_X disableAI "PATH";
+		if(!isNil "OKS_fnc_Surrender") then {
+			[_x, 0.5, 0.25, 50, 25, true, true, 25, true] spawn OKS_fnc_Surrender;
+		};
 	};
+	_X setVariable ["GOL_IsStatic",true,true];
+} forEach _Units;
 
+if(_HVTDebug) then {
+	format["[HVT TASK] Finished processing %1 HVT units. IsCaptive=%2", count _Units, _IsCaptive] call OKS_fnc_LogDebug;
+};
+
+Private _TaskId = format["RescueHVTTask_%1",(random 9999)];
+
+waitUntil {sleep 5; {_X getVariable ["ace_captives_isHandcuffed", false]} count _Units > 0 || {!Alive _X} count _Units == count _Units || _TaskOnStart};
+
+if(_HVTDebug) then {
+	format["[HVT TASK] Wait condition met. Handcuffed units: %1, Dead units: %2, TaskOnStart: %3", {_X getVariable ["ace_captives_isHandcuffed", false]} count _Units, {!Alive _X} count _Units, _TaskOnStart] call OKS_fnc_LogDebug;
+};
+
+Private _TaskState = "ASSIGNED";
+if({!Alive _X} count _Units == count _Units) then {
+	_TaskState = "FAILED";
+	if(_HVTDebug) then {
+		format["[HVT TASK] All HVTs are dead, setting task to FAILED"] call OKS_fnc_LogDebug;
+	};
+};
+
+private _markerName = format ["OKS_ExfilSite_%1", round (random 99999)];
+private _exfilMarker = createMarker [_markerName, _ExfilPosition];
+private _descriptionText = "You have found HVTs to extract";
+if(_TaskOnStart) then {
+	_descriptionText = "You have been tasked with finding and extracting HVTs";
+};
+
+if(_HelicopterEvac) then {
+	_TaskDescription = format["%2, there are %1 in total. Transport them to the <marker name='%3'>exfil site</marker> and await the helicopter that will extract them.",count _Units,_descriptionText,_exfilMarker];
+} else {
+	_TaskDescription = format["%2, there are %1 in total. Transport them to the <marker name='%3'>exfil site</marker>.",count _Units,_descriptionText,_exfilMarker];
+};
+
+_TaskArray = [_TaskId];
+if(!isNil "_ParentTask") then {
+	_TaskArray pushBack _ParentTask;
+};
+
+_UnitsArray = _Units;
+_TaskPosition = [0, 0, 0];
+{
+	_TaskPosition = _TaskPosition vectorAdd (getPosWorld _x);
+} forEach _UnitsArray;
+_TaskPosition = _TaskPosition vectorMultiply (1 / (count _UnitsArray));	
+
+[
+	true,
+	_TaskArray,
+	[
+		_TaskDescription,
+		"Extract HVT",
+		"Extract"
+	],
+	_TaskPosition,
+	_TaskState,
+	-1,
+	true,
+	"exit",
+	false
+] call BIS_fnc_taskCreate;
+
+if(_HVTDebug) then {
+	format["[HVT TASK] Task created with ID: %1, State: %2, Position: %3", _TaskId, _TaskState, _TaskPosition] call OKS_fnc_LogDebug;
+};
+
+if(_TaskState == "FAILED") exitWith {false};
+
+waitUntil {sleep 15; {!Alive _X || _X distance _ExfilPosition < 100 && vehicle _X == _x} count _Units == count _Units};
+
+if(_HVTDebug) then {
+	format["[HVT TASK] Units reached exfil site. HelicopterEvac: %1", _HelicopterEvac] call OKS_fnc_LogDebug;
+};
+
+if(_HelicopterEvac) then {
 	if({!Alive _X} count _Units == count _Units) exitWith {
 		// Fail
-		[_TaskId, "FAILED", true] call BIS_fnc_taskSetState;		
+		if(_HVTDebug) then {
+			format["[HVT TASK] All HVTs died before helicopter extraction - FAILED"] call OKS_fnc_LogDebug;
+		};
+		[_TaskId, "FAILED", true] call BIS_fnc_taskSetState;			
 	};
 
-	// Succeeded
-	[_TaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;		
+	if(_HVTDebug) then {
+		format["[HVT TASK] Calling helicopter for extraction"] call OKS_fnc_LogDebug;
+	};
+	["hq","side","Be advised, extraction helicopter is inbound for your HVTs. Load them up when it arrives, HQ out"] remoteExec ["OKS_fnc_Chat",0];
+	[_Side,"",["helicopter_Spawn",_ExfilPosition,"helicopter_despawn","helicopter_despawn"],false] execVM "Scripts\NEKY_PickUp\NEKY_PickUp.sqf";
+
+	waitUntil{sleep 15; {!Alive _X || (ObjectParent _X) isKindOf "Helicopter"} count _Units == count _Units};
+	if(_HVTDebug) then {
+		format["[HVT TASK] HVTs loaded into helicopter or died"] call OKS_fnc_LogDebug;
+	};
+};
+
+if({!Alive _X} count _Units == count _Units) exitWith {
+	// Fail
+	if(_HVTDebug) then {
+		format["[HVT TASK] All HVTs died during final phase - FAILED"] call OKS_fnc_LogDebug;
+	};
+	[_TaskId, "FAILED", true] call BIS_fnc_taskSetState;		
+};
+
+// Succeeded
+if(_HVTDebug) then {
+	format["[HVT TASK] Mission completed successfully - SUCCEEDED"] call OKS_fnc_LogDebug;
+};
+[_TaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;		
 		

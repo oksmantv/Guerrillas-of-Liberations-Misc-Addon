@@ -2,15 +2,15 @@
 private _ClientId = "";
 
 if (isDedicated) then {
-    _ClientId = "DEDICATED"
+    _ClientId = "D"
 } else {
     if (!hasInterface && !isDedicated) then {
-        _ClientId = "HC"
+        _ClientId = "H"
     } else {
         if (hasInterface && isServer) then {
-            _ClientId = "SERVER"
+            _ClientId = "S"
         } else {
-            _ClientId = "CLIENT"
+            _ClientId = "C"
         };
     };
 };

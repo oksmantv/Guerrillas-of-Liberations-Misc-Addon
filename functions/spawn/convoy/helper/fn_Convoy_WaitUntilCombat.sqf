@@ -23,7 +23,7 @@ params ["_VehicleObject", "_CrewGroup", "_CargoGroup"];
 if (_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false]) exitWith {
 	if (_ConvoyDebug) then {
 		format [
-			"[CONVOY] Skipping ambush handler for AA-engaging vehicle: %1",
+			"[CONVOY-AMBSKIP-AA] %1",
 			_VehicleObject
 		] spawn OKS_fnc_LogDebug;
 	};
@@ -40,11 +40,13 @@ waitUntil {
 if (_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false]) exitWith {
 	if (_ConvoyDebug) then {
 		format [
-			"[CONVOY] Ambush handler aborted due to AA engagement for %1",
+			"[CONVOY-AMBABORT-AA] %1",
 			_VehicleObject
 		] spawn OKS_fnc_LogDebug;
 	};
 };
+
+_VehicleObject setVariable ["OKS_Convoy_Stopped", true, true];
 
 _CargoGroup setBehaviour "COMBAT";
 _CrewGroup setBehaviour "COMBAT";
@@ -52,7 +54,7 @@ _CargoGroup setCombatMode "RED";
 _CrewGroup setCombatMode "RED";
 
 if (_ConvoyDebug) then {
-	"[CONVOY] Ambush detected. Halting convoy." spawn OKS_fnc_LogDebug;
+	"[CONVOY-AMBUSHD] Halting convoy." spawn OKS_fnc_LogDebug;
 };
 
 _VehicleObject forceSpeed 0;

@@ -20,7 +20,9 @@ for "_i" from 0 to ((_primarySlots + _reserveSlots) - 1) do {
     private _pos = _positions select _slotIdx;
     private _grp = group driver _veh;
     while { (count waypoints _grp) > 0 } do { deleteWaypoint ((waypoints _grp) select 0); };
-    private _wp = _grp addWaypoint [_pos, 0];
-    _wp setWaypointType "HOLD";
-    _wp setWaypointCompletionRadius 4;
+    private _wp = _grp addWaypoint [_pos, 0]; 
+    _wp setWaypointType "MOVE"; 
+    _wp setWaypointCompletionRadius 4; 
+    // Tag waypoint so dispersion helper doesn’t increase spacing or spam logs at destination
+    _wp setWaypointDescription "OKS_SUPPRESS_DISPERSION";
 } forEach _assign;

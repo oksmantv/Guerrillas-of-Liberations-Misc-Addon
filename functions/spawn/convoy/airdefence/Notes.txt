@@ -1,0 +1,1 @@
+Putting the AA vehicle at the back fails, it gets the lead vehicle as its lead vehicle, but regardless the speed is set to -1.

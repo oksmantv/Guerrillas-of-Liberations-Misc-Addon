@@ -314,7 +314,6 @@ class CfgFunctions // Defines a function
 		class OKS_Spawn_Convoy_ConvoyHelper {
 			file = "\OKS_GOL_Misc\functions\spawn\convoy\helper";
 			class Convoy_AssignParkingAtEnd {};
-			class Convoy_CatchUpBooster {};
 			class Convoy_CheckAndAdjustSpeeds {};
 			class Convoy_EndParking_AssignIndices {};
 			class Convoy_InitIntendedSlots {};
@@ -322,6 +321,9 @@ class CfgFunctions // Defines a function
 			class Convoy_MonitorReserveActivation {};
 			class Convoy_PlaceDebugObject {};
 			class Convoy_SetupHerringBone {};
+			class Convoy_NearestRoadTowardsOrigin {};
+			class Convoy_MakeSlot {};
+			class Convoy_IsBlocked {};
 			class Convoy_WaitUntilCasualties {};
 			class Convoy_WaitUntilCombat {};
 			class Convoy_WaitUntilTargets {};
@@ -333,7 +335,6 @@ class CfgFunctions // Defines a function
 			class Convoy_EnsureMinRoadDistance {};
 			class Convoy_FindEnemyAirTargets {};
 			class Convoy_IsEnemySide {};
-			class Convoy_IsClearOfObstacles {};
 			class Convoy_IsOffRoad {};
 			class Convoy_IsFlatTerrain {};
 			class Convoy_SelectAAVehicle {};

@@ -17,14 +17,14 @@ private _convoyCrewGroups = [];
 private _convoySide = side (group driver (_convoyVehicleArray select 0));
 private _ignoredAirTargets = [];
 private _pullOffMaxSlopeDeg = missionNamespace getVariable ["GOL_Convoy_PullOffMaxSlopeDeg", 15];
-private _pullOffMinRoadDist = missionNamespace getVariable ["GOL_Convoy_PullOffMinRoadDist", 20];
+private _pullOffMinRoadDist = missionNamespace getVariable ["GOL_Convoy_PullOffMinRoadDist", 10];
 private _mergeGapMin = missionNamespace getVariable ["GOL_Convoy_MergeGapMin", 80];
 private _mergeGapTimeout = missionNamespace getVariable ["GOL_Convoy_MergeGapTimeout", 30];
 private _speedRampStepKph = missionNamespace getVariable ["GOL_Convoy_SpeedRampStepKph", 10];
 private _speedRampInterval = missionNamespace getVariable ["GOL_Convoy_SpeedRampInterval", 1];
 
 
-while { true } do {
+while { {_x GetVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArray != count _convoyVehicleArray; } do {
 	if ((({ !isNull _x && alive _x } count _convoyVehicleArray) == 0)) exitWith {};
 
 	_convoyCrewGroups = [];
@@ -97,7 +97,7 @@ while { true } do {
 		format ["[CONVOY_AIR] Stored %1 pending waypoints for %2", count _storedWaypoints, _aaVehicle] spawn OKS_fnc_LogDebug;
 	};
 
-	// Compute a pull-off point: 50m ahead of the AA vehicle, then offset to the clearer side by 15m if possible
+	// Compute a pull-off point: 50m ahead of the AA vehicle, then offset to the clearer side by ~18m if possible
 	private _aaVehiclePos = getPosATL _aaVehicle;
 	private _aaVehicleDir = getDir _aaVehicle;
 	private _posAhead = [
@@ -108,8 +108,9 @@ while { true } do {
 
 	private _leftDir = _aaVehicleDir - 90;
 	private _rightDir = _aaVehicleDir + 90;
-	private _leftPos = [(_posAhead select 0) + 35 * (sin _leftDir), (_posAhead select 1) + 35 * (cos _leftDir), _posAhead select 2];
-	private _rightPos = [(_posAhead select 0) + 35 * (sin _rightDir), (_posAhead select 1) + 35 * (cos _rightDir), _posAhead select 2];
+	// Increased lateral range by ~30% from the reduced baseline
+	private _leftPos = [(_posAhead select 0) + 22.75 * (sin _leftDir), (_posAhead select 1) + 22.75 * (cos _leftDir), _posAhead select 2];
+	private _rightPos = [(_posAhead select 0) + 22.75 * (sin _rightDir), (_posAhead select 1) + 22.75 * (cos _rightDir), _posAhead select 2];
 	private _pullOffPos = if ((!([_leftPos, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_leftPos, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then {_leftPos} else { if ((!([_rightPos, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_rightPos, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then {_rightPos} else {_posAhead} };
 
 	// If pull-off equals current location (no offset possible), force a short forward move to avoid blocking
@@ -119,18 +120,19 @@ while { true } do {
 			(_aaVehiclePos select 1) + 20 * (cos _aaVehicleDir),
 			(_aaVehiclePos select 2)
 		];
-		private _leftShort = [(_posShortAhead select 0) + 25 * (sin _leftDir), (_posShortAhead select 1) + 25 * (cos _leftDir), _posShortAhead select 2];
-		private _rightShort = [(_posShortAhead select 0) + 25 * (sin _rightDir), (_posShortAhead select 1) + 25 * (cos _rightDir), _posShortAhead select 2];
+		// Increased short lateral by ~30%
+		private _leftShort = [(_posShortAhead select 0) + 16.25 * (sin _leftDir), (_posShortAhead select 1) + 16.25 * (cos _leftDir), _posShortAhead select 2];
+		private _rightShort = [(_posShortAhead select 0) + 16.25 * (sin _rightDir), (_posShortAhead select 1) + 16.25 * (cos _rightDir), _posShortAhead select 2];
 		_pullOffPos = if (!([_leftShort, 7] call OKS_fnc_Convoy_IsBlocked)) then {_leftShort} else { if (!([_rightShort, 7] call OKS_fnc_Convoy_IsBlocked)) then {_rightShort} else {_posShortAhead} };
 	};
 
-	// Extra nudge further off-road along the chosen lateral direction if possible (adds ~10m more margin)
+	// Extra nudge further off-road along the chosen lateral direction if possible (adds ~5m more margin)
 	if (!(_pullOffPos isEqualTo _posAhead)) then {
 		private _useLeft = (_pullOffPos distance2D _leftPos) <= (_pullOffPos distance2D _rightPos);
 		private _nudgeDir = if (_useLeft) then {_leftDir} else {_rightDir};
 		private _nudged = [
-			(_pullOffPos select 0) + 10 * (sin _nudgeDir),
-			(_pullOffPos select 1) + 10 * (cos _nudgeDir),
+			(_pullOffPos select 0) + 6.5 * (sin _nudgeDir),
+			(_pullOffPos select 1) + 6.5 * (cos _nudgeDir),
 			(_pullOffPos select 2)
 		];
 		if ((!([_nudged, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_nudged, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then { _pullOffPos = _nudged; };
@@ -149,7 +151,7 @@ while { true } do {
 				(_pullOffPos select 2)
 			];
 		if ((!([_candidate, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_candidate] call OKS_fnc_Convoy_IsOffRoad) && ([_candidate, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) exitWith { _pullOffPos = _candidate; _fixed = true; };
-		} forEach [5,10,15,20,25,30];
+		} forEach [5,10,15,20,25];
 		if (!_fixed) then {
 			// Try opposite lateral
 			private _altDir = if (_tryDir isEqualTo _leftDir) then { _rightDir } else { _leftDir };
@@ -160,7 +162,7 @@ while { true } do {
 					(_pullOffPos select 2)
 				];
 				if ((!([_candidate2, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_candidate2] call OKS_fnc_Convoy_IsOffRoad) && ([_candidate2, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) exitWith { _pullOffPos = _candidate2; _fixed = true; };
-			} forEach [5,10,15,20,25,30];
+			} forEach [5,10,15,20,25];
 		};
 		if (!_fixed) then {
 			// Last resort: move a bit further forward and re-check lateral 15m
@@ -194,7 +196,28 @@ while { true } do {
 	// Add temporary waypoint to pull-off point
 	private _tempWaypoint = _aaGroup addWaypoint [_pullOffPos, 0];
 	_tempWaypoint setWaypointType "MOVE";
-	_tempWaypoint setWaypointCompletionRadius 6;
+	_tempWaypoint setWaypointCompletionRadius 8;
+	_tempWaypoint setWaypointSpeed "FULL";
+    if (_isConvoyDebugEnabled) then {
+        format ["[CONVOY_AIR] Assigned pull-off waypoint to AA vehicle %1 at %2", _aaVehicle, _pullOffPos] spawn OKS_fnc_LogDebug;
+    };
+	if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
+		_aaVehicle setVariable ["OKS_Convoy_AAEngaging", true, true];
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] AA vehicle %1 set to engaging (pull-off)", _aaVehicle] spawn OKS_fnc_LogDebug;
+		};
+		// Put group into AWARE/YELLOW now so per-vehicle speed governor (which runs in CARELESS) yields
+		_aaGroup setBehaviour "AWARE";
+		_aaGroup setCombatMode "YELLOW";
+		// Ensure movement AI is enabled and off-road movement is allowed
+		{
+			_x enableAI "PATH";
+			_x enableAI "MOVE";
+		} forEach (units _aaGroup);
+		private _drv = driver _aaVehicle;
+		if (!isNull _drv) then { _drv forceFollowRoad false; };
+	};
+
 	// Travel conservatively to avoid stopping/engaging on the road
 	_tempWaypoint setWaypointBehaviour "AWARE";
 	_tempWaypoint setWaypointCombatMode "YELLOW";
@@ -206,42 +229,76 @@ while { true } do {
 		_x doWatch objNull;
 	} forEach (units _aaGroup);
 	// Hard hold fire while moving to pull-off
-	_aaGroup setCombatMode "BLUE";
+	_aaGroup setCombatMode "YELLOW";
+
 	// Unlock AA speed for the pull-off movement
-	if (!isNull _aaVehicle && {canMove _aaVehicle}) then { _aaVehicle limitSpeed 999; _aaVehicle forceSpeed -1; };
+	if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
+		_aaVehicle limitSpeed 999; _aaVehicle forceSpeed -1; 
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] forceSpeed -1 applied (AA pull-off) to %1", _aaVehicle] spawn OKS_fnc_LogDebug;
+		};
+		// Issue an explicit doMove as a fallback in case waypoint driving stalls
+		private _drv = driver _aaVehicle;
+		if (!isNull _drv) then { _drv doMove _pullOffPos; };
+		_aaVehicle doMove _pullOffPos;
+	};
 
-	// Mark AA engagement to prevent generic ambush handler from interfering
-	_aaVehicle setVariable ["OKS_Convoy_AAEngaging", true, true];
-
-	// Travel to the pull-off
+	// Travel to the pull-off with a timeout fail-safe
+	private _pullOffTimeout = missionNamespace getVariable ["GOL_Convoy_AAPullOffTimeout", 45];
+	private _skipDistanceDelay = missionNamespace getVariable ["GOL_Convoy_AAPullOffSkipDelay", 10]; // max delay before skipping distance check
+	private _pullOffStartTime = time;
+	private _lastHeartbeat = time;
 	waitUntil {
 		sleep 0.5;
-		isNull _aaVehicle || !canMove _aaVehicle || (_aaVehicle distance _pullOffPos < 10)
-	};
-	if (!isNull _aaVehicle && canMove _aaVehicle) then {
-		// If still on road, issue a small lateral nudge waypoint to get off the road
-		private _aaVehicleHere = getPosATL _aaVehicle;
-		if (isOnRoad _aaVehicleHere) then {
-			private _useLeft = (_pullOffPos distance2D [(_aaVehicleHere select 0) + (sin _leftDir), (_aaVehicleHere select 1) + (cos _leftDir)]) <=
-							(_pullOffPos distance2D [(_aaVehicleHere select 0) + (sin _rightDir), (_aaVehicleHere select 1) + (cos _rightDir)]);
-			private _nudgeDir = if (_useLeft) then { _leftDir } else { _rightDir };
-			private _offRoadPos = [(_aaVehicleHere select 0) + 12 * (sin _nudgeDir), (_aaVehicleHere select 1) + 12 * (cos _nudgeDir), _aaVehicleHere select 2];
-			private _tempWaypoint2 = _aaGroup addWaypoint [_offRoadPos, 0];
-			_tempWaypoint2 setWaypointType "MOVE";
-			_tempWaypoint2 setWaypointCompletionRadius 4;
-			_tempWaypoint2 setWaypointBehaviour "AWARE";
-			_tempWaypoint2 setWaypointCombatMode "YELLOW";
-			if (_isConvoyDebugEnabled) then { "[CONVOY_AIR] Pull-off on road; issuing extra nudge off-road" spawn OKS_fnc_LogDebug; };
-			waitUntil { sleep 0.5; isNull _aaVehicle || !canMove _aaVehicle || (!isOnRoad (getPosATL _aaVehicle)) || (_aaVehicle distance _offRoadPos < 5) };
+		// After _skipDistanceDelay seconds, stop waiting on the precise distance and proceed to engage
+		private _done = isNull _aaVehicle
+			|| !canMove _aaVehicle
+			|| (_aaVehicle distance _pullOffPos < 10)
+			|| ((time - _pullOffStartTime) > _skipDistanceDelay)
+			|| ((time - _pullOffStartTime) > _pullOffTimeout);
+		if (_isConvoyDebugEnabled && {!_done} && {(time - _lastHeartbeat) > 5}) then {
+			_lastHeartbeat = time;
+			format ["[CONVOY_AIR] En-route to pull-off. Distance=%1m, Elapsed=%2s", round (_aaVehicle distance _pullOffPos), round (time - _pullOffStartTime)] spawn OKS_fnc_LogDebug;
 		};
+		_done
+	};
+	private _elapsedPullOff = time - _pullOffStartTime;
+	private _timedOutShort = (!isNull _aaVehicle && {canMove _aaVehicle} && (_elapsedPullOff > _skipDistanceDelay));
+	private _timedOutLong = (!isNull _aaVehicle && {canMove _aaVehicle} && (_elapsedPullOff > _pullOffTimeout));
+	private _timedOutToPullOff = _timedOutShort || _timedOutLong;
+	if (_isConvoyDebugEnabled) then {
+		if (_timedOutToPullOff) then {
+			private _mode = if (_timedOutLong) then { format ["timeout-long (%1s)", _pullOffTimeout] } else { format ["skip-distance (%1s)", _skipDistanceDelay] };
+			format ["[CONVOY_AIR] Pull-off %1. Using current vicinity to engage. Pos: %2", _mode, getPosATL _aaVehicle] spawn OKS_fnc_LogDebug;
+		} else {
+			format ["[CONVOY_AIR] AA vehicle %1 reached pull-off at %2", _aaVehicle, _pullOffPos] spawn OKS_fnc_LogDebug;
+		};
+	};
+	if (!isNull _aaVehicle) then {
 		// Now hold and engage
+		// Reveal all detected air targets to AA group
+		private _currentAirTargets = [_convoyCrewGroups, _convoyVehicleArray, _convoySide, _ignoredAirTargets] call OKS_fnc_Convoy_FindEnemyAirTargets;
+		{
+			private _airTarget = _x;
+			if (!isNull _airTarget && {alive _airTarget}) then {
+				_aaVehicle reveal [_airTarget, 4];
+				{
+					_x reveal [_airTarget, 4];
+				} forEach (crew _aaVehicle);
+				if (_isConvoyDebugEnabled) then {
+					format ["[CONVOY_AIR] Revealed air target %1 to AA vehicle/group", _airTarget] spawn OKS_fnc_LogDebug;
+				};
+			};
+		} forEach _currentAirTargets;
+		
 		{ 
 			_x enableAI "TARGET";
 			_x enableAI "AUTOTARGET";
 			_x enableAI "AUTOCOMBAT"; 
-		} forEach (units _aaGroup);
+		} forEach (crew _aaVehicle);
 		_aaGroup setBehaviour "COMBAT";
 		_aaGroup setCombatMode "RED";
+
 		_aaVehicle limitSpeed 0; _aaVehicle forceSpeed 0;
 		if (_isConvoyDebugEnabled) then { format ["[CONVOY_AIR] %1 reached pull-off and is engaging air targets", _aaVehicle] spawn OKS_fnc_LogDebug; };
 	};
@@ -292,8 +349,8 @@ while { true } do {
 		// If nothing else in array (edge case), allow immediate restore
 		if (_nearestConvoyDist isEqualTo 1e9) then { _nearestConvoyDist = 10000; };
 
-		private _clearAndSpaced = ((count _currentAirTargets) == 0) && (_nearestConvoyDist >= 100);
-		private _timeout = (_noAirSince >= 0) && ((time - _noAirSince) > 30);
+		private _clearAndSpaced = ((count _currentAirTargets) == 0) && (_nearestConvoyDist >= 60);
+		private _timeout = (_noAirSince >= 0) && ((time - _noAirSince) > 15);
 		private _hardTimeout = (time - _engageStartTime) > 90;
 
 		if (_isConvoyDebugEnabled) then {
@@ -324,24 +381,58 @@ while { true } do {
 		_wp setWaypointCombatMode _cm;
 		_wp setWaypointStatements _stmts;
 	} forEach _storedWaypoints;
-	if (_isConvoyDebugEnabled) then {
-		format ["[CONVOY_AIR] Restored %1 waypoints for %2", count _storedWaypoints, _aaVehicle] spawn OKS_fnc_LogDebug;
-	};
+    if (_isConvoyDebugEnabled) then {
+        format ["[CONVOY_AIR] Restored %1 waypoints for %2", count _storedWaypoints, _aaVehicle] spawn OKS_fnc_LogDebug;
+        format ["[CONVOY_AIR] AA vehicle %1 finished engagement and waypoints restored", _aaVehicle] spawn OKS_fnc_LogDebug;
+    };
 
-	_aaVehicle setVariable ["OKS_Convoy_AAEngaging", false, true];
+	if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
+		_aaVehicle setVariable ["OKS_Convoy_AAEngaging", false, true];
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] AA vehicle %1 set to not engaging (waypoints restored)", _aaVehicle] spawn OKS_fnc_LogDebug;
+		};
+	};
 	if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
 		_aaVehicle limitSpeed 999;
 		_aaVehicle forceSpeed -1;
-		_aaVehicle setBehaviour "CARELESS";
 		if (_isConvoyDebugEnabled) then {
-			format ["[CONVOY_AIR] AA vehicle %1 restored to CARELESS mode after engagement", _aaVehicle] spawn OKS_fnc_LogDebug;
+			format ["[CONVOY_AIR] forceSpeed -1 applied (AA post-engagement) to %1", _aaVehicle] spawn OKS_fnc_LogDebug;
+		};
+		// Reset group back to convoy travel posture so speed governor can take over
+		_aaGroup setBehaviour "CARELESS";
+		_aaGroup setCombatMode "BLUE";
+		_aaGroup setSpeedMode "NORMAL";
+		{
+			// Keep AA dumb during rejoin phase per design: disable targeting subsystems
+			_x disableAI "TARGET";
+			_x disableAI "AUTOTARGET";
+			_x disableAI "AUTOCOMBAT";
+			// Ensure movement subsystems are enabled for rejoin
+			_x enableAI "PATH";
+			_x enableAI "MOVE";
+			_x enableAI "FSM";
+			_x doTarget objNull;
+			_x doWatch objNull;
+		} forEach (crew _aaVehicle);
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] AA group set to CARELESS/BLUE and targeting disabled for rejoin", _aaVehicle] spawn OKS_fnc_LogDebug;
+		};
+		// Wait until AA vehicle is within max dispersion range of last convoy vehicle before reapplying speed logic
+		private _convoyArray = (_convoyVehicleArray select 0) getVariable ["OKS_Convoy_VehicleArray", _convoyVehicleArray];
+		if ((count _convoyArray) > 1) then {
+			private _lastVehicleIdx = (count _convoyArray) - 2;
+			private _leaderVehicle = _convoyArray select _lastVehicleIdx;
+			private _aaVehicleDispersion = _aaVehicle getVariable ["OKS_Convoy_Dispersion", (_leaderVehicle getVariable ["OKS_Convoy_Dispersion", 25])];
+			waitUntil {
+				sleep 0.5;
+				isNull _aaVehicle || !canMove _aaVehicle || (_aaVehicle distance _leaderVehicle) <= _aaVehicleDispersion
+			};
 		};
 	};
 
-	// Reinsert AA vehicle at tail and start its speed logic behind previous tail
+	// Reinsert AA vehicle at tail
 	private _leadVehicle = _convoyVehicleArray select 0;
 	private _convoyArray = _leadVehicle getVariable ["OKS_Convoy_VehicleArray", _convoyVehicleArray];
-	// Remove AA if present, then append
 	private _aaVehicleIdx = _convoyArray find _aaVehicle;
 	if (_aaVehicleIdx >= 0) then { _convoyArray deleteAt _aaVehicleIdx; };
 	_convoyArray pushBack _aaVehicle;
@@ -350,47 +441,26 @@ while { true } do {
 		format ["[CONVOY_AIR] Appended %1 as tail vehicle. Convoy size now: %2", _aaVehicle, count _convoyArray] spawn OKS_fnc_LogDebug;
 	};
 
+	// Always apply convoy speed logic to AA vehicle, following the last vehicle in the convoy (excluding itself)
 	if ((count _convoyArray) > 1) then {
-		private _previousTailVehicle = _convoyArray select ((count _convoyArray) - 2);
-		// Apply AA vehicle's own stored speed/dispersion or use base from previous tail
-		private _aaVehicleSpeedKph = _aaVehicle getVariable ["OKS_LimitSpeedBase", (_previousTailVehicle getVariable ["OKS_LimitSpeedBase", 40])];
-		private _aaVehicleDispersion = _aaVehicle getVariable ["OKS_Convoy_Dispersion", (_previousTailVehicle getVariable ["OKS_Convoy_Dispersion", 25])];
+		// Determine the tail leader excluding the AA vehicle itself (works even if AA is still in array)
+		private _tempConvoy = +_convoyArray;
+		private _aaIdx = _tempConvoy find _aaVehicle;
+		if (_aaIdx >= 0) then { _tempConvoy deleteAt _aaIdx; };
+		private _leaderVehicle = if ((count _tempConvoy) > 0) then { _tempConvoy select ((count _tempConvoy) - 1) } else { objNull };
+		private _aaVehicleSpeedKph = _aaVehicle getVariable ["OKS_LimitSpeedBase", (_leaderVehicle getVariable ["OKS_LimitSpeedBase", 40])];
+		private _aaVehicleDispersion = _aaVehicle getVariable ["OKS_Convoy_Dispersion", (_leaderVehicle getVariable ["OKS_Convoy_Dispersion", 25])];
 		_aaVehicle setVariable ["OKS_LimitSpeedBase", _aaVehicleSpeedKph, true];
 		_aaVehicle setVariable ["OKS_Convoy_Dispersion", _aaVehicleDispersion, true];
-
-		// Align AA group's current waypoint to the leader's current waypoint to avoid aiming for an old mid-column WP
-		private _leadGroup = group driver _leadVehicle;
-		private _aaGroupCurrent = group driver _aaVehicle;
-		private _leadCurrentWaypoint = currentWaypoint _leadGroup;
-		private _aaGroupWaypointCount = count (waypoints _aaGroupCurrent);
-		if (_aaGroupWaypointCount > 0) then {
-			if (_leadCurrentWaypoint < 1) then { _leadCurrentWaypoint = 1; };
-			if (_leadCurrentWaypoint > _aaGroupWaypointCount) then { _leadCurrentWaypoint = _aaGroupWaypointCount; };
-			_aaGroupCurrent setCurrentWaypoint [_aaGroupCurrent, _leadCurrentWaypoint];
-			if (_isConvoyDebugEnabled) then {
-				format ["[CONVOY_AIR] Synced AA current WP to leader: idx %1 (AA has %2 WPs)", _leadCurrentWaypoint, _aaGroupWaypointCount] spawn OKS_fnc_LogDebug;
-			};
+		// Immediately clamp speed to base to avoid surge past the convoy while governor spins up
+		_aaVehicle limitSpeed (_aaVehicleSpeedKph max 10);
+		_aaVehicle forceSpeed ((_aaVehicleSpeedKph max 10) / 3.6);
+		_aaVehicle setVariable ["OKS_ForceSpeedActive", true, true];
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] Rejoin clamp: leader=%1 baseKph=%2 disp=%3 (limit+force applied)", _leaderVehicle, _aaVehicleSpeedKph, _aaVehicleDispersion] spawn OKS_fnc_LogDebug;
 		};
-
-		// Detect a halted convoy (simple check: leader barely moving)
-		private _isConvoyMoving = (vectorMagnitude (velocity _leadVehicle)) > 0.8;
-
-		if (_isConvoyMoving) then {
-			// Enforce a merge gap before accelerating, then ramp speed to avoid collisions
-			[_aaVehicle, _previousTailVehicle, _aaVehicleDispersion, _mergeGapMin, _mergeGapTimeout, _speedRampStepKph, _speedRampInterval] spawn OKS_fnc_Convoy_AAMergeGapHandler;
-			_aaVehicle forceSpeed -1;
-			_aaVehicle limitSpeed 999;
-			[_aaVehicle, _previousTailVehicle, _aaVehicleDispersion] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
-		} else {
-			// Convoy is halted: park AA at tail and hold. Your convoy controller will release it when movement resumes.
-			if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
-				_aaVehicle limitSpeed 0;
-				_aaVehicle forceSpeed 0;
-			};
-			if (_isConvoyDebugEnabled) then {
-				"[CONVOY_AIR] Convoy halted; AA parked at tail and holding. Ramp deferred." spawn OKS_fnc_LogDebug;
-			};
-		}
+		[_aaVehicle, _leaderVehicle, _aaVehicleDispersion] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
+		// Only unlock speed if merging/engaging (handled elsewhere)
 	};
 	if (_isConvoyDebugEnabled) then { "[CONVOY_AIR] AA vehicle rejoined convoy and waypoints restored" spawn OKS_fnc_LogDebug; };
 

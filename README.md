@@ -991,18 +991,19 @@ Edited by OksmanTV & Bluwolf.
 
   ### Parameters
 
-  | Name                | Type                | Default   | Description                                                         |
-  |---------------------|---------------------|-----------|---------------------------------------------------------------------|
-  | `_UnitsOrGroupOrArray` | Array, Group, Object | `[]`      | HVT units to evacuate (array, group, or single unit).               |
-  | `_ExfilSite`        | Array, Object       | `[0,0,0]` | Exfiltration site position (array) or object.                       |
-  | `_Side`             | Side                | `west`    | Side responsible for the task.                                      |
-  | `_HelicopterEvac`   | Boolean             | `false`   | If true, requires helicopter extraction at exfil site.              |
-  | `_ParentTask`       | String              | `""`      | Optional parent task or identifier.                                 |
-  | `_IsCaptive`        | Boolean             | `true`    | If true, HVTs are set as captives; otherwise, they are hostile.     |
+  | Name                   | Type                | Default   | Description                                                         |
+  |------------------------|---------------------|-----------|---------------------------------------------------------------------|
+  | `_UnitsOrGroupOrArray` | Array, Group, Object| `[]`      | HVT units to evacuate (array, group, or single unit).               |
+  | `_ExfilSite`           | Array, Object       | `[0,0,0]` | Exfiltration site position (array) or object.                       |
+  | `_Side`                | Side                | `west`    | Side responsible for the task.                                      |
+  | `_HelicopterEvac`      | Boolean             | `false`   | If true, requires helicopter extraction at exfil site.              |
+  | `_ParentTask`          | String              | `""`      | Optional parent task or identifier.                                 |
+  | `_IsCaptive`           | Boolean             | `true`    | If true, HVTs are set as captives; otherwise, they are hostile.     |
+  | `_IsTaskOnStart`       | Boolean             | `false`   | If true, the task will appear before the HVT group is captive       |
 
   ### Example Usage
 
-      [Group HVT_1, getPos ExfilSite_1, west, false, nil] spawn OKS_fnc_Evacuate_HVT;
+      [Group HVT_1, getPos ExfilSite_1, west, false, nil, true, false] spawn OKS_fnc_Evacuate_HVT;
 
 </details>
 <details>
@@ -1014,16 +1015,15 @@ Edited by OksmanTV & Bluwolf.
 
   ### Parameters
 
-  | Name                   | Type              | Default | Description                                            |
-  |------------------------|-------------------|---------|--------------------------------------------------------|
+  | Name                   | Type                 | Default | Description                                            |
+  |------------------------|----------------------|---------|--------------------------------------------------------|
   | `_UnitsOrGroupOrArray` | Array, Group, Object | `[]`    | Hostage units (array, group, or single unit).          |
-  | `_TaskParent`          | Any, Nil          | `nil`   | Optional parent task or identifier.                    |
+  | `_TaskParent`          | Any, Nil             | `nil`   | Optional parent task or identifier.                    |
 
   ### Example Usage
 
       [Group HVT_1] spawn OKS_fnc_Hostage;
-
-      [Group HVT_1, getPos ExfilSite_1, west, false, nil] spawn OKS_fnc_Hostage;
+      [Group HVT_1, "Task_1"] spawn OKS_fnc_Hostage;
 
 </details>
 <details>
