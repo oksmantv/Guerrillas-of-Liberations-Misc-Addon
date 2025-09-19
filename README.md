@@ -1011,7 +1011,8 @@ Edited by OksmanTV & Bluwolf.
 
   ### Description
   Creates a task to manage and rescue one or more hostages.  
-  Hostages are set to captive, handcuffed, and visually marked as restrained.
+  Hostages are set to captive, handcuffed, and visually marked as restrained.  
+  Supports flexible task creation timing and comprehensive logging.
 
   ### Parameters
 
@@ -1019,11 +1020,13 @@ Edited by OksmanTV & Bluwolf.
   |------------------------|----------------------|---------|--------------------------------------------------------|
   | `_UnitsOrGroupOrArray` | Array, Group, Object | `[]`    | Hostage units (array, group, or single unit).          |
   | `_TaskParent`          | Any, Nil             | `nil`   | Optional parent task or identifier.                    |
+  | `_TaskOnStart`         | Boolean              | `false` | Whether to create task immediately or on completion.   |
 
   ### Example Usage
 
       [Group HVT_1] spawn OKS_fnc_Hostage;
       [Group HVT_1, "Task_1"] spawn OKS_fnc_Hostage;
+      [Group HVT_1, "Task_1", true] spawn OKS_fnc_Hostage;
 
 </details>
 <details>
@@ -1153,6 +1156,42 @@ Edited by OksmanTV & Bluwolf.
         nil,
         false
       ] spawn OKS_fnc_SetupIntel;
+
+</details>
+</details>
+<details>
+  <summary>🚩 Logic Scripts</summary>
+<details>
+  <summary>OKS_fnc_SelectRandomPosition</summary>
+
+  ### Description
+  Instantly moves a unit to one of several predefined positions with optional direction control.  
+  Supports ASL positioning for water compatibility and smart direction handling for both infantry and vehicles.  
+  Uses the `GOL_Enemy_Debug` setting for comprehensive logging.
+
+  ### Parameters
+
+  | Name         | Type           | Default | Description                                                         |
+  |--------------|----------------|---------|---------------------------------------------------------------------|
+  | `_Unit`      | Object         | —       | Unit to move (infantry or vehicle).                                 |
+  | `_Positions` | Array          | —       | Array of positions to choose from (2D or 3D arrays).                |
+  | `_Directions`| Array          | `[]`    | Array of directions corresponding to positions (optional).           |
+
+  ### Example Usage
+
+      [myUnit, [[100,100,0], [200,200,0]], [90, 180]] call OKS_fnc_SelectRandomPosition;
+      [myUnit, [getMarkerPos "pos1", getMarkerPos "pos2"]] call OKS_fnc_SelectRandomPosition;
+      [myBoat, [[1000,2000,0], [1500,2500,0]], [45, 135]] call OKS_fnc_SelectRandomPosition;
+
+  ### Features
+
+  - **ASL Position Support**: Automatically converts positions to ASL coordinates for water compatibility
+  - **Smart Direction Handling**: Detects infantry vs vehicles and applies appropriate direction commands
+  - **Infantry Direction**: Uses `setDir` and `doWatch` for proper facing direction
+  - **Vehicle Direction**: Uses `setDir` for vehicle orientation
+  - **Comprehensive Logging**: Uses `GOL_Enemy_Debug` with detailed logging via `OKS_fnc_LogDebug`
+  - **Error Handling**: Validates parameters and handles edge cases gracefully
+  - **Return Value**: Returns `[selectedPosition, selectedDirection, randomIndex]` for reference
 
 </details>
 </details>
