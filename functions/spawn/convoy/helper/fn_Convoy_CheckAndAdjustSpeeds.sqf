@@ -17,10 +17,34 @@ if(_ConvoySpeedDebug) then {
 };
 
 waitUntil {
-	sleep 0.5;
+	sleep 1.0;
 	{behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0
 };
 while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
+	// CRITICAL: Exit disabled vehicles from convoy behavior to prevent alternating loop
+	private _isVehicleDisabled = (isNull _Vehicle) || {!(alive _Vehicle)} || {!(canMove _Vehicle)};
+	if (_isVehicleDisabled) then {
+		// Vehicle is disabled - exit convoy behavior and switch to combat mode
+		if (_ConvoyDebug) then {
+			format ["[CONVOY-DISABLED-EXIT] %1 is disabled, exiting convoy behavior and switching to combat mode", _Vehicle] spawn OKS_fnc_LogDebug;
+		};
+		
+		// Remove from convoy behavior by changing crew behavior
+		{
+			_x setBehaviour "COMBAT";
+			_x setCombatMode "RED";
+		} forEach crew _Vehicle;
+		
+		// Remove convoy variables to prevent interference
+		_Vehicle setVariable ["OKS_Convoy_ImmediateLeader", nil, true];
+		_Vehicle setVariable ["OKS_Convoy_FrontLeader", nil, true];
+		_Vehicle setVariable ["OKS_Convoy_AAEngaging", nil, true]; // Clear AA status
+		_Vehicle setVariable ["DEBUG_DisabledExit", time, true];
+		
+		// Exit the loop - this vehicle is no longer part of convoy behavior
+		break;
+	};
+	
 	// Calculate waypoint and distance to waypoint for stuck vehicle logic
 	private _group = group _Vehicle;
 	private _wpIdx = currentWaypoint _group;
@@ -55,15 +79,15 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 	private _SpeedKph = _Vehicle getVariable ["OKS_LimitSpeedBase", 20];
 
 	// Rebind leader if the current one is AA-engaging or disabled/cannot move
-	private _convoyLeaderVehicle = _PreviousVehicle;
+	// Read the current immediate leader from stored variable instead of stale parameter
+	private _convoyLeaderVehicle = _Vehicle getVariable ["OKS_Convoy_ImmediateLeader", _PreviousVehicle];
 	if (!isNull _convoyLeaderVehicle) then {
 		private _isLeaderEngagingAA = _convoyLeaderVehicle getVariable ["OKS_Convoy_AAEngaging", false];
 		private _isLeaderDisabled = (isNull _convoyLeaderVehicle) || {!(alive _convoyLeaderVehicle)} || {!(canMove _convoyLeaderVehicle)};
 		if (_isLeaderEngagingAA || _isLeaderDisabled) then {
-			// Find a new leader ahead from convoy array stored on lead vehicle
-			private _leadConvoyVehicle = _Vehicle getVariable ["OKS_Convoy_LeadVehicle", objNull];
-			if (!isNull _leadConvoyVehicle) then {
-				private _convoyVehicleArray = _leadConvoyVehicle getVariable ["OKS_Convoy_VehicleArray", []];
+			// Find a new leader ahead from convoy array stored on this vehicle (resilient to convoy leader death)
+			private _convoyVehicleArray = _Vehicle getVariable ["OKS_Convoy_VehicleArray", []];
+			if (_convoyVehicleArray isNotEqualTo []) then {
 				private _vehicleArrayIndex = _convoyVehicleArray find _Vehicle;
 				if (_vehicleArrayIndex > 0) then {
 					// Attempt to bind to the nearest valid vehicle ahead (vehicleArrayIndex-1, vehicleArrayIndex-2, ...)
@@ -87,13 +111,21 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 							] spawn OKS_fnc_LogDebug;
 						};
 						_convoyLeaderVehicle = _newLeaderVehicle; _PreviousVehicle = _newLeaderVehicle;
+						// Update this vehicle's immediate leader reference for future iterations
+						_Vehicle setVariable ["OKS_Convoy_ImmediateLeader", _newLeaderVehicle, true];
+						// Debug variables for troubleshooting
+						_Vehicle setVariable ["DEBUG_RebindImmediateLeader", _newLeaderVehicle, true];
+						_Vehicle setVariable ["DEBUG_LastUpdated", time, true];
 
 						// PATCH: Reassign the follower of the AA vehicle to follow the AA vehicle's previous leader
 						// Only applies if the disabled/AA vehicle is not the lead vehicle
 						if (_vehicleArrayIndex < (count _convoyVehicleArray) - 1) then {
 							private _followerVehicle = _convoyVehicleArray select (_vehicleArrayIndex + 1);
 							if (!isNull _followerVehicle) then {
-								_followerVehicle setVariable ["OKS_Convoy_Leader", _newLeaderVehicle, true];
+								_followerVehicle setVariable ["OKS_Convoy_ImmediateLeader", _newLeaderVehicle, true];
+								// Debug variables for troubleshooting
+								_followerVehicle setVariable ["DEBUG_FollowerRebind", _newLeaderVehicle, true];
+								_followerVehicle setVariable ["DEBUG_LastUpdated", time, true];
 								if (_ConvoyDebug) then {
 									format [
 										"[CONVOY-FOLLOWER-REBINDED] %1 now follows %2 after AA/disabled event",
@@ -103,18 +135,73 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 								};
 							};
 						};
+					} else {
+						// No valid leader found ahead - this vehicle becomes the front leader
+						if (_ConvoyDebug) then {
+							format [
+								"[CONVOY-PROMOTION] %1 promoted to front leader (no valid vehicles ahead)",
+								_Vehicle
+							] spawn OKS_fnc_LogDebug;
+						};
+						_convoyLeaderVehicle = objNull; _PreviousVehicle = objNull;
+						// Update this vehicle to have no immediate leader (front leader)
+						_Vehicle setVariable ["OKS_Convoy_ImmediateLeader", objNull, true];
+						// Debug variables for troubleshooting
+						_Vehicle setVariable ["DEBUG_PromotedToFrontLeader", true, true];
+						_Vehicle setVariable ["DEBUG_LastUpdated", time, true];
+						// Note: No need to update followers - they were already following this vehicle
 					};
 				};
 			};
 		};
 	};
 	
+	// Cleanup: Remove disabled vehicles from convoy arrays to prevent interference
+	private _convoyVehicleArray = _Vehicle getVariable ["OKS_Convoy_VehicleArray", []];
+	if (_convoyVehicleArray isNotEqualTo []) then {
+		private _cleanedArray = [];
+		{
+			private _checkVehicle = _x;
+			private _isDisabled = (isNull _checkVehicle) || {!(alive _checkVehicle)} || {!(canMove _checkVehicle)};
+			// Keep vehicle in array ONLY if it's functional (disabled vehicles get removed regardless of AA status)
+			if (!_isDisabled) then {
+				_cleanedArray pushBack _checkVehicle;
+			} else {
+				if (_ConvoyDebug) then {
+					format ["[CONVOY-CLEANUP] Removing disabled vehicle %1 from convoy array", _checkVehicle] spawn OKS_fnc_LogDebug;
+				};
+			};
+		} forEach _convoyVehicleArray;
+		
+		// Update all remaining vehicles with cleaned array
+		if (count _cleanedArray != count _convoyVehicleArray) then {
+			{
+				_x setVariable ["OKS_Convoy_VehicleArray", _cleanedArray, true];
+			} forEach _cleanedArray;
+		};
+		_convoyVehicleArray = _cleanedArray;
+	};
+	
 	// Lead vehicle: keep base speed
 	if (isNull _convoyLeaderVehicle) then {
+		// Only update front leader reference if it has actually changed (debouncing)
+		private _currentFrontLeader = if (_convoyVehicleArray isNotEqualTo []) then {
+			(_convoyVehicleArray select 0) getVariable ["OKS_Convoy_FrontLeader", objNull]
+		} else { objNull };
+		
+		if (_currentFrontLeader != _Vehicle && _convoyVehicleArray isNotEqualTo []) then {
+			// Front leader has changed - update all vehicles
+			{
+				_x setVariable ["OKS_Convoy_FrontLeader", _Vehicle, true];
+			} forEach _convoyVehicleArray;
+			if (_ConvoyDebug) then {
+				format ["[CONVOY-FRONT-LEADER] %1 is now the front leader, updated all %2 vehicles", _Vehicle, count _convoyVehicleArray] spawn OKS_fnc_LogDebug;
+			};
+		};
 		private _NewSpeedMps = _SpeedKph / 3.6;
 		_Vehicle limitSpeed _SpeedKph;
 		_Vehicle forceSpeed _NewSpeedMps;
-		sleep 1;
+		sleep 2;
 		continue;
 	};
 
@@ -205,7 +292,7 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 				_vehicleName, _leaderName, _Distance, _DangerFar, _NewSpeed
 			] spawn OKS_fnc_LogDebug;
 		};
-		sleep 0.5;
+		sleep 1.0;
 		continue;
 	};
 
@@ -223,7 +310,7 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 				_vehicleName, _leaderName, _Distance, _Far, _NewSpeed
 			] spawn OKS_fnc_LogDebug;
 		};
-		sleep 0.5;
+		sleep 1.0;
 		continue;
 	};
 
@@ -240,6 +327,20 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 			_vehicleName, _leaderName, _Distance, _Close, _Far, _NewSpeed
 		] spawn OKS_fnc_LogDebug;
 	};
-	sleep 0.5;
+	
+	// Final check: if this vehicle becomes disabled during loop, exit gracefully
+	private _finalDisabledCheck = (isNull _Vehicle) || {!(alive _Vehicle)} || {!(canMove _Vehicle)};
+	if (_finalDisabledCheck) then {
+		if (_ConvoyDebug) then {
+			format ["[CONVOY-DISABLED-FINAL] %1 became disabled during loop, exiting convoy behavior", _Vehicle] spawn OKS_fnc_LogDebug;
+		};
+		{
+			_x setBehaviour "COMBAT";
+			_x setCombatMode "RED";
+		} forEach crew _Vehicle;
+		break;
+	};
+	
+	sleep 1;
 	continue;
 };

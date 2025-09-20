@@ -77,7 +77,6 @@ if (isNull _selectedRoad) then {
 
 	private _cuttersNearSelectedRoad = nearestObjects [_selectedRoad, [_cutterClass], _cutterRadius];
 	private _cuttersNearSelectedRoadSpacing = nearestObjects [_selectedRoad, [_cutterClass], _minimumSpacing];
-	private _leadVehicle = _selectedRoad getVariable ["OKS_Convoy_LeadVehicle", objNull];
 	if (_IsReserveSlot) then {
 		[_selectedRoad, true] call OKS_fnc_Convoy_PlaceDebugObject;
 	} else {

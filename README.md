@@ -1612,7 +1612,7 @@ Edited by OksmanTV & Bluwolf.
 
   ### Example Usage
 
-    [reinforce_1, reinforce_2, reinforce_3, west, [4, ["rhs_btr60_msv"], 6, 25], [true, 6], false, "variable", "small", true, true] spawn OKS_fnc_Convoy_Reinforce;
+      [reinforce_1, reinforce_2, reinforce_3, west, [4, ["rhs_btr60_msv"], 6, 25], [true, 6], false, "variable", "small", true, true] spawn OKS_fnc_Convoy_Reinforce;
 
   - Vehicles and troops are spawned at the start, move through waypoints, and disperse at the end.
   - Supports dynamic troop loading, convoy dispersion, and mission task integration for advanced reinforcement scenarios.

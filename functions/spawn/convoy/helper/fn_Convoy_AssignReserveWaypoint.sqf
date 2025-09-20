@@ -15,16 +15,8 @@ params ["_vehicle"];
 
 if (isNull _vehicle || !alive _vehicle || !canMove _vehicle) exitWith { false };
 
-// Get the lead vehicle and reserve queue
-private _leadVeh = _vehicle getVariable ["OKS_Convoy_LeadVehicle", objNull];
-if (isNull _leadVeh) exitWith { 
-    if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
-        format ["[CONVOY-RESERVE-WAYPOINT] Vehicle %1 has no lead vehicle reference", _vehicle] spawn OKS_fnc_LogDebug;
-    };
-    false 
-};
-
-private _reserveQueue = _leadVeh getVariable ["OKS_Convoy_ReserveQueue", []];
+// Get the reserve queue directly from this vehicle (resilient to convoy leader death)
+private _reserveQueue = _vehicle getVariable ["OKS_Convoy_ReserveQueue", []];
 if (_reserveQueue isEqualTo []) exitWith { 
     if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
         format ["[CONVOY-RESERVE-WAYPOINT] No reserve positions available for vehicle %1", _vehicle] spawn OKS_fnc_LogDebug;
@@ -67,7 +59,9 @@ if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
 
 // Mark the position as occupied
 _reserveQueue set [_selectedIndex, [_assignedPosition, true]];
-_leadVeh setVariable ["OKS_Convoy_ReserveQueue", _reserveQueue, true];
+{
+    _X setVariable ["OKS_Convoy_ReserveQueue", _reserveQueue, true];
+} foreach (_vehicle getVariable ["OKS_Convoy_VehicleArray", []]);
 
 // Move the vehicle's last waypoint to the reserve position
 private _group = group driver _vehicle;

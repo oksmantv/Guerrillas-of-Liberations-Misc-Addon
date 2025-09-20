@@ -4,12 +4,13 @@
   Params:
     0: OBJECT - lead vehicle (holds OKS_Convoy_VehicleArray)
 */
-params ["_leadVeh"];
-if (isNull _leadVeh) exitWith {};
+params ["_LeaderVehicle"];
+if (isNull _LeaderVehicle) exitWith {};
 
-private _arr = _leadVeh getVariable ["OKS_Convoy_VehicleArray", []];
+private _ConvoyArray = _LeaderVehicle getVariable ["OKS_Convoy_VehicleArray", []];
 {
   _x setVariable ["OKS_Convoy_IntendedSlot", _forEachIndex, true];
-} forEach _arr;
+  _x setVariable ["OKS_Convoy_PrimarySlotCount", count _ConvoyArray, true]; // optional: baseline primary count
+} forEach _ConvoyArray;
 
-_leadVeh setVariable ["OKS_Convoy_PrimarySlotCount", count _arr, true]; // optional: baseline primary count
+

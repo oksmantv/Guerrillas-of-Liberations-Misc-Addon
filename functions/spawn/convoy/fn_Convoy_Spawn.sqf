@@ -23,12 +23,12 @@ if(!isServer) exitWith {};
 
 Params [
 	["_Spawn",objNull,[objNull]],
-	["_Waypoint",objNull,[objNull]],
+	["_Waypoint",objNull,[objNull,[]]],
 	["_End",objNull,[objNull]],
 	["_Side",east,[sideUnknown]],
-	["_VehicleParams",[3,["UK3CB_ARD_O_BMP1"],6,25],[[]]],
-	["_CargoParams",[true,4],[[]]],
-	["_ReturnedConvoyGroupArray",[],[[]]],
+	["_VehicleParams",[],[[]]],
+	["_CargoParams",[],[[]]],
+	["_ConvoyGroupArray",[],[[]]],
 	["_ForcedCareless",false,[false]],
 	["_DeleteAtFinalWP",false,[false]]
 ];
@@ -38,10 +38,18 @@ private _VehicleArray = [];
 private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 private _NextPreferLeft = true;
 
-_VehicleParams Params ["_Count", "_Vehicles", "_SpeedKph", "_DispersionInMeters"];
-_CargoParams Params ["_ShouldHaveCargo", "_CargoCount"];
-if (isNil "_ConvoyArray") then {
-	_ConvoyArray = [];
+_VehicleParams Params [
+	["_Count", 4, [0]], 
+	["_Vehicles",["UK3CB_ARD_O_BMP1"],[[]]], 
+	["_SpeedKph", 35, [0]], 
+	["_DispersionInMeters", 50, [0]]
+];
+_CargoParams Params [
+	["_ShouldHaveCargo", true, [false]],
+	["_CargoCount", 4, [0]]
+];
+if (isNil "_ConvoyGroupArray") then {
+	_ConvoyGroupArray = [];
 };
 
 for "_i" from 0 to ((_Count - 1) + 4) do {
@@ -70,8 +78,10 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 			};
 		} else {
 			_ReserveQueue pushBack [_endPosition, false]; // [position, isOccupied]
-			_LeadVehicle setVariable ["OKS_Convoy_ReserveQueue", _ReserveQueue, true];
-			
+			{
+				_x setVariable ["OKS_Convoy_ReserveQueue", _ReserveQueue, true];
+			} forEach _VehicleArray;
+
 			// Debug: Log reserve position creation
 			if (_ConvoyDebug) then {
 				format ["[CONVOY-SPAWN] Created reserve position %1 at %2 (left: %3)", count _ReserveQueue - 1, _endPosition, _actualIsLeft] spawn OKS_fnc_LogDebug;
@@ -111,6 +121,11 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 	if (count _VehicleArray > 1) then {
 		_PreviousVehicle = _VehicleArray select (_i - 1);
 	};
+	// Set immediate leader for formation following (objNull for front vehicle)
+	_Vehicle setVariable ["OKS_Convoy_ImmediateLeader", _PreviousVehicle, true];
+	// Debug variables for troubleshooting
+	_Vehicle setVariable ["DEBUG_SpawnImmediateLeader", _PreviousVehicle, true];
+	_Vehicle setVariable ["DEBUG_LastUpdated", time, true];
 	[_Vehicle, _PreviousVehicle, _DispersionInMeters] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
 
 	_Group = createGroup [_Side, true];
@@ -134,8 +149,17 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 	_Group setCombatMode "BLUE";
 	private _waypointObject = _Waypoint;
 	private _waypointGroup = _Group;
-	private _waypoint = _waypointGroup addWaypoint [getPos _waypointObject, 0];
-	_waypoint setWaypointType "MOVE";
+	private _waypointArray = [];
+	if(typeName _Waypoint isEqualTo "ARRAY") then {
+		_waypointArray = _Waypoint;
+	} else {
+		_waypointArray = [_Waypoint];
+	};
+
+	{
+		private _waypoint = _waypointGroup addWaypoint [getPos _waypointObject, 0];
+		_waypoint setWaypointType "MOVE";
+	} foreach _waypointArray;
 
 	private _isFirstVehicle = (_i == 0);
 	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft] call OKS_fnc_Convoy_SetupHerringBone;
@@ -171,7 +195,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		_CargoGroup = [_Vehicle, _Side, -1, _CargoCount, true] call OKS_fnc_AddVehicleCrew;
     };
 	_CargoGroup setBehaviour "CARELESS"; _CargoGroup setCombatMode "BLUE";
-    _ReturnedConvoyGroupArray pushBackUnique _Group; _ReturnedConvoyGroupArray pushBackUnique _CargoGroup;
+    _ConvoyGroupArray pushBackUnique _Group; _ConvoyGroupArray pushBackUnique _CargoGroup;
 
 	if(_ForcedCareless) then {
 		_Vehicle setCaptive true;
@@ -187,9 +211,9 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 };
 
 _LeadVehicle = _VehicleArray select 0;
-_LeadVehicle setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
 {
-	_x setVariable ["OKS_Convoy_LeadVehicle", _LeadVehicle, true];
+	_x setVariable ["OKS_Convoy_FrontLeader", _LeadVehicle, true];
+	_x setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
 } forEach _VehicleArray;
 
 [_LeadVehicle] call OKS_fnc_Convoy_InitIntendedSlots;
@@ -210,16 +234,27 @@ if (_ConvoyDebug) then {
 
 //[_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
 //[_LeadVehicle, _endPos, _primarySlots, _reserveSlots] spawn OKS_fnc_Convoy_LeadArrivalMonitor;
-[_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
-[_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
-[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;
+[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
+[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
+
+// Only start air defense if dedicated AA vehicles (without cargo seats) are available
+private _dedicatedAACount = [_VehicleArray, _ConvoyDebug] call OKS_fnc_Convoy_CheckDedicatedAAAvailable;
+if (_dedicatedAACount > 0) then {
+	if (_ConvoyDebug) then {
+		format [
+			"[CONVOY-SPAWN] Starting air defense system with %1 dedicated AA vehicles",
+			_dedicatedAACount
+		] spawn OKS_fnc_LogDebug;
+	};
+	[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;
+} else {
+	if (_ConvoyDebug) then {
+		"[CONVOY-SPAWN] No dedicated AA vehicles available. Air defense system disabled for this convoy." spawn OKS_fnc_LogDebug;
+	};
+};
 
 {
 	deleteVehicle _x
 } forEach (nearestObjects [_End, ["Land_ClutterCutter_large_F"], 500] select {
 	_x getVariable ["GOL_Convoy_Cutter", false]
 });
-
-{
-	deleteVehicle _x
-} forEach [_Spawn, _Waypoint, _End];

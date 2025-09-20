@@ -334,6 +334,7 @@ class CfgFunctions // Defines a function
 		class OKS_Spawn_Convoy_AirDefence {
 			file = "\OKS_GOL_Misc\functions\spawn\convoy\airdefence";
 			class Convoy_AAMergeGapHandler {};
+			class Convoy_CheckDedicatedAAAvailable {};
 			class Convoy_EnsureMinRoadDistance {};
 			class Convoy_FindEnemyAirTargets {};
 			class Convoy_IsEnemySide {};

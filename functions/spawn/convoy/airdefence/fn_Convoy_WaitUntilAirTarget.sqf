@@ -522,7 +522,7 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
     };
 
 	// Check if reserve slots are available and valid before assigning
-	private _leadVeh = _aaVehicle getVariable ["OKS_Convoy_LeadVehicle", objNull];
+	private _leadVeh = _aaVehicle getVariable ["", objNull];
 	private _reserveQueue = if (!isNull _leadVeh) then { _leadVeh getVariable ["OKS_Convoy_ReserveQueue", []] } else { [] };
 	private _reserveAssigned = false;
 	
@@ -605,7 +605,9 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 	private _aaVehicleIdx = _convoyArray find _aaVehicle;
 	if (_aaVehicleIdx >= 0) then { _convoyArray deleteAt _aaVehicleIdx; };
 	_convoyArray pushBack _aaVehicle;
-	_leadVehicle setVariable ["OKS_Convoy_VehicleArray", _convoyArray, true];
+	{
+		_x setVariable ["OKS_Convoy_VehicleArray", _convoyArray, true];
+	} forEach _convoyVehicleArray;
 	if (_isConvoyDebugEnabled) then {
 		format ["[CONVOY_AIR] Appended %1 as tail vehicle. Convoy size now: %2", _aaVehicle, count _convoyArray] spawn OKS_fnc_LogDebug;
 	};
@@ -647,9 +649,9 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		// Only unlock speed if merging/engaging (handled elsewhere)
 	};
 
-	// Refresh lead vehicle pointer on all convoy vehicles
+	// Refresh convoy leader pointer on all convoy vehicles
 	{
-		_x setVariable ["OKS_Convoy_LeadVehicle", _leadVehicle, true];
+		_x setVariable ["OKS_Convoy_FrontLeader", _leadVehicle, true];
 	} forEach _convoyArray;
 	// Loop will continue to wait for the next interception
 };
