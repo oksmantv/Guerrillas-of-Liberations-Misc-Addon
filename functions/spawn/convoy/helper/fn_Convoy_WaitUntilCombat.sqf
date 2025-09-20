@@ -17,7 +17,7 @@ private _DismountAndRushCode = {
 
 private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 
-params ["_VehicleObject", "_CrewGroup", "_CargoGroup"];
+params ["_VehicleObject", "_CrewGroup", ["_CargoGroup", grpNull, [grpNull]]];
 
 // Early-out guard: if this vehicle is currently handling AA engagement, skip ambush logic entirely
 if (_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false]) exitWith {
@@ -33,7 +33,7 @@ waitUntil {
 	sleep 0.5;
 	(_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false])
 	|| ({behaviour _x isEqualTo "COMBAT"} count (units _CrewGroup) > 0)
-	|| ({behaviour _x isEqualTo "COMBAT"} count (units _CargoGroup) > 0)
+	|| ((!isNull _CargoGroup) && ({behaviour _x isEqualTo "COMBAT"} count (units _CargoGroup) > 0))
 };
 
 // If AA engagement kicked in while waiting, abort safely
@@ -48,9 +48,11 @@ if (_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false]) exitWith {
 
 _VehicleObject setVariable ["OKS_Convoy_Stopped", true, true];
 
-_CargoGroup setBehaviour "COMBAT";
+if (!isNull _CargoGroup) then {
+	_CargoGroup setBehaviour "COMBAT";
+	_CargoGroup setCombatMode "RED";
+};
 _CrewGroup setBehaviour "COMBAT";
-_CargoGroup setCombatMode "RED";
 _CrewGroup setCombatMode "RED";
 
 if (_ConvoyDebug) then {
@@ -60,7 +62,9 @@ if (_ConvoyDebug) then {
 _VehicleObject forceSpeed 0;
 _VehicleObject setFuel 0;
 _VehicleObject setVehicleLock "UNLOCKED";
-[_CargoGroup, _VehicleObject] spawn _DismountAndRushCode;
+if (!isNull _CargoGroup) then {
+	[_CargoGroup, _VehicleObject] spawn _DismountAndRushCode;
+};
 
 private _IsArmedVehicle = (
 	(!isNull (gunner _VehicleObject)) || ((_VehicleObject emptyPositions "gunner") > 0)
@@ -70,7 +74,7 @@ private _IsArmedVehicle = (
 
 if (_IsArmedVehicle) then {
 	if (_ConvoyDebug) then {
-		"[CONVOY] Vehicle is armed, applying hunt task." spawn OKS_fnc_LogDebug;
+		format["[CONVOY] %1 is armed, applying hunt task.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 	};
 	sleep (30 + (random 30));
 	_VehicleObject limitSpeed 15;
@@ -97,7 +101,7 @@ if (_IsArmedVehicle) then {
 	_CrewGroup setBehaviour "AWARE";
 } else {
 	if (_ConvoyDebug) then {
-		"[CONVOY] Vehicle is unarmed, dismount and rush." spawn OKS_fnc_LogDebug;
+		format["[CONVOY] %1 is unarmed, dismount and rush.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 	};
 	[_CrewGroup, _VehicleObject] spawn _DismountAndRushCode;
 };

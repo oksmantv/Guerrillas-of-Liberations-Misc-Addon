@@ -32,6 +32,16 @@ if (_reserveQueue isEqualTo []) exitWith {
     false 
 };
 
+// Debug: Log all reserve positions before assignment
+if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
+    private _debugQueue = [];
+    {
+        _x params ["_pos", "_occupied"];
+        _debugQueue pushBack format ["Pos %1: %2 (occupied: %3)", _forEachIndex, _pos, _occupied];
+    } forEach _reserveQueue;
+    format ["[CONVOY-RESERVE-WAYPOINT] Available reserve queue for %1: %2", _vehicle, _debugQueue joinString " | "] spawn OKS_fnc_LogDebug;
+};
+
 // Find first unoccupied reserve position
 private _selectedIndex = -1;
 private _assignedPosition = [];
@@ -48,6 +58,11 @@ if (_selectedIndex == -1) exitWith {
         format ["[CONVOY-RESERVE-WAYPOINT] All reserve positions occupied for vehicle %1", _vehicle] spawn OKS_fnc_LogDebug;
     };
     false 
+};
+
+// Debug: Log which position was selected
+if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
+    format ["[CONVOY-RESERVE-WAYPOINT] Vehicle %1 assigned to reserve index %2 at position %3", _vehicle, _selectedIndex, _assignedPosition] spawn OKS_fnc_LogDebug;
 };
 
 // Mark the position as occupied

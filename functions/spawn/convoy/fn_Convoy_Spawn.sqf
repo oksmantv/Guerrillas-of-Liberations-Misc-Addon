@@ -44,7 +44,7 @@ if (isNil "_ConvoyArray") then {
 	_ConvoyArray = [];
 };
 
-for "_i" from 0 to ((_Count - 1) + ((_Count - 1) / 2)) do {
+for "_i" from 0 to ((_Count - 1) + 4) do {
 
 	if(_i >= _Count) then {
 		_herringBoneResult = [_End, false, _NextPreferLeft, true] call OKS_fnc_Convoy_SetupHerringBone;
@@ -54,8 +54,29 @@ for "_i" from 0 to ((_Count - 1) + ((_Count - 1) / 2)) do {
 
 		private _LeadVehicle = _VehicleArray select 0;
 		_ReserveQueue = _LeadVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
-		_ReserveQueue pushBack [_endPosition, false]; // [position, isOccupied]
-		_LeadVehicle setVariable ["OKS_Convoy_ReserveQueue", _ReserveQueue, true];
+		
+		// Check for duplicate positions (road capacity exceeded)
+		private _isDuplicate = false;
+		{
+			_x params ["_existingPos", "_occupied"];
+			if (_endPosition distance _existingPos < 5) exitWith {
+				_isDuplicate = true;
+			};
+		} forEach _ReserveQueue;
+		
+		if (_isDuplicate) then {
+			if (_ConvoyDebug) then {
+				format ["[WARNING] Convoy cannot fit on end waypoint road. Reduce vehicles or pick a longer stretch of road. Position: %1", _endPosition] spawn OKS_fnc_LogDebug;
+			};
+		} else {
+			_ReserveQueue pushBack [_endPosition, false]; // [position, isOccupied]
+			_LeadVehicle setVariable ["OKS_Convoy_ReserveQueue", _ReserveQueue, true];
+			
+			// Debug: Log reserve position creation
+			if (_ConvoyDebug) then {
+				format ["[CONVOY-SPAWN] Created reserve position %1 at %2 (left: %3)", count _ReserveQueue - 1, _endPosition, _actualIsLeft] spawn OKS_fnc_LogDebug;
+			};
+		};
 
 		continue;
 	};
@@ -136,7 +157,17 @@ for "_i" from 0 to ((_Count - 1) + ((_Count - 1) / 2)) do {
 		_endWaypoint setWaypointStatements ["true", "{_x setBehaviour 'COMBAT'; _x setCombatMode 'RED';} foreach units this; (vehicle this) setVariable ['OKS_Convoy_Stopped', true, true];"];
 	};
 
-    if(_ShouldHaveCargo) then {
+	// Check if vehicle type contains any blacklisted strings
+	_Blacklist = ["zu23"];
+	private _vehicleType = toLower (typeOf _Vehicle);
+	private _isBlacklisted = false;
+	{
+		if (_vehicleType find (toLower _x) >= 0) exitWith {
+			_isBlacklisted = true;
+		};
+	} forEach _Blacklist;
+	
+    if(_ShouldHaveCargo && !_isBlacklisted) then {
 		_CargoGroup = [_Vehicle, _Side, -1, _CargoCount, true] call OKS_fnc_AddVehicleCrew;
     };
 	_CargoGroup setBehaviour "CARELESS"; _CargoGroup setCombatMode "BLUE";
@@ -166,6 +197,17 @@ _ReserveQueue = _LeadVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
 _primarySlots = _LeadVehicle getVariable ["OKS_Convoy_PrimarySlotCount", count _VehicleArray];
 _reserveSlots = count _ReserveQueue;
 _endPos = _End;
+
+// Debug: Log final reserve queue
+if (_ConvoyDebug) then {
+	private _debugQueue = [];
+	{
+		_x params ["_pos", "_occupied"];
+		_debugQueue pushBack format ["Index %1: %2", _forEachIndex, _pos];
+	} forEach _ReserveQueue;
+	format ["[CONVOY-SPAWN] Final reserve queue (%1 positions): %2", count _ReserveQueue, _debugQueue joinString " | "] spawn OKS_fnc_LogDebug;
+};
+
 [_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
 [_LeadVehicle, _endPos, _primarySlots, _reserveSlots] spawn OKS_fnc_Convoy_LeadArrivalMonitor;
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;

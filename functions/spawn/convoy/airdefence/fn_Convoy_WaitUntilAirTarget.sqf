@@ -69,6 +69,20 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		] spawn OKS_fnc_LogDebug;
 	};
 
+	// Calculate checkpoint position for convoy passing detection BEFORE AA moves
+	// Set checkpoint ahead of AA's position in convoy direction, not at AA's position
+	private _aaPos = getPosATL _aaVehicle;
+	private _aaDir = getDir _aaVehicle;
+	private _checkpointPos = _aaPos vectorAdd [50 * sin _aaDir, 50 * cos _aaDir, 0]; // 50m ahead of AA
+	_aaVehicle setVariable ["OKS_AA_CheckpointPos", _checkpointPos];
+	_aaVehicle setVariable ["OKS_AA_VehiclesPassed", []];
+	// Store original convoy array before AA gets detached
+	_aaVehicle setVariable ["OKS_AA_OriginalConvoyArray", +_convoyVehicleArray];
+
+	if (_isConvoyDebugEnabled) then {
+		format ["[CONVOY_AIR] Checkpoint position set at %1 for convoy passing detection", _checkpointPos] spawn OKS_fnc_LogDebug;
+	};
+
 	// Immediately reveal all detected air targets to AA group for faster engagement
 	{
 		private _airTarget = _x;
@@ -236,15 +250,15 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 	_tempWaypoint setWaypointBehaviour "AWARE";
 	_tempWaypoint setWaypointCombatMode "YELLOW";
 	{ 
-		// Enable targeting during travel but restrict firing until in position
-		_x enableAI "TARGET";
-		_x enableAI "AUTOTARGET";
-		_x disableAI "AUTOCOMBAT"; // No firing until in position
+		// Disable all combat systems during travel to prevent roadblock firing
+		_x disableAI "AUTOCOMBAT";
+		_x disableAI "TARGET";
+		_x disableAI "AUTOTARGET";
 		_x doTarget objNull;
 		_x doWatch objNull;
 	} forEach (units _aaGroup);
-	// Hold fire while moving to pull-off but allow targeting acquisition
-	_aaGroup setCombatMode "YELLOW";
+	// Hold fire while moving to pull-off
+	_aaGroup setCombatMode "BLUE"; // Blue = Hold fire
 
 	// Unlock AA speed for the pull-off movement
 	if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
@@ -296,10 +310,6 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 			_x enableAI "AUTOTARGET";
 			_x enableAI "AUTOCOMBAT"; 
 		} forEach (crew _aaVehicle);
-			_x enableAI "TARGET";
-			_x enableAI "AUTOTARGET";
-			_x enableAI "AUTOCOMBAT"; 
-		} forEach (crew _aaVehicle);
 		_aaGroup setBehaviour "COMBAT";
 		_aaGroup setCombatMode "RED";
 
@@ -311,6 +321,9 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 	// or a clear-sky timeout passes (grace restore)
 	private _noAirSince = -1;
 	private _engageStartTime = time;
+	private _allVehiclesPassed = false;
+	private _timeout = false;
+	private _hardTimeout = false;
 	waitUntil {
 		sleep 1;
 		private _currentAirTargets = [_convoyCrewGroups, _convoyVehicleArray, _convoySide, _ignoredAirTargets] call OKS_fnc_Convoy_FindEnemyAirTargets;
@@ -342,19 +355,66 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 			_noAirSince = -1;
 		};
 
-		// Check that ALL convoy vehicles have passed the AA vehicle (all are 60m+ away)
-		// AA should wait until every single vehicle has passed, not just find the farthest one
-		private _allVehiclesPassed = true;
+		// Two-stage convoy passing detection:
+		// Stage 1: Vehicles must pass through checkpoint (< 30m from AA original position = passed through)
+		// Stage 2: Vehicles must be clear of AA vehicle (> 30m = safe distance)
+		// Only check vehicles that are BEHIND the AA vehicle in convoy order
+		private _checkpointPos = _aaVehicle getVariable ["OKS_AA_CheckpointPos", []];
+		private _vehiclesPassed = _aaVehicle getVariable ["OKS_AA_VehiclesPassed", []];
+		
+		// Find AA vehicle's position in convoy array to only check vehicles behind it
+		// Use original convoy array from when AA was selected, not current array (AA might be detached)
+		private _originalConvoyArray = _aaVehicle getVariable ["OKS_AA_OriginalConvoyArray", _convoyVehicleArray];
+		private _aaIndex = _originalConvoyArray find _aaVehicle;
+		private _vehiclesBehindAA = [];
+		if (_aaIndex >= 0) then {
+			for "_i" from (_aaIndex + 1) to ((count _originalConvoyArray) - 1) do {
+				_vehiclesBehindAA pushBack (_originalConvoyArray select _i);
+			};
+		} else {
+			// Fallback: if AA not found in original array, use all vehicles behind current position
+			private _currentAAIndex = _convoyVehicleArray find _aaVehicle;
+			if (_currentAAIndex >= 0) then {
+				for "_i" from (_currentAAIndex + 1) to ((count _convoyVehicleArray) - 1) do {
+					_vehiclesBehindAA pushBack (_convoyVehicleArray select _i);
+				};
+			};
+		};
+		
+		_allVehiclesPassed = true;
 		private _closestConvoyDist = 1e9;
 		private _closestVehicle = objNull;
 		private _vehicleDistances = [];
 		{
 			if (!isNull _x && (_x != _aaVehicle)) then {
-				private _dist = _aaVehicle distance _x;
+				private _dist = _aaVehicle distance _x; // Distance from current AA position for final spacing
+				private _checkpointDist = _x distance _checkpointPos; // Distance from checkpoint for passage detection
 				_vehicleDistances pushBack [_x, _dist];
-				if (_dist < 60) then {
-					_allVehiclesPassed = false;
+				
+				// Only process vehicles that are behind the AA in convoy order
+				if (_x in _vehiclesBehindAA) then {
+					// Stage 1: Check if vehicle passed through checkpoint area
+					// Generous detection: vehicle is within 30m of the AA's original position
+					if (!(_x in _vehiclesPassed) && (_checkpointDist < 30)) then {
+						_vehiclesPassed pushBack _x;
+						_aaVehicle setVariable ["OKS_AA_VehiclesPassed", _vehiclesPassed];
+						if (_isConvoyDebugEnabled) then {
+							format ["[CONVOY_AIR] Vehicle %1 passed checkpoint", _x] spawn OKS_fnc_LogDebug;
+						};
+					};
+					
+					// Stage 2: For vehicles that passed checkpoint, check if they're clear (>100m)
+					if (_x in _vehiclesPassed) then {
+						if (_dist < 60) then {
+							_allVehiclesPassed = false;
+						};
+					} else {
+						// Vehicle hasn't even passed checkpoint yet
+						_allVehiclesPassed = false;
+					};
 				};
+				// Note: vehicles ahead of AA don't affect _allVehiclesPassed
+				
 				if (_dist < _closestConvoyDist) then {
 					_closestConvoyDist = _dist;
 					_closestVehicle = _x;
@@ -369,44 +429,77 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		};
 
 		private _clearAndSpaced = ((count _currentAirTargets) == 0) && _allVehiclesPassed;
-		private _timeout = (_noAirSince >= 0) && ((time - _noAirSince) > 30) && _allVehiclesPassed; // Only timeout if all vehicles have passed
-		private _hardTimeout = (time - _engageStartTime) > 180;
+		_timeout = (_noAirSince >= 0) && ((time - _noAirSince) > 30) && _allVehiclesPassed && (_closestConvoyDist > 60); // Only timeout if all vehicles have passed AND are far enough
+		_hardTimeout = (time - _engageStartTime) > 180;
 
 		if (_isConvoyDebugEnabled) then {
-			// Count vehicles that haven't passed yet (< 60m)
+			// Enhanced debug - only show vehicles that are still causing delays
 			private _vehiclesNotPassed = 0;
-			private _vehicleDetails = [];
+			private _pendingVehicles = [];
 			private _aaGroupName = groupId (group (driver _aaVehicle));
+			private _checkpointPassedCount = count _vehiclesPassed;
+			private _vehiclesBehindAACount = count _vehiclesBehindAA;
+			
+			// Build list of pending vehicles in convoy order (only ones behind AA)
 			{
-				_x params ["_veh", "_dist"];
-				private _vehGroupName = groupId (group (driver _veh));
-				if (_dist < 60) then { 
-					_vehiclesNotPassed = _vehiclesNotPassed + 1; 
-					_vehicleDetails pushBack format ["Group %1 (%2): %3m (NOT PASSED)", _vehGroupName, _veh, round _dist];
-				} else {
-					_vehicleDetails pushBack format ["Group %1 (%2): %3m (passed)", _vehGroupName, _veh, round _dist];
+				private _veh = _x;
+				if (_veh in _vehiclesBehindAA) then {
+					private _dist = _aaVehicle distance _veh;
+					private _passedCheckpoint = (_veh in _vehiclesPassed);
+					private _checkpointDist = _veh distance _checkpointPos;
+					private _displayName = getText (configFile >> "CfgVehicles" >> (typeOf _veh) >> "displayName");
+					
+					// Only track vehicles that are still causing delays
+					if (!_passedCheckpoint) then {
+						_vehiclesNotPassed = _vehiclesNotPassed + 1;
+						_pendingVehicles pushBack format ["%1 (approaching checkpoint: %2m)", _displayName, round _checkpointDist];
+					} else {
+						if (_dist < 60) then {
+							_vehiclesNotPassed = _vehiclesNotPassed + 1;
+							_pendingVehicles pushBack format ["%1 (too close: %2m)", _displayName, round _dist];
+						};
+						// Don't show vehicles that are properly spaced
+					};
 				};
-			} forEach _vehicleDistances;
+			} forEach _originalConvoyArray;
 			
 			private _closestGroupName = if (!isNull _closestVehicle) then { groupId (group (driver _closestVehicle)) } else { "NULL" };
-			format [
-				"[CONVOY_AIR] Waiting for groups to pass AA group '%1': air=%2 allPassed=%3 closest=%4m (group=%5) notPassed=%6/%7 timeout=%8 hardTimeout=%9 (since=%10)",
-				_aaGroupName,
-				count _currentAirTargets,
-				_allVehiclesPassed,
-				round _closestConvoyDist,
-				_closestGroupName,
-				_vehiclesNotPassed,
-				count _vehicleDistances,
-				_timeout,
-				_hardTimeout,
-				_noAirSince
-			] spawn OKS_fnc_LogDebug;
 			
-			// Log detailed vehicle distances with group names
-			format ["[CONVOY_AIR] Group distances from AA group '%1': %2", _aaGroupName, _vehicleDetails] spawn OKS_fnc_LogDebug;
+			// Only log if there are pending vehicles or every 10 seconds for status
+			private _logThis = (_vehiclesNotPassed > 0) || ((round time) % 10 == 0);
+			if (_logThis) then {
+				if (_vehiclesNotPassed > 0) then {
+					format [
+						"[CONVOY_AIR] AA '%1' waiting for %2 vehicles: %3",
+						_aaGroupName,
+						_vehiclesNotPassed,
+						_pendingVehicles joinString ", "
+					] spawn OKS_fnc_LogDebug;
+				} else {
+					format [
+						"[CONVOY_AIR] AA '%1': All vehicles clear - No Targets =%2 Timeout=%3 HardTimeout=%4",
+						_aaGroupName,
+						(count _currentAirTargets == 0),
+						_timeout,
+						_hardTimeout
+					] spawn OKS_fnc_LogDebug;
+				};
+			};
 		};
 		_clearAndSpaced || _timeout || _hardTimeout
+	};
+
+	// Add minimum 15-second wait after all vehicles have passed before rejoining convoy
+	if (_allVehiclesPassed && !_timeout && !_hardTimeout) then {
+		private _minimumWaitTime = 15;
+		private _allPassedTime = time;
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] All vehicles passed - waiting minimum %1 seconds before rejoining convoy", _minimumWaitTime] spawn OKS_fnc_LogDebug;
+		};
+		sleep _minimumWaitTime;
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] Minimum wait completed - proceeding to rejoin convoy"] spawn OKS_fnc_LogDebug;
+		};
 	};
 
 	// Restore: remove temporary waypoint, recreate stored ones, clear AA flag
@@ -428,6 +521,24 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
         format ["[CONVOY_AIR] AA vehicle %1 finished engagement and waypoints restored", _aaVehicle] spawn OKS_fnc_LogDebug;
     };
 
+	// Check if reserve slots are available and valid before assigning
+	private _leadVeh = _aaVehicle getVariable ["OKS_Convoy_LeadVehicle", objNull];
+	private _reserveQueue = if (!isNull _leadVeh) then { _leadVeh getVariable ["OKS_Convoy_ReserveQueue", []] } else { [] };
+	private _reserveAssigned = false;
+	
+	if ((count _reserveQueue) > 0) then {
+		// Reserve slots exist, try to assign one
+		_reserveAssigned = [_aaVehicle] call OKS_fnc_Convoy_AssignReserveWaypoint;
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] Reserve waypoint assignment result for %1: %2", _aaVehicle, _reserveAssigned] spawn OKS_fnc_LogDebug;
+		};
+	} else {
+		// No reserve slots available, AA will use original waypoints to rejoin behind convoy
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] No reserve slots available for %1, using original waypoints to rejoin convoy", _aaVehicle] spawn OKS_fnc_LogDebug;
+		};
+	};
+
 	if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
 		_aaVehicle setVariable ["OKS_Convoy_AAEngaging", false, true];
 		if (_isConvoyDebugEnabled) then {
@@ -437,19 +548,16 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		// Reactivate waitUntilCombat logic for AA vehicle now that AA engagement is finished
 		// This creates a self-patching loop: each AA completion re-spawns combat monitor
 		private _aaGroup = group (driver _aaVehicle);
-		private _cargoGroup = _aaVehicle getVariable ["OKS_Convoy_CargoGroup", grpNull];
-		if (isNull _cargoGroup) then { _cargoGroup = _aaGroup; }; // Fallback if no separate cargo group
-		
 		if (_isConvoyDebugEnabled) then {
 			private _aaGroupName = groupId _aaGroup;
-			private _cargoGroupName = groupId _cargoGroup;
-			format ["[CONVOY_AIR] Reactivating waitUntilCombat for AA group '%1' (cargo: '%2') vehicle %3", 
-				_aaGroupName, _cargoGroupName, _aaVehicle] spawn OKS_fnc_LogDebug;
+
+			format ["[CONVOY_AIR] Reactivating waitUntilCombat for AA group '%1' vehicle %2", 
+				_aaGroupName, _aaVehicle] spawn OKS_fnc_LogDebug;
 		};
 		
 		// Re-spawn the waitUntilCombat logic for this AA vehicle
 		// This is resilient because the air defense loop will re-spawn it each time AA completes
-		[_aaVehicle, _aaGroup, _cargoGroup] spawn OKS_fnc_Convoy_WaitUntilCombat;
+		[_aaVehicle, _aaGroup] spawn OKS_fnc_Convoy_WaitUntilCombat;
 	};
 	if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
 		_aaVehicle limitSpeed 999;
@@ -501,11 +609,6 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 	if (_isConvoyDebugEnabled) then {
 		format ["[CONVOY_AIR] Appended %1 as tail vehicle. Convoy size now: %2", _aaVehicle, count _convoyArray] spawn OKS_fnc_LogDebug;
 	};
-
-	// Always apply convoy speed logic to AA vehicle, following the last vehicle in the convoy (excluding itself)
-	if (_isConvoyDebugEnabled) then {
-		format ["[CONVOY_AIR] Pre-leader-assignment check: convoyArray count=%1 vehicles=%2", count _convoyArray, _convoyArray] spawn OKS_fnc_LogDebug;
-	};
 	if ((count _convoyArray) > 1) then {
 		// Determine the tail leader excluding the AA vehicle itself (works even if AA is still in array)
 		private _tempConvoy = +_convoyArray;
@@ -517,10 +620,9 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 			// Get group names for better debugging
 			private _aaGroupName = groupId (group (driver _aaVehicle));
 			private _leaderGroupName = if (!isNull _leaderVehicle) then { groupId (group (driver _leaderVehicle)) } else { "NULL" };
-			format ["[CONVOY_AIR] AA leader assignment: convoyArray=%1 tempConvoy=%2 assignedLeader=%3", 
-				_convoyArray, _tempConvoy, _leaderVehicle] spawn OKS_fnc_LogDebug;
-			format ["[CONVOY_AIR] Group assignment: AA group '%1' will follow leader group '%2'", 
-				_aaGroupName, _leaderGroupName] spawn OKS_fnc_LogDebug;
+			private _leaderDisplayName = if (!isNull _leaderVehicle) then { getText (configFile >> "CfgVehicles" >> (typeOf _leaderVehicle) >> "displayName") } else { "NULL" };
+			format ["[CONVOY_AIR] Group assignment: AA group '%1' will follow leader group '%2' (%3)", 
+				_aaGroupName, _leaderGroupName, _leaderDisplayName] spawn OKS_fnc_LogDebug;
 			
 			// Store debugging variables on the AA vehicle for easy inspection
 			_aaVehicle setVariable ["DEBUG_AssignedLeader", _leaderVehicle, true];
@@ -538,22 +640,11 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		_aaVehicle limitSpeed (_aaVehicleSpeedKph max 10);
 		_aaVehicle forceSpeed ((_aaVehicleSpeedKph max 10) / 3.6);
 		_aaVehicle setVariable ["OKS_ForceSpeedActive", true, true];
-		if (_isConvoyDebugEnabled) then {
-			format ["[CONVOY_AIR] Rejoin clamp: leader=%1 baseKph=%2 disp=%3 limitSpeed=%4 forceSpeed=%5", 
-				_leaderVehicle, _aaVehicleSpeedKph, _aaVehicleDispersion, (_aaVehicleSpeedKph max 10), ((_aaVehicleSpeedKph max 10) / 3.6)] spawn OKS_fnc_LogDebug;
-		};
 		[_aaVehicle, _leaderVehicle, _aaVehicleDispersion] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
 		if (_isConvoyDebugEnabled) then {
 			format ["[CONVOY_AIR] Speed governor started for AA vehicle %1 following leader %2", _aaVehicle, _leaderVehicle] spawn OKS_fnc_LogDebug;
 		};
 		// Only unlock speed if merging/engaging (handled elsewhere)
-	};
-	if (_isConvoyDebugEnabled) then { "[CONVOY_AIR] AA vehicle rejoined convoy and waypoints restored" spawn OKS_fnc_LogDebug; };
-
-	// Assign reserve waypoint to AA vehicle since it has fallen behind
-	private _reserveAssigned = [_aaVehicle] call OKS_fnc_Convoy_AssignReserveWaypoint;
-	if (_isConvoyDebugEnabled) then {
-		format ["[CONVOY_AIR] Reserve waypoint assignment result for %1: %2", _aaVehicle, _reserveAssigned] spawn OKS_fnc_LogDebug;
 	};
 
 	// Refresh lead vehicle pointer on all convoy vehicles
