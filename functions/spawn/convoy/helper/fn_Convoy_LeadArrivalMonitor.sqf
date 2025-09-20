@@ -1,4 +1,8 @@
-// Monitors lead vehicle for arrival at final waypoint, then assigns parking
+/*
+	Monitors lead vehicle for arrival at final waypoint, then assigns parking
+
+	[OBSOLETE]
+*/
 params ["_leadVeh", "_endPos", "_primarySlots", "_reserveSlots"];
 private _arrived = false;
 while {!_arrived} do {

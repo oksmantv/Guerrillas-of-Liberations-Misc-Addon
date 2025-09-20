@@ -1596,23 +1596,23 @@ Edited by OksmanTV & Bluwolf.
 
   ### Parameters
 
-  | Name                   | Type            | Default                     | Description                                                                                 |
-  |------------------------|-----------------|-----------------------------|---------------------------------------------------------------------------------------------|
-  | `_Spawn`               | Object          | —                           | Spawn position for the convoy.                                                              |
-  | `_Waypoint`            | Object          | —                           | First waypoint object for the convoy.                                                       |
-  | `_End`                 | Object          | —                           | Final waypoint object (where convoy disperses).                                             |
-  | `_Side`                | Side            | `east`                      | Side of the convoy units.                                                                   |
+  | Name                   | Type            | Default                         | Description                                                                                 |
+  |------------------------|-----------------|---------------------------------|---------------------------------------------------------------------------------------------|
+  | `_Spawn`               | Object          | —                               | Spawn position for the convoy.                                                              |
+  | `_Waypoint`            | Object          | —                               | First waypoint object for the convoy.                                                       |
+  | `_End`                 | Object          | —                               | Final waypoint object (where convoy disperses).                                             |
+  | `_Side`                | Side            | `east`                          | Side of the convoy units.                                                                   |
   | `_VehicleArray`        | Array           | `[3,["UK3CB_ARD_O_BMP1"],6,25]` | `[Count, Classnames (array/string), Speed (m/s), Dispersion (m)]`.                          |
-  | `_CargoArray`          | Array           | `[true,4]`                  | `[Should spawn troops in cargo (bool), Max soldiers per vehicle (int)]`.                    |
-  | `_ForcedCareless`      | Boolean         | `false`                     | If true, forces convoy AI to behave "careless" (no reaction to threats).                    |
-  | `_VariableSetToTrue`   | String          | `""`                        | Variable name to set true when the convoy completes its task.                               |
-  | `_ResupplySize`        | String          | `"small"`                   | Size of the resupply task (e.g., `"small"`, `"medium"`, `"large"`).                         |
-  | `_ShouldCreateTask`    | Boolean         | `true`                      | If true, creates a resupply task for the convoy.                                            |
-  | `_ShouldResupply`      | Boolean         | `true`                      | If true, enables resupply functionality for the convoy.                                     |
+  | `_CargoArray`          | Array           | `[true,4]`                      | `[Should spawn troops in cargo (bool), Max soldiers per vehicle (int)]`.                    |
+  | `_ForcedCareless`      | Boolean         | `false`                         | If true, forces convoy AI to behave "careless" (no reaction to threats).                    |
+  | `_VariableSetToTrue`   | String          | `""`                            | Variable name to set true when the convoy completes its task.                               |
+  | `_ResupplySize`        | String          | `"small"`                       | Size of the resupply task (e.g., `"small"`, `"medium"`, `"large"`).                         |
+  | `_ShouldCreateTask`    | Boolean         | `true`                          | If true, creates a resupply task for the convoy.                                            |
+  | `_ShouldResupply`      | Boolean         | `true`                          | If true, enables resupply functionality for the convoy.                                     |
 
   ### Example Usage
 
-      [reinforce_1, reinforce_2, reinforce_3, west, [4, ["rhs_btr60_msv"], 6, 25], [true, 6], false, "variable", "small", true, true] spawn OKS_fnc_Convoy_Reinforce;
+    [reinforce_1, reinforce_2, reinforce_3, west, [4, ["rhs_btr60_msv"], 6, 25], [true, 6], false, "variable", "small", true, true] spawn OKS_fnc_Convoy_Reinforce;
 
   - Vehicles and troops are spawned at the start, move through waypoints, and disperse at the end.
   - Supports dynamic troop loading, convoy dispersion, and mission task integration for advanced reinforcement scenarios.
@@ -1634,7 +1634,7 @@ Edited by OksmanTV & Bluwolf.
   | `_Waypoint`         | Object  | —                                 | First waypoint object for the convoy.                                       |
   | `_End`              | Object  | —                                 | Final waypoint object (where convoy disperses or is deleted).               |
   | `_Side`             | Side    | `east`                            | Side of the convoy units.                                                   |
-  | `_VehicleArray`     | Array   | `[3,["UK3CB_ARD_O_BMP1"],6,25]`   | `[Count, Classnames (array/string), Speed (m/s), Dispersion (m)]`.          |
+  | `_VehicleArray`     | Array   | `[3,["UK3CB_ARD_O_BMP1"],30,45]`  | `[Count, Classnames (array/string), Speed (kph), Dispersion (m)]`.          |
   | `_CargoArray`       | Array   | `[true,4]`                        | `[Should spawn troops in cargo (bool), Max soldiers per vehicle (int)]`.    |
   | `_ConvoyArray`      | Array   | `[]`                              | Array that gets filled with convoy units (for tracking or later use).       |
   | `_ForcedCareless`   | Boolean | `false`                           | If true, forces convoy AI to behave "careless" (no reaction to threats).    |
@@ -1642,7 +1642,7 @@ Edited by OksmanTV & Bluwolf.
 
   ### Example Usage
 
-      [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 6, 25], [true, 6], [], false, false] spawn OKS_fnc_Convoy_Spawn;
+    [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 50, 45], [true, 6], [], false, false] spawn OKS_fnc_Convoy_Spawn;
 
   - Vehicles and (optionally) troops are spawned at the start, move through waypoints, and can be deleted on completion.
   - The convoy array is filled with all spawned vehicles and units for further scripting or tracking.

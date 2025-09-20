@@ -28,7 +28,7 @@ Params [
 	["_Side",east,[sideUnknown]],
 	["_VehicleParams",[3,["UK3CB_ARD_O_BMP1"],6,25],[[]]],
 	["_CargoParams",[true,4],[[]]],
-	["_ConvoyArray",[],[[]]],
+	["_ReturnedConvoyGroupArray",[],[[]]],
 	["_ForcedCareless",false,[false]],
 	["_DeleteAtFinalWP",false,[false]]
 ];
@@ -171,7 +171,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		_CargoGroup = [_Vehicle, _Side, -1, _CargoCount, true] call OKS_fnc_AddVehicleCrew;
     };
 	_CargoGroup setBehaviour "CARELESS"; _CargoGroup setCombatMode "BLUE";
-    _ConvoyArray pushBackUnique _Group; _ConvoyArray pushBackUnique _CargoGroup;
+    _ReturnedConvoyGroupArray pushBackUnique _Group; _ReturnedConvoyGroupArray pushBackUnique _CargoGroup;
 
 	if(_ForcedCareless) then {
 		_Vehicle setCaptive true;
@@ -208,8 +208,8 @@ if (_ConvoyDebug) then {
 	format ["[CONVOY-SPAWN] Final reserve queue (%1 positions): %2", count _ReserveQueue, _debugQueue joinString " | "] spawn OKS_fnc_LogDebug;
 };
 
-[_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
-[_LeadVehicle, _endPos, _primarySlots, _reserveSlots] spawn OKS_fnc_Convoy_LeadArrivalMonitor;
+//[_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
+//[_LeadVehicle, _endPos, _primarySlots, _reserveSlots] spawn OKS_fnc_Convoy_LeadArrivalMonitor;
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
 [_ConvoyArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
 [_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;

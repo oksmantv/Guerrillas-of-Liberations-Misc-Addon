@@ -35,15 +35,17 @@
     1: ARRAY or OBJECT - end position
     2: NUMBER - primary slot count
     3: NUMBER - reserve slot count
+
+    [OBSOLETE]
 */
 
-params ["_leadVeh", "_endPos", "_primarySlots", "_reserveSlots"];
+params ["_LeaderVehicle", "_EndPosition", "_PrimaryParkingSlotCount", "_ReserveParkingSlotCount"];
 
-private _arr = _leadVeh getVariable ["OKS_Convoy_VehicleArray", []];
-private _assign = [_leadVeh, _primarySlots, _reserveSlots, _arr] call OKS_fnc_Convoy_EndParking_AssignIndices;
+private _VehicleArray = _LeaderVehicle getVariable ["OKS_Convoy_VehicleArray", []];
+private _assign = [_LeaderVehicle, _PrimaryParkingSlotCount, _ReserveParkingSlotCount, _VehicleArray] call OKS_fnc_Convoy_EndParking_AssignIndices;
 private _positions = [];
-for "_i" from 0 to ((_primarySlots + _reserveSlots) - 1) do {
-    private _hb = [_endPos, false, true] call OKS_fnc_Convoy_SetupHerringBone;
+for "_i" from 0 to ((_PrimaryParkingSlotCount + _ReserveParkingSlotCount) - 1) do {
+    private _hb = [_EndPosition, false, true] call OKS_fnc_Convoy_SetupHerringBone;
     _positions pushBack (_hb select 0);
 };
 
@@ -55,6 +57,5 @@ for "_i" from 0 to ((_primarySlots + _reserveSlots) - 1) do {
     private _wp = _grp addWaypoint [_pos, 0]; 
     _wp setWaypointType "MOVE"; 
     _wp setWaypointCompletionRadius 4; 
-    // Tag waypoint so dispersion helper doesn’t increase spacing or spam logs at destination
     _wp setWaypointDescription "OKS_SUPPRESS_DISPERSION";
 } forEach _assign;

@@ -6,34 +6,44 @@
     1: ARRAY  - reserve queue
 */
 
-params ["_leadVeh", "_reserveQueue"];
+params ["_convoyLeadVehicle", "_reserveVehicleQueue"];
 
 while {true} do {
     sleep 2;
-    private _arr = _leadVeh getVariable ["OKS_Convoy_VehicleArray", []];
-    private _deadIdxs = [];
+    private _currentConvoyVehicleArray = _convoyLeadVehicle getVariable ["OKS_Convoy_VehicleArray", []];
+    private _destroyedVehicleIndexes = [];
     {
         if (isNull _x || {!alive _x} || {!canMove _x}) then {
-            _deadIdxs pushBack _forEachIndex;
+            _destroyedVehicleIndexes pushBack _forEachIndex;
         };
-    } forEach _arr;
-    if (_deadIdxs isEqualTo []) then { continue; };
+    } forEach _currentConvoyVehicleArray;
+
+    if (_destroyedVehicleIndexes isEqualTo []) then { 
+        continue;
+    };
+
     {
-        private _idx = _x;
-        if (count _reserveQueue > 0) then {
-            private _reserveVeh = _reserveQueue deleteAt 0;
-            private _leadGrp = group driver _leadVeh;
-            private _resGrp = group driver _reserveVeh;
-            [ _leadGrp, _resGrp, getPosATL _reserveVeh ] call OKS_fnc_Convoy_CopyRouteForReserve;
-            while { (count waypoints _resGrp) > 0 } do { deleteWaypoint ((waypoints _resGrp) select 0); };
-            _arr pushBack _reserveVeh;
-            _leadVeh setVariable ["OKS_Convoy_VehicleArray", _arr, true];
-            _reserveVeh setVariable ["OKS_Convoy_LeadVehicle", _leadVeh, true];
-            _reserveVeh setVariable ["OKS_Convoy_Catchup", true, true];
-            // Debug: Reserve activated
+        private _currentDestroyedIndex = _x;
+        if (count _reserveVehicleQueue > 0) then {
+            private _activatedReserveVehicle = _reserveVehicleQueue deleteAt 0;
+            private _convoyLeadGroup = group driver _convoyLeadVehicle;
+            private _reserveVehicleGroup = group driver _activatedReserveVehicle;
+
+            [ _convoyLeadGroup, _reserveVehicleGroup, getPosATL _activatedReserveVehicle ] call OKS_fnc_Convoy_CopyRouteForReserve;
+            while { (count waypoints _reserveVehicleGroup) > 0} do 
+            {
+                deleteWaypoint ((waypoints _reserveVehicleGroup) select 0); 
+            };
+
+            _currentConvoyVehicleArray pushBack _activatedReserveVehicle;
+
+            _convoyLeadVehicle setVariable ["OKS_Convoy_VehicleArray", _currentConvoyVehicleArray, true];
+            _activatedReserveVehicle setVariable ["OKS_Convoy_LeadVehicle", _convoyLeadVehicle, true];
+            _activatedReserveVehicle setVariable ["OKS_Convoy_Catchup", true, true];
+
             if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
-                format ["[CONVOY-RESERVE-ACTIVATED] Reserve vehicle %1 activated for dead/immobile slot %2", _reserveVeh, _idx] spawn OKS_fnc_LogDebug;
+                format ["[CONVOY-RESERVE-ACTIVATED] Reserve vehicle %1 activated for dead/immobile slot %2", _activatedReserveVehicle, _currentDestroyedIndex] spawn OKS_fnc_LogDebug;
             };
         };
-    } forEach _deadIdxs;
+    } forEach _destroyedVehicleIndexes;
 }
