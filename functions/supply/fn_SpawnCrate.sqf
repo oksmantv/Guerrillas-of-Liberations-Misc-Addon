@@ -20,7 +20,7 @@ if (isNull _target) exitWith { diag_log "OKS_fnc_spawnCrate: Target is null!"; }
 if (typeName _crateClass != "STRING") exitWith { diag_log "OKS_fnc_spawnCrate: Crate class must be a string!"; };
 
 private _dir = getDir _player;
-_crate = createVehicle [_crateClass, getPosASL _target, [], 0, "NONE"];
+_crate = createVehicle [_crateClass, getPosATL _target, [], -1, "NONE"];
 _crate allowDamage false;
 _crate hideObjectGlobal true;
 _crate setDir _dir;
@@ -30,11 +30,7 @@ _crate disableCollisionWith _target;
     sleep 0.1;
     private _offset = [0, 1.5, 0];
     if((typeOf _crate) in ["GOL_SquadResupplybox_WEST","GOL_SquadResupplybox_EAST"]) exitWith {
-        _checkPos = _target getPos [5, _player getDir _target];
-        _safePos = [_checkPos, 3, 4, (sizeof (typeof _crate) + 0.5), 0, 0.5, 0] call BIS_fnc_findSafePos;
-        _safePos = ATLToASL _safePos;
-        _safePos set [2, 0.05];
-        _crate setPosASL _safePos;
+        _crate hideObjectGlobal false;
         sleep 3;
         _crate allowDamage true;
     };

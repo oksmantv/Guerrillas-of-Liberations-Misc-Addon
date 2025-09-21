@@ -1,5 +1,7 @@
 	
 	// [targetObject,"rhs_ammo_3of56",6,10,100] sleep OKS_fnc_RandomArtillery;
+
+	if(!isServer) exitWith {};
 	
 	Params ["_Target","_Munition","_DelayBetweenRounds","_AmountOfRounds","_MunitionSpread"];
 	for "_i" from 1 to _AmountOfRounds do {

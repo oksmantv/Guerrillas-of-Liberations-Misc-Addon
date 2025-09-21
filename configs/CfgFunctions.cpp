@@ -43,14 +43,15 @@ class CfgFunctions // Defines a function
 			class LogDebug {};
 			class FlagTeleport {};
 			class SetMissionComplete {};
-			class AddKilledScore {};
-			class AddCivilianKilled {};
+			//class AddKilledScore {};
+			//class AddCivilianKilled {};
 			class IncreaseMultiplier {};
 			class DecreaseMultiplier {};
 			class Ranks {};
 			class RespawnHandler {};
 			class DisableAPS {};
 			class SelectRandomPosition {};
+			class GlobalKilledEventHandler {};
 		};
 
 		class OKS_Supply {
@@ -130,7 +131,7 @@ class CfgFunctions // Defines a function
 			class SurrenderHandle {};			
 			class ThrowWeaponsOnGround {};		
 			class GetEthnicity {};
-			class KilledCaptiveEvent {};
+			//class KilledCaptiveEvent {};
 			class SetSurrendered {};
 			class Has_Sight {};
 			class AddVehicleCrew {};	

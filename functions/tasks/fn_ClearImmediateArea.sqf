@@ -6,6 +6,8 @@
 	[house_1,"EAST",nil,15,"Clear Building","kill"] spawn OKS_fnc_ClearImmediateArea;
 */
 
+if(!isServer) exitWith {};
+
 Params [
 	["_Target",objNull,[objNull]],
 	["_Side","EAST",["",sideUnknown]],

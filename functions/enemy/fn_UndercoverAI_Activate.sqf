@@ -43,7 +43,7 @@ if(_Debug) then {
                 _X addMagazine "MiniGrenade";
                 _X selectWeapon _StoredWeapon;
                 _X setVariable ["GOL_NonCombatant", false, true];
-                [_X] call OKS_fnc_AddKilledScore;
+                //[_X] call OKS_fnc_AddKilledScore;
                 
                 if (_X checkAIFeature "PATH") then {
                     [_NewEnemyGroup, 400, 15, [], [], true, false, false] remoteExec ["lambs_wp_fnc_taskHunt", 0];

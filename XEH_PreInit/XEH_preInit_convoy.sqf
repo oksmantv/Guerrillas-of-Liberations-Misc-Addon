@@ -6,8 +6,8 @@ diag_log "OKS_GOL_Misc: XEH_preInit_convoy.sqf executed";
     "OKS_Convoy_HelicopterDetectionRange",
     "SLIDER",
     ["Helicopter Detection Range", "Maximum range (meters) to detect enemy helicopters for convoy AA reaction."],
-    "OKS Convoy",
-    [500, 1500, 2500],
+    "GOL Convoy",
+    [500, 2500, 1500],
     1
 ] call CBA_fnc_addSetting;
 
@@ -15,7 +15,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_convoy.sqf executed";
     "OKS_Convoy_PlaneDetectionRange",
     "SLIDER",
     ["Plane Detection Range", "Maximum range (meters) to detect enemy planes for convoy AA reaction."],
-    "OKS Convoy",
-    [500, 2500, 4000],
+    "GOL Convoy",
+    [500, 4000, 2500],
     1
 ] call CBA_fnc_addSetting;

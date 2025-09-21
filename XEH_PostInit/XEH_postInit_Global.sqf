@@ -1,11 +1,16 @@
 diag_log "OKS_GOL_Misc: XEH_postInit_Global.sqf executed";
 
+
 GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
 if(GOL_Core_Enabled isEqualTo true) then {
+
 /*
     Global Executions.
 */
 if(true) then {
+
+    // Register global killed event handler (runs on all clients, server, and HC)
+    [] call OKS_fnc_GlobalKilledEventHandler;
 
     /* Define Player Side for Scripts */
     missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
@@ -119,17 +124,17 @@ if(true) then {
                     };
                 };
 
-                // Add Killed EventHandler for Scores.
-                private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
-                if (_unit isKindOf "CAManBase" && side group _unit != civilian) then 
-                {
-                    [_unit] call OKS_fnc_AddKilledScore;    
-                };
+                // // Add Killed EventHandler for Scores.
+                // private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
+                // if (_unit isKindOf "CAManBase" && side group _unit != civilian) then 
+                // {
+                //     [_unit] call OKS_fnc_AddKilledScore;    
+                // };
 
-                if (_unit isKindOf "CAManBase" && side group _unit == civilian) then 
-                {
-                    [_unit] call OKS_fnc_AddCivilianKilled;
-                };        
+                // if (_unit isKindOf "CAManBase" && side group _unit == civilian) then 
+                // {
+                //     [_unit] call OKS_fnc_AddCivilianKilled;
+                // };        
 
                 private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
                 if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
@@ -208,18 +213,18 @@ if(true) then {
                 };  
             };
 
-            // Add Killed EventHandler for Scores.    
-            if (_x isKindOf "CAManBase" &&
-                !isPlayer _x &&
-                side group _x != civilian) then 
-            {
-                [_X] call OKS_fnc_AddKilledScore;    
-            };
+            // // Add Killed EventHandler for Scores.    
+            // if (_x isKindOf "CAManBase" &&
+            //     !isPlayer _x &&
+            //     side group _x != civilian) then 
+            // {
+            //     [_X] call OKS_fnc_AddKilledScore;    
+            // };
 
-            if (_X isKindOf "CAManBase" && side group _X == civilian) then 
-            {
-                [_X] call OKS_fnc_AddCivilianKilled;    
-            };        
+            // if (_X isKindOf "CAManBase" && side group _X == civilian) then 
+            // {
+            //     [_X] call OKS_fnc_AddCivilianKilled;    
+            // };        
 
             if (
                 _x isKindOf "CAManBase" &&
@@ -305,7 +310,7 @@ if(true) then {
 
             if(isPlayer _instigator || isPlayer _killer) then {
                 if(_unit in [_killer, _instigator]) exitWith {
-                    format["Friendly Fire: Deemed as suicide", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
+                    format["Friendly Fire: %1Deemed as suicide", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
                 };
                 private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
                 _friendlyFireKills = _friendlyFireKills + 1;

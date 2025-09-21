@@ -17,6 +17,8 @@
     ] spawn OKS_fnc_Destroy_Task;    
 */
 
+if(!isServer) exitWith {};
+
 Params [
     ["_Target",objNull,[objNull,[]]],
     ["_CustomTitle",nil,[""]],

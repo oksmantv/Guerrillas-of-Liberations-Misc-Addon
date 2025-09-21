@@ -45,7 +45,16 @@ if(!(_unit getVariable ["HasHandleScoreEvent",false])) then {
             if(_Debug) then {
                 format["%1 killed by %2 - Total Score: %3",_name, name _killer, _enemyKilledCount] spawn OKS_fnc_LogDebug;
             };   
-        };
+        } else {
+            Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
+            if(_Debug) then {
+                _name = name _unit;
+                if(isNil "_name" || _name isEqualTo "") then {
+                    _name = typeof _unit;
+                };
+                format["Killed: %1 killed by %2 (%3) - Instigator %4 (%5)", _name, name _killer, _killer, name _instigator, _instigator] spawn OKS_fnc_LogDebug;
+            }; 
+        }
     }];
 
 };

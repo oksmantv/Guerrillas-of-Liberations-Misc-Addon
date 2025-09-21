@@ -198,7 +198,7 @@ class CfgVehicles {
 		{
 			class ACE_MainActions : ACE_MainActions
 			{
-				distance = 10;	
+				distance = 5;	
 				class OKS_CreateResupply {
 					displayName = "Create Resupply";
 					exceptions[] = {};
@@ -268,10 +268,10 @@ class CfgVehicles {
 		{
 			class ACE_MainActions : ACE_MainActions
 			{
-				distance = 10;
+				distance = 5;
 				class OKS_CreateResupply {
 					displayName = "Create Resupply";
-					distance = 10;
+					distance = 5;
 					exceptions[] = {};
 					condition = "alive _target";
 					statement = "";
@@ -279,7 +279,7 @@ class CfgVehicles {
 					class GOL_TeamResupply
 					{
 						displayName = "Team Resupply";
-						distance = 10;
+						distance = 5;
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_TeamResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
@@ -288,7 +288,7 @@ class CfgVehicles {
 					class GOL_SpecialistResupply
 					{
 						displayName = "Specialist Resupply";
-						distance = 10;
+						distance = 5;
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_SpecialistResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
@@ -297,7 +297,7 @@ class CfgVehicles {
 					class GOL_SquadResupply
 					{
 						displayName = "Squad Resupply";
-						distance = 10;
+						distance = 5;
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_SquadResupplybox_EAST', _player] call OKS_fnc_spawnCrate;";
@@ -306,7 +306,7 @@ class CfgVehicles {
 					class GOL_MobileServiceStation
 					{
 						displayName = "Mobile Service Station";
-						distance = 10;
+						distance = 5;
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_MobileServiceStation', _player] call OKS_fnc_spawnCrate;";
@@ -315,7 +315,7 @@ class CfgVehicles {
 					class GOL_MedicResupply
 					{
 						displayName = "Medical Resupply";
-						distance = 10;
+						distance = 5;
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";

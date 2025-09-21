@@ -2,11 +2,10 @@ diag_log "OKS_GOL_Misc: XEH_postInit_Server.sqf executed";
 
 GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
 if(GOL_Core_Enabled isEqualTo true) then {
-
     /*
         Server Side Executions
     */
-    if(isServer) then {
+    if(isServer) then {   
 
         GOL_MiscAddon_ServerVersion = getText(configFile >> "CBA_VERSIONING" >> "GOL_MISC_ADDON" >> "version");
         publicVariable "GOL_MiscAddon_ServerVersion";

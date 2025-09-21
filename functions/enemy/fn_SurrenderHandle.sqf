@@ -19,5 +19,5 @@ sleep 2.5;
 _unit removeAllEventHandlers "KILLED";
 _unit removeAllEventHandlers "SUPPRESSED";
 _unit removeAllEventHandlers "HIT";
-[_unit] spawn OKS_fnc_KilledCaptiveEvent;
-[_unit] call OKS_fnc_AddCivilianKilled;
+// [_unit] spawn OKS_fnc_KilledCaptiveEvent;
+// [_unit] call OKS_fnc_AddCivilianKilled;
