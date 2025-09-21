@@ -172,6 +172,9 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_AirDrop {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_PreInit_AirDrop.sqf'";
     };            
+    class OKS_PreInit_Convoy {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_convoy.sqf'";
+    };
 };
 
 class Extended_PostInit_EventHandlers {

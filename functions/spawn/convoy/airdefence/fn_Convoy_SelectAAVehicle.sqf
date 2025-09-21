@@ -6,130 +6,43 @@
     Returns: AA vehicle object or objNull
 */
 
-params ["_vehicleArray", "_isConvoyDebugEnabled"];
-private _aaSelectionDebug = missionNamespace getVariable ["GOL_Convoy_AASelection_Debug", false];
-private _bestAAVehicle = objNull;
-private _bestScore = -1e9;
-private _debugScores = [];
-private _excludedVehicleCount = 0;
+// OKS_fnc_Convoy_SelectAAVehicle
+// Usage: [_vehicleArray, _nearestAirTarget] call OKS_fnc_Convoy_SelectAAVehicle;
+params ["_vehicleArray", "_nearestAirTarget"];
+
+private _isConvoyAADebug = missionNamespace getVariable ["GOL_Convoy_AA_Debug", false];
+
+private _aaArray = [];
+if ((count _vehicleArray) > 0) then {
+    _aaArray = _vehicleArray select 0 getVariable ["OKS_Convoy_AAArray", []];
+};
+
+if ((count _aaArray) == 0) exitWith {
+    if (_isConvoyAADebug) then {
+        "[CONVOY_AA_SELECT] No AA vehicles found in dynamic AA array." spawn OKS_fnc_LogDebug;
+    };
+    objNull
+};
+
+private _closestAA = objNull;
+private _minDist = 1e9;
 {
     if (isNull _x || !alive _x || !canMove _x) then { continue };
-    
-    private _vehicleTypeLower = toLower (typeOf _x);
-    private _vehicleConfig = configFile >> "CfgVehicles" >> typeOf _x;
-    
-    // Exclude vehicles with cargo seats to prevent passenger dismounting during AA operations
-    private _cargoSeats = getNumber (_vehicleConfig >> "transportSoldier");
-    private _hasCargoSeats = _cargoSeats > 0;
-    
-    // Check if vehicle has actual cargo units aboard
-    private _cargoUnits = [];
-    {
-        if ((_x select 1) == "cargo") then {
-            _cargoUnits pushBack (_x select 0);
-        };
-    } forEach (fullCrew _x);
-    private _hasCargoAboard = (count _cargoUnits) > 0;
-    
-    // Skip vehicles with cargo capacity or cargo aboard
-    if (_hasCargoSeats || _hasCargoAboard) then {
-        _excludedVehicleCount = _excludedVehicleCount + 1;
-        if (_isConvoyDebugEnabled) then {
-            format [
-                "[CONVOY_AA_SELECT] Skipping %1 - has cargo seats (%2) or cargo aboard (%3)",
-                typeOf _x, _cargoSeats, count _cargoUnits
-            ] spawn OKS_fnc_LogDebug;
-        };
-        continue;
+    private _dist = _x distance _nearestAirTarget;
+    if (_dist < _minDist) then {
+        _minDist = _dist;
+        _closestAA = _x;
     };
-    private _vehicleWeapons = getArray (_vehicleConfig >> "weapons");
-    private _hasGunner = (count (fullCrew [_x, "gunner", true])) > 0;
-    private _hasRadar = (getNumber (_vehicleConfig >> "radarType")) > 0;
-    private _radarComponent = _vehicleConfig >> "Components" >> "SensorsManagerComponent" >> "Components" >> "ActiveRadarSensorComponent";
-    private _hasActiveRadarComponent = isClass _radarComponent;
-    private _hasAirTargetClass = if (_hasActiveRadarComponent) then { isClass (_radarComponent >> "AirTarget") } else { false };
-    private _isTank = _x isKindOf "Tank_F";
-    private _isKnownAAVehicle = (
-        (_x isKindOf "APC_Tracked_01_AA_F") ||
-        (_x isKindOf "APC_Tracked_02_AA_F") ||
-        {(_vehicleTypeLower find "aa") >= 0} ||
-        {(_vehicleTypeLower find "tigris") >= 0} ||
-        {(_vehicleTypeLower find "cheetah") >= 0} ||
-        {(_vehicleTypeLower find "zsu") >= 0} ||
-        {(_vehicleTypeLower find "zu23") >= 0} ||
-        {(_vehicleTypeLower find "shilka") >= 0}
-    );
-    private _hasAAMissiles = false;
-    private _hasAAAutoCannon = false;
-    {
-        private _weaponLower = toLower _x;
-        if (((_weaponLower find "missile") >= 0) || ((_weaponLower find "aa") >= 0)) then { _hasAAMissiles = true; };
-        if (((_weaponLower find "autocannon") >= 0) || ((_weaponLower find "35mm") >= 0) || ((_weaponLower find "gatling") >= 0)) then { _hasAAAutoCannon = true; };
-    } forEach _vehicleWeapons;
-    private _hasAnyAAAmmo = false;
-    private _vehicleMagazines = magazinesAmmoFull _x;
-    {
-        private _magazineInfo = _x;
-        private _magazineClassLower = "";
-        private _magazineAmmoLeft = 0;
-        if (_magazineInfo isEqualType []) then {
-            if ((count _magazineInfo) > 0) then { _magazineClassLower = toLower (_magazineInfo select 0); };
-            if ((count _magazineInfo) > 1) then { _magazineAmmoLeft = _magazineInfo select 1; };
-        };
-        if ((_magazineAmmoLeft > 0) && (
-            (_magazineClassLower find "titan") >= 0 ||
-            (_magazineClassLower find "aa") >= 0 ||
-            (_magazineClassLower find "autocannon") >= 0 ||
-            (_magazineClassLower find "35mm") >= 0 ||
-            (_magazineClassLower find "fla") >= 0 ||
-            (_magazineClassLower find "zeus") >= 0
-        )) exitWith { _hasAnyAAAmmo = true; };
-    } forEach _vehicleMagazines;
-    private _score = 0;
-    if (_isKnownAAVehicle) then { _score = _score + 1000; };
-    if (_hasRadar) then { _score = _score + 400; };
-    if (_hasActiveRadarComponent) then { _score = _score + 450; };
-    if (_hasAirTargetClass) then { _score = _score + 300; };
-    if (_hasAAMissiles) then { _score = _score + 400; };
-    if (_hasAAAutoCannon) then { _score = _score + 250; };
-    if (_hasAnyAAAmmo) then { _score = _score + 150; };
-    if (((_hasAAMissiles || _hasAAAutoCannon)) && !_hasAnyAAAmmo) then { _score = _score - 600; };
-    if (_hasGunner) then { _score = _score + 50; };
-    if (_isTank) then { _score = _score - 300; };
-    _debugScores pushBack [
-        typeOf _x,
-        _score,
-        [
-            "KnownAAVehicle", _isKnownAAVehicle,
-            "RadarType", _hasRadar,
-            "ActiveRadarComponent", _hasActiveRadarComponent,
-            "AirTargetClass", _hasAirTargetClass,
-            "AAMissiles", _hasAAMissiles,
-            "AAAutoCannon", _hasAAAutoCannon,
-            "AnyAAAmmo", _hasAnyAAAmmo,
-            "HasGunner", _hasGunner,
-            "IsTank", _isTank
-        ]
-    ];
-    if (_score > _bestScore) then { _bestScore = _score; _bestAAVehicle = _x; };
-} forEach _vehicleArray;
-if (_isConvoyDebugEnabled) then {
+} forEach _aaArray;
+
+if (_isConvoyAADebug) then {
     format [
-        "[CONVOY_AIR] Selected AA vehicle: %1 (score=%2) from %3 candidates (%4 excluded for cargo)",
-        typeOf _bestAAVehicle,
-        _bestScore,
-        count _vehicleArray,
-        _excludedVehicleCount
+        "[CONVOY_AIR] Closest AA: %1 (dist=%.1f) to target %2 from %3 dynamic AA candidates",
+        typeOf _closestAA,
+        _minDist,
+        _nearestAirTarget,
+        count _aaArray
     ] spawn OKS_fnc_LogDebug;
 };
-if (_aaSelectionDebug) then {
-    private _sortedScores = [_debugScores, [], { _x select 1 }, "DESCEND"] call BIS_fnc_sortBy;
-    private _topScore = if ((count _sortedScores) > 0) then { _sortedScores select 0 } else { [] };
-    format [
-        "[CONVOY_AASelection] Detailed scores: %1 | top=%2",
-        _sortedScores,
-        _topScore
-    ] spawn OKS_fnc_LogDebug;
-};
-if (_bestScore < 200) exitWith { objNull };
-_bestAAVehicle;
+
+_closestAA;

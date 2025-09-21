@@ -1,6 +1,6 @@
 
 params ["_convoyVehicleArray"];
-private _isConvoyDebugEnabled = missionNamespace getVariable ["GOL_Convoy_Debug", false];
+private _isConvoyDebugEnabled = missionNamespace getVariable ["GOL_Convoy_AA_Debug", false];
 if (_convoyVehicleArray isEqualTo [] || isNull (_convoyVehicleArray select 0)) exitWith {};
 if (_isConvoyDebugEnabled) then {
 	format [
@@ -55,7 +55,7 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		] spawn OKS_fnc_LogDebug;
 	};
 
-	private _aaVehicle = [_convoyVehicleArray, _isConvoyDebugEnabled] call OKS_fnc_Convoy_SelectAAVehicle;
+	private _aaVehicle = [_convoyVehicleArray, _nearestAirTarget] call OKS_fnc_Convoy_SelectAAVehicle;
 	if (isNull _aaVehicle) then {
 		if (_isConvoyDebugEnabled) then { "[CONVOY_AIR] No suitable AA vehicle found in convoy" spawn OKS_fnc_LogDebug; };
 		sleep 5;

@@ -211,9 +211,9 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_Convoy_AASelection_Debug",
+    "GOL_Convoy_AA_Debug",
     "CHECKBOX",
-    ["Enable Convoy AA Selection Debug", "When enabled, DEBUG messages will show detailed AA vehicle selection scoring."],
+    ["Enable Convoy AA Debug", "When enabled, DEBUG messages will show detailed AA vehicle selection and engagement."],
     "GOL DEBUG",
     false,
     1

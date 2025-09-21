@@ -238,7 +238,7 @@ if (_ConvoyDebug) then {
 [_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
 
 // Only start air defense if dedicated AA vehicles (without cargo seats) are available
-private _dedicatedAACount = [_VehicleArray, _ConvoyDebug] call OKS_fnc_Convoy_CheckDedicatedAAAvailable;
+private _dedicatedAACount = [_VehicleArray] call OKS_fnc_Convoy_CheckDedicatedAAAvailable;
 if (_dedicatedAACount > 0) then {
 	if (_ConvoyDebug) then {
 		format [
