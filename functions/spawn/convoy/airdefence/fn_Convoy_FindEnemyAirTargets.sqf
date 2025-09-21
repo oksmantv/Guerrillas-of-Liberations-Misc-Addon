@@ -5,6 +5,7 @@ private _DetectedEnemyAirVehicles = [];
 // Get dynamic detection ranges from missionNamespace (set by CBA settings)
 private _heliRange = missionNamespace getVariable ["OKS_Convoy_HelicopterDetectionRange", 1500];
 private _planeRange = missionNamespace getVariable ["OKS_Convoy_PlaneDetectionRange", 2500];
+private _AADebug = missionNamespace getVariable ["GOL_Convoy_AA_Debug", false];
 
 // 1. Scan known targets for helicopters and planes separately
 {
@@ -66,4 +67,10 @@ private _planeRange = missionNamespace getVariable ["OKS_Convoy_PlaneDetectionRa
 } forEach _ConvoyVehicleArray;
 
 _DetectedEnemyAirVehicles = _DetectedEnemyAirVehicles - _IgnoredAirTargets;
+
+// Debug: Log detected air vehicles
+// if(_AADebug) then {
+//     format["[CONVOY_AIR] Detected enemy air vehicles: %1", _DetectedEnemyAirVehicles] spawn OKS_fnc_LogDebug;
+// };
+
 _DetectedEnemyAirVehicles;

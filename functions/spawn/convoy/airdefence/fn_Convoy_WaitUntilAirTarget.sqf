@@ -34,19 +34,22 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 	} forEach _convoyVehicleArray;
 
 	waitUntil {
-		sleep 0.5;
+		sleep 1;
 		(count ([_convoyCrewGroups, _convoyVehicleArray, _convoySide, _ignoredAirTargets] call OKS_fnc_Convoy_FindEnemyAirTargets)) > 0
 	};
 
 	private _initialDetectedAirTargets = [_convoyCrewGroups, _convoyVehicleArray, _convoySide, _ignoredAirTargets] call OKS_fnc_Convoy_FindEnemyAirTargets;
 	private _previousDetectedAirTargets = +_initialDetectedAirTargets;
+
+	// Always define _nearestAirTarget, even if no targets found
+	private _nearestAirTarget = objNull;
+	private _nearestAirTargetDistance = 1e9;
+	{
+		private _distanceToAirTarget = (_convoyVehicleArray select 0) distance _x;
+		if (_distanceToAirTarget < _nearestAirTargetDistance) then { _nearestAirTargetDistance = _distanceToAirTarget; _nearestAirTarget = _x; };
+	} forEach _initialDetectedAirTargets;
+
 	if (_isConvoyDebugEnabled) then {
-		private _nearestAirTargetDistance = 1e9;
-		private _nearestAirTarget = objNull;
-		{
-			private _distanceToAirTarget = (_convoyVehicleArray select 0) distance _x;
-			if (_distanceToAirTarget < _nearestAirTargetDistance) then { _nearestAirTargetDistance = _distanceToAirTarget; _nearestAirTarget = _x; };
-		} forEach _initialDetectedAirTargets;
 		format [
 			"[CONVOY_AIR] Detected %1 hostile air targets. Nearest: %2 at %3m",
 			count _initialDetectedAirTargets,
@@ -62,9 +65,11 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		continue;
 	};
 
+	// Mark AA vehicle as unavailable for new air defense tasks
+	_aaVehicle setVariable ["OKS_AA_Available", false, true];
 	if (_isConvoyDebugEnabled) then {
 		format [
-			"[CONVOY_AIR] Selected AA vehicle: %1",
+			"[CONVOY_AIR] Selected and marked unavailable: %1",
 			_aaVehicle
 		] spawn OKS_fnc_LogDebug;
 	};
@@ -362,65 +367,78 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		private _checkpointPos = _aaVehicle getVariable ["OKS_AA_CheckpointPos", []];
 		private _vehiclesPassed = _aaVehicle getVariable ["OKS_AA_VehiclesPassed", []];
 		
-		// Find AA vehicle's position in convoy array to only check vehicles behind it
-		// Use original convoy array from when AA was selected, not current array (AA might be detached)
-		private _originalConvoyArray = _aaVehicle getVariable ["OKS_AA_OriginalConvoyArray", _convoyVehicleArray];
-		private _aaIndex = _originalConvoyArray find _aaVehicle;
+		// Get current convoy array and find AA position
+		private _currentConvoyArray = _aaVehicle getVariable ["OKS_Convoy_VehicleArray", _convoyVehicleArray];
+		private _currentAAIndex = _currentConvoyArray find _aaVehicle;
 		private _vehiclesBehindAA = [];
-		if (_aaIndex >= 0) then {
-			for "_i" from (_aaIndex + 1) to ((count _originalConvoyArray) - 1) do {
-				_vehiclesBehindAA pushBack (_originalConvoyArray select _i);
-			};
-		} else {
-			// Fallback: if AA not found in original array, use all vehicles behind current position
-			private _currentAAIndex = _convoyVehicleArray find _aaVehicle;
-			if (_currentAAIndex >= 0) then {
-				for "_i" from (_currentAAIndex + 1) to ((count _convoyVehicleArray) - 1) do {
-					_vehiclesBehindAA pushBack (_convoyVehicleArray select _i);
-				};
-			};
-		};
 		
+		// Initialize variables that are used later
 		_allVehiclesPassed = true;
 		private _closestConvoyDist = 1e9;
 		private _closestVehicle = objNull;
 		private _vehicleDistances = [];
-		{
-			if (!isNull _x && (_x != _aaVehicle)) then {
-				private _dist = _aaVehicle distance _x; // Distance from current AA position for final spacing
-				private _checkpointDist = _x distance _checkpointPos; // Distance from checkpoint for passage detection
-				_vehicleDistances pushBack [_x, _dist];
-				
-				// Only process vehicles that are behind the AA in convoy order
-				if (_x in _vehiclesBehindAA) then {
-					// Stage 1: Check if vehicle passed through checkpoint area
-					// Generous detection: vehicle is within 30m of the AA's original position
-					if (!(_x in _vehiclesPassed) && (_checkpointDist < 30)) then {
-						_vehiclesPassed pushBack _x;
-						_aaVehicle setVariable ["OKS_AA_VehiclesPassed", _vehiclesPassed];
-						if (_isConvoyDebugEnabled) then {
-							format ["[CONVOY_AIR] Vehicle %1 passed checkpoint", _x] spawn OKS_fnc_LogDebug;
-						};
-					};
-					
-					// Stage 2: For vehicles that passed checkpoint, check if they're clear (>100m)
-					if (_x in _vehiclesPassed) then {
-						if (_dist < 60) then {
-							_allVehiclesPassed = false;
-						};
-					} else {
-						// Vehicle hasn't even passed checkpoint yet
-						_allVehiclesPassed = false;
-					};
-				};
-				// Note: vehicles ahead of AA don't affect _allVehiclesPassed
-				
-				if (_dist < _closestConvoyDist) then {
-					_closestConvoyDist = _dist;
-					_closestVehicle = _x;
+		
+		// Only check vehicles that are actually behind the AA in the current convoy order
+		if (_currentAAIndex >= 0) then {
+			for "_i" from (_currentAAIndex + 1) to ((count _currentConvoyArray) - 1) do {
+				private _vehBehind = _currentConvoyArray select _i;
+				// Only include vehicles that are alive and moving
+				if (!isNull _vehBehind && alive _vehBehind && canMove _vehBehind) then {
+					_vehiclesBehindAA pushBack _vehBehind;
 				};
 			};
-		} forEach _convoyVehicleArray;
+		};
+		
+		// If AA is at the end of convoy (no vehicles behind it), it should not wait for anyone
+		if ((count _vehiclesBehindAA) == 0) then {
+			_allVehiclesPassed = true;
+			if (_isConvoyDebugEnabled) then {
+				format [
+					"[CONVOY_AIR] AA vehicle %1 is at convoy end (position %2/%3) - no vehicles to wait for",
+					_aaVehicle, _currentAAIndex + 1, count _currentConvoyArray
+				] spawn OKS_fnc_LogDebug;
+			};
+		} else {
+			_allVehiclesPassed = true;
+			
+			// Only process vehicles that are actually behind the AA
+			{
+				if (!isNull _x && (_x != _aaVehicle)) then {
+					private _dist = _aaVehicle distance _x; // Distance from current AA position for final spacing
+					private _checkpointDist = _x distance _checkpointPos; // Distance from checkpoint for passage detection
+					_vehicleDistances pushBack [_x, _dist];
+					
+					// Only process vehicles that are behind the AA in convoy order
+					if (_x in _vehiclesBehindAA) then {
+						// Stage 1: Check if vehicle passed through checkpoint area
+						// Generous detection: vehicle is within 30m of the AA's original position
+						if (!(_x in _vehiclesPassed) && (_checkpointDist < 30)) then {
+							_vehiclesPassed pushBack _x;
+							_aaVehicle setVariable ["OKS_AA_VehiclesPassed", _vehiclesPassed];
+							if (_isConvoyDebugEnabled) then {
+								format ["[CONVOY_AIR] Vehicle %1 passed checkpoint", _x] spawn OKS_fnc_LogDebug;
+							};
+						};
+						
+						// Stage 2: For vehicles that passed checkpoint, check if they're clear (>100m)
+						if (_x in _vehiclesPassed) then {
+							if (_dist < 60) then {
+								_allVehiclesPassed = false;
+							};
+						} else {
+							// Vehicle hasn't even passed checkpoint yet
+							_allVehiclesPassed = false;
+						};
+					};
+					// Note: vehicles ahead of AA don't affect _allVehiclesPassed
+					
+					if (_dist < _closestConvoyDist) then {
+						_closestConvoyDist = _dist;
+						_closestVehicle = _x;
+					};
+				};
+			} forEach _currentConvoyArray;
+		};
 
 		// If no other vehicles in array (edge case), allow immediate restore
 		if (_closestConvoyDist isEqualTo 1e9) then { 
@@ -431,6 +449,15 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		private _clearAndSpaced = ((count _currentAirTargets) == 0) && _allVehiclesPassed;
 		_timeout = (_noAirSince >= 0) && ((time - _noAirSince) > 30) && _allVehiclesPassed && (_closestConvoyDist > 60); // Only timeout if all vehicles have passed AND are far enough
 		_hardTimeout = (time - _engageStartTime) > 180;
+		
+		// Hard fallback: if all convoy vehicles are more than 500m away, release AA immediately
+		private _hardFallback = (_closestConvoyDist > 500);
+		if (_hardFallback && _isConvoyDebugEnabled) then {
+			format [
+				"[CONVOY_AIR] Hard fallback triggered - all convoy vehicles >500m away (closest: %1m). Releasing AA.",
+				round _closestConvoyDist
+			] spawn OKS_fnc_LogDebug;
+		};
 
 		if (_isConvoyDebugEnabled) then {
 			// Enhanced debug - only show vehicles that are still causing delays
@@ -461,7 +488,7 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 						// Don't show vehicles that are properly spaced
 					};
 				};
-			} forEach _originalConvoyArray;
+			} forEach _currentConvoyArray;
 			
 			private _closestGroupName = if (!isNull _closestVehicle) then { groupId (group (driver _closestVehicle)) } else { "NULL" };
 			
@@ -486,7 +513,7 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 				};
 			};
 		};
-		_clearAndSpaced || _timeout || _hardTimeout
+		_clearAndSpaced || _timeout || _hardTimeout || _hardFallback
 	};
 
 	// Add minimum 15-second wait after all vehicles have passed before rejoining convoy
@@ -522,10 +549,8 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
     };
 
 	// Check if reserve slots are available and valid before assigning
-	private _leadVeh = _aaVehicle getVariable ["", objNull];
-	private _reserveQueue = if (!isNull _leadVeh) then { _leadVeh getVariable ["OKS_Convoy_ReserveQueue", []] } else { [] };
+	private _reserveQueue = _aaVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
 	private _reserveAssigned = false;
-	
 	if ((count _reserveQueue) > 0) then {
 		// Reserve slots exist, try to assign one
 		_reserveAssigned = [_aaVehicle] call OKS_fnc_Convoy_AssignReserveWaypoint;
@@ -599,24 +624,59 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		};
 	};
 
-	// Reinsert AA vehicle at tail
+	// Reinsert AA vehicle at tail (remove all previous occurrences first)
 	private _leadVehicle = _convoyVehicleArray select 0;
 	private _convoyArray = _leadVehicle getVariable ["OKS_Convoy_VehicleArray", _convoyVehicleArray];
-	private _aaVehicleIdx = _convoyArray find _aaVehicle;
-	if (_aaVehicleIdx >= 0) then { _convoyArray deleteAt _aaVehicleIdx; };
+	
+	if (_isConvoyDebugEnabled) then {
+		format ["[CONVOY_AIR] Before AA rejoin - Current convoy array: %1", _convoyArray apply { groupId (group (driver _x)) }] spawn OKS_fnc_LogDebug;
+		format ["[CONVOY_AIR] Before AA rejoin - Original convoy param: %1", _convoyVehicleArray apply { groupId (group (driver _x)) }] spawn OKS_fnc_LogDebug;
+		
+		// Show AA availability for debugging
+		private _availabilityStatus = [];
+		{
+			private _isAvailable = _x getVariable ["OKS_AA_Available", true];
+			_availabilityStatus pushBack format ["%1:%2", groupId (group (driver _x)), _isAvailable];
+		} forEach _convoyArray;
+		format ["[CONVOY_AIR] AA availability status: %1", _availabilityStatus joinString ", "] spawn OKS_fnc_LogDebug;
+	};
+	
+	// Remove all instances of AA vehicle from convoy array
+	_convoyArray = _convoyArray select { _x != _aaVehicle };
 	_convoyArray pushBack _aaVehicle;
 	{
 		_x setVariable ["OKS_Convoy_VehicleArray", _convoyArray, true];
-	} forEach _convoyVehicleArray;
+	} forEach _convoyArray; // Use _convoyArray instead of _convoyVehicleArray to avoid updating removed vehicles
 	if (_isConvoyDebugEnabled) then {
 		format ["[CONVOY_AIR] Appended %1 as tail vehicle. Convoy size now: %2", _aaVehicle, count _convoyArray] spawn OKS_fnc_LogDebug;
 	};
 	if ((count _convoyArray) > 1) then {
-		// Determine the tail leader excluding the AA vehicle itself (works even if AA is still in array)
-		private _tempConvoy = +_convoyArray;
-		private _aaIdx = _tempConvoy find _aaVehicle;
-		if (_aaIdx >= 0) then { _tempConvoy deleteAt _aaIdx; };
-		private _leaderVehicle = if ((count _tempConvoy) > 0) then { _tempConvoy select ((count _tempConvoy) - 1) } else { objNull };
+		// The second-to-last vehicle in the convoy array should be the leader for the AA vehicle
+		// But we need to ensure it's not another AA vehicle that's currently unavailable
+		private _potentialLeaderIdx = (count _convoyArray) - 2;
+		private _leaderVehicle = _convoyArray select _potentialLeaderIdx;
+		
+		// Check if the potential leader is available (not another AA vehicle currently returning)
+		private _leaderIsAvailable = _leaderVehicle getVariable ["OKS_AA_Available", true];
+		
+		// If the potential leader is not available, find the last available vehicle
+		if (!_leaderIsAvailable) then {
+			if (_isConvoyDebugEnabled) then {
+				format ["[CONVOY_AIR] Potential leader %1 is unavailable (AA returning), searching for available leader", groupId (group (driver _leaderVehicle))] spawn OKS_fnc_LogDebug;
+			};
+			
+			// Search backwards from the potential leader to find an available vehicle
+			for "_i" from _potentialLeaderIdx to 0 step -1 do {
+				private _candidateVehicle = _convoyArray select _i;
+				private _candidateAvailable = _candidateVehicle getVariable ["OKS_AA_Available", true];
+				if (_candidateAvailable) exitWith {
+					_leaderVehicle = _candidateVehicle;
+					if (_isConvoyDebugEnabled) then {
+						format ["[CONVOY_AIR] Found available leader: %1 at index %2", groupId (group (driver _leaderVehicle)), _i] spawn OKS_fnc_LogDebug;
+					};
+				};
+			};
+		};
 		
 		if (_isConvoyDebugEnabled) then {
 			// Get group names for better debugging
@@ -629,7 +689,6 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 			// Store debugging variables on the AA vehicle for easy inspection
 			_aaVehicle setVariable ["DEBUG_AssignedLeader", _leaderVehicle, true];
 			_aaVehicle setVariable ["DEBUG_ConvoyArray", _convoyArray, true];
-			_aaVehicle setVariable ["DEBUG_TempConvoy", _tempConvoy, true];
 			_aaVehicle setVariable ["DEBUG_AAGroupName", _aaGroupName, true];
 			_aaVehicle setVariable ["DEBUG_LeaderGroupName", _leaderGroupName, true];
 		};
@@ -646,6 +705,7 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		if (_isConvoyDebugEnabled) then {
 			format ["[CONVOY_AIR] Speed governor started for AA vehicle %1 following leader %2", _aaVehicle, _leaderVehicle] spawn OKS_fnc_LogDebug;
 		};
+		
 		// Only unlock speed if merging/engaging (handled elsewhere)
 	};
 
@@ -653,5 +713,12 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 	{
 		_x setVariable ["OKS_Convoy_FrontLeader", _leadVehicle, true];
 	} forEach _convoyArray;
+	
+	// Re-enable AA availability AFTER convoy has been properly updated and position established
+	_aaVehicle setVariable ["OKS_AA_Available", true, true];
+	if (_isConvoyDebugEnabled) then {
+		format ["[CONVOY_AIR] AA vehicle %1 marked available for future air defense tasks (convoy rejoin complete)", _aaVehicle] spawn OKS_fnc_LogDebug;
+	};
+	
 	// Loop will continue to wait for the next interception
 };

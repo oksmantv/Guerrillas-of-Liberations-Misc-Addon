@@ -173,6 +173,30 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 			};
 		} forEach _convoyVehicleArray;
 		
+		// Also clean the AA array of disabled vehicles
+		private _currentAAArray = _Vehicle getVariable ["OKS_Convoy_AAArray", []];
+		if (_currentAAArray isNotEqualTo []) then {
+			private _cleanedAAArray = [];
+			{
+				private _checkAAVehicle = _x;
+				private _isAADisabled = (isNull _checkAAVehicle) || {!(alive _checkAAVehicle)} || {!(canMove _checkAAVehicle)};
+				if (!_isAADisabled) then {
+					_cleanedAAArray pushBack _checkAAVehicle;
+				} else {
+					if (_ConvoyDebug) then {
+						format ["[CONVOY-CLEANUP] Removing disabled AA vehicle %1 from AA array", _checkAAVehicle] spawn OKS_fnc_LogDebug;
+					};
+				};
+			} forEach _currentAAArray;
+			
+			// Update AA array on all vehicles if it changed
+			if (count _cleanedAAArray != count _currentAAArray) then {
+				{
+					_x setVariable ["OKS_Convoy_AAArray", _cleanedAAArray, true];
+				} forEach _cleanedArray;
+			};
+		};
+		
 		// Update all remaining vehicles with cleaned array
 		if (count _cleanedArray != count _convoyVehicleArray) then {
 			{

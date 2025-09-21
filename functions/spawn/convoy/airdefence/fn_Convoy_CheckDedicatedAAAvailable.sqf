@@ -17,9 +17,6 @@ private _aaVehicles = [];
     if (isNull _x || !alive _x || !canMove _x) then { continue };
     private _vehicleTypeLower = toLower (typeOf _x);
     private _vehicleConfig = configFile >> "CfgVehicles" >> typeOf _x;
-    // Check if vehicle has cargo seats/slots (passengers that could dismount)
-    private _cargoSeats = getNumber (_vehicleConfig >> "transportSoldier");
-    private _hasCargoSeats = _cargoSeats > 0;
     // Check if vehicle has actual cargo units aboard
     private _cargoUnits = [];
     {
@@ -28,13 +25,14 @@ private _aaVehicles = [];
         };
     } forEach (fullCrew _x);
     private _hasCargoAboard = (count _cargoUnits) > 0;
-    // Only exclude from AA if cargo seats are actually occupied (cargo aboard)
+    private _displayName = getText (_vehicleConfig >> "displayName");
+    // Exclude vehicles with cargo capacity OR cargo aboard (safer approach)
     if (_hasCargoAboard) then {
-        _excludedVehicles pushBack [typeOf _x, _cargoSeats, count _cargoUnits];
+        _excludedVehicles pushBack [typeOf _x, count _cargoUnits];
         if (_isConvoyDebugEnabled) then {
             format [
-                "[CONVOY_AA_CHECK] Excluding %1 from AA selection - Cargo seats: %2, Cargo aboard: %3",
-                typeOf _x, _cargoSeats, count _cargoUnits
+                "[CONVOY_AA_CHECK] Excluding %1 (%2) from AA selection - Cargo aboard: %3",
+                _displayName, typeOf _x, count _cargoUnits
             ] spawn OKS_fnc_LogDebug;
         };
         continue;
@@ -104,15 +102,15 @@ private _aaVehicles = [];
         _aaVehicles pushBack _x;
         if (_isConvoyDebugEnabled) then {
             format [
-                "[CONVOY_AA_CHECK] Found dedicated AA vehicle: %1 (score: %2)",
-                typeOf _x, _dedicationScore
+                "[CONVOY_AA_CHECK] Found dedicated AA vehicle: %1 (%2) (score: %3)",
+                _displayName, typeOf _x, _dedicationScore
             ] spawn OKS_fnc_LogDebug;
         };
     } else {
         if (_isConvoyDebugEnabled) then {
             format [
-                "[CONVOY_AA_CHECK] Vehicle %1 not dedicated enough for AA (score: %2)",
-                typeOf _x, _dedicationScore
+                "[CONVOY_AA_CHECK] Vehicle %1 (%2) not dedicated enough for AA (score: %3)",
+                _displayName, typeOf _x, _dedicationScore
             ] spawn OKS_fnc_LogDebug;
         };
     };

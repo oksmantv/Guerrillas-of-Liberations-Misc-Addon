@@ -28,6 +28,16 @@ private _closestAA = objNull;
 private _minDist = 1e9;
 {
     if (isNull _x || !alive _x || !canMove _x) then { continue };
+    
+    // Check if AA vehicle is available (not currently returning from previous engagement)
+    private _isAAAvailable = _x getVariable ["OKS_AA_Available", true];
+    if (!_isAAAvailable) then { 
+        if (_isConvoyAADebug) then {
+            format ["[CONVOY_AA_SELECT] Skipping %1 - currently unavailable (returning from engagement)", typeOf _x] spawn OKS_fnc_LogDebug;
+        };
+        continue; 
+    };
+    
     private _dist = _x distance _nearestAirTarget;
     if (_dist < _minDist) then {
         _minDist = _dist;

@@ -52,6 +52,8 @@ if (isNil "_ConvoyGroupArray") then {
 	_ConvoyGroupArray = [];
 };
 
+
+private _ReserveQueue = [];
 for "_i" from 0 to ((_Count - 1) + 4) do {
 
 	if(_i >= _Count) then {
@@ -60,9 +62,6 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
 		_NextPreferLeft = !_actualIsLeft;
 
-		private _LeadVehicle = _VehicleArray select 0;
-		_ReserveQueue = _LeadVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
-		
 		// Check for duplicate positions (road capacity exceeded)
 		private _isDuplicate = false;
 		{
@@ -71,17 +70,13 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 				_isDuplicate = true;
 			};
 		} forEach _ReserveQueue;
-		
+
 		if (_isDuplicate) then {
 			if (_ConvoyDebug) then {
 				format ["[WARNING] Convoy cannot fit on end waypoint road. Reduce vehicles or pick a longer stretch of road. Position: %1", _endPosition] spawn OKS_fnc_LogDebug;
 			};
 		} else {
 			_ReserveQueue pushBack [_endPosition, false]; // [position, isOccupied]
-			{
-				_x setVariable ["OKS_Convoy_ReserveQueue", _ReserveQueue, true];
-			} forEach _VehicleArray;
-
 			// Debug: Log reserve position creation
 			if (_ConvoyDebug) then {
 				format ["[CONVOY-SPAWN] Created reserve position %1 at %2 (left: %3)", count _ReserveQueue - 1, _endPosition, _actualIsLeft] spawn OKS_fnc_LogDebug;
@@ -216,11 +211,16 @@ _LeadVehicle = _VehicleArray select 0;
 	_x setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
 } forEach _VehicleArray;
 
+
 [_LeadVehicle] call OKS_fnc_Convoy_InitIntendedSlots;
-_ReserveQueue = _LeadVehicle getVariable ["OKS_Convoy_ReserveQueue", []];
 _primarySlots = _LeadVehicle getVariable ["OKS_Convoy_PrimarySlotCount", count _VehicleArray];
 _reserveSlots = count _ReserveQueue;
 _endPos = _End;
+
+// Publish the final reserve queue to all vehicles (only once, after loop)
+{
+	_x setVariable ["OKS_Convoy_ReserveQueue", _ReserveQueue, true];
+} forEach _VehicleArray;
 
 // Debug: Log final reserve queue
 if (_ConvoyDebug) then {
@@ -246,6 +246,20 @@ if (_dedicatedAACount > 0) then {
 			_dedicatedAACount
 		] spawn OKS_fnc_LogDebug;
 	};
+	
+	// Wait for cargo loading to complete before starting AA system
+	if (_ShouldHaveCargo) then {
+		if (_ConvoyDebug) then {
+			"[CONVOY-SPAWN] Waiting for cargo loading completion before starting AA system" spawn OKS_fnc_LogDebug;
+		};
+		sleep 3; // Allow cargo loading to complete
+	};
+	
+	// Initialize AA availability states for all vehicles
+	{
+		_x setVariable ["OKS_AA_Available", true, true];
+	} forEach _VehicleArray;
+	
 	[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;
 } else {
 	if (_ConvoyDebug) then {
