@@ -254,3 +254,21 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     true,
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "GOL_GroundVehicles_Debug",
+    "CHECKBOX",
+    ["Enable Ground Vehicles DEBUG", "Enables debugging for ground vehicle setup scripts such as Mechanized, SetupCargoSpace, etc. (excludes damage system)"],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_PlayerVehicleDamage_Debug",
+    "CHECKBOX",
+    ["Enable Player Vehicle Damage DEBUG", "Enables debugging specifically for the player vehicle damage reduction system for targeted damage testing."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;

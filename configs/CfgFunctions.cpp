@@ -149,11 +149,27 @@ class CfgFunctions // Defines a function
 
 		class OKS_Vehicles {
 			file = "\OKS_GOL_Misc\functions\vehicles";
-			class Mechanized {};				
-			class MissileWarning {};
-			class MissileDeflect {};				
 			class Retexture {};
-			class VehicleEmpty {};	
+		};
+
+		class OKS_Vehicles_GroundVehicles {
+			file = "\OKS_GOL_Misc\functions\vehicles\groundVehicles";
+			class Mechanized {};				
+			class VehicleEmpty {};
+			class SetupServiceStation {};
+			class SetupCargoItems {};
+			class Setup3CBVehicleAmmo {};
+			class SetupVehicleInventory {};
+			class SetupCargoSpace {};
+			class AdjustPlayerVehicleDamage {};
+			class DebugVehicleDamage {};
+		};
+
+		class OKS_Vehicles_MissileWarning {
+			file = "\OKS_GOL_Misc\functions\vehicles\missileWarning";
+			class MissileWarning {};
+			class MissileDeflect {};
+			class SetupMissileWarning {};				
 		};	
 		
 		class OKS_Helicopters {

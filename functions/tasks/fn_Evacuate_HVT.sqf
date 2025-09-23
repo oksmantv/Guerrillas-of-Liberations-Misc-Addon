@@ -6,7 +6,7 @@
 
 	Parameters:
 	0: Group | Array | Unit - The units that will be set to HVTs.
-	1: Array - The position of the exfiltration site where the HVT will be evacuated. If _HelicopterEvac is set to true, it will mark the landing site, if off it will land the task completion site. (Type: Array or Position)
+	1: Array - The position of the exfiltration site where the HVT will be evacuated. If _HelicopterEvac is set to true, it will mark the landing site, if off it will land the task completion site. (Type: Array or Trigger or Object)
 	2: Side - The side (faction) of the evacuating helicopter. (Type: Side)
 	3: Boolean - Whether the evacuation should be done by AI Helicopter. (Type: Boolean)
 	4: String - The parent task ID to which this task will be linked. (Type: String)
@@ -28,11 +28,12 @@ Params [
 	["_HelicopterEvac",false,[false]],
 	["_ParentTask","",[""]],
 	["_IsCaptive",true,[true]],
-	["_TaskOnStart",false,[false]]
+	["_TaskOnStart",false,[false]],
+	["_CustomDescription",nil,[""]]
 ];
 
 if(_HVTDebug) then {
-	format["[HVT TASK] fn_Evacuate_HVT started with params: Units=%1, ExfilSite=%2, Side=%3, HelicopterEvac=%4, ParentTask=%5, IsCaptive=%6, TaskOnStart=%7", _UnitsOrGroupOrArray, _ExfilSite, _Side, _HelicopterEvac, _ParentTask, _IsCaptive, _TaskOnStart] call OKS_fnc_LogDebug;
+	format["[HVT TASK] fn_Evacuate_HVT started with params: Units=%1, ExfilSite=%2, Side=%3, HelicopterEvac=%4, ParentTask=%5, IsCaptive=%6, TaskOnStart=%7, CustomDescription=%8", _UnitsOrGroupOrArray, _ExfilSite, _Side, _HelicopterEvac, _ParentTask, _IsCaptive, _TaskOnStart, _CustomDescription] call OKS_fnc_LogDebug;
 };
 
 Private ["_Units","_ExfilPosition","_TaskDescription"];
@@ -145,6 +146,13 @@ if(_HelicopterEvac) then {
 	_TaskDescription = format["%2, there are %1 in total. Transport them to the <marker name='%3'>exfil site</marker>.",count _Units,_descriptionText,_exfilMarker];
 };
 
+if(!isNil "_CustomDescription") then {
+	_TaskDescription = _CustomDescription;
+	if(_HVTDebug) then {
+		format["[HVT TASK] Custom task description applied: %1", _CustomDescription] call OKS_fnc_LogDebug;
+	};	
+};
+
 _TaskArray = [_TaskId];
 if(!isNil "_ParentTask") then {
 	_TaskArray pushBack _ParentTask;
@@ -179,7 +187,21 @@ if(_HVTDebug) then {
 
 if(_TaskState == "FAILED") exitWith {false};
 
-waitUntil {sleep 15; {!Alive _X || _X distance _ExfilPosition < 100 && vehicle _X == _x} count _Units == count _Units};
+// Use inArea if exfil is a trigger, otherwise use distance
+private _isTrigger = (typeName _ExfilSite == "OBJECT") && {triggerArea _ExfilSite isEqualType []};
+waitUntil {
+	sleep 15;
+	{
+		!Alive _X ||
+		(
+			if (_isTrigger) then {
+				_X inArea _ExfilSite && vehicle _X == _X
+			} else {
+				_X distance _ExfilPosition < 100 && vehicle _X == _X
+			}
+		)
+	} count _Units == count _Units
+};
 
 if(_HVTDebug) then {
 	format["[HVT TASK] Units reached exfil site. HelicopterEvac: %1", _HelicopterEvac] call OKS_fnc_LogDebug;

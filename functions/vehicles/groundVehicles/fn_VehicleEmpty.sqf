@@ -18,11 +18,9 @@ private _SetupTarget = {
 			_className = "B_Soldier_F";
 		};
 	};
-
+	_VehicleDisplayName = (configFile >> "CfgVehicles" >> typeOf _Vehicle >> "displayName");
 	_InvisibleSoldier = _invisibleGroup createUnit [_className, getPos _Vehicle, [], 0, "NONE"];
-	_Number = (missionNamespace getVariable ["GOL_VehicleEmpty_Count",0]) + 1;
-	(missionNamespace setVariable ["GOL_VehicleEmpty_Count",_Number,true]);
-	_invisibleGroup setGroupIdGlobal [format["PLAYER VEHICLE #%1", _Number]];
+	_invisibleGroup setGroupIdGlobal _VehicleDisplayName;
 	_InvisibleSoldier allowDamage false;
 	_InvisibleSoldier hideObjectGlobal true;
 	_InvisibleSoldier disableAI "ALL";
@@ -32,7 +30,7 @@ private _SetupTarget = {
 	_Vehicle setVariable ["GOL_InvisibleTarget", _InvisibleSoldier, true];
 
 	format["[VEHICLEMPTY] Side %1 - Classname %2", _Side, _className] call OKS_fnc_LogDebug;
-	format["[VEHICLEMPTY] Target on PLAYER VEHICLE #%2 - %1", _Vehicle, _Number] call OKS_fnc_LogDebug;
+	format["[VEHICLEMPTY] Target on %2 - %1", _Vehicle, _VehicleDisplayName] call OKS_fnc_LogDebug;
 };
 private _ClearTarget = {
 	params ["_Vehicle","_Side"];
