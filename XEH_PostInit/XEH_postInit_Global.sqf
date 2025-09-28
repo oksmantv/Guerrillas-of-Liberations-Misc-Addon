@@ -1,6 +1,5 @@
 diag_log "OKS_GOL_Misc: XEH_postInit_Global.sqf executed";
 
-
 GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
 if(GOL_Core_Enabled isEqualTo true) then {
 
@@ -109,8 +108,17 @@ if(true) then {
     */
     ["CAManBase", "init", {
         params ["_unit"];
-        _unit spawn {
-            params ["_unit"];
+        
+        private _AppliedHCBlacklist = false;
+        // Disable HC Transfer for AI unit.
+        if (!(_unit getVariable ["acex_headless_blacklist", false])) then {
+            _unit setVariable ["acex_headless_blacklist", true, true];
+            _AppliedHCBlacklist = true;
+            format ["[HEADLESS] %1 blacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
+        };
+
+        [_unit, _AppliedHCBlacklist] spawn {
+            params ["_unit", "_AppliedHCBlacklist"];
             sleep 5;
             if (!isPlayer _unit) then {
 
@@ -154,7 +162,6 @@ if(true) then {
                     };
                 };
 
-
                 if(side group _unit != civilian || vehicle _unit == _unit) then {
                     _unit spawn {
                         params ["_unit"];
@@ -165,6 +172,17 @@ if(true) then {
                         if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {                          
                             [_group] spawn OKS_fnc_EnablePath;
                         };
+                    };
+                };
+
+                // Enable HC Transfer for AI unit.
+                if(_AppliedHCBlacklist) then {
+                    _unit spawn {   
+                        params ["_unit"];
+                        waitUntil {sleep 2; _unit getVariable ["GW_Gear_appliedGear",false]};
+                        sleep 5;
+                        _unit setVariable ["acex_headless_blacklist", false, true];
+                        format ["[HEADLESS] %1 unblacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
                     };
                 };
             };
@@ -310,12 +328,12 @@ if(true) then {
 
             if(isPlayer _instigator || isPlayer _killer) then {
                 if(_unit in [_killer, _instigator]) exitWith {
-                    format["Friendly Fire: %1Deemed as suicide", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
+                    format["[KILLS] Player Friendly Fire: %1 deemed as suicide", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
                 };
                 private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
                 _friendlyFireKills = _friendlyFireKills + 1;
                 missionNamespace setVariable ["GOL_FriendlyFireKills", _friendlyFireKills, true];
-                format["Friendly Fire: %1 killed by %2 (%3)", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
+                format["[KILLS] Player Friendly Fire: %1 killed by %2 (%3)", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
             };
 
             // Get the player's current SR radio info

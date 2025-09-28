@@ -207,7 +207,7 @@ class CfgWeapons {
 					passThrough = 0.3;
 				};		
 				class Diaphragm {
-					armor = 8;
+					armor = 4;
 					hitpointName = "HitDiaphragm";
 					passThrough = 0.3;
 				};	
@@ -248,7 +248,7 @@ class CfgWeapons {
 					passThrough = 0.3;
 				};		
 				class Diaphragm {
-					armor = 10;
+					armor = 5;
 					hitpointName = "HitDiaphragm";
 					passThrough = 0.3;
 				};	
@@ -289,7 +289,7 @@ class CfgWeapons {
 					passThrough = 0.3;
 				};		
 				class Diaphragm {
-					armor = 12;
+					armor = 6;
 					hitpointName = "HitDiaphragm";
 					passThrough = 0.3;
 				};	

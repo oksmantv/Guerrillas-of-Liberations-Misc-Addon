@@ -6,7 +6,7 @@
 
 // Only run on server and headless clients (not player clients),
 // but allow if this is a local server (hasInterface && isServer) for debugging
-if (hasInterface && !isServer) exitWith {};
+if (hasInterface) exitWith {};
 
 private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug", false];
 if(_Debug) then {
@@ -44,7 +44,8 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 							format["[KILLS] %1 killed by %2 - Total Score: %3", _name, name _killer, _enemyKilledCount] spawn OKS_fnc_LogDebug;
 						};
 					};
-					// Friendly fire check
+					
+					// Friendly fire check for AI
 					if ((side (group _unit)) getFriend (side (group _killer)) > 0.6 || (side (group _unit)) getFriend (side (group _instigator)) > 0.6) then {
 						private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
 						_friendlyFireKills = _friendlyFireKills + 1;
