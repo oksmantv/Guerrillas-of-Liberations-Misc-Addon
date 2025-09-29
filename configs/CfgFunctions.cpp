@@ -127,6 +127,7 @@ class CfgFunctions // Defines a function
 			class RemoveVehicleHE {};					
 			class FaceSwap {};
 			class Suppressed {};
+			class SuppressedHandler {};
 			class Surrender {};			
 			class SurrenderHandle {};			
 			class ThrowWeaponsOnGround {};		
@@ -185,6 +186,11 @@ class CfgFunctions // Defines a function
 			class Interact_Pilot {};
 			class SetPylonsToTurret {};
 		};
+
+		class OKS_Jets {
+			file = "\OKS_GOL_Misc\functions\vehicles\jets";
+			class Jet {};
+		};		
 
 		class OKS_RescueFriendly {
 			file = "\OKS_GOL_Misc\functions\tasks\rescuefriendly";

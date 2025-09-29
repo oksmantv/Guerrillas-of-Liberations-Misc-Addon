@@ -51,10 +51,13 @@ if(true) then {
                     if (["helicopter_", _varName] call BIS_fnc_inString) exitWith {
                         [_Vehicle] spawn OKS_fnc_Helicopter;
                     };
+                    if (["jet_", _varName] call BIS_fnc_inString) exitWith {
+                        [_Vehicle] spawn OKS_fnc_Jet;
+                    };
                 };
             };
         } forEach (Vehicles select {
-            (_x isKindOf "LandVehicle" || _x isKindOf "Helicopter")
+            (_x isKindOf "LandVehicle" || _x isKindOf "Helicopter" || _x isKindOf "Plane") && alive _x
         });
     };
 
