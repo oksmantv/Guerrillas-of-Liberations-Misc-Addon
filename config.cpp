@@ -175,6 +175,9 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Convoy {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_convoy.sqf'";
     };
+    class OKS_PreInit_Jets {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_jets.sqf'";
+    };
 };
 
 class Extended_PostInit_EventHandlers {
