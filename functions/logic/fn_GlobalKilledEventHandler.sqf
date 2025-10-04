@@ -14,7 +14,7 @@ if (hasInterface && !isServer) exitWith {
 };
 
 if(_Debug) then {
-	format["[KILLS] Registering Global Killed Event Handler"] spawn OKS_fnc_LogDebug;
+	format["[KILLS] Registering Global Killed Event Handler."] spawn OKS_fnc_LogDebug;
 };
 
 if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
@@ -22,71 +22,74 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
     
     addMissionEventHandler ["EntityKilled", {
         params ["_unit", "_killer", "_instigator"];
-		if (isNull _instigator) then { _instigator = (UAVControl (vehicle _killer)) select 0 };
-		if (isNull _instigator) then { _instigator = _killer };
-
-		// Determine sides and relationships
-		private _SideUnit 					 = (side (group _unit));
-		private _SideKiller 				 = (side (group _killer));
-		private _SideInstigator 			 = (side (group _instigator));
-		private _KillerOrInstigatorIsPlayer  = (isPlayer _killer) || (isPlayer _instigator);
-		private _isCombatant 				 = !(_unit getVariable ["GOL_NonCombatant", false]) && side (group _unit) != civilian;
-		private _KillerAndUnitIsEnemy 		 = _SideUnit getFriend _SideKiller < 0.6;
-		private _KillerAndUnitIsFriendly     = _SideUnit getFriend _SideKiller > 0.6; 
-		private _InstigatorAndUnitIsEnemy    = _SideUnit getFriend _SideInstigator < 0.6;
-		private _InstigatorAndUnitIsFriendly = _SideUnit getFriend _SideInstigator > 0.6;
-		private _UnitIsCivilian 			 = _unit getVariable ["GOL_NonCombatant", false] || side (group _unit) == civilian;
-		private _UnitIsCaptive				 = _unit getVariable ["GOL_IsCaptive", false];
-		private _UnitName 					 = name _unit;
-		private _KillerName 				 = name _killer;
-		private _InstigatorName 			 = name _instigator;
-		
-		// Fallback to typeOf if name is empty
-	    if (isNil "_UnitName" || {_UnitName isEqualTo ""}) then { 
-			_UnitName = typeOf _unit;
-		};
-
-        private _Debug = missionNamespace getVariable ["GOL_Kills_Debug", false];
-		if (_Debug) then {
-			format["[KILLS] EntityKilled Event: %1 killed by %2 (%3) - Instigator %4 (%5)", _UnitName, _KillerName, _killer, _InstigatorName, _instigator] spawn OKS_fnc_LogDebug;
-		};
-
-		// Update Score Method
-		private _UpdateScore = {
-			params ["_Unit","_UnitName","_KillerName","_InstigatorName","_Variable"];
-        	private _Debug = missionNamespace getVariable ["GOL_Kills_Debug", false];
-			private _KillCount = missionNamespace getVariable [_Variable, 0];
-			if (_unit getVariable ["GOL_ScoreAdded", false]) exitWith {
-				if (_Debug) then {
-					format["[KILLS] %1 Exit: Already Processed %2", _Variable, _UnitName] spawn OKS_fnc_LogDebug;
-				};	
-			};
-
-			// Synchronized to all clients.
-			_unit setVariable ["GOL_ScoreAdded", true, true];
-			_KillCount = _KillCount + 1;
-			missionNamespace setVariable [_Variable, _KillCount, true];
-
-			if (_Debug) then {
-				format["[KILLS] %1 killed by %2 (%3) | Updated (%4): %5", _UnitName, _KillerName, _InstigatorName, _Variable, _KillCount] spawn OKS_fnc_LogDebug;
-			};
-		};
-
-        // Only process if not already handled.
-        if (_unit getVariable ["GOL_ScoreAdded", false]) exitWith {
-			if (_Debug) then {
-				format["[KILLS] EntityKilled Event Exited: Already Processed %1 killed by %2 (%3) - Instigator %4 (%5)", _UnitName, _KillerName, _killer, _InstigatorName, _instigator] spawn OKS_fnc_LogDebug;
-			};			
-		};
-        
-        // Only update global score on server.
-        if (local _unit) then {
+		private _Debug = missionNamespace getVariable ["GOL_Kills_Debug", false];
+		if (local _unit) then {
 			if (_Debug) then {
 				"[KILLS] EntityKilled Event: IsLocal" spawn OKS_fnc_LogDebug;
 			};			
+			if(!(_unit isKindOf "CAManBase")) exitWith {
+				if(_Debug) then {
+					format["[KILLS] EntityKilled Event Exited: Not CAManBase (%1).", typeOf _unit] spawn OKS_fnc_LogDebug;
+				};
+			};
+			if (isNull _instigator) then { _instigator = (UAVControl (vehicle _killer)) select 0 };
+			if (isNull _instigator) then { _instigator = _killer };
+
+			// Determine sides and relationships
+			private _SideUnit 					 = (side (group _unit));
+			private _SideKiller 				 = (side (group _killer));
+			private _SideInstigator 			 = (side (group _instigator));
+			private _KillerOrInstigatorIsPlayer  = (isPlayer _killer) || (isPlayer _instigator);
+			private _isCombatant 				 = !(_unit getVariable ["GOL_NonCombatant", false]) && side (group _unit) != civilian;
+			private _KillerAndUnitIsEnemy 		 = _SideUnit getFriend _SideKiller < 0.6;
+			private _KillerAndUnitIsFriendly     = _SideUnit getFriend _SideKiller > 0.6; 
+			private _InstigatorAndUnitIsEnemy    = _SideUnit getFriend _SideInstigator < 0.6;
+			private _InstigatorAndUnitIsFriendly = _SideUnit getFriend _SideInstigator > 0.6;
+			private _UnitIsCivilian 			 = _unit getVariable ["GOL_NonCombatant", false] || side (group _unit) == civilian;
+			private _UnitIsCaptive				 = _unit getVariable ["GOL_IsCaptive", false];
+			private _UnitName 					 = name _unit;
+			private _KillerName 				 = name _killer;
+			private _InstigatorName 			 = name _instigator;
+			
+			// Fallback to typeOf if name is empty
+			if (isNil "_UnitName" || {_UnitName isEqualTo ""}) then { 
+				_UnitName = typeOf _unit;
+			};
+
+			if (_Debug) then {
+				format["[KILLS] EntityKilled Event: %1 killed by %2 (%3) - Instigator %4 (%5).", _UnitName, _KillerName, _killer, _InstigatorName, _instigator] spawn OKS_fnc_LogDebug;
+			};
+
+			// Update Score Method
+			private _UpdateScore = {
+				params ["_Unit","_UnitName","_KillerName","_InstigatorName","_Variable"];
+				private _Debug = missionNamespace getVariable ["GOL_Kills_Debug", false];
+				private _KillCount = missionNamespace getVariable [_Variable, 0];
+				if (_unit getVariable ["GOL_ScoreAdded", false]) exitWith {
+					if (_Debug) then {
+						format["[KILLS] %1 Exit: already Processed %2.", _Variable, _UnitName] spawn OKS_fnc_LogDebug;
+					};	
+				};
+
+				// Synchronized to all clients.
+				_unit setVariable ["GOL_ScoreAdded", true, true];
+				_KillCount = _KillCount + 1;
+				missionNamespace setVariable [_Variable, _KillCount, true];
+
+				if (_Debug) then {
+					format["[KILLS] %1 killed by %2 (%3) | Updated (%4): %5.", _UnitName, _KillerName, _InstigatorName, _Variable, _KillCount] spawn OKS_fnc_LogDebug;
+				};
+			};
+
+			// Only process if not already handled.
+			if (_unit getVariable ["GOL_ScoreAdded", false]) exitWith {
+				if (_Debug) then {
+					format["[KILLS] EntityKilled Event Exited: Already Processed %1 killed by %2 (%3) - Instigator %4 (%5).", _UnitName, _KillerName, _killer, _InstigatorName, _instigator] spawn OKS_fnc_LogDebug;
+				};			
+			};
 			if(_KillerOrInstigatorIsPlayer) then {
 				if (_Debug) then {
-					"[KILLS] EntityKilled Event: Kill or Instigator is Player" spawn OKS_fnc_LogDebug;
+					"[KILLS] EntityKilled Event: Kill or Instigator is Player." spawn OKS_fnc_LogDebug;
 				};	
 
 				// Combatant Killed Logic
@@ -114,7 +117,7 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 					[_Unit,_UnitName,_KillerName,_InstigatorName,"GOL_CiviliansKilled"] call _UpdateScore;
 					[15] call OKS_fnc_IncreaseMultiplier;
 				};
-			    
+				
 				// No matching event
 				if (_Debug) then {
 					format ["[KILLS] Matching Events: %1 | Combatant: %2 | Enemy: %3 | Friendly: %4 | Non-Combatant: %5 | Captive: %6.",
@@ -128,12 +131,12 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 				};
 			} else {
 				if (_Debug) then {
-					format["[KILLS] Not Player: %1 killed by %2 (%3) - Instigator %4 (%5)", _UnitName, _KillerName, _Killer, _InstigatorName, _Instigator] spawn OKS_fnc_LogDebug;
+					format["[KILLS] Not Player: %1 killed by %2 (%3) - Instigator %4 (%5).", _UnitName, _KillerName, _Killer, _InstigatorName, _Instigator] spawn OKS_fnc_LogDebug;
 				};
 			}
         } else {
 			if (_Debug) then {
-				format["[KILLS] Not Local: %1 killed by %2 (%3) - Instigator %4 (%5)", _UnitName, _KillerName, _Killer, _InstigatorName, _Instigator] spawn OKS_fnc_LogDebug;
+				format["[KILLS] Not Local: %1 killed by %2 (%3) - Instigator %4 (%5).", _UnitName, _KillerName, _Killer, _InstigatorName, _Instigator] spawn OKS_fnc_LogDebug;
 			};
 		};
     }];
