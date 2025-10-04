@@ -117,7 +117,11 @@ if(true) then {
         if (!(_unit getVariable ["acex_headless_blacklist", false])) then {
             _unit setVariable ["acex_headless_blacklist", true, true];
             _AppliedHCBlacklist = true;
-            format ["[HEADLESS] %1 blacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
+
+            _Debug = missionNamespace getVariable ["GOL_HC_Debug", false];
+            if(_Debug) then {
+                format ["[HEADLESS] %1 blacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
+            };
         };
 
         [_unit, _AppliedHCBlacklist] spawn {
@@ -185,7 +189,10 @@ if(true) then {
                         waitUntil {sleep 2; _unit getVariable ["GW_Gear_appliedGear",false]};
                         sleep 5;
                         _unit setVariable ["acex_headless_blacklist", false, true];
-                        format ["[HEADLESS] %1 unblacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
+                        _Debug = missionNamespace getVariable ["GOL_HC_Debug", false];
+                        if(_Debug) then {
+                            format ["[HEADLESS] %1 unblacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
+                        };
                     };
                 };
             };

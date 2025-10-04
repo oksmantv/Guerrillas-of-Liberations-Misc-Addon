@@ -994,16 +994,17 @@ Edited by OksmanTV & Bluwolf.
   | Name                   | Type                | Default   | Description                                                         |
   |------------------------|---------------------|-----------|---------------------------------------------------------------------|
   | `_UnitsOrGroupOrArray` | Array, Group, Object| `[]`      | HVT units to evacuate (array, group, or single unit).               |
-  | `_ExfilSite`           | Array, Object       | `[0,0,0]` | Exfiltration site position (array) or object.                       |
+  | `_ExfilSite`           | Array, Object       | `[0,0,0]` | Exfiltration site position (array), object, or Trigger.             |
   | `_Side`                | Side                | `west`    | Side responsible for the task.                                      |
   | `_HelicopterEvac`      | Boolean             | `false`   | If true, requires helicopter extraction at exfil site.              |
   | `_ParentTask`          | String              | `""`      | Optional parent task or identifier.                                 |
   | `_IsCaptive`           | Boolean             | `true`    | If true, HVTs are set as captives; otherwise, they are hostile.     |
   | `_IsTaskOnStart`       | Boolean             | `false`   | If true, the task will appear before the HVT group is captive       |
+  | `_CustomDescription`   | String              | `nil`     | The custom description of the task that appears when active.        |
 
   ### Example Usage
 
-      [Group HVT_1, getPos ExfilSite_1, west, false, nil, true, false] spawn OKS_fnc_Evacuate_HVT;
+      [Group HVT_1, getPos ExfilSite_1, west, false, nil, true, false, "Custom Description"] spawn OKS_fnc_Evacuate_HVT;
 
 </details>
 <details>
@@ -1478,7 +1479,7 @@ Edited by OksmanTV & Bluwolf.
 
   | Name                        | Type           | Default   | Description                                                                 |
   |-----------------------------|----------------|-----------|-----------------------------------------------------------------------------|
-  | `_SpawnPos`                 | Object, Array  | —         | Spawn position for the group (object or array).                             |
+  | `_SpawnPos`                 | Object         | —         | Spawn position for the group (object or array).                             |
   | `_LambsType`                | String         | `"rush"`  | LAMBS AI behavior type (`"rush"`, `"hunt"`, etc.).                          |
   | `_NumberInfantry`           | Number         | `5`       | Number of infantry per group spawn.                                         |
   | `_Side`                     | Side           | `east`    | Side for the spawned group.                                                 |
@@ -1509,7 +1510,7 @@ Edited by OksmanTV & Bluwolf.
   | `_SpawnPos`      | Object, Array  | —       | Spawn position for the group (object or array).                    |
   | `_LambsType`     | String         | —       | LAMBS AI behavior type (`"hunt"`, `"rush"`, `"creep"`, etc.).      |
   | `_InfNr/VehArray`| Number, Array  | `5`     | Number of infantry, or VehicleArray [[Classname],CargoCount]       |
-  | `_Side`          | Side           | `east`  | Side for the spawned group.                                        |
+  | `_Side`          | Side           | `east`  | Side for the spawned group or vehicle.                                        |
   | `_Range`         | Number         | `1500`  | Range for LAMBS AI tracking/hunting.                               |
   | `_Array`         | Array          | `[]`    | Array to store spawned units (for public variable use).            |
 
@@ -2252,5 +2253,22 @@ Edited by OksmanTV & Bluwolf.
   - Debug messages and state changes are logged if debug mode is enabled.
   - Integrates with custom UI and scripting systems for enhanced mission control.
 
+</details>
+<details>
+  <summary>OKS_fnc_SignalFlare</summary>
+
+  ### Description
+  Spawns signal flares at a given position, optionally linked to a trigger. Supports color and type selection. Used for marking, signaling, or triggering events in missions.
+
+  ### Parameters
+  | Name       | Type    | Default   | Description                                                      |
+  |------------|---------|-----------|------------------------------------------------------------------|
+  | _Position  | Array   | —         | World position where the flare is spawned                        |
+  | _Trigger   | Object  | nil       | Trigger to deactivate the module (optional, permanent if nil)    |
+  | _Colour    | String  | "red"     | Flare color ("red", "green")                                    |
+  | _Type      | String  | "signal"  | Flare type ("signal", "handflare")                              |
+
+  ### Example Usage
+  `[getPos player, trigger1, "red", "signal"] call OKS_fnc_SignalFlare;`
 </details>
 </details>

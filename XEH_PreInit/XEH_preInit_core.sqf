@@ -76,6 +76,24 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Kills_Debug",
+    "CHECKBOX",
+    ["Enable Kills DEBUG", "Enables debugging for kills-related scripts."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_HC_Debug",
+    "CHECKBOX",
+    ["Enable Headless Client DEBUG", "Enables debugging for headless client scripts."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_UndercoverAI_Debug",
     "CHECKBOX",
     ["Enable UndercoverAI DEBUG", "Enables debugging for undercover AI scripts."],
@@ -268,6 +286,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "GOL_PlayerVehicleDamage_Debug",
     "CHECKBOX",
     ["Enable Player Vehicle Damage DEBUG", "Enables debugging specifically for the player vehicle damage reduction system for targeted damage testing."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_SignalFlare_Debug",
+    "CHECKBOX",
+    ["Enable Signal Flare Debug", "Enables debug messages for signal flare scripts."],
     "GOL DEBUG",
     true,
     1

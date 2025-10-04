@@ -256,6 +256,7 @@ class CfgFunctions // Defines a function
 			class Fire {};
 			class AddGeneratorAction {};
 			class aaAmbient {};
+			class SignalFlare {};
 		};	
 
 		class OKS_Dynamic {
