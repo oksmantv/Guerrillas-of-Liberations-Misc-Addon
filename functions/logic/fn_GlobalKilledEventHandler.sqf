@@ -40,6 +40,7 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 			private _SideKiller 				 = (side (group _killer));
 			private _SideInstigator 			 = (side (group _instigator));
 			private _KillerOrInstigatorIsPlayer  = (isPlayer _killer) || (isPlayer _instigator);
+			private _ExplosiveKill               = _unit isEqualTo _killer || _unit isEqualTo _instigator;
 			private _isCombatant 				 = !(_unit getVariable ["GOL_NonCombatant", false]) && side (group _unit) != civilian;
 			private _KillerAndUnitIsEnemy 		 = _SideUnit getFriend _SideKiller < 0.6;
 			private _KillerAndUnitIsFriendly     = _SideUnit getFriend _SideKiller > 0.6; 
@@ -87,9 +88,9 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 					format["[KILLS] EntityKilled Event Exited: Already Processed %1 killed by %2 (%3) - Instigator %4 (%5).", _UnitName, _KillerName, _killer, _InstigatorName, _instigator] spawn OKS_fnc_LogDebug;
 				};			
 			};
-			if(_KillerOrInstigatorIsPlayer) then {
+			if(_KillerOrInstigatorIsPlayer || _ExplosiveKill) then {
 				if (_Debug) then {
-					"[KILLS] EntityKilled Event: Kill or Instigator is Player." spawn OKS_fnc_LogDebug;
+					"[KILLS] EntityKilled Event: Kill or Instigator is Player or Explosive." spawn OKS_fnc_LogDebug;
 				};	
 
 				// Combatant Killed Logic
