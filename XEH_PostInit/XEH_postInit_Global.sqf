@@ -336,23 +336,25 @@ if(true) then {
                 format["[KILLS] Player Friendly Fire: %1 killed by %2 (%3)", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
             };
 
-            // Get the player's current SR radio info
-            private _radio = _unit call TFAR_fnc_activeSwRadio;
-            if(!isNil "_radio") then {
-                private _channel = _unit getVariable ["TFAR_currentSwChannel", 1];
-                private _frequency = _unit getVariable ["TFAR_currentSwFrequency", "10"];
-                private _isAdditional = false;
+            if ( local _unit ) then {
+                // Get the player's current SR radio info
+                private _radio = _unit call TFAR_fnc_activeSwRadio;
+                if(!isNil "_radio") then {
+                    private _channel = _unit getVariable ["TFAR_currentSwChannel", 0];
+                    private _frequency = _unit getVariable ["TFAR_currentSwFrequency", "10"];
+                    private _isAdditional = false;
 
-                if (!isNil "_radio") then {
-                    [_radio, _channel, _frequency, _isAdditional] call TFAR_fnc_doSRTransmitEnd;
-                };
+                    if (!isNil "_radio") then {
+                        [_radio, _channel, _frequency, _isAdditional] call TFAR_fnc_doSRTransmitEnd;
+                    };
 
-                // Optionally, also handle LR radios:
-                private _lrRadio = _unit call TFAR_fnc_activeLrRadio;
-                private _lrChannel = _unit getVariable ["TFAR_currentLrChannel", 1];
-                private _lrFrequency = _unit getVariable ["TFAR_currentLrFrequency", "10"];
-                if (!isNil "_lrRadio") then {
-                    [_lrRadio, _lrChannel, _lrFrequency, false] call TFAR_fnc_doLRTransmitEnd;
+                    // Optionally, also handle LR radios:
+                    private _lrRadio = _unit call TFAR_fnc_activeLrRadio;
+                    private _lrChannel = _unit getVariable ["TFAR_currentLrChannel", 1];
+                    private _lrFrequency = _unit getVariable ["TFAR_currentLrFrequency", "10"];
+                    if (!isNil "_lrRadio") then {
+                        [_lrRadio, _lrChannel, _lrFrequency, false] call TFAR_fnc_doLRTransmitEnd;
+                    };
                 };
             };
         }];
