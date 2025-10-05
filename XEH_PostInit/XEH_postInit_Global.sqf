@@ -239,20 +239,7 @@ if(true) then {
                         [_group] spawn OKS_fnc_EnablePath;
                     };
                 };  
-            };
-
-            // // Add Killed EventHandler for Scores.    
-            // if (_x isKindOf "CAManBase" &&
-            //     !isPlayer _x &&
-            //     side group _x != civilian) then 
-            // {
-            //     [_X] call OKS_fnc_AddKilledScore;    
-            // };
-
-            // if (_X isKindOf "CAManBase" && side group _X == civilian) then 
-            // {
-            //     [_X] call OKS_fnc_AddCivilianKilled;    
-            // };        
+            };     
 
             if (
                 _x isKindOf "CAManBase" &&
@@ -290,6 +277,9 @@ if(true) then {
 
         /* Setup TFAR Radios */
         [] spawn OKS_fnc_TFAR_RadioSetup;
+
+        /* Setup Teamspeak Channel */
+        [] spawn OKS_fnc_BLU_SetChannel;
 
         /* Warning System for Speaker */
         [] spawn OKS_fnc_WarningSpeakerHandler;
