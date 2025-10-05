@@ -36,11 +36,11 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 			if (isNull _instigator) then { _instigator = _killer };
 
 			// Determine sides and relationships
+			private _PlayerSide 				 = missionNamespace getVariable ["GOL_PlayerSide", west];
 			private _SideUnit 					 = (side (group _unit));
 			private _SideKiller 				 = (side (group _killer));
 			private _SideInstigator 			 = (side (group _instigator));
-			private _KillerOrInstigatorIsPlayer  = (isPlayer _killer) || (isPlayer _instigator);
-			private _ExplosiveKill               = _unit isEqualTo _killer || _unit isEqualTo _instigator;
+			private _KillerOrInstigatorIsPlayer  = (isPlayer _killer) || (isPlayer _instigator) && !(isPlayer _unit);
 			private _isCombatant 				 = !(_unit getVariable ["GOL_NonCombatant", false]) && side (group _unit) != civilian;
 			private _KillerAndUnitIsEnemy 		 = _SideUnit getFriend _SideKiller < 0.6;
 			private _KillerAndUnitIsFriendly     = _SideUnit getFriend _SideKiller > 0.6; 
@@ -48,6 +48,11 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 			private _InstigatorAndUnitIsFriendly = _SideUnit getFriend _SideInstigator > 0.6;
 			private _UnitIsCivilian 			 = _unit getVariable ["GOL_NonCombatant", false] || side (group _unit) == civilian;
 			private _UnitIsCaptive				 = _unit getVariable ["GOL_IsCaptive", false];
+			private _BuildingCollapse            = _unit isEqualTo _killer || _unit isEqualTo _instigator;
+			private _BuildingCollapseEnemy       = _BuildingCollapse && _SideUnit getFriend _PlayerSide < 0.6;
+			private _BuildingCollapseFriendly    = _BuildingCollapse && _SideUnit getFriend _PlayerSide > 0.6 && _isCombatant;
+			private _BuildingCollapseCivilian    = _BuildingCollapse && _UnitIsCivilian && !_isCombatant;
+			private _BuildingCollapseCaptive     = _BuildingCollapse && _UnitIsCaptive;
 			private _UnitName 					 = name _unit;
 			private _KillerName 				 = name _killer;
 			private _InstigatorName 			 = name _instigator;
@@ -55,6 +60,11 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 			// Fallback to typeOf if name is empty
 			if (isNil "_UnitName" || {_UnitName isEqualTo ""}) then { 
 				_UnitName = typeOf _unit;
+			};
+
+			if(_BuildingCollapse) then {
+				_KillerName = "Building Collapse";
+				_InstigatorName = "Building Collapse";
 			};
 
 			if (_Debug) then {
@@ -88,32 +98,32 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 					format["[KILLS] EntityKilled Event Exited: Already Processed %1 killed by %2 (%3) - Instigator %4 (%5).", _UnitName, _KillerName, _killer, _InstigatorName, _instigator] spawn OKS_fnc_LogDebug;
 				};			
 			};
-			if(_KillerOrInstigatorIsPlayer || _ExplosiveKill) then {
+			if(_KillerOrInstigatorIsPlayer || _BuildingCollapse) then {
 				if (_Debug) then {
-					"[KILLS] EntityKilled Event: Kill or Instigator is Player or Explosive." spawn OKS_fnc_LogDebug;
+					"[KILLS] EntityKilled Event: Player Kill or Collapse" spawn OKS_fnc_LogDebug;
 				};	
 
 				// Combatant Killed Logic
 				if (_isCombatant) then {
 					// Enemy Killed Logic
-					if (_KillerAndUnitIsEnemy || _InstigatorAndUnitIsEnemy) exitWith {
+					if (_KillerAndUnitIsEnemy || _InstigatorAndUnitIsEnemy || _BuildingCollapseEnemy) exitWith {
 						[_Unit,_UnitName,_KillerName,_InstigatorName,"GOL_EnemiesKilled"] call _UpdateScore;		
 					};
 					
 					// Friendly fire check for AI
-					if (_KillerAndUnitIsFriendly || _InstigatorAndUnitIsFriendly) exitWith {
+					if (_KillerAndUnitIsFriendly || _InstigatorAndUnitIsFriendly || _BuildingCollapseFriendly) exitWith {
 						[_Unit,_UnitName,_KillerName,_InstigatorName,"GOL_FriendlyFireKills"] call _UpdateScore;
 					};
 				};
 
 				// Civilian kill logic
-				if (_UnitIsCivilian) exitWith {
+				if (_UnitIsCivilian || _BuildingCollapseCivilian) exitWith {
 					[_Unit,_UnitName,_KillerName,_InstigatorName,"GOL_CiviliansKilled"] call _UpdateScore;
 					[10] call OKS_fnc_IncreaseMultiplier;
 				};
 
-				// Captive kill logic				
-				if (_UnitIsCaptive) exitWith {
+				// Captive kill logic
+				if (_UnitIsCaptive || _BuildingCollapseCaptive) exitWith {
 					_unit setVariable ["GOL_CaptiveKilled", true, true];
 					[_Unit,_UnitName,_KillerName,_InstigatorName,"GOL_CiviliansKilled"] call _UpdateScore;
 					[15] call OKS_fnc_IncreaseMultiplier;
