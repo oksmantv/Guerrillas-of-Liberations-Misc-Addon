@@ -131,8 +131,9 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 				
 				// No matching event
 				if (_Debug) then {
-					format ["[KILLS] Matching Events: %1 | Combatant: %2 | Enemy: %3 | Friendly: %4 | Non-Combatant: %5 | Captive: %6.",
+					format ["[KILLS] Matching Events: %1 | Collapse: %2 | Combatant: %3 | Enemy: %4 | Friendly: %5 | Non-Combatant: %6 | Captive: %7.",
 						_UnitName,
+						_BuildingCollapse,
 						_isCombatant,
 						_KillerAndUnitIsEnemy || _InstigatorAndUnitIsEnemy,
 						_KillerAndUnitIsFriendly || _InstigatorAndUnitIsFriendly,

@@ -132,7 +132,7 @@ class CfgFunctions // Defines a function
 			class SurrenderHandle {};			
 			class ThrowWeaponsOnGround {};		
 			class GetEthnicity {};
-			//class KilledCaptiveEvent {};
+			class WaitUntilCaptiveAtBase {};
 			class SetSurrendered {};
 			class Has_Sight {};
 			class AddVehicleCrew {};	
