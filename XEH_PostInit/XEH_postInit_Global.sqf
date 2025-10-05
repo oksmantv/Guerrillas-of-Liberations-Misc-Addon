@@ -247,6 +247,9 @@ if(true) then {
         /* Setup TFAR Radios */
         [] spawn OKS_fnc_TFAR_RadioSetup;
 
+        /* Setup Teamspeak Channel */
+        [] spawn OKS_fnc_BLU_SetChannel;
+
         /* Warning System for Speaker */
         [] spawn OKS_fnc_WarningSpeakerHandler;
 
