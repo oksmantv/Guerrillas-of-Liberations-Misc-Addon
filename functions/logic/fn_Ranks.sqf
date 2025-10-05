@@ -15,6 +15,8 @@ switch _uid do {
     case "76561198091519166": {_rank = _cpl}; // Juan Sanchez
     case "76561198058521961": {_rank = _cpl}; // Joona
     case "76561198210159148": {_rank = _cpl}; // Eric
+    case "76561198073683939": {_rank = _cpl}; // Skeliton
+    case "76561198082242266": {_rank = _cpl}; // Versed
     default {_rank ="PRIVATE"};
 };
 
