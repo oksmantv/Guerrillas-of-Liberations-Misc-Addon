@@ -28,5 +28,10 @@ class CfgSounds {
         name = "Parachute Deploy";
         sound[] = {"\OKS_GOL_Misc\sounds\ParachuteDeploy.wav", 3, 1, 40};
         titles[] = {};
-    };	            		    	
+    };	
+    class GOL_IncomingAlarm {
+        name = "Incoming Alarm";
+        sound[] = {"\OKS_GOL_Misc\sounds\IncomingAlarm.wav", 5, 1, 300};
+        titles[] = {};
+    };	                		    	
 };

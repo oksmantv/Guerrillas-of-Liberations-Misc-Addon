@@ -126,27 +126,35 @@ class CfgFunctions // Defines a function
 			class ForceVehicleSpeed {};	
 			class RemoveVehicleHE {};					
 			class FaceSwap {};
-			class Suppressed {};
-			class SuppressedHandler {};
-			class Surrender {};			
-			class SurrenderHandle {};			
-			class ThrowWeaponsOnGround {};		
 			class GetEthnicity {};
-			class WaitUntilCaptiveAtBase {};
-			class SetSurrendered {};
 			class Has_Sight {};
 			class AddVehicleCrew {};	
 			class CreateVehicleWithCrew {};
-			class HandleChance {};
-			class CheckCooldown {};
+			class UndercoverAI {};	
+			class UndercoverAI_Activate {};	
+		};	
+		
+		class OKS_Suppression {
+			file = "\OKS_GOL_Misc\functions\enemy\suppression";
+			class Suppressed {};
+			class SuppressedHandler {};
+		};	
+		
+		class OKS_Surrender {
+			file = "\OKS_GOL_Misc\functions\enemy\surrender";
 			class Adjust_Shot {};
 			class Adjust_NearFriendlies {};
 			class Adjust_Unarmed {};
 			class Adjust_Suppressed {};
 			class Adjust_Flashbang {};	
-			class UndercoverAI {};	
-			class UndercoverAI_Activate {};	
-		};		
+			class CheckCooldown {};
+			class HandleChance {};					
+			class Surrender {};			
+			class SurrenderHandle {};			
+			class SetSurrendered {};
+			class ThrowWeaponsOnGround {};	
+			class WaitUntilCaptiveAtBase {};
+		};			
 
 		class OKS_Vehicles {
 			file = "\OKS_GOL_Misc\functions\vehicles";
@@ -249,13 +257,15 @@ class CfgFunctions // Defines a function
 
 		class OKS_Ambience {
 			file = "\OKS_GOL_Misc\functions\ambience";
+			class aaAmbient {};
+			class AddGeneratorAction {};
 			class Chat {};
+			class CreateExplosion {};
 			class DeleteDeadAndObjects {};
 			class Destroy_Houses {};
-			class PowerGenerator {};
 			class Fire {};
-			class AddGeneratorAction {};
-			class aaAmbient {};
+			class IncomingAlarm {};
+			class PowerGenerator {};
 			class SignalFlare {};
 		};	
 

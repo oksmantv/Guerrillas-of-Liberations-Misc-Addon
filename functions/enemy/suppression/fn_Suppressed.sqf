@@ -53,9 +53,10 @@ _Unit setVariable ["GOL_SuppressedMax",_MaximumTime,true];
 _Unit addEventHandler ["Suppressed", {
 	params ["_unit", "_distance", "_shooter", "_instigator", "_ammoObject", "_ammoClassName", "_ammoConfig"];
 
-    if((!isPlayer _shooter && !isPlayer _instigator) || (_distance < 5)) exitWith {
-        // If the shooter is not a player, do not suppress the unit.
-    };
+    private _isNotPlayer = (!isPlayer _shooter || !isPlayer _instigator);
+    private _isNotNearbyShot = (_distance > 5);
+    private _isNotEnemy = (side (group _shooter)) getFriend (side (group _unit)) > 0.6;
+    if(_isNotPlayer || _isNotEnemy || _isNotNearbyShot) exitWith {};
 
     private _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug",false];
     if(_Unit getVariable ["GOL_IsSuppressed",false]) exitWith {

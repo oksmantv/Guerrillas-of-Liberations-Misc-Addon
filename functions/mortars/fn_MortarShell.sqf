@@ -20,8 +20,8 @@
 		UIsleep 3.1;
 		playSound3D [_Sound, _MortarType, false, [((getPosATL _Pos) select 0), ((getPosATL _Pos) select 1), ((GetPosATL _Pos) select 2) + _Height], 8, 1, 300];
 	} else {
-		_Height = 300;
-		_FallSpeed = -400;
+		_Height = missionNamespace getVariable ["OKS_Mortar_SpawnAltitude", 300];
+		_FallSpeed = -200;
 		if ((_SoundOn) && !(_Sound == "")) then {[[[_Pos,_Sound], { (_this select 0) say3D (_This select 1)}], "bis_fnc_call", true] call BIS_fnc_MP;};
 	};
 	

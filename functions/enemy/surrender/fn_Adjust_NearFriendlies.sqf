@@ -16,7 +16,9 @@ private _numFriendlies = count _nearbyFriendlies;
 
 // Increase for few friendlies
 if (_numFriendlies < 10) then {
-    private _inc = 0.015 * (10 - _numFriendlies);
+    _value = missionNamespace getVariable ["GOL_Surrender_Adjust_NearFriendlies", 1.5];
+    _value = _value / 100;
+    private _inc = _value * (10 - _numFriendlies);
     _adjustedChance = _adjustedChance + _inc;
     if(_surrenderDebug) then {
         format ["[SURRENDER] Surrender chance increased by %1%% (few friendlies nearby: %2). New chance: %3%%",(_inc * 100), _numFriendlies, (_adjustedChance * 100)] spawn OKS_fnc_LogDebug;

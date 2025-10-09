@@ -71,6 +71,51 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     1
 ] call CBA_fnc_addSetting;
 
+[
+    "GOL_Surrender_Adjust_Flashbang",
+    "SLIDER",
+    ["Additional % Chance Flashbang", "Additional chance to surrender when flashbanged."],
+    "GOL Surrender",
+    [0, 100, 30, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Surrender_Adjust_Shot",
+    "SLIDER",
+    ["Additional % Chance Shot", "Additional chance to surrender when shot."],
+    "GOL Surrender",
+    [0, 100, 5, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Surrender_Adjust_Suppressed",
+    "SLIDER",
+    ["Additional % Chance Suppressed", "Additional chance to surrender when suppressed."],
+    "GOL Surrender",
+    [0, 100, 5, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Surrender_Adjust_Unarmed",
+    "SLIDER",
+    ["Additional % Chance Unarmed ", "Additional chance to surrender when unarmed."],
+    "GOL Surrender",
+    [0, 100, 15, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Surrender_Adjust_NearFriendlies",
+    "SLIDER",
+    ["Additional % Chance Near Friendlies", "Additional chance to surrender when under 10 friendlies nearby. Per unit below 10."],
+    "GOL Surrender",
+    [0, 5, 1.5, 2],
+    1
+] call CBA_fnc_addSetting;
+
 // Slider: Surrender Distance (10 to 300 meters, default 30, 0 decimals)
 [
     "GOL_Surrender_Distance",

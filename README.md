@@ -1703,9 +1703,9 @@ Edited by OksmanTV & Bluwolf.
 
   ### Example Usage
 
-      [east, this, getMarkerPos "respawn_west", 7, 300, 30] spawn OKS_fnc_ArtyFire;
+      [arty_1,[getPos target_1,getPos target_2,getPos target_3,getPos target_4],east,1,1,true,true,30,true] spawn OKS_fnc_ArtySuppression;
 
-      [east, ArtyName, TargetObjectPosition, RoundsFired, RearmTime, ReloadTime] spawn OKS_fnc_ArtyFire;
+      [Artillery,[getPos target_1,getPos target_2],Side,RoundsPerTarget,DelayPerRound,UnlimitedAmmo,ShouldLoop,FullCrewBool,LoopDelay,ShouldMarkTarget] spawn OKS_fnc_ArtySuppression;
 
   - Artillery will fire at the specified target, then rearm/reload as configured.
   - Projectiles are deleted after impact or if they travel too far, improving performance.
@@ -2221,6 +2221,33 @@ Edited by OksmanTV & Bluwolf.
   - If `_RandomDamage` is true and a variation is provided, each house receives a random damage within the specified range (as a percentage).
   - If `_RandomDamage` is false, all houses are set to full destruction (100% damage).
   - Useful for scripting post-battle effects, dynamic mission environments, or simulating artillery/airstrike aftermaths[1].
+
+</details>
+<details>
+  <summary>OKS_fnc_IncomingAlarm</summary>
+
+  ### Description
+  Fires the "Incoming incoming incoming" alarm from a speaker based on trigger or dynamic listener.
+
+  ### Parameters
+
+  | Name              | Type         | Default    | Description                                                                 |
+  |-------------------|--------------|------------|-----------------------------------------------------------------------------|
+  | `_Speaker_`       | Object       |            | The speaker that will transmit the sound                                    |
+  | `_Type`           | String       | "dynamic"  | Options: "loop" or "dynamic"                                                |
+  | `_Range`          | Number       | 500        | Range in meters for sound/tracker                                           |
+  | `_LoopCount`      | Number       | 2          | Amount of loops if "loop" type is selected.                                 |
+  | `_OffsetAltitude` | Number       | 2          | Meters of altitude offset on the object (where to transmit sound from)      |
+  | `_AmmoTypes`      | Array (Text) | []         | Array of custom rounds to be listening for when using dynamic type          |
+
+  ### Example Usage
+
+      [Speaker_1, "dynamic", 400, 0, 2, []] spawn OKS_fnc_IncomingAlarm;
+
+  ### Behavior
+
+  - Type "loop" will loop the sound for the selected amount of times and then exit
+  - Type "dynamic" will listen for nearby artillery rounds and fire the alarm when they are within _Range.
 
 </details>
 <details>

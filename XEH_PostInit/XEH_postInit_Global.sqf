@@ -6,7 +6,6 @@ if(GOL_Core_Enabled isEqualTo true) then {
 /*
     Global Executions.
 */
-if(true) then {
 
     // Register global killed event handler (runs on all clients, server, and HC)
     [] call OKS_fnc_GlobalKilledEventHandler;
@@ -254,8 +253,7 @@ if(true) then {
             };
 
         };
-    } forEach allUnits;
-    };       
+    } forEach allUnits;     
 
     /* Setup Vehicle & MHQ Drops */
     [] spawn OKS_fnc_VehicleDropSetup;

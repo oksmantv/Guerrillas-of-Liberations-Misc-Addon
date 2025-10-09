@@ -2,6 +2,11 @@
 	if(HasInterface && !isServer) exitWith {};
 
 	Params["_Area","_Group","_NumberOfWaypoints"];
+	if(_NumberOfWaypoints < 3) then {
+		"[VEHICLEWAYPOINTS] Number of waypoints less than 3, setting to 3 (Minimum for Cycle)" spawn OKS_fnc_LogDebug;
+		_NumberOfWaypoints = 3;	
+	};
+
 	Private ["_Road","_WP","_WPCount","_LastWP"];
 	Private _Waypoints = [];
 	For [{_i = 0}, {_i < _NumberOfWaypoints}, {_i = _i + 1}] do {

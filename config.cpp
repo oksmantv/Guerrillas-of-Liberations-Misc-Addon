@@ -98,7 +98,7 @@ class CfgMods {
 
 class CBA_VERSIONING {
     class GOL_MISC_ADDON {
-        version = "1.2.9";
+        version = "1.3.0";
         server = 1; // Server must have matching version
     };
 };
@@ -177,6 +177,9 @@ class Extended_PreInit_EventHandlers {
     };
     class OKS_PreInit_Jets {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_jets.sqf'";
+    };
+    class OKS_PreInit_Mortar {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_mortar.sqf'";
     };
 };
 
