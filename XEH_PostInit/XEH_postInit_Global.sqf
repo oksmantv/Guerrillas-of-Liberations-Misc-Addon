@@ -269,6 +269,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
 
         /* Add Static Line EventHandler */
         ["RHS_C130J_BASE", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+        ["Air", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
         ["UK3CB_Antonov_An2_Base", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
         ["UK3CB_DC3_Base", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
         ["VTOL_01_base_F", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;

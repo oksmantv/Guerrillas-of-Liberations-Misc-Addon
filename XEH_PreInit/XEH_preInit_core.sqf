@@ -192,12 +192,22 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     1
 ] call CBA_fnc_addSetting;
 
+// Convoy Debug Settings
 [
     "GOL_Convoy_Debug",
     "CHECKBOX",
     ["Enable Convoy Debug", "When enabled, DEBUG messages will play in the SystemChat."],
     "GOL DEBUG",
     true,
+    1
+] call CBA_fnc_addSetting;
+
+[ 
+    "GOL_Convoy_Target_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Target Debug", "When enabled, DEBUG messages will show detailed convoy targeting and detection logic."],
+    "GOL DEBUG",
+    false,
     1
 ] call CBA_fnc_addSetting;
 

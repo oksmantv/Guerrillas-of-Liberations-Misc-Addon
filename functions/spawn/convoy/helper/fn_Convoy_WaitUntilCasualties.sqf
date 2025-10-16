@@ -19,6 +19,7 @@ waitUntil {
 		_NewSpeed = (_SpeedKph + 10);
 		_Vehicle setVariable ["OKS_ForceSpeedAdjusted", true, true];
 		_Vehicle setVariable ["OKS_LimitSpeedBase", _SpeedKph * 1.5, true];
+		_Vehicle setVariable ["OKS_Convoy_Casualties", true, true];
 		(leader _ConvoyGroupLeader) forceSpeed _NewSpeed;
 		if(_ConvoyDebug) then {
 			format ["[CONVOY-CASUALTY-SPEEDUP] %1 - %2 -> %3 kph", _X, _ConvoyGroupLeader, _NewSpeed] spawn OKS_fnc_LogDebug;

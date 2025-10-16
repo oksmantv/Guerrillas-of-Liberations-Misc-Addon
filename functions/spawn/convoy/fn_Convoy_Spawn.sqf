@@ -15,6 +15,9 @@
 	7 - Convoy Array (Array that gets filled with convoy units)
 	8 - Should be forced to careless (No reaction from Convoy)
 	9 - Should be deleted on reaching final waypoint
+	10 - Dismount Behaviour - Array of Types of waypoints for dismounts
+	Options: ["rush", "defend", "patrol", "assault", "hunt"]
+		Default: ["rush"]
 
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false] spawn OKS_fnc_Convoy_Spawn;
 */
@@ -30,7 +33,8 @@ Params [
 	["_CargoParams",[],[[]]],
 	["_ConvoyGroupArray",[],[[]]],
 	["_ForcedCareless",false,[false]],
-	["_DeleteAtFinalWP",false,[false]]
+	["_DeleteAtFinalWP",false,[false]],
+	["_DismountBehaviour", ["rush"], [[]]]
 ];
 
 Private ["_Vehicles", "_Classname"];
@@ -198,7 +202,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		{_X setCaptive true; _X setBehaviour "CARELESS"; _X setCombatMode "BLUE"; } foreach units _CargoGroup;
 		_Vehicle setBehaviour "CARELESS"; _Vehicle setCombatMode "BLUE";
 	} else {
-		[_Vehicle, _Group, _CargoGroup] spawn OKS_fnc_Convoy_WaitUntilCombat;
+		[_Vehicle, _Group, _CargoGroup, selectRandom _DismountBehaviour] spawn OKS_fnc_Convoy_WaitUntilCombat;
 	};
 
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _Group;

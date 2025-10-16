@@ -353,16 +353,20 @@ class CfgFunctions // Defines a function
 			class Convoy_CheckAndAdjustSpeeds {};
 			class Convoy_EndParking_AssignIndices {};
 			class Convoy_InitIntendedSlots {};
-			class Convoy_LeadArrivalMonitor {};
-			class Convoy_MonitorReserveActivation {};
-			class Convoy_PlaceDebugObject {};
-			class Convoy_SetupHerringBone {};
-			class Convoy_NearestRoadTowardsOrigin {};
-			class Convoy_MakeSlot {};
 			class Convoy_IsBlocked {};
+			class Convoy_LeadArrivalMonitor {};
+			class Convoy_MakeSlot {};
+			class Convoy_MonitorReserveActivation {};
+			class Convoy_NearestRoadTowardsOrigin {};
+			class Convoy_PlaceDebugObject {};
+			class Convoy_ProximityCombatFill {};
+			class Convoy_PullOffHelper {};
+			class Convoy_SetupHerringBone {};
 			class Convoy_WaitUntilCasualties {};
 			class Convoy_WaitUntilCombat {};
 			class Convoy_WaitUntilTargets {};
+			class Convoy_DeleteAllWaypoints {};
+			class Convoy_DismountAndTaskCode {};
 		};
 		
 		class OKS_Spawn_Convoy_AirDefence {

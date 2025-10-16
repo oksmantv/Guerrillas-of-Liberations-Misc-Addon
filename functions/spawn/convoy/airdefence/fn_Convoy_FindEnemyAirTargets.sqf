@@ -12,7 +12,7 @@ private _AADebug = missionNamespace getVariable ["GOL_Convoy_AA_Debug", false];
     private _Group = _x;
     private _GroupLeader = leader _x;
     if (!isNull _GroupLeader) then {
-        private _KnownTargets = _GroupLeader targets [true, (_heliRange max _planeRange), [sideEnemy]];
+        private _KnownTargets = _GroupLeader targets [true, (_heliRange max _planeRange), []];
         {
             if (alive _x) then {
                 private _TargetVehicle = vehicle _x;

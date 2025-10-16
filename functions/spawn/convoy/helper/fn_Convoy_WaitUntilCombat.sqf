@@ -1,23 +1,8 @@
-private _DismountAndRushCode = {
-	params ["_Group", "_VehicleObject"];
-	_Group leaveVehicle _VehicleObject;
-	{
-		unassignVehicle _x;
-		doGetOut _x;
-	} forEach (units _Group);
-	[
-		_Group,
-		1500,
-		30,
-		[],
-		[],
-		false
-	] spawn lambs_wp_fnc_taskRush;
-};
+// Now using OKS_fnc_Convoy_DismountAndTaskCode
 
 private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 
-params ["_VehicleObject", "_CrewGroup", ["_CargoGroup", grpNull, [grpNull]]];
+params ["_VehicleObject", "_CrewGroup", ["_CargoGroup", grpNull, [grpNull]], ["_DismountType", "rush",[""]]];
 
 // Early-out guard: if this vehicle is currently handling AA engagement, skip ambush logic entirely
 if (_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false]) exitWith {
@@ -59,11 +44,25 @@ if (_ConvoyDebug) then {
 	"[CONVOY-AMBUSHD] Halting convoy." spawn OKS_fnc_LogDebug;
 };
 
+
+[_CrewGroup] call OKS_fnc_Convoy_DeleteAllWaypoints;
+[_CargoGroup] call OKS_fnc_Convoy_DeleteAllWaypoints;
+
+_pullOffPos = [_VehicleObject, [10, 8], "AWARE", "YELLOW", true, []] call OKS_fnc_Convoy_PullOffHelper;
+if(isNil "_pullOffPos") then {
+	_pullOffPos = getPos _VehicleObject
+};
+_time = time;
+waitUntil{
+	sleep 1;
+	(_VehicleObject distance2D _pullOffPos) < 10 || ((time - _time) > 10)
+};
+
 _VehicleObject forceSpeed 0;
 _VehicleObject setFuel 0;
 _VehicleObject setVehicleLock "UNLOCKED";
 if (!isNull _CargoGroup) then {
-	[_CargoGroup, _VehicleObject] spawn _DismountAndRushCode;
+	[_CargoGroup, _VehicleObject, _DismountType, true] call OKS_fnc_Convoy_DismountAndTaskCode;
 };
 
 private _IsArmedVehicle = (
@@ -77,8 +76,8 @@ if (_IsArmedVehicle) then {
 		format["[CONVOY] %1 is armed, applying hunt task.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 	};
 	sleep (30 + (random 30));
-	_VehicleObject limitSpeed 15;
-	_VehicleObject forceSpeed (15 / 3.6);
+	_VehicleObject limitSpeed 13;
+	_VehicleObject forceSpeed (13 / 3.6);
 	_VehicleObject setFuel 1;
 
 	if (_ConvoyDebug) then {
@@ -89,19 +88,12 @@ if (_IsArmedVehicle) then {
 			[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName
 		] spawn OKS_fnc_LogDebug;
 	};
-	[
-		_CrewGroup,
-		1500,
-		60,
-		[],
-		[],
-		false
-	] spawn lambs_wp_fnc_taskHunt;
+	[_CrewGroup, _VehicleObject, _DismountType] call OKS_fnc_Convoy_DismountAndTaskCode;
 	sleep 5;
 	_CrewGroup setBehaviour "AWARE";
 } else {
 	if (_ConvoyDebug) then {
 		format["[CONVOY] %1 is unarmed, dismount and rush.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 	};
-	[_CrewGroup, _VehicleObject] spawn _DismountAndRushCode;
+	[_CrewGroup, _VehicleObject, _DismountType, true] call OKS_fnc_Convoy_DismountAndTaskCode;
 };

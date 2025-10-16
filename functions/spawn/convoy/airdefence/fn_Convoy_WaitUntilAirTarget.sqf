@@ -1,5 +1,6 @@
 
 params ["_convoyVehicleArray"];
+private ["_pullOffPos", "_aaGroup", "_storedWaypoints"];
 private _isConvoyDebugEnabled = missionNamespace getVariable ["GOL_Convoy_AA_Debug", false];
 if (_convoyVehicleArray isEqualTo [] || isNull (_convoyVehicleArray select 0)) exitWith {};
 if (_isConvoyDebugEnabled) then {
@@ -19,7 +20,6 @@ private _ignoredAirTargets = [];
 private _pullOffMaxSlopeDeg = missionNamespace getVariable ["GOL_Convoy_PullOffMaxSlopeDeg", 15];
 private _pullOffMinRoadDist = missionNamespace getVariable ["GOL_Convoy_PullOffMinRoadDist", 10];
 private _mergeGapMin = missionNamespace getVariable ["GOL_Convoy_MergeGapMin", 80];
-private _mergeGapTimeout = missionNamespace getVariable ["GOL_Convoy_MergeGapTimeout", 30];
 private _speedRampStepKph = missionNamespace getVariable ["GOL_Convoy_SpeedRampStepKph", 10];
 private _speedRampInterval = missionNamespace getVariable ["GOL_Convoy_SpeedRampInterval", 1];
 
@@ -58,211 +58,193 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		] spawn OKS_fnc_LogDebug;
 	};
 
+
 	private _aaVehicle = [_convoyVehicleArray, _nearestAirTarget] call OKS_fnc_Convoy_SelectAAVehicle;
 	if (isNull _aaVehicle) then {
 		if (_isConvoyDebugEnabled) then { "[CONVOY_AIR] No suitable AA vehicle found in convoy" spawn OKS_fnc_LogDebug; };
 		sleep 5;
 		continue;
-	};
 
-	// Mark AA vehicle as unavailable for new air defense tasks
-	_aaVehicle setVariable ["OKS_AA_Available", false, true];
-	if (_isConvoyDebugEnabled) then {
-		format [
-			"[CONVOY_AIR] Selected and marked unavailable: %1",
-			_aaVehicle
-		] spawn OKS_fnc_LogDebug;
-	};
+	} else {
+		// Mark AA vehicle as unavailable for new air defense tasks
+		_aaVehicle setVariable ["OKS_AA_Available", false, true];
+		if (_isConvoyDebugEnabled) then {
+			format [
+				"[CONVOY_AIR] Selected and marked unavailable: %1",
+				_aaVehicle
+			] spawn OKS_fnc_LogDebug;
+		};
 
-	// Calculate checkpoint position for convoy passing detection BEFORE AA moves
-	// Set checkpoint ahead of AA's position in convoy direction, not at AA's position
-	private _aaPos = getPosATL _aaVehicle;
-	private _aaDir = getDir _aaVehicle;
-	private _checkpointPos = _aaPos vectorAdd [50 * sin _aaDir, 50 * cos _aaDir, 0]; // 50m ahead of AA
-	_aaVehicle setVariable ["OKS_AA_CheckpointPos", _checkpointPos];
-	_aaVehicle setVariable ["OKS_AA_VehiclesPassed", []];
-	// Store original convoy array before AA gets detached
-	_aaVehicle setVariable ["OKS_AA_OriginalConvoyArray", +_convoyVehicleArray];
+		// Calculate checkpoint position for convoy passing detection BEFORE AA moves
+		// Set checkpoint ahead of AA's position in convoy direction, not at AA's position
+		private _aaPos = getPosATL _aaVehicle;
+		private _aaDir = getDir _aaVehicle;
+		private _checkpointPos = _aaPos vectorAdd [50 * sin _aaDir, 50 * cos _aaDir, 0]; // 50m ahead of AA
+		_aaVehicle setVariable ["OKS_AA_CheckpointPos", _checkpointPos];
+		_aaVehicle setVariable ["OKS_AA_VehiclesPassed", []];
+		// Store original convoy array before AA gets detached
+		_aaVehicle setVariable ["OKS_AA_OriginalConvoyArray", +_convoyVehicleArray];
 
-	if (_isConvoyDebugEnabled) then {
-		format ["[CONVOY_AIR] Checkpoint position set at %1 for convoy passing detection", _checkpointPos] spawn OKS_fnc_LogDebug;
-	};
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] Checkpoint position set at %1 for convoy passing detection", _checkpointPos] spawn OKS_fnc_LogDebug;
+		};
 
-	// Immediately reveal all detected air targets to AA group for faster engagement
-	{
-		private _airTarget = _x;
-		if (!isNull _airTarget && {alive _airTarget}) then {
-			_aaVehicle reveal [_airTarget, 4];
-			{
-				_x reveal [_airTarget, 4];
-			} forEach (crew _aaVehicle);
-			if (_isConvoyDebugEnabled) then {
-				format ["[CONVOY_AIR] Pre-revealed air target %1 to AA vehicle/group", _airTarget] spawn OKS_fnc_LogDebug;
+		// Immediately reveal all detected air targets to AA group for faster engagement
+		{
+			private _airTarget = _x;
+			if (!isNull _airTarget && {alive _airTarget}) then {
+				_aaVehicle reveal [_airTarget, 4];
+				{
+					_x reveal [_airTarget, 4];
+				} forEach (crew _aaVehicle);
+				if (_isConvoyDebugEnabled) then {
+					format ["[CONVOY_AIR] Pre-revealed air target %1 to AA vehicle/group", _airTarget] spawn OKS_fnc_LogDebug;
+				};
+			};
+		} forEach _initialDetectedAirTargets;
+
+		// Store pending waypoints (from current index onward)
+		_aaGroup = group (driver _aaVehicle);
+		private _waypointCount = count (waypoints _aaGroup);
+		private _currentWaypointIndex = currentWaypoint _aaGroup; // Arma uses 0-based indices for waypoints
+		_storedWaypoints = [];
+		// Capture from current index onward using indices and getWPPos to avoid [0,0,0]
+		for "_i" from _currentWaypointIndex to (_waypointCount - 1) do {
+			private _waypoint = (waypoints _aaGroup) select _i;
+			private _waypointPos = getWPPos [_aaGroup, _i];
+			_storedWaypoints pushBack [
+				_waypointPos,
+				waypointType _waypoint,
+				waypointCompletionRadius _waypoint,
+				waypointSpeed _waypoint,
+				waypointBehaviour _waypoint,
+				waypointFormation _waypoint,
+				waypointCombatMode _waypoint,
+				waypointStatements _waypoint
+			];
+		};
+		// Remove the pending waypoints we just stored
+		for "_i" from (_waypointCount - 1) to _currentWaypointIndex step -1 do {
+			deleteWaypoint [_aaGroup, _i];
+		};
+		if (_isConvoyDebugEnabled) then {
+			format ["[CONVOY_AIR] Stored %1 pending waypoints for %2", count _storedWaypoints, _aaVehicle] spawn OKS_fnc_LogDebug;
+		};
+
+		// --- AA-specific: Compute pull-off offset (left/right/ahead) ---
+		private _aaVehiclePos = getPosATL _aaVehicle;
+		private _aaVehicleDir = getDir _aaVehicle;
+		private _ahead = 50;
+		private _side = 0;
+		// Try left first, then right, then ahead
+		private _leftOffset = [50, 22.75];
+		private _rightOffset = [50, -22.75];
+		private _testLeft = [(_aaVehiclePos select 0) + 50 * (sin _aaVehicleDir) + 22.75 * (cos (_aaVehicleDir + 90)), (_aaVehiclePos select 1) + 50 * (cos _aaVehicleDir) + 22.75 * (sin (_aaVehicleDir + 90)), _aaVehiclePos select 2];
+		private _testRight = [(_aaVehiclePos select 0) + 50 * (sin _aaVehicleDir) - 22.75 * (cos (_aaVehicleDir + 90)), (_aaVehiclePos select 1) + 50 * (cos _aaVehicleDir) - 22.75 * (sin (_aaVehicleDir + 90)), _aaVehiclePos select 2];
+		private _pullOffOffset = [35, 15];
+		if ((!([_testLeft, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_testLeft, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then {
+			_pullOffOffset = _leftOffset;
+		} else {
+			if ((!([_testRight, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_testRight, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then {
+				_pullOffOffset = _rightOffset;
 			};
 		};
-	} forEach _initialDetectedAirTargets;
 
-	// Store pending waypoints (from current index onward)
-	private _aaGroup = group (driver _aaVehicle);
-	private _waypointCount = count (waypoints _aaGroup);
-	private _currentWaypointIndex = currentWaypoint _aaGroup; // Arma uses 0-based indices for waypoints
-	private _storedWaypoints = [];
-	// Capture from current index onward using indices and getWPPos to avoid [0,0,0]
-	for "_i" from _currentWaypointIndex to (_waypointCount - 1) do {
-		private _waypoint = (waypoints _aaGroup) select _i;
-		private _waypointPos = getWPPos [_aaGroup, _i];
-		_storedWaypoints pushBack [
-			_waypointPos,
-			waypointType _waypoint,
-			waypointCompletionRadius _waypoint,
-			waypointSpeed _waypoint,
-			waypointBehaviour _waypoint,
-			waypointFormation _waypoint,
-			waypointCombatMode _waypoint,
-			waypointStatements _waypoint
-		];
-	};
-	// Remove the pending waypoints we just stored
-	for "_i" from (_waypointCount - 1) to _currentWaypointIndex step -1 do {
-		deleteWaypoint [_aaGroup, _i];
-	};
-	if (_isConvoyDebugEnabled) then {
-		format ["[CONVOY_AIR] Stored %1 pending waypoints for %2", count _storedWaypoints, _aaVehicle] spawn OKS_fnc_LogDebug;
-	};
+		// --- Use generic helper to pull off ---
+		_pullOffPos = [_aaVehicle, _pullOffOffset, "AWARE", "YELLOW", _isConvoyDebugEnabled, [["OKS_Convoy_AAEngaging", true]]] call OKS_fnc_Convoy_PullOffHelper;
 
-	// Compute a pull-off point: 50m ahead of the AA vehicle, then offset to the clearer side by ~18m if possible
-	private _aaVehiclePos = getPosATL _aaVehicle;
-	private _aaVehicleDir = getDir _aaVehicle;
-	private _posAhead = [
-		(_aaVehiclePos select 0) + 50 * (sin _aaVehicleDir),
-		(_aaVehiclePos select 1) + 50 * (cos _aaVehicleDir),
-		(_aaVehiclePos select 2)
-	];
-
-	private _leftDir = _aaVehicleDir - 90;
-	private _rightDir = _aaVehicleDir + 90;
-	// Increased lateral range by ~30% from the reduced baseline
-	private _leftPos = [(_posAhead select 0) + 22.75 * (sin _leftDir), (_posAhead select 1) + 22.75 * (cos _leftDir), _posAhead select 2];
-	private _rightPos = [(_posAhead select 0) + 22.75 * (sin _rightDir), (_posAhead select 1) + 22.75 * (cos _rightDir), _posAhead select 2];
-	private _pullOffPos = if ((!([_leftPos, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_leftPos, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then {_leftPos} else { if ((!([_rightPos, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_rightPos, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then {_rightPos} else {_posAhead} };
-
-	// If pull-off equals current location (no offset possible), force a short forward move to avoid blocking
-	if (_pullOffPos distance2D _aaVehiclePos < 6) then {
-		private _posShortAhead = [
-			(_aaVehiclePos select 0) + 20 * (sin _aaVehicleDir),
-			(_aaVehiclePos select 1) + 20 * (cos _aaVehicleDir),
-			(_aaVehiclePos select 2)
-		];
-		// Increased short lateral by ~30%
-		private _leftShort = [(_posShortAhead select 0) + 16.25 * (sin _leftDir), (_posShortAhead select 1) + 16.25 * (cos _leftDir), _posShortAhead select 2];
-		private _rightShort = [(_posShortAhead select 0) + 16.25 * (sin _rightDir), (_posShortAhead select 1) + 16.25 * (cos _rightDir), _posShortAhead select 2];
-		_pullOffPos = if (!([_leftShort, 7] call OKS_fnc_Convoy_IsBlocked)) then {_leftShort} else { if (!([_rightShort, 7] call OKS_fnc_Convoy_IsBlocked)) then {_rightShort} else {_posShortAhead} };
-	};
-
-	// Extra nudge further off-road along the chosen lateral direction if possible (adds ~5m more margin)
-	if (!(_pullOffPos isEqualTo _posAhead)) then {
-		private _useLeft = (_pullOffPos distance2D _leftPos) <= (_pullOffPos distance2D _rightPos);
-		private _nudgeDir = if (_useLeft) then {_leftDir} else {_rightDir};
-		private _nudged = [
-			(_pullOffPos select 0) + 6.5 * (sin _nudgeDir),
-			(_pullOffPos select 1) + 6.5 * (cos _nudgeDir),
-			(_pullOffPos select 2)
-		];
-		if ((!([_nudged, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_nudged, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then { _pullOffPos = _nudged; };
-		// Enforce minimum distance from road after nudge
-		_pullOffPos = [_pullOffPos, _nudgeDir, _pullOffMinRoadDist] call OKS_fnc_Convoy_EnsureMinRoadDistance;
-	};
-
-	// Ensure the pull-off is not on the road; if it is, step laterally further until off-road or try the other side
-	if (isOnRoad _pullOffPos) then {
-		private _tryDir = if ((_pullOffPos distance2D _leftPos) <= (_pullOffPos distance2D _rightPos)) then { _leftDir } else { _rightDir };
-		private _fixed = false;
-		{
-			private _candidate = [
-				(_pullOffPos select 0) + _x * (sin _tryDir),
-				(_pullOffPos select 1) + _x * (cos _tryDir),
-				(_pullOffPos select 2)
-			];
-		if ((!([_candidate, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_candidate] call OKS_fnc_Convoy_IsOffRoad) && ([_candidate, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) exitWith { _pullOffPos = _candidate; _fixed = true; };
-		} forEach [5,10,15,20,25];
-		if (!_fixed) then {
-			// Try opposite lateral
-			private _altDir = if (_tryDir isEqualTo _leftDir) then { _rightDir } else { _leftDir };
-			{
-				private _candidate2 = [
-					(_pullOffPos select 0) + _x * (sin _altDir),
-					(_pullOffPos select 1) + _x * (cos _altDir),
-					(_pullOffPos select 2)
-				];
-				if ((!([_candidate2, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_candidate2] call OKS_fnc_Convoy_IsOffRoad) && ([_candidate2, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) exitWith { _pullOffPos = _candidate2; _fixed = true; };
-			} forEach [5,10,15,20,25];
-		};
-		if (!_fixed) then {
-			// Last resort: move a bit further forward and re-check lateral 15m
-			private _posAheadFurther = [
-				(_pullOffPos select 0) + 15 * (sin _aaVehicleDir),
-				(_pullOffPos select 1) + 15 * (cos _aaVehicleDir),
-				(_pullOffPos select 2)
-			];
-			private _candidateLeft = [(_posAheadFurther select 0) + 15 * (sin _leftDir), (_posAheadFurther select 1) + 15 * (cos _leftDir), _posAheadFurther select 2];
-			private _candidateRight = [(_posAheadFurther select 0) + 15 * (sin _rightDir), (_posAheadFurther select 1) + 15 * (cos _rightDir), _posAheadFurther select 2];
-		if ((!([_candidateLeft, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_candidateLeft] call OKS_fnc_Convoy_IsOffRoad) && ([_candidateLeft, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then { _pullOffPos = _candidateLeft; _fixed = true; };
-		if (!_fixed && (!([_candidateRight, 7] call OKS_fnc_Convoy_IsBlocked)) && ([_candidateRight] call OKS_fnc_Convoy_IsOffRoad) && ([_candidateRight, _pullOffMaxSlopeDeg] call OKS_fnc_Convoy_IsFlatTerrain)) then { _pullOffPos = _candidateRight; _fixed = true; };
-			if (!_fixed) then { _pullOffPos = _posAheadFurther; };
-		};
-		// Enforce minimum distance from road after lateral stepping
-		private _finalLatDir = if ((_pullOffPos distance2D _leftPos) <= (_pullOffPos distance2D _rightPos)) then { _leftDir } else { _rightDir };
-		_pullOffPos = [_pullOffPos, _finalLatDir, _pullOffMinRoadDist] call OKS_fnc_Convoy_EnsureMinRoadDistance;
-		if (_isConvoyDebugEnabled) then {
-			format ["[CONVOY_AIR] Pull-off adjusted off-road. Pos: %1", _pullOffPos] spawn OKS_fnc_LogDebug;
-		};
-	};
-	if (_isConvoyDebugEnabled) then {
-		private _side = if (_pullOffPos isEqualTo _leftPos) then {"left"} else { if (_pullOffPos isEqualTo _rightPos) then {"right"} else {"ahead"} };
-		format [
-			"[CONVOY_AIR] Pull-off point chosen to the %1. Pos: %2",
-			_side,
-			_pullOffPos
-		] spawn OKS_fnc_LogDebug;
-	};
-
-	// Add temporary waypoint to pull-off point
-	private _tempWaypoint = _aaGroup addWaypoint [_pullOffPos, 0];
-	_tempWaypoint setWaypointType "MOVE";
-	_tempWaypoint setWaypointCompletionRadius 8;
-	_tempWaypoint setWaypointSpeed "FULL";
-    if (_isConvoyDebugEnabled) then {
-        format ["[CONVOY_AIR] Assigned pull-off waypoint to AA vehicle %1 at %2", _aaVehicle, _pullOffPos] spawn OKS_fnc_LogDebug;
-    };
-	if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
-		_aaVehicle setVariable ["OKS_Convoy_AAEngaging", true, true];
-		if (_isConvoyDebugEnabled) then {
-			format ["[CONVOY_AIR] AA vehicle %1 set to engaging (pull-off)", _aaVehicle] spawn OKS_fnc_LogDebug;
-		};
-		// Put group into AWARE/YELLOW now so per-vehicle speed governor (which runs in CARELESS) yields
-		_aaGroup setBehaviour "AWARE";
-		_aaGroup setCombatMode "YELLOW";
-		// Ensure movement AI is enabled and off-road movement is allowed
+		// AA-specific: ensure movement AI is enabled and off-road movement is allowed
 		{
 			_x enableAI "PATH";
 			_x enableAI "MOVE";
 		} forEach (units _aaGroup);
 		private _drv = driver _aaVehicle;
 		if (!isNull _drv) then { _drv forceFollowRoad false; };
+
+		// AA-specific: disable combat systems and hold fire while moving to pull-off
+		{
+			_x disableAI "AUTOCOMBAT";
+			_x disableAI "TARGET";
+			_x disableAI "AUTOTARGET";
+			_x doTarget objNull;
+			_x doWatch objNull;
+		} forEach (units _aaGroup);
+		_aaGroup setCombatMode "BLUE"; // Blue = Hold fire
+
+		// Unlock AA speed for the pull-off movement
+		if (!isNull _aaVehicle && {canMove _aaVehicle}) then {
+			_aaVehicle limitSpeed 999; _aaVehicle forceSpeed -1; 
+			if (_isConvoyDebugEnabled) then {
+				format ["[CONVOY_AIR] forceSpeed -1 applied (AA pull-off) to %1", _aaVehicle] spawn OKS_fnc_LogDebug;
+			};
+			// Issue an explicit doMove as a fallback in case waypoint driving stalls
+			private _drv = driver _aaVehicle;
+			if (!isNull _drv) then { _drv doMove _pullOffPos; };
+			_aaVehicle doMove _pullOffPos;
+		};
+
+		// Travel to the pull-off with a timeout fail-safe
+		private _pullOffTimeout = missionNamespace getVariable ["GOL_Convoy_AAPullOffTimeout", 45];
+		private _skipDistanceDelay = missionNamespace getVariable ["GOL_Convoy_AAPullOffSkipDelay", 10]; // max delay before skipping distance check
+		private _pullOffStartTime = time;
+		private _lastHeartbeat = time;
+		waitUntil {
+			sleep 0.5;
+			// After _skipDistanceDelay seconds, stop waiting on the precise distance and proceed to engage
+			private _done = isNull _aaVehicle
+				|| !canMove _aaVehicle
+				|| (_aaVehicle distance _pullOffPos < 10)
+				|| ((time - _pullOffStartTime) > _skipDistanceDelay)
+				|| ((time - _pullOffStartTime) > _pullOffTimeout);
+			if (_isConvoyDebugEnabled && {!_done} && {(time - _lastHeartbeat) > 5}) then {
+				_lastHeartbeat = time;
+				format ["[CONVOY_AIR] En-route to pull-off. Distance=%1m, Elapsed=%2s", round (_aaVehicle distance _pullOffPos), round (time - _pullOffStartTime)] spawn OKS_fnc_LogDebug;
+			};
+			_done
+		};
+		private _elapsedPullOff = time - _pullOffStartTime;
+		private _timedOutShort = (!isNull _aaVehicle && {canMove _aaVehicle} && (_elapsedPullOff > _skipDistanceDelay));
+		private _timedOutLong = (!isNull _aaVehicle && {canMove _aaVehicle} && (_elapsedPullOff > _pullOffTimeout));
+		private _timedOutToPullOff = _timedOutShort || _timedOutLong;
+		if (_isConvoyDebugEnabled) then {
+			if (_timedOutToPullOff) then {
+				private _mode = if (_timedOutLong) then { format ["timeout-long (%1s)", _pullOffTimeout] } else { format ["skip-distance (%1s)", _skipDistanceDelay] };
+				format ["[CONVOY_AIR] Pull-off %1. Using current vicinity to engage. Pos: %2", _mode, getPosATL _aaVehicle] spawn OKS_fnc_LogDebug;
+			} else {
+				format ["[CONVOY_AIR] AA vehicle %1 reached pull-off at %2", _aaVehicle, _pullOffPos] spawn OKS_fnc_LogDebug;
+			};
+		};
+		if (!isNull _aaVehicle) then {
+			// Enable full engagement capabilities now that we're in position
+			{ 
+				_x enableAI "TARGET";
+				_x enableAI "AUTOTARGET";
+				_x enableAI "AUTOCOMBAT"; 
+			} forEach (crew _aaVehicle);
+			_aaGroup setBehaviour "COMBAT";
+			_aaGroup setCombatMode "RED";
+
+			_aaVehicle limitSpeed 0; _aaVehicle forceSpeed 0;
+			if (_isConvoyDebugEnabled) then { format ["[CONVOY_AIR] %1 in position and engaging air targets with full combat capabilities", _aaVehicle] spawn OKS_fnc_LogDebug; };
+		};
 	};
 
-	// Travel conservatively to avoid stopping/engaging on the road
-	_tempWaypoint setWaypointBehaviour "AWARE";
-	_tempWaypoint setWaypointCombatMode "YELLOW";
-	{ 
-		// Disable all combat systems during travel to prevent roadblock firing
+	// AA-specific: ensure movement AI is enabled and off-road movement is allowed
+	{
+		_x enableAI "PATH";
+		_x enableAI "MOVE";
+	} forEach (units _aaGroup);
+	private _drv = driver _aaVehicle;
+	if (!isNull _drv) then { _drv forceFollowRoad false; };
+
+	// AA-specific: disable combat systems and hold fire while moving to pull-off
+	{
 		_x disableAI "AUTOCOMBAT";
 		_x disableAI "TARGET";
 		_x disableAI "AUTOTARGET";
 		_x doTarget objNull;
 		_x doWatch objNull;
 	} forEach (units _aaGroup);
-	// Hold fire while moving to pull-off
 	_aaGroup setCombatMode "BLUE"; // Blue = Hold fire
 
 	// Unlock AA speed for the pull-off movement
@@ -572,7 +554,7 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		
 		// Reactivate waitUntilCombat logic for AA vehicle now that AA engagement is finished
 		// This creates a self-patching loop: each AA completion re-spawns combat monitor
-		private _aaGroup = group (driver _aaVehicle);
+		_aaGroup = group (driver _aaVehicle);
 		if (_isConvoyDebugEnabled) then {
 			private _aaGroupName = groupId _aaGroup;
 

@@ -1640,10 +1640,11 @@ Edited by OksmanTV & Bluwolf.
   | `_ConvoyArray`      | Array   | `[]`                              | Array that gets filled with convoy units (for tracking or later use).       |
   | `_ForcedCareless`   | Boolean | `false`                           | If true, forces convoy AI to behave "careless" (no reaction to threats).    |
   | `_DeleteAtFinalWP`  | Boolean | `false`                           | If true, deletes convoy vehicles and units at the final waypoint.           |
+  | `_DismountBehaviour`| Array   | `["rush"]`                        | Dismount Behaviour - Options:            |
 
   ### Example Usage
 
-    [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 50, 45], [true, 6], [], false, false] spawn OKS_fnc_Convoy_Spawn;
+    [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 50, 45], [true, 6], [], false, false, ["rush"]] spawn OKS_fnc_Convoy_Spawn;
 
   - Vehicles and (optionally) troops are spawned at the start, move through waypoints, and can be deleted on completion.
   - The convoy array is filled with all spawned vehicles and units for further scripting or tracking.
@@ -1694,10 +1695,9 @@ Edited by OksmanTV & Bluwolf.
   | `_targetArray`| Array   | —           | Target position (array, e.g., `getMarkerPos "marker"`).                   |  
   | `_side`       | Side    | `east`      | Side of the artillery unit.                                               |
   | `_rof`        | Number  | `3`         | Number of rounds to fire per target.                                      |
-  | `_time`       | Number  | `5`         | Rearm time (seconds) between targetsrounds.                               |
+  | `_time`       | Number  | `5`         | Rearm time (seconds) between targets.                                     |
   | `_unlimited`  | Boolean | `true`      | Artillery has unlimited ammunition.                                       |
   | `_shouldLoop` | Boolean | `true`      | Artillery should loop after finishing target array.                       |
-  | `_FullCrew`   | Boolean | `false`     | If true, spawns a full crew for the artillery piece.                      |
   | `_timeLoop`   | Number  | `120`       | Rearm time (seconds) between loops.                                       |
   | `_shouldMark` | Boolean | `true`      | If true, marks target with red smoke before strike.                       |
 
