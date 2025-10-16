@@ -48,7 +48,7 @@ switch (toLower _type) do {
 		_Group setBehaviour "AWARE";
 	};
 	case "defend": {
-		_nearestSuitableBuildings = (getPos _VehicleObject nearObjects ["House", 200]) select { count ([_X] call BIS_fnc_buildingPositions) >= count units _Group && (_X getVariable ["GOL_isGarrisoned", false])};
+		_nearestSuitableBuildings = (getPos _VehicleObject nearObjects ["House", 400]) select { count ([_X] call BIS_fnc_buildingPositions) >= count units _Group && (_X getVariable ["GOL_isGarrisoned", false])};
 		if(count _nearestSuitableBuildings == 0) then {
 			[
 				_Group,
@@ -63,6 +63,19 @@ switch (toLower _type) do {
 			_Group setBehaviour "AWARE";
 		};
 		_nearestBuilding = selectRandom _nearestSuitableBuildings;
+		if(isNil "_nearestBuilding") exitWith {
+			[
+				_Group,
+				getPos _VehicleObject,
+				200,
+				4,
+				getPos _VehicleObject,
+				true,
+				true
+			] spawn lambs_wp_fnc_taskPatrol;
+			sleep 5;
+			_Group setBehaviour "AWARE";
+		};
 		_nearestBuilding setVariable ["GOL_isGarrisoned", true, true];
 		waitUntil {
 			sleep 2;
