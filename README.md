@@ -1640,7 +1640,7 @@ Edited by OksmanTV & Bluwolf.
   | `_ConvoyArray`      | Array   | `[]`                              | Array that gets filled with convoy units (for tracking or later use).       |
   | `_ForcedCareless`   | Boolean | `false`                           | If true, forces convoy AI to behave "careless" (no reaction to threats).    |
   | `_DeleteAtFinalWP`  | Boolean | `false`                           | If true, deletes convoy vehicles and units at the final waypoint.           |
-  | `_DismountBehaviour`| Array   | `["rush"]`                        | Dismount Behaviour - Options:            |
+  | `_DismountBehaviour`| Array   | `["rush","attack"]`               | Dismount Behaviour - ["rush","attack","defend","hold","hunt","patrol"]      |
 
   ### Example Usage
 
