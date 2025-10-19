@@ -16,6 +16,7 @@ if (_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false]) exitWith {
 
 waitUntil {
 	sleep 0.5;
+	_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 	(_VehicleObject getVariable ["OKS_Convoy_AAEngaging", false])
 	|| ({behaviour _x isEqualTo "COMBAT"} count (units _CrewGroup) > 0)
 	|| ((!isNull _CargoGroup) && ({behaviour _x isEqualTo "COMBAT"} count (units _CargoGroup) > 0))
@@ -41,7 +42,7 @@ _CrewGroup setBehaviour "COMBAT";
 _CrewGroup setCombatMode "RED";
 
 if (_ConvoyDebug) then {
-	"[CONVOY-AMBUSHD] Halting convoy." spawn OKS_fnc_LogDebug;
+	"[CONVOY-AMBUSHED] Halting convoy." spawn OKS_fnc_LogDebug;
 };
 
 
@@ -55,14 +56,18 @@ if(isNil "_pullOffPos") then {
 _time = time;
 waitUntil{
 	sleep 1;
-	(_VehicleObject distance2D _pullOffPos) < 10 || ((time - _time) > 10)
+	_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
+	(_VehicleObject distance2D _pullOffPos) < 10 || ((time - _time) > 6)
 };
 
+_WasAmbushed = _VehicleObject getVariable ["GOL_ConvoyAmbushed", false];
 _VehicleObject forceSpeed 0;
-_VehicleObject setFuel 0;
 _VehicleObject setVehicleLock "UNLOCKED";
 if (!isNull _CargoGroup) then {
-	[_CargoGroup, _VehicleObject, _DismountType, true] call OKS_fnc_Convoy_DismountAndTaskCode;
+	if (_ConvoyDebug) then {
+		format["[CONVOY] %1 has cargo. Deploying troops.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
+	};	
+	[_CargoGroup, _VehicleObject, _DismountType, true, _WasAmbushed] spawn OKS_fnc_Convoy_DismountAndTaskCode;
 };
 
 private _IsArmedVehicle = (
@@ -70,30 +75,40 @@ private _IsArmedVehicle = (
 ) || (
 	(!isNull (commander _VehicleObject)) || ((_VehicleObject emptyPositions "commander") > 0)
 );
+private _isArtilleryVehicle = {
+	[_X, typeOf _VehicleObject] call BIS_fnc_inString;
+} count ["mortar","prp3"] > 0;
 
-if (_IsArmedVehicle) then {
+if(_isArtilleryVehicle) exitWith {
 	if (_ConvoyDebug) then {
-		format["[CONVOY] %1 is armed, applying hunt task.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
+		format["[CONVOY] %1 is a mortar, setting up for mortar task.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
+	};	
+	[_VehicleObject, side (group gunner _vehicleObject), "precise", "light", ["auto", 75], 150, 1000, 30] spawn OKS_fnc_Mortars;
+};
+
+if (_IsArmedVehicle) exitWith {
+	if (_ConvoyDebug) then {
+		format["[CONVOY] %1 is armed, setting up for task.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 	};
-	sleep (30 + (random 30));
+	sleep (15 + (random 15));
 	_VehicleObject limitSpeed 13;
 	_VehicleObject forceSpeed (13 / 3.6);
-	_VehicleObject setFuel 1;
 
 	if (_ConvoyDebug) then {
 		format [
-			"[CONVOY] Hunt applied to %1 in %2 - %3",
+			"[CONVOY] %4 task applied to %1 in %2 - %3",
 			_CrewGroup,
 			_VehicleObject,
-			[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName
+			[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName,
+			_DismountType
 		] spawn OKS_fnc_LogDebug;
 	};
-	[_CrewGroup, _VehicleObject, _DismountType] call OKS_fnc_Convoy_DismountAndTaskCode;
+	[_CrewGroup, _VehicleObject, _DismountType, false, _WasAmbushed] spawn OKS_fnc_Convoy_DismountAndTaskCode;
 	sleep 5;
 	_CrewGroup setBehaviour "AWARE";
-} else {
-	if (_ConvoyDebug) then {
-		format["[CONVOY] %1 is unarmed, dismount and rush.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
-	};
-	[_CrewGroup, _VehicleObject, _DismountType, true] call OKS_fnc_Convoy_DismountAndTaskCode;
 };
+
+if (_ConvoyDebug) then {
+	format["[CONVOY] %1 is unarmed, dismount and engage.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
+};
+[_CrewGroup, _VehicleObject, _DismountType, true, _WasAmbushed] spawn OKS_fnc_Convoy_DismountAndTaskCode;

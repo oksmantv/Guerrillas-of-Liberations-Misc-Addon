@@ -20,7 +20,7 @@ private _hasLOS = {
 	if (!alive _observer || !alive _target) exitWith { false };
 	private _eyePosObserver = eyePos _observer;
 	private _eyePosTarget = eyePos _target;
-	private _TargetsInLine = lineIntersectsSurfaces [_eyePosObserver, _eyePosTarget, _observer, _target, true, 1, "GEOM", "FIRE", false];
+	private _TargetsInLine = lineIntersectsSurfaces [_eyePosObserver, _eyePosTarget, _observer, _target, true, 1, "GEOM", "VIEW", false];
 	private _VisibilityValue = [objNull, "FIRE"] checkVisibility [_eyePosObserver, _eyePosTarget];
 	(isNil "_TargetsInLine" || {_TargetsInLine isEqualTo []}) && (_VisibilityValue > 0.3) || (_observer knowsAbout _target > 2) && (_observer distance2d _target < _SpottingRange)
 };
@@ -80,7 +80,7 @@ waitUntil {
 	
 	private _spottingRangeReady = _enough && ((time - _steadySince) >= _lockingTime);
 	if (_ConvoyTargetDebug) then {
-		format ["[Convoy-Target] SpottingRangeReady: %1, SteadySince: %2, Time: %3", _spottingRangeReady, _steadySince, time] spawn OKS_fnc_LogDebug;
+		//format ["[Convoy-Target] SpottingRangeReady: %1, SteadySince: %2, Time: %3", _spottingRangeReady, _steadySince, time] spawn OKS_fnc_LogDebug;
 	};
 	_spottingRangeReady || _closeThreat
 };
@@ -98,6 +98,6 @@ _Detectors = _ConvoyArray select {_X getVariable ["GOL_Convoy_TargetsConfirmed",
 	_CombatSet = [_X, _ConvoyArray, _Dispersion] call OKS_fnc_Convoy_ProximityCombatFill;
 } forEach _Detectors;
 
-_CarelessConvoyArray = _ConvoyArray select {!(_X getVariable ["CombatActivated", false])};
+_CarelessConvoyArray = _ConvoyArray select {!(_X getVariable ["GOL_ConvoyAmbushed", false])};
 [_CarelessConvoyArray] call OKS_fnc_Convoy_WaitUntilTargets;
 

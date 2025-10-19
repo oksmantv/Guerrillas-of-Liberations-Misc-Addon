@@ -26,7 +26,7 @@ if(!isServer) exitWith {};
 
 Params [
 	["_Spawn",objNull,[objNull]],
-	["_Waypoint",objNull,[objNull,[]]],
+	["_Waypoint",nil,[objNull,[],""]],
 	["_End",objNull,[objNull]],
 	["_Side",east,[sideUnknown]],
 	["_VehicleParams",[],[[]]],
@@ -59,7 +59,7 @@ if (isNil "_ConvoyGroupArray") then {
 
 private _ReserveQueue = [];
 for "_i" from 0 to ((_Count - 1) + 4) do {
-
+	_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 	if(_i >= _Count) then {
 		_herringBoneResult = [_End, false, _NextPreferLeft, true] call OKS_fnc_Convoy_SetupHerringBone;
 		private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { getPos _End };
@@ -92,6 +92,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 
 	waitUntil {
 		sleep 1;
+		_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 		if (_ConvoyDebug) then {
 			"[CONVOY-WAIT-CLEARANCE] near _Spawn" spawn OKS_fnc_LogDebug;
 		};
@@ -146,19 +147,22 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 
 	_Group setBehaviour "CARELESS";
 	_Group setCombatMode "BLUE";
-	private _waypointObject = _Waypoint;
-	private _waypointGroup = _Group;
-	private _waypointArray = [];
-	if(typeName _Waypoint isEqualTo "ARRAY") then {
-		_waypointArray = _Waypoint;
-	} else {
-		_waypointArray = [_Waypoint];
-	};
 
-	{
-		private _waypoint = _waypointGroup addWaypoint [getPos _waypointObject, 0];
-		_waypoint setWaypointType "MOVE";
-	} foreach _waypointArray;
+	if(!isNil "_Waypoint") then {
+		private _waypointObject = _Waypoint;
+		private _waypointGroup = _Group;
+		private _waypointArray = [];
+		if(typeName _Waypoint isEqualTo "ARRAY") then {
+			_waypointArray = _Waypoint;
+		} else {
+			_waypointArray = [_Waypoint];
+		};
+
+		{
+			private _waypoint = _waypointGroup addWaypoint [getPos _waypointObject, 0];
+			_waypoint setWaypointType "MOVE";
+		} foreach _waypointArray;
+	};
 
 	private _isFirstVehicle = (_i == 0);
 	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft] call OKS_fnc_Convoy_SetupHerringBone;
@@ -209,6 +213,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _CargoGroup; 
 };
 
+_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 _LeadVehicle = _VehicleArray select 0;
 {
 	_x setVariable ["OKS_Convoy_FrontLeader", _LeadVehicle, true];
@@ -238,37 +243,42 @@ if (_ConvoyDebug) then {
 
 //[_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
 //[_LeadVehicle, _endPos, _primarySlots, _reserveSlots] spawn OKS_fnc_Convoy_LeadArrivalMonitor;
-[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
-[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
 
-// Only start air defense if dedicated AA vehicles (without cargo seats) are available
-private _dedicatedAACount = [_VehicleArray] call OKS_fnc_Convoy_CheckDedicatedAAAvailable;
-if (_dedicatedAACount > 0) then {
-	if (_ConvoyDebug) then {
-		format [
-			"[CONVOY-SPAWN] Starting air defense system with %1 dedicated AA vehicles",
-			_dedicatedAACount
-		] spawn OKS_fnc_LogDebug;
-	};
+if(!_ForcedCareless) then {
 	
-	// Wait for cargo loading to complete before starting AA system
-	if (_ShouldHaveCargo) then {
+	[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
+	[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
+
+	// Only start air defense if dedicated AA vehicles (without cargo seats) are available
+	private _dedicatedAACount = [_VehicleArray] call OKS_fnc_Convoy_CheckDedicatedAAAvailable;
+	if (_dedicatedAACount > 0) then {
 		if (_ConvoyDebug) then {
-			"[CONVOY-SPAWN] Waiting for cargo loading completion before starting AA system" spawn OKS_fnc_LogDebug;
+			format [
+				"[CONVOY-SPAWN] Starting air defense system with %1 dedicated AA vehicles",
+				_dedicatedAACount
+			] spawn OKS_fnc_LogDebug;
 		};
-		sleep 3; // Allow cargo loading to complete
+		
+		// Wait for cargo loading to complete before starting AA system
+		if (_ShouldHaveCargo) then {
+			if (_ConvoyDebug) then {
+				"[CONVOY-SPAWN] Waiting for cargo loading completion before starting AA system" spawn OKS_fnc_LogDebug;
+			};
+			sleep 3; // Allow cargo loading to complete
+		};
+		
+		// Initialize AA availability states for all vehicles
+		{
+			_x setVariable ["OKS_AA_Available", true, true];
+		} forEach _VehicleArray;
+		
+		[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;
+	} else {
+		if (_ConvoyDebug) then {
+			"[CONVOY-SPAWN] No dedicated AA vehicles available. Air defense system disabled for this convoy." spawn OKS_fnc_LogDebug;
+		};
 	};
-	
-	// Initialize AA availability states for all vehicles
-	{
-		_x setVariable ["OKS_AA_Available", true, true];
-	} forEach _VehicleArray;
-	
-	[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;
-} else {
-	if (_ConvoyDebug) then {
-		"[CONVOY-SPAWN] No dedicated AA vehicles available. Air defense system disabled for this convoy." spawn OKS_fnc_LogDebug;
-	};
+
 };
 
 {
