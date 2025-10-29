@@ -1199,39 +1199,6 @@ Edited by OksmanTV & Bluwolf.
 <details>
   <summary>🚩 Spawn Scripts</summary>
 <details>
-  <summary>OKS_fnc_AI_Battle</summary>
-
-  ### Description
-  Spawns two opposing AI factions at designated spawn points and orchestrates a battle at a meeting position.  
-  Supports custom vehicle types for each side and optional defending side logic.
-
-  ### Parameters
-
-  | Name                | Type     | Default                                         | Description                                                         |
-  |---------------------|----------|-------------------------------------------------|---------------------------------------------------------------------|
-  | `_Faction1Spawn`    | Object   | —                                               | Spawn position object for faction 1.                                |
-  | `_Faction2Spawn`    | Object   | —                                               | Spawn position object for faction 2.                                |
-  | `_MeetingPos`       | Object   | —                                               | Position object where the battle takes place.                       |
-  | `_Side1`            | Side     | `west`                                          | Side for faction 1 (e.g., `west`).                                  |
-  | `_Side2`            | Side     | `east`                                          | Side for faction 2 (e.g., `east`).                                  |
-  | `_Faction1Classes`  | Array    | `["UK3CB_CW_US_B_EARLY_M1A1"]`                  | Array of vehicle classnames for faction 1.                          |
-  | `_Faction2Classes`  | Array    | `["UK3CB_CHD_O_T72A"]`                          | Array of vehicle classnames for faction 2.                          |
-  | `_DefendingSide`    | Side     | `sideUnknown`                                   | (Optional) Side that will defend and hold position.                 |
-
-  ### Example Usage
-
-      [
-          west_1,
-          east_1,
-          meet_1,
-          west,
-          east,
-          ["B_APC_Tracked_01_rcws_F", "B_APC_Tracked_01_rcws_F"],
-          ["O_APC_Wheeled_02_rcws_v2_F", "O_APC_Wheeled_02_rcws_v2_F"]
-      ] spawn OKS_fnc_AI_Battle;
-
-</details>
-<details>
   <summary>OKS_fnc_AirSpawn</summary>
 
   ### Description
@@ -2297,5 +2264,218 @@ Edited by OksmanTV & Bluwolf.
 
   ### Example Usage
   `[getPos player, trigger1, "red", "signal"] call OKS_fnc_SignalFlare;`
+</details>
+<details>
+  <summary>OKS_fnc_AI_ArtilleryBattle</summary>
+
+  ### Description
+  Creates persistent AI vs AI artillery battles with progressive accuracy improvement, burst fire missions, and intelligent target selection.  
+  Battles continue until manually stopped or one side is eliminated. Features cross-battle targeting, automatic replacement, crew monitoring, unlimited ammunition, and comprehensive logging.
+
+  ### Parameters
+
+  | Name                    | Type    | Default                   | Description                                                         |
+  |-------------------------|---------|---------------------------|---------------------------------------------------------------------|
+  | `_Side1Spawn`           | Object  | `objNull`                 | Side 1 artillery spawn position object.                             |
+  | `_Side2Spawn`           | Object  | `objNull`                 | Side 2 artillery spawn position object.                             |
+  | `_Side1`                | Side    | `west`                    | Side 1 faction.                                                     |
+  | `_Side2`                | Side    | `east`                    | Side 2 faction.                                                     |
+  | `_Side1Classes`         | Array   | `["B_MBT_01_arty_F"]`     | Side 1 artillery vehicle classes.                                   |
+  | `_Side2Classes`         | Array   | `["O_MBT_02_arty_F"]`     | Side 2 artillery vehicle classes.                                   |
+  | `_BaseFireMissionDelay` | Number  | `45`                      | Base delay between fire missions (seconds).                         |
+  | `_RoundsPerFireMission` | Number  | `4`                       | Number of rounds per fire mission.                                  |
+  | `_ShouldLoop`           | Boolean | `true`                    | Enable continuous battles.                                           |
+  | `_MaxFireMissions`      | Number  | `-1`                      | Maximum fire missions (-1 = infinite).                              |
+  | `_VictoryDelay`         | Number  | `30`                      | Delay after victory before cleanup (seconds).                       |
+
+  ### Example Usage
+
+      // Basic artillery battle
+      _battleControl = [
+          arty_spawn_west,        // West artillery spawn
+          arty_spawn_east,        // East artillery spawn
+          west,                   // West side
+          east,                   // East side
+          ["B_MBT_01_arty_F"],    // West Scorcher
+          ["O_MBT_02_arty_F"],    // East Sochor
+          45,                     // 45 second delays
+          4,                      // 4 rounds per mission
+          true,                   // Loop enabled
+          -1,                     // Infinite missions
+          30                      // 30 second victory delay
+      ] call OKS_fnc_AI_ArtilleryBattle;
+
+      // Multiple artillery types
+      [arty_spawn_1, arty_spawn_2, west, east, 
+       ["B_MBT_01_arty_F", "B_MBT_01_mlrs_F"], 
+       ["O_MBT_02_arty_F", "O_T_MBT_02_arty_ghex_F"], 
+       60, 6, true, 20, 45] call OKS_fnc_AI_ArtilleryBattle;
+
+  ### Control Variables
+
+  - `OKS_ArtilleryBattle_On` - Boolean to stop/start battle
+  - `OKS_ArtilleryBattle_FireMission` - Current fire mission number  
+  - `OKS_ArtilleryBattle_Pause` - Boolean to pause/resume battle
+
+  ### Features
+
+  - **Progressive Accuracy**: Starts at 500m dispersion, improves to 50m minimum
+  - **Range Validation**: Uses proper `inRangeOfArtillery` command for realistic engagement
+  - **Cross-Battle Targeting**: Artillery can engage enemy pieces from other battles
+  - **Crew Monitoring**: Eliminates dismounted crew after 30 seconds
+  - **Unlimited Ammunition**: Automatic resupply system
+  - **5-Minute Validation**: Ensures artillery pieces can engage before starting battle
+  - **Comprehensive Logging**: Enable with `missionNamespace setVariable ["GOL_AI_ArtilleryBattle_Debug", true];`
+
+</details>
+<details>
+  <summary>OKS_fnc_AI_HelicopterFlyBy</summary>
+
+  ### Description
+  Creates persistent helicopter fly-by missions where helicopters spawn, fly to endpoint, return to spawn, and delete.  
+  Continues looping with configurable delays and helicopter types. Supports optional resupply drops during flight and comprehensive crew monitoring.
+
+  ### Parameters
+
+  | Name                 | Type    | Default                     | Description                                                         |
+  |----------------------|---------|-----------------------------|---------------------------------------------------------------------|
+  | `_SpawnPoint`        | Object  | `objNull`                   | Helicopter spawn position object.                                   |
+  | `_EndPoint`          | Object  | `objNull`                   | Flight endpoint position object.                                    |
+  | `_Side`              | Side    | `west`                      | Helicopter faction.                                                 |
+  | `_HelicopterClasses` | Array   | `["B_Heli_Transport_01_F"]` | Helicopter vehicle classes.                                         |
+  | `_EnableResupplyDrop`| Boolean | `false`                     | Enable parachute resupply drops.                                   |
+  | `_FlyByDelay`        | Array   | `[90, 180]`                 | Delay range between missions [min, max] seconds.                   |
+  | `_FlightAltitude`    | Number  | `250`                       | Flight altitude in meters.                                          |
+  | `_FlightBehaviour`   | String  | `"STEALTH"`                 | Flight behavior mode.                                               |
+  | `_ShouldLoop`        | Boolean | `true`                      | Enable continuous flyby missions.                                   |
+  | `_MaxFlyByMissions`  | Number  | `-1`                        | Maximum missions (-1 = infinite).                                  |
+  | `_CleanupDelay`      | Number  | `30`                        | Delay before cleanup (seconds).                                    |
+
+  ### Example Usage
+
+      // Basic helicopter flyby
+      _flybyControl = [
+          heli_spawn_1,                    // Spawn position
+          heli_endpoint_1,                 // Endpoint
+          west,                            // Western forces
+          ["B_Heli_Transport_01_F"],       // Ghosthawk
+          false,                           // No resupply drops
+          [120, 240],                      // 2-4 minute delays
+          200,                             // 200m altitude
+          "STEALTH",                       // Stealth flight
+          true,                            // Loop enabled
+          -1,                              // Infinite missions
+          30                               // 30 second cleanup
+      ] call OKS_fnc_AI_HelicopterFlyBy;
+
+      // Supply mission flyby with resupply drops
+      [heli_spawn_1, heli_endpoint_1, west, 
+       ["B_Heli_Transport_01_F", "B_Heli_Transport_03_F"], 
+       true, [180, 300], 150, "SAFE", true, 10, 45] call OKS_fnc_AI_HelicopterFlyBy;
+
+  ### Control Variables  
+
+  - `OKS_HeliFlyBy_On` - Boolean to stop/start flyby system
+  - `OKS_HeliFlyBy_Mission` - Current mission number
+  - `OKS_HeliFlyBy_Pause` - Boolean to pause/resume missions
+
+  ### Flight Behaviors
+
+  - `"STEALTH"` - Silent, covert flight
+  - `"COMBAT"` - Alert, ready for engagement
+  - `"SAFE"` - Relaxed, low threat awareness  
+  - `"AWARE"` - Cautious, scanning for threats
+
+  ### Features
+
+  - **Looping Missions**: Continuous helicopter flights with configurable delays
+  - **Multiple Aircraft Types**: Random selection from provided helicopter classes
+  - **Resupply Drops**: Optional parachute supply drops using `OKS_fnc_AI_ResupplyDrop`
+  - **Crew Monitoring**: Eliminates dismounted crew after 30 seconds
+  - **Player Interference Prevention**: AI ignores players during missions
+  - **Flight Validation**: Ensures helicopters complete full round-trip flights
+  - **Comprehensive Logging**: Enable with `missionNamespace setVariable ["GOL_AI_HelicopterFlyBy_Debug", true];`
+
+</details>
+<details>
+  <summary>OKS_fnc_AI_Battle</summary>
+
+  ### Description
+  Creates persistent AI vs AI vehicle battles with continuous looping rounds, player interference prevention, and intelligent resource management. Battles continue until manually stopped, providing immersive background combat for missions.
+
+  ### Parameters
+
+  | Name                      | Type     | Default                                         | Description                                                         |
+  |---------------------------|----------|-------------------------------------------------|---------------------------------------------------------------------|
+  | `_Faction1Spawn`          | Object   | —                                               | Spawn position object for faction 1.                                |
+  | `_Faction2Spawn`          | Object   | —                                               | Spawn position object for faction 2.                                |
+  | `_MeetingPos`             | Object   | —                                               | Position object where battles take place (returned for control).    |
+  | `_Side1`                  | Side     | `west`                                          | Side for faction 1 (e.g., `west`).                                  |
+  | `_Side2`                  | Side     | `east`                                          | Side for faction 2 (e.g., `east`).                                  |
+  | `_Faction1Classes`        | Array    | `["UK3CB_CW_US_B_EARLY_M1A1"]`                  | Array of vehicle classnames for faction 1.                          |
+  | `_Faction2Classes`        | Array    | `["UK3CB_CHD_O_T72A"]`                          | Array of vehicle classnames for faction 2.                          |
+  | `_DefendingSide`          | Side     | `sideUnknown`                                   | (Optional) Side that will defend and hold position.                 |
+  | `_ShouldLoop`             | Boolean  | `true`                                          | Enable continuous battle rounds.                                     |
+  | `_RoundDelay`             | Number   | `90`                                            | Delay between battle rounds (seconds).                              |
+  | `_MaxRounds`              | Number   | `-1`                                            | Maximum rounds (-1 = infinite).                                     |
+  | `_RoundVictoryDelay`      | Number   | `30`                                            | Delay after victory before cleanup (seconds).                       |
+  | `_MaxUnitsPerRound`       | Number   | `12`                                            | Maximum total units per round.                                       |
+  | `_PlayerObservationRange` | Number   | `3000`                                          | Range for simulation activation (meters).                            |
+
+  ### Example Usage
+
+      // Basic continuous battle
+      _battleRef = [
+          west_spawn,
+          east_spawn,
+          meeting_point,
+          west,
+          east,
+          ["B_APC_Tracked_01_rcws_F"],
+          ["O_APC_Wheeled_02_rcws_v2_F"]
+      ] call OKS_fnc_AI_Battle;
+
+      // Advanced configuration
+      _battleRef = [
+          west_spawn,
+          east_spawn,
+          meeting_point,
+          west,
+          east,
+          ["B_APC_Tracked_01_rcws_F", "B_MBT_01_cannon_F"],
+          ["O_APC_Wheeled_02_rcws_v2_F", "O_MBT_02_cannon_F"],
+          sideUnknown,    // No defending side
+          true,           // Enable looping
+          120,            // 2 minute delay between rounds
+          10,             // Maximum 10 rounds
+          45,             // 45 second victory celebration
+          16,             // 16 units max per round
+          2500            // 2.5km observation range
+      ] call OKS_fnc_AI_Battle;
+
+  ### Battle Control
+
+      // Stop battle after current round
+      _battleRef setVariable ["OKS_AIBattle_On", false];
+
+      // Check current round
+      _currentRound = _battleRef getVariable ["OKS_AIBattle_Round", 0];
+
+      // Pause between rounds
+      _battleRef setVariable ["OKS_AIBattle_Pause", true];
+
+      // Resume battles
+      _battleRef setVariable ["OKS_AIBattle_Pause", false];
+
+  ### Behavior
+
+  - **Continuous Combat**: Battles loop indefinitely until manually stopped via object variables
+  - **Player Interference Prevention**: AI ignore players completely using reveal/forgetTarget commands
+  - **Inverted Simulation**: Combat only simulates when players are within observation range (performance optimization)
+  - **Object-Based Control**: Meeting point object stores battle state and allows external control
+  - **Round Management**: Each battle round has victory conditions, cleanup, and configurable delays
+  - **Performance Optimized**: Fixed unit limits, distance-based simulation, background operation
+  - **Mission Integration**: Round tracking, pause/resume functionality, external stop capability
+
 </details>
 </details>

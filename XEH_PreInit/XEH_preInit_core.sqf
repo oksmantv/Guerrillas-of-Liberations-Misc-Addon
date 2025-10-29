@@ -309,3 +309,30 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     true,
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "GOL_AI_Battle_Debug",
+    "CHECKBOX",
+    ["Enable AI Battle Debug", "Enables debug messages for AI Battle scripts including simulation monitoring and round management."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_AI_ArtilleryBattle_Debug",
+    "CHECKBOX",
+    ["Enable AI Artillery Battle Debug", "Enables debug messages for AI Artillery Battle scripts including fire missions, targeting, and accuracy progression."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_AI_HelicopterFlyBy_Debug",
+    "CHECKBOX",
+    ["Enable AI Helicopter FlyBy Debug", "Enables debug messages for AI Helicopter FlyBy scripts including flight missions, waypoint tracking, and spawn management."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;

@@ -59,6 +59,7 @@ class CfgFunctions // Defines a function
 			class Ace_MHQDrop {};
 			class Ace_Resupply {};
 			class Ace_VehicleDrop {};
+			class AI_ResupplyDrop {};
 			class MapClose {};
 			class MHQDrop {};
 			class MHQDropMapClick {};
@@ -320,6 +321,8 @@ class CfgFunctions // Defines a function
 		class OKS_Spawn {
 			file = "\OKS_GOL_Misc\functions\spawn";
 			class AI_Battle {};
+			class AI_ArtilleryBattle {};
+			class AI_HelicopterFlyBy {};
 			class Attack_SpawnGroup {};
 			class Civilian_Vehicle {};
 			class Hold_Waypoint {};
@@ -362,6 +365,7 @@ class CfgFunctions // Defines a function
 			class Convoy_ProximityCombatFill {};
 			class Convoy_PullOffHelper {};
 			class Convoy_SetupHerringBone {};
+			class Convoy_FindClearSlot {};
 			class Convoy_WaitUntilCasualties {};
 			class Convoy_WaitUntilCombat {};
 			class Convoy_WaitUntilTargets {};

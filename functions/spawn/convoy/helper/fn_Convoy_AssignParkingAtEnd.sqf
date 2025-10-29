@@ -45,7 +45,7 @@ private _VehicleArray = _LeaderVehicle getVariable ["OKS_Convoy_VehicleArray", [
 private _assign = [_LeaderVehicle, _PrimaryParkingSlotCount, _ReserveParkingSlotCount, _VehicleArray] call OKS_fnc_Convoy_EndParking_AssignIndices;
 private _positions = [];
 for "_i" from 0 to ((_PrimaryParkingSlotCount + _ReserveParkingSlotCount) - 1) do {
-    private _hb = [_EndPosition, false, true] call OKS_fnc_Convoy_SetupHerringBone;
+    private _hb = [_EndPosition, false, true, false, false] call OKS_fnc_Convoy_SetupHerringBone; // Use traditional alternating by default
     _positions pushBack (_hb select 0);
 };
 

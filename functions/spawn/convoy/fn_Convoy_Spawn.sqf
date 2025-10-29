@@ -18,8 +18,11 @@
 	10 - Dismount Behaviour - Array of Types of waypoints for dismounts
 	Options: ["rush", "defend", "patrol", "assault", "hunt"]
 		Default: ["rush"]
+	11 - Fill Both Sides - Boolean to enable filling both sides of road before moving to next segment
+		Default: false (traditional alternating pattern)
 
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false] spawn OKS_fnc_Convoy_Spawn;
+	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], true] spawn OKS_fnc_Convoy_Spawn; // Fill both sides
 */
 
 if(!isServer) exitWith {};
@@ -34,7 +37,8 @@ Params [
 	["_ConvoyGroupArray",[],[[]]],
 	["_ForcedCareless",false,[false]],
 	["_DeleteAtFinalWP",false,[false]],
-	["_DismountBehaviour", ["rush"], [[]]]
+	["_DismountBehaviour", ["rush"], [[]]],
+	["_FillBothSides", false, [false]]
 ];
 
 Private ["_Vehicles", "_Classname"];
@@ -61,10 +65,14 @@ private _ReserveQueue = [];
 for "_i" from 0 to ((_Count - 1) + 4) do {
 	_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 	if(_i >= _Count) then {
-		_herringBoneResult = [_End, false, _NextPreferLeft, true] call OKS_fnc_Convoy_SetupHerringBone;
+		private _herringBoneResult = [_End, false, _NextPreferLeft, true, _FillBothSides] call OKS_fnc_Convoy_SetupHerringBone;
 		private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { getPos _End };
 		private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
-		_NextPreferLeft = !_actualIsLeft;
+		
+		// Only alternate sides in traditional mode, not in dual-side filling mode
+		if (!_FillBothSides) then {
+			_NextPreferLeft = !_actualIsLeft;
+		};
 
 		// Check for duplicate positions (road capacity exceeded)
 		private _isDuplicate = false;
@@ -165,10 +173,14 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 	};
 
 	private _isFirstVehicle = (_i == 0);
-	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft] call OKS_fnc_Convoy_SetupHerringBone;
+	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft, false, _FillBothSides] call OKS_fnc_Convoy_SetupHerringBone;
 	private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { getPos _End };
 	private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
-	_NextPreferLeft = !_actualIsLeft;
+	
+	// Only alternate sides in traditional mode, not in dual-side filling mode
+	if (!_FillBothSides) then {
+		_NextPreferLeft = !_actualIsLeft;
+	};
 
 	private _endWaypointGroup = _Group;
 	private _endWaypoint = _endWaypointGroup addWaypoint [_endPosition, 1];
@@ -181,7 +193,15 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		_endWaypoint setWaypointStatements ["true", "{ _unit = this; if(_unit != _X) then {deleteVehicle _X}}foreach crew (vehicle this); deleteVehicle (objectParent this); deleteVehicle (this); "];
 	} else {
 		_endWaypoint setWaypointCompletionRadius 2;
-		_endWaypoint setWaypointStatements ["true", "{_x setBehaviour 'COMBAT'; _x setCombatMode 'RED';} foreach units this; (vehicle this) setVariable ['OKS_Convoy_Stopped', true, true];"];
+		// Individual vehicle arrival - only this vehicle switches to combat mode for deployment
+		_endWaypoint setWaypointStatements ["true", "
+			{_x setBehaviour 'COMBAT'; _x setCombatMode 'RED';} foreach units this; 
+			(vehicle this) setVariable ['OKS_Convoy_Stopped', true, true]; 
+			(vehicle this) setVariable ['OKS_Convoy_IndividualArrival', true, true];
+			if (missionNamespace getVariable ['GOL_Convoy_Debug', false]) then {
+				format ['[CONVOY-INDIVIDUAL-ARRIVAL] %1 reached its herringbone position', vehicle this] spawn OKS_fnc_LogDebug;
+			};
+		"];
 	};
 
 	// Check if vehicle type contains any blacklisted strings

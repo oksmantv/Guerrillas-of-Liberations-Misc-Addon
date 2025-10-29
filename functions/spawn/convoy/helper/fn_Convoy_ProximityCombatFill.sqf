@@ -19,7 +19,7 @@ if (!(_detector getVariable ["GOL_ConvoyAmbushed", false])) then {
 
 while {count _toCheck > 0} do {
     private _current = _toCheck deleteAt 0;
-    if (!(_current getVariable ["GOL_ConvoyAmbushed", false])) then {
+    if (!(_current getVariable ["GOL_ConvoyAmbushed", false]) && !(_current getVariable ["OKS_Convoy_IndividualArrival", false])) then {
         _current setBehaviour "COMBAT";
         _current setVariable ["GOL_ConvoyAmbushed", true, true];  
         _combatSet pushBack _current;
