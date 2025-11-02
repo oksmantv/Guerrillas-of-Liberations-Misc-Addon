@@ -231,7 +231,6 @@ class CfgFunctions // Defines a function
 			class CheckFrameworkObjects {};
 			class TFAR_RadioSetup {};
 			class FastropeDamageProtection {};
-			class FastropeInvincibility {};
 		};
 
 		class OKS_PlayerSetup_ORBAT {
