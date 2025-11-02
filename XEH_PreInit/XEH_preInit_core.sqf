@@ -341,7 +341,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "GOL_FastropeDamage_Protection",
     "CHECKBOX",
     ["Enable Fastrope Damage Protection", "Enables the fastrope fall damage protection system."],
-    "GOL DEBUG",
+    "GOL Player Protection",
     false,
     1
 ] call CBA_fnc_addSetting;
