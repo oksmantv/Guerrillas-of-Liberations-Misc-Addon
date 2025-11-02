@@ -179,6 +179,51 @@ _units = [];
 
 ---
 
+## Amphibious Assault System
+
+**Function**: `OKS_fnc_AmphibiousAssault`
+
+### Quick Start
+```sqf
+// Basic beach assault
+_boat = [getPos spawnMarker, [], getPos beachMarker] spawn OKS_fnc_AmphibiousAssault;
+```
+
+### Full Parameters
+```sqf
+[
+    _SpawnPosition,        // Object/Array - Boat spawn position (must be in water)
+    _WaypointGuidance,     // Array - Navigation waypoints [[x,y,z], [x,y,z]] (default: [])
+    _DismountPosition,     // Object/Array - Beach landing position (required)
+    _DismountBehaviour,    // String - Unit behavior after dismount (default: "COMBAT")
+    _BoatClassname,        // String - Boat class (default: "B_Boat_Armed_01_minigun_F")
+    _NumberOfUnits,        // Number - Passenger count excluding crew (default: 6)
+    _BoatPostBehaviour     // String - Post-dismount behavior: "STAY", "DESPAWN", "PATROL" (default: "STAY")
+] spawn OKS_fnc_AmphibiousAssault;
+```
+
+### Examples
+```sqf
+// Direct assault with boat returning home
+[spawnPos, [], beachPos, "AWARE", "O_Boat_Armed_01_hmg_F", 8, "DESPAWN"] spawn OKS_fnc_AmphibiousAssault;
+
+// Boat patrols beach after assault
+[spawnPos, [], beachPos, "COMBAT", "B_Boat_Armed_01_minigun_F", 6, "PATROL"] spawn OKS_fnc_AmphibiousAssault;
+
+// Complex navigation with waypoints
+[
+    [1000,2000,0], 
+    [[1500,2000,0], [1800,1700,0]], 
+    [2000,1500,0], 
+    "COMBAT", 
+    "B_Boat_Armed_01_minigun_F", 
+    6,
+    "STAY"
+] spawn OKS_fnc_AmphibiousAssault;
+```
+
+---
+
 ## Dismount Behaviors (Convoy)
 
 - `"rush"` - Quick movement to objectives

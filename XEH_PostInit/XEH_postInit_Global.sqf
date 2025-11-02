@@ -358,6 +358,12 @@ if(GOL_Core_Enabled isEqualTo true) then {
             };
         }];
 
+        /* Setup Fastrope Damage Protection */
+        _fastRopeProtectionEnabled = missionNamespace getVariable ["GOL_FastropeDamage_Protection", false];
+        if(_fastRopeProtectionEnabled) then {
+            [player] call OKS_fnc_FastropeDamageProtection;
+        };
+        
         /* Set Ranks of Leaders */
         [] call OKS_fnc_Ranks;
 

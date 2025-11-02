@@ -2478,4 +2478,70 @@ Edited by OksmanTV & Bluwolf.
   - **Mission Integration**: Round tracking, pause/resume functionality, external stop capability
 
 </details>
+<details>
+  <summary>OKS_fnc_AmphibiousAssault (WIP)</summary>
+
+  ### Description
+  Executes a scripted amphibious assault where a boat spawns with AI crew and passengers, navigates to a beach landing zone using direct movement control, rams the shore, and dismounts units who then activate hunt behavior.  
+  Uses `setVelocityModelSpace` and `setDir` for reliable navigation, bypassing AI pathfinding limitations near shorelines.
+
+  ### Parameters
+
+  | Name                   | Type             | Default                     | Description                                                                    |
+  |------------------------|------------------|-----------------------------|--------------------------------------------------------------------------------|
+  | `_SpawnPosition`       | Array, Object    | —                           | Position where boat spawns (must be in water) - array `[x,y,z]` or object.     |
+  | `_WaypointGuidance`    | Array            | `[]`                        | Optional waypoint positions for complex navigation: `[[x,y,z], [x,y,z], ...]`.    |
+  | `_DismountPosition`    | Array, Object    | —                           | Target beach position for landing and dismount - array `[x,y,z]` or object.    |  
+  | `_DismountBehaviour`   | String           | `"COMBAT"`                  | Behavior mode for units after dismount: `"CARELESS"`, `"SAFE"`, `"AWARE"`, `"COMBAT"`, `"STEALTH"`. |
+  | `_BoatClassname`       | String           | `"B_Boat_Armed_01_minigun_F"` | Classname of boat to spawn (e.g., `"O_Boat_Armed_01_hmg_F"`).                   |
+  | `_NumberOfUnits`       | Number           | `6`                         | Number of passenger units to spawn (excluding crew).                            |
+  | `_BoatPostBehaviour`   | String           | `"STAY"`                    | Post-dismount behavior: `"STAY"`, `"DESPAWN"`, `"PATROL"`.                      |
+
+  ### Example Usage
+
+      // Basic amphibious assault
+      [getPos spawnMarker, [], getPos beachMarker] spawn OKS_fnc_AmphibiousAssault;
+
+      // Advanced assault with custom parameters  
+      [spawnObject, [], targetObject, "AWARE", "O_Boat_Armed_01_hmg_F", 8] spawn OKS_fnc_AmphibiousAssault;
+
+      // Complex navigation with waypoints
+      [
+        [1000,2000,0], 
+        [[1500,2000,0], [1800,1700,0]], 
+        [2000,1500,0], 
+        "COMBAT", 
+        "B_Boat_Armed_01_minigun_F", 
+        6
+      ] spawn OKS_fnc_AmphibiousAssault;
+
+      // Boat returns and despawns after assault
+      [spawnPos, [], beachPos, "COMBAT", "B_Boat_Armed_01_minigun_F", 6, "DESPAWN"] spawn OKS_fnc_AmphibiousAssault;
+
+      // Boat patrols beach area after assault  
+      [spawnPos, [], beachPos, "COMBAT", "B_Boat_Armed_01_minigun_F", 6, "PATROL"] spawn OKS_fnc_AmphibiousAssault;
+
+  ### Behavior
+
+  - **Position Validation**: Validates spawn position is in water and dismount position is near shore
+  - **Scripted Movement**: Uses `setDir` and `setVelocityModelSpace` for reliable boat control, avoiding AI pathfinding issues  
+  - **Waypoint Navigation**: Optionally follows waypoint guidance for complex approach paths
+  - **Automatic Dismount**: Units dismount when boat reaches shore, using `moveOut` and `eject` actions for speed
+  - **Crew Management**: Armed crew members remain to provide fire support until ammo is depleted or passengers are clear
+  - **Hunt Activation**: Dismounted units automatically activate hunt behavior at the landing position (placeholder implemented)
+  - **Stuck Detection**: If boat gets stuck, forces emergency dismount and units swim to shore
+  - **Post-Behavior Options**: Configurable boat behavior after dismount (stay/despawn/patrol)
+  - **Comprehensive Logging**: Uses `GOL_Core_Debug` setting with detailed logging via `OKS_fnc_LogDebug`
+  - **Return Value**: Returns the boat object for external reference and control
+
+  ### Notes
+
+  - Function is designed for beach assault scenarios where AI pathfinding struggles with shore navigation
+  - Spawn position must be in water or function will exit with error
+  - Dismount position should be at or near shoreline for optimal results  
+  - Hunt function integration currently uses placeholder - replace with actual hunt function calls as needed
+  - Boat crew with functional weapons will remain to provide covering fire for dismounting troops
+  - Uses EAST/OPFOR side by default - modify function for other sides as needed
+
+</details>
 </details>

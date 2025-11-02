@@ -329,6 +329,32 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_FastropeDamage_Debug",
+    "CHECKBOX",
+    ["Enable Fastrope Damage Debug", "Enables debug messages for fastrope fall damage protection system."],
+    "GOL DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_FastropeDamage_Protection",
+    "CHECKBOX",
+    ["Enable Fastrope Damage Protection", "Enables the fastrope fall damage protection system."],
+    "GOL DEBUG",
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_FastropeDamage_ProtectionDuration",
+    "SLIDER",
+    ["Fastrope Protection Duration", "How long (in seconds) to maintain fall damage protection after fastrope animation ends."],
+    "GOL Player Protection",
+    [0.5, 10.0, 4.0, 1]
+] call CBA_fnc_addSetting;
+
+[
     "GOL_AI_HelicopterFlyBy_Debug",
     "CHECKBOX",
     ["Enable AI Helicopter FlyBy Debug", "Enables debug messages for AI Helicopter FlyBy scripts including flight missions, waypoint tracking, and spawn management."],

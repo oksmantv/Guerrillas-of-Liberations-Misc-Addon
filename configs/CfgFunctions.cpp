@@ -230,6 +230,8 @@ class CfgFunctions // Defines a function
 			class BLU_SetChannel {};
 			class CheckFrameworkObjects {};
 			class TFAR_RadioSetup {};
+			class FastropeDamageProtection {};
+			class FastropeInvincibility {};
 		};
 
 		class OKS_PlayerSetup_ORBAT {
@@ -323,6 +325,7 @@ class CfgFunctions // Defines a function
 			class AI_Battle {};
 			class AI_ArtilleryBattle {};
 			class AI_HelicopterFlyBy {};
+			class AmphibiousAssault {};
 			class Attack_SpawnGroup {};
 			class Civilian_Vehicle {};
 			class Hold_Waypoint {};
