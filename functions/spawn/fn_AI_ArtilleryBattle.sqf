@@ -100,7 +100,7 @@ private _artilleryBattleSystem = {
         _artillery setDir _spawnDir;
         
         // Add crew
-        private _crew = [_artillery, _side] call OKS_fnc_AddVehicleCrew;
+        private _crew = [_artillery, _side, 0] call OKS_fnc_AddVehicleCrew;
         
         // Set artillery battle variables for target identification
         _artillery setVariable [format["OKS_ArtilleryBattle_%1_Side", _battleId], _side, true];

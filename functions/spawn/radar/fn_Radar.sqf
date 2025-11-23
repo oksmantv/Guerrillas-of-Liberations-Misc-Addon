@@ -12,6 +12,7 @@ Params [
 ];
 
 _Unit = ((crew _Radar) select 0);
+_Unit allowDamage false;
 
 while {Alive _Radar} do {
 	_Unit moveInAny _Radar;
@@ -40,3 +41,5 @@ while {Alive _Radar} do {
 		sleep 10;
 	};
 };
+
+_Unit allowDamage true;

@@ -98,7 +98,7 @@ class CfgMods {
 
 class CBA_VERSIONING {
     class GOL_MISC_ADDON {
-        version = "1.3.3";
+        version = "1.3.4";
         server = 1; // Server must have matching version
     };
 };
@@ -119,6 +119,12 @@ class CfgEditorSubcategories {
 };
 
 class CfgFactionClasses {
+    class GOL {
+        displayName = "Guerrillas of Liberation";
+        icon = "";
+        priority = 0;
+        side = 1;
+    };
     class GOL_Modules {
         displayName = "GOL Modules";
         priority = 1;
@@ -180,6 +186,9 @@ class Extended_PreInit_EventHandlers {
     };
     class OKS_PreInit_Mortar {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_mortar.sqf'";
+    };
+    class OKS_PreInit_Eden {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_eden.sqf'";
     };
 };
 

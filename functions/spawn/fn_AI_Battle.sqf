@@ -39,9 +39,9 @@ params [
     ["_Faction2Classes", ["UK3CB_CHD_O_T72A"], [[]]],
     ["_DefendingSide", sideUnknown, [sideUnknown]],
     ["_ShouldLoop", true, [false]],                     // Enable continuous battles
-    ["_RoundDelay", 90, [0]],                          // Delay between rounds (seconds)
+    ["_RoundDelay", 240, [0]],                          // Delay between rounds (seconds)
     ["_MaxRounds", -1, [0]],                           // Maximum rounds (-1 = infinite)
-    ["_RoundVictoryDelay", 30, [0]],                   // Delay after victory before cleanup
+    ["_RoundVictoryDelay", 60, [0]],                   // Delay after victory before cleanup
     ["_MaxUnitsPerRound", 12, [0]],                    // Maximum total units per round
     ["_PlayerObservationRange", 3000, [0]]             // Range for simulation activation
 ];

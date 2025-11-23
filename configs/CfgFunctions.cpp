@@ -108,6 +108,9 @@ class CfgFunctions // Defines a function
 			class EdenLambsGroup {};
 			class EdenExtractGearFromAI {};
 			class next3DENName {};
+			class EdenMarkOrgStrength {};
+			class CopyAndElevateObjects {};
+			class CopyAndElevateObjectsMenu {};
 		};
 
 		class OKS_Zeus {
@@ -269,6 +272,7 @@ class CfgFunctions // Defines a function
 			class IncomingAlarm {};
 			class PowerGenerator {};
 			class SignalFlare {};
+			class AddExplosiveEffect {};
 		};	
 
 		class OKS_Dynamic {

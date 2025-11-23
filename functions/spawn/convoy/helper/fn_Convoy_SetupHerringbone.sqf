@@ -28,10 +28,13 @@ if (_FirstWaypoint) exitWith {
 	};
 
 	[_nearestRoad, false] call OKS_fnc_Convoy_PlaceDebugObject;
-
-	private _arrowLead = createVehicle ["Sign_Arrow_Direction_Green_F", _centerATL, [], 0, "CAN_COLLIDE"];
-	_arrowLead setPosATL _centerATL;
-	_arrowLead setDir _roadDirection;
+	
+	private _DebugObjects = missionNamespace getVariable ["GOL_Convoy_Markers_Debug", false];
+	if (_DebugObjects) then {
+		private _arrowLead = createVehicle ["Sign_Arrow_Direction_Green_F", _centerATL, [], 0, "CAN_COLLIDE"];
+		_arrowLead setPosATL _centerATL;
+		_arrowLead setDir _roadDirection;
+	};
 
 	private _cutterLead = createVehicle [_cutterClass, _centerATL, [], 0, "CAN_COLLIDE"];
 	_cutterLead setPosATL _centerATL;
@@ -277,9 +280,12 @@ if (_FillBothSides) then {
 };
 
 // Place visual indicators
-private _arrow = createVehicle ["Sign_Arrow_Direction_Blue_F", _slotPosition, [], 0, "CAN_COLLIDE"];
-_arrow setPosATL _slotPosition;
-_arrow setDir _roadDirection;
+private _DebugObjects = missionNamespace getVariable ["GOL_Convoy_Markers_Debug", false];
+if (_DebugObjects) then {
+	private _arrow = createVehicle ["Sign_Arrow_Direction_Blue_F", _slotPosition, [], 0, "CAN_COLLIDE"];
+	_arrow setPosATL _slotPosition;
+	_arrow setDir _roadDirection;
+};
 
 private _cutter = createVehicle [_cutterClass, _slotPosition, [], 0, "CAN_COLLIDE"];
 _cutter setPosATL _slotPosition;

@@ -1,4 +1,6 @@
 /*
+    OBSOLETE -- Replaced by fn_AddExplosiveEffect
+ 
     Create an explosive and detonate it immediately to create an explosion effect at the given position.
 
     Example:
