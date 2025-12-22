@@ -112,7 +112,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
         params ["_unit"];
         
         // Apply camouflage coefficient to players
-        if (isPlayer _unit) then {
+        if (isPlayer _unit && ) then {
             [_unit] call OKS_fnc_Stealth_ApplyCamouflage;
         };
         
@@ -146,7 +146,8 @@ if(GOL_Core_Enabled isEqualTo true) then {
                 };
 
                 // Apply stealth scripts after delay to ensure waypoints/variables are set
-                if (!(_unit getVariable ["OKS_Stealth_EventHandler_Applied", false])) then {
+                private _stealthEnabled = missionNamespace getVariable ["GOL_OKS_Enemy_Talk", false];
+                if (!(_unit getVariable ["OKS_Stealth_EventHandler_Applied", false]) && _stealthEnabled) then {
                     _unit setVariable ["OKS_Stealth_EventHandler_Applied", true, true];
                     private _debug = missionNamespace getVariable ["GOL_Stealth_Debug", false];
                     if (_debug) then {
