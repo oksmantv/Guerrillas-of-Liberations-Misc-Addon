@@ -112,7 +112,8 @@ if(GOL_Core_Enabled isEqualTo true) then {
         params ["_unit"];
         
         // Apply camouflage coefficient to players
-        if (isPlayer _unit && ) then {
+        private _stealthEnabled = missionNamespace getVariable ["GOL_OKS_Enemy_Talk", false];
+        if (isPlayer _unit && _stealthEnabled) then {
             [_unit] call OKS_fnc_Stealth_ApplyCamouflage;
         };
         
@@ -228,7 +229,8 @@ if(GOL_Core_Enabled isEqualTo true) then {
 
             if(_X isKindOf "CAManBase" && !isPlayer _X) then {
                 // Apply stealth scripts based on unit properties (server/HC only)
-                if (isServer || !hasInterface) then {
+                private _stealthEnabled = missionNamespace getVariable ["GOL_OKS_Enemy_Talk", false];
+                if ((isServer || !hasInterface) && _stealthEnabled) then {
                     [_x] call OKS_fnc_Stealth_ApplyToUnit;
                 };
 
