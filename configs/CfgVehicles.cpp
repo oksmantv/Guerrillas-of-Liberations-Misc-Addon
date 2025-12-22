@@ -334,7 +334,7 @@ class CfgVehicles {
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";
-						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\heal_ca.paa";
+						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};											
 				};
 			};
@@ -552,7 +552,7 @@ class CfgVehicles {
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";
-						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\heal_ca.paa";
+						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};											
 				};
 			};
@@ -623,7 +623,7 @@ class CfgVehicles {
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_MedicalResupply_GUER', _player] call OKS_fnc_spawnCrate;";
-						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\heal_ca.paa";
+						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};											
 				};
 			};
