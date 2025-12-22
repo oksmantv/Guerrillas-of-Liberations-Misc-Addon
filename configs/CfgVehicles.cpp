@@ -334,8 +334,78 @@ class CfgVehicles {
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";
-						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\heal_ca.paa";
+						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};											
+				};
+			};
+		};
+	};
+
+	class GOL_ResupplyStation_GUER: ReammoBox_F  {
+		displayName = "GOL Resupply Station (INDEPENDENT)";
+		scope = 2;
+		scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";    
+		model = "\A3\Structures_F_Heli\Ind\Cargo\Cargo10_military_green_F.p3d";
+		class TransportMagazines {};
+		class TransportWeapons {};
+		class TransportItems {};
+		class TransportBackpacks {};	
+		class EventHandlers {
+			init = "(_this select 0) allowDamage false; (_this select 0) enableSimulation false;";
+		};				
+		class ACE_Actions : ACE_Actions
+		{
+			class ACE_MainActions : ACE_MainActions
+			{
+				distance = 5;	
+				class OKS_CreateResupply {
+					displayName = "Create Resupply";
+					exceptions[] = {};
+					condition = "alive _target";
+					statement = "";
+					icon = "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\use_ca.paa";
+					class GOL_TeamResupply
+					{
+						displayName = "Team Resupply";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_TeamResupplybox_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
+					};
+					class GOL_SpecialistResupply
+					{
+						displayName = "Specialist Resupply";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SpecialistResupplybox_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
+					};
+					class GOL_SquadResupply
+					{
+						displayName = "Squad Resupply";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SquadResupplybox_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
+					};
+					class GOL_MobileServiceStation
+					{
+						displayName = "Mobile Service Station";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_MobileServiceStation', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\actions\repair_ca.paa";
+					};	
+					class GOL_MedicResupply
+					{
+						displayName = "Medical Resupply";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_MedicalResupply_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
+					};										
 				};
 			};
 		};
@@ -482,7 +552,78 @@ class CfgVehicles {
 						exceptions[] = {};
 						condition = "alive _target";
 						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";
-						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\heal_ca.paa";
+						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
+					};											
+				};
+			};
+		};
+	};
+
+	class GOL_ResupplyStation_GUER_Small: ReammoBox_F  {
+		displayName = "GOL Small Resupply Station (GUER)";
+		scope = 2;
+		scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";    
+		model = "\a3\Props_F_Decade\Objectives\RuggedTerminal_02_communications_F.p3d";
+		class TransportMagazines {};
+		class TransportWeapons {};
+		class TransportItems {};
+		class TransportBackpacks {};
+		class EventHandlers {
+			init = "(_this select 0) allowDamage false; (_this select 0) enableSimulation false;";
+		};			
+		class ACE_Actions : ACE_Actions
+		{
+			class ACE_MainActions : ACE_MainActions
+			{
+				distance = 10;	
+				position = "[0, 0, -1.5]";
+				class OKS_CreateResupply {
+					displayName = "Create Resupply";
+					exceptions[] = {};
+					condition = "alive _target";
+					statement = "";
+					icon = "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\use_ca.paa";
+					class GOL_TeamResupply
+					{
+						displayName = "Team Resupply";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_TeamResupplybox_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
+					};
+					class GOL_SpecialistResupply
+					{
+						displayName = "Specialist Resupply";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SpecialistResupplybox_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
+					};
+					class GOL_SquadResupply
+					{
+						displayName = "Squad Resupply";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SquadResupplybox_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\actions\reload_ca.paa";
+					};
+					class GOL_MobileServiceStation
+					{
+						displayName = "Mobile Service Station";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_MobileServiceStation', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\actions\repair_ca.paa";
+					};	
+					class GOL_MedicResupply
+					{
+						displayName = "Medical Resupply";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_MedicalResupply_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};											
 				};
 			};
@@ -556,6 +697,22 @@ class CfgVehicles {
 		};
     };
 
+	class GOL_GearBox_GUER: B_CargoNet_01_ammo_F
+	{
+        displayName = "Gear Box (GUER)";
+		scope = 2;
+    	scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";
+		class TransportMagazines {};
+        class TransportWeapons {};
+        class TransportItems {};
+        class TransportBackpacks {};
+		class EventHandlers {
+			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [_this select 0, ['gearbox','independent']] call GW_Gear_Fnc_Init; }";
+		};
+    };
+
     class GOL_MedicalResupply_WEST: ACE_medicalSupplyCrate
 	{
         displayName = "Medical Resupply Crate (WEST)";
@@ -571,7 +728,7 @@ class CfgVehicles {
 		class EventHandlers {
 			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [(_this select 0), ['med_box','west']] call GW_Gear_Fnc_Init}";
 		};
-    };	
+    };
 	
     class GOL_MedicalResupply_EAST: ACE_medicalSupplyCrate
 	{
@@ -588,7 +745,24 @@ class CfgVehicles {
 		class EventHandlers {
 			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [(_this select 0), ['med_box','east']] call GW_Gear_Fnc_Init}";
 		};
-    };			
+    };
+	
+	class GOL_MedicalResupply_GUER: ACE_medicalSupplyCrate
+	{
+        displayName = "Medical Resupply Crate (GUER)";
+		scope = 2;
+    	scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";
+		model = "\z\ace\addons\medical_treatment\data\ace_medcrate.p3d";
+		class TransportMagazines {};
+        class TransportWeapons {};
+        class TransportItems {};
+        class TransportBackpacks {};
+		class EventHandlers {
+			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [(_this select 0), ['med_box','independent']] call GW_Gear_Fnc_Init}";
+		};
+    };
 
 	// WEST Crates
 	class GOL_TeamResupplybox_WEST: Box_Syndicate_Ammo_F
@@ -685,6 +859,55 @@ class CfgVehicles {
 		class TransportBackpacks {};
 		class EventHandlers {
 			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [(_this select 0), ['small_box','east']] call GW_Gear_Fnc_Init }";
+		};
+	};
+
+	// GUER Crates
+	class GOL_TeamResupplybox_GUER: Box_Syndicate_Ammo_F
+	{
+		displayName = "Team Resupply Crate (GUER)";
+		scope = 2;
+		scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";
+		class TransportMagazines {};
+		class TransportWeapons {};
+		class TransportItems {};
+		class TransportBackpacks {};
+		class EventHandlers {
+			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [(_this select 0), ['tiny_box','independent']] call GW_Gear_Fnc_Init }";
+		};
+	};
+
+	class GOL_SpecialistResupplybox_GUER: Box_Syndicate_Wps_F
+	{
+		displayName = "Specialist Resupply Crate (GUER)";
+		scope = 2;
+		scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";
+		class TransportMagazines {};
+		class TransportWeapons {};
+		class TransportItems {};
+		class TransportBackpacks {};
+		class EventHandlers {
+			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [(_this select 0), ['tiny_box_special','independent']] call GW_Gear_Fnc_Init }";
+		};
+	};
+
+	class GOL_SquadResupplybox_GUER: B_supplyCrate_F
+	{
+		displayName = "Squad Resupply Crate (GUER)";
+		scope = 2;
+		scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";
+		class TransportMagazines {};
+		class TransportWeapons {};
+		class TransportItems {};
+		class TransportBackpacks {};
+		class EventHandlers {
+			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [(_this select 0), ['small_box','independent']] call GW_Gear_Fnc_Init }";
 		};
 	};
 

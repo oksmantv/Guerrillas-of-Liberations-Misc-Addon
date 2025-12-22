@@ -17,3 +17,11 @@ if(!isNil "flag_east_1" && !isNil "flag_east_2") then {
     flag_east_2 AddAction ["Teleport to Staging area",{(_this select 1) setPosATL getPosATL flag_east_1}]; 
     flag_east_2 setFlagTexture "\OKS_GOL_Misc\data\images\aac.jpg";
 };
+
+if(!isNil "flag_independent_1" && !isNil "flag_independent_2") then {
+    flag_independent_1 AddAction ["Teleport to FARP",{(_this select 1) setPosATL getPosATL flag_independent_2}];
+    flag_independent_1 setFlagTexture "\OKS_GOL_Misc\data\images\hellfish.jpg";
+
+    flag_independent_2 AddAction ["Teleport to Staging area",{(_this select 1) setPosATL getPosATL flag_independent_1}]; 
+    flag_independent_2 setFlagTexture "\OKS_GOL_Misc\data\images\aac.jpg";
+};

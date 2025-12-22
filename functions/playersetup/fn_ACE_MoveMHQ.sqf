@@ -19,7 +19,7 @@ if (hasInterface) then {
 			};
 			[Mobile_HQ,(player getPos [3,getDir player])] remoteExec ["setPos",2];
 
-			_Players = allPlayers select {_X distance flag_west_1 < 100 || _X distance flag_east_1 < 100};
+			_Players = allPlayers select {_X distance flag_west_1 < 100 || _X distance flag_east_1 < 100 || _X distance flag_independent_1 < 100};
 			_Players spawn {
 				_Players = _this;
 				sleep 5;
