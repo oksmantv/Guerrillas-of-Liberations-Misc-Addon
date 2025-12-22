@@ -111,6 +111,11 @@ if(GOL_Core_Enabled isEqualTo true) then {
     ["CAManBase", "init", {
         params ["_unit"];
         
+        // Apply camouflage coefficient to players
+        if (isPlayer _unit) then {
+            [_unit] call OKS_fnc_Stealth_ApplyCamouflage;
+        };
+        
         private _AppliedHCBlacklist = false;
         // Disable HC Transfer for AI unit.
         if (!(_unit getVariable ["acex_headless_blacklist", false])) then {
@@ -128,9 +133,11 @@ if(GOL_Core_Enabled isEqualTo true) then {
             sleep 5;
             if (!isPlayer _unit) then {
 
+                // All functions below have internal locality checks
+                
+                // FaceSwap (uses global setFace/setName commands)
                 private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
                 if(_FaceSwapEnabled) then {
-                    // Apply ethnicity and face swap
                     _unit spawn {
                         params ["_unit"];
                         sleep 5;
@@ -138,18 +145,21 @@ if(GOL_Core_Enabled isEqualTo true) then {
                     };
                 };
 
-                // // Add Killed EventHandler for Scores.
-                // private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
-                // if (_unit isKindOf "CAManBase" && side group _unit != civilian) then 
-                // {
-                //     [_unit] call OKS_fnc_AddKilledScore;    
-                // };
+                // Apply stealth scripts after delay to ensure waypoints/variables are set
+                if (!(_unit getVariable ["OKS_Stealth_EventHandler_Applied", false])) then {
+                    _unit setVariable ["OKS_Stealth_EventHandler_Applied", true, true];
+                    private _debug = missionNamespace getVariable ["GOL_Stealth_Debug", false];
+                    if (_debug) then {
+                        format ["[STEALTH] Event handler triggered for %1 (group: %2)", _unit, groupId group _unit] spawn OKS_fnc_LogDebug;
+                    };
+                    _unit spawn {
+                        params ["_unit"];
+                        sleep 10; // Wait for spawn scripts to add waypoints and set GOL_IsStatic
+                        [_unit] call OKS_fnc_Stealth_ApplyToUnit;
+                    };
+                };
 
-                // if (_unit isKindOf "CAManBase" && side group _unit == civilian) then 
-                // {
-                //     [_unit] call OKS_fnc_AddCivilianKilled;
-                // };        
-
+                // Suppression
                 private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
                 if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
                     _unit spawn {
@@ -159,6 +169,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
                     };
                 };
 
+                // Surrender
                 private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
                 if(_SurrenderEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
                     _unit spawn {
@@ -168,6 +179,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
                     };
                 };
 
+                // Enable PATH AI feature
                 if(side group _unit != civilian || vehicle _unit == _unit) then {
                     _unit spawn {
                         params ["_unit"];
@@ -214,6 +226,11 @@ if(GOL_Core_Enabled isEqualTo true) then {
             sleep 5; // Ensure all units are initialized
 
             if(_X isKindOf "CAManBase" && !isPlayer _X) then {
+                // Apply stealth scripts based on unit properties (server/HC only)
+                if (isServer || !hasInterface) then {
+                    [_x] call OKS_fnc_Stealth_ApplyToUnit;
+                };
+
                 private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
                 if(_SuppressionEnabled && vehicle _X == _X) then {
                     [_x] spawn OKS_fnc_Suppressed

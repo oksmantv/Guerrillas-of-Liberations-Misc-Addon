@@ -175,6 +175,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Stealth_Debug",
+    "CHECKBOX",
+    ["Enable Stealth Debug", "When enabled, DEBUG messages will play in the SystemChat for stealth systems (tracking, radio, sentry, dialogue)."],
+    "GOL DEBUG",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_Dynamic_Debug",
     "CHECKBOX",
     ["Enable Dynamic Debug", "When enabled, DEBUG messages will play in the SystemChat."],

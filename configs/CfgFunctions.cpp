@@ -454,6 +454,19 @@ class CfgFunctions // Defines a function
 			class medicalMessage {};
 		};		
 
+		class OKS_Stealth {
+			file = "\OKS_GOL_Misc\functions\stealth";
+			class Stealth_Init {};
+			class Stealth_Hunted {};
+			class Stealth_Tracker {};
+			class Stealth_Enemy_Radio {};
+			class Stealth_Enemy_Sentry {};
+			class Stealth_Enemy_Vehicle {};
+			class Stealth_Enemy_Talk {};
+			class Stealth_ApplyToUnit {};
+			class Stealth_ApplyCamouflage {};
+		};
+
 		class Radio_Channel_Init
 		{
 			file = "\OKS_GOL_Misc\functions\playersetup";

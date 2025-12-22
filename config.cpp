@@ -190,6 +190,9 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Eden {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_eden.sqf'";
     };
+    class OKS_PreInit_Stealth {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_stealth.sqf'";
+    };
 };
 
 class Extended_PostInit_EventHandlers {

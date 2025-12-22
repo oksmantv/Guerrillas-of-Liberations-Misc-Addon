@@ -100,5 +100,14 @@ if(GOL_Core_Enabled isEqualTo true) then {
         if(_EnableNekyTasks) then {
             [] spawn OKS_fnc_NekyTasks;
         };
+
+        /* Initialize Stealth System */
+        _StealthTracker = missionNamespace getVariable ["GOL_OKS_Tracker", false];
+        _StealthRadio = missionNamespace getVariable ["GOL_OKS_Enemy_Radio", false];
+        _StealthTalk = missionNamespace getVariable ["GOL_OKS_Enemy_Talk", false];
+        if(_StealthTracker || _StealthRadio || _StealthTalk) then {
+            [] spawn OKS_fnc_Stealth_Init;
+            diag_log "OKS_GOL_Misc: Stealth system initialization started";
+        };
     };  
 };
