@@ -1,7 +1,9 @@
 
 #define PREFIX GW
 
-#ifndef isDescription	// Will crash on server otherwise
+#ifdef isDescription
+	#include "\x\cba\addons\main\script_macros_common.hpp"
+#else
 	#include "\x\cba\addons\main\script_macros_mission.hpp"
 #endif
 
@@ -23,11 +25,12 @@ Group: General
 #define PRIVATE 0
 #define PUBLIC 2
 
-#define MAJOR 0
-#define MINOR 7
-#define PATCHLVL 0
-#define BUILD 100418	// We will use the DATE for the BUILD# in the format DDMMYY
-#define VERSION MAJOR.MINOR.PATCHLVL.BUILD
+#include "version.hpp"
+#define MAJOR MISC_MAJOR
+#define MINOR MISC_MINOR
+#define PATCHLVL MISC_PATCHLVL
+#define BUILD MISC_BUILD
+#define VERSION MISC_VERSION
 
 #define COMPONENTPATH(var1) CUSTOM_FOLDER\fnc_##var1.sqf
 #define PREP(var1) ##ADDON##_fnc_##var1 = compile preProcessFileLineNumbers QUOTE(COMPONENTPATH(var1));

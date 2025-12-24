@@ -77,6 +77,7 @@ class CfgPatches
 	}
 };
 
+#include "version.hpp"
 #include "BIS_AddonInfo.hpp"
 #include "configs\CfgAmmo.cpp"
 #include "configs\CfgEden.cpp"
@@ -98,7 +99,7 @@ class CfgMods {
 
 class CBA_VERSIONING {
     class GOL_MISC_ADDON {
-        version = "1.3.4";
+        version = MISC_VERSION_STR;
         server = 1; // Server must have matching version
     };
 };
