@@ -20,17 +20,6 @@ if(GOL_Core_Enabled isEqualTo true) then {
         if (!isNil "Mobile_HQ") then {
             [Mobile_HQ, "small"] call GW_MHQ_Fnc_Handler;
         };
-
-        /*
-            Setup Framework Check
-        */       
-        _ReturnText = [] call OKS_fnc_CheckFrameworkObjects;
-        if(_ReturnText != "") then {
-            _ReturnText spawn OKS_fnc_LogDebug;
-            copyToClipboard _ReturnText;
-        } else {
-            "Framework is not missing any items." spawn OKS_fnc_LogDebug;
-        };
  
         /*
             Set Civilians to Friendly to all sides.

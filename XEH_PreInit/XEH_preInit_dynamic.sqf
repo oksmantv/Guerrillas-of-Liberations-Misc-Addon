@@ -8,7 +8,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Faction", 
         "Select the faction to use for dynamic operations."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Faction"],
     [
         // Values
         [
@@ -56,7 +56,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Custom Wheeled Vehicles",
         "Comma-separated classnames for custom faction wheeled vehicles."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Custom Faction"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -68,7 +68,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Custom APCs",
         "Comma-separated classnames for custom faction APCs."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Custom Faction"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -80,7 +80,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Custom Tanks",
         "Comma-separated classnames for custom faction tanks."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Custom Faction"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -92,7 +92,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Custom Artillery",
         "Comma-separated classnames for custom faction artillery."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Custom Faction"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -104,7 +104,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Custom Anti-Air",
         "Comma-separated classnames for custom faction anti-air."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Custom Faction"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -116,7 +116,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Custom Helicopters",
         "Comma-separated classnames for custom faction helicopters."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Custom Faction"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -128,7 +128,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Custom Transport",
         "Comma-separated classnames for custom faction transport vehicles."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Custom Faction"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -140,7 +140,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Custom Supply",
         "Comma-separated classnames for custom faction supply vehicles."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Custom Faction"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -155,7 +155,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Objective Types",
         "Comma-separated list of enabled objective types.<br/>Available: cache, artillery, hostage, hvttruck, ammotruck, radiotower, motorpool, antiair"
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Objectives"],
     "cache,artillery,hostage,hvttruck,ammotruck,radiotower,motorpool,antiair",
     1
 ] call CBA_fnc_addSetting;
@@ -167,7 +167,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Task Notification",
         "Show pop-ups when tasks are completed."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Objectives"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -179,7 +179,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Compound Size (meters)",
         "Defines how large a compound is considered for garrisons."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Patrols"],
     [10, 100, 25, 0], // min, default, max, decimals
     1
 ] call CBA_fnc_addSetting;
@@ -191,7 +191,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Patrol Size",
         "Standard patrol group size."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Patrols"],
     [1, 12, 4, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -203,7 +203,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Enable Enemy Markers",
         "Place markers at enemy strongpoints and static targets."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Markers"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -215,7 +215,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Enable Zone Marker",
         "Mark trigger area with a zone marker."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Markers"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -227,7 +227,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Enable Zone Type Marker",
         "Mark trigger area with a zone type marker."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Markers"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -239,7 +239,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Enemy Marker Color",
         "Use default side color for enemy markers."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Markers"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -251,7 +251,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Enable Objective Tasks",
         "Attach tasks to objectives."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Objectives"],
     true,
     1
 ] call CBA_fnc_addSetting;
@@ -263,7 +263,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Roadblock Vehicle Type",
         "Vehicle type for roadblock vehicles."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Patrols"],
     [
         ["Wheeled", "APC", "Tank", "AntiAir"],
         ["_Wheeled", "_APC", "_Tank", "_AntiAir"],
@@ -279,7 +279,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Civilian Units",
         "Comma-separated list of civilian unit classnames."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Civilians"],
     "C_man_polo_1_F,C_man_polo_2_F,C_man_polo_3_F,C_man_polo_4_F,C_man_polo_5_F,C_man_polo_6_F",
     1
 ] call CBA_fnc_addSetting;
@@ -291,7 +291,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Civilian Trigger Size",
         "Trigger size for dynamic civilian module."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Civilians"],
     [50, 1000, 200, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -303,7 +303,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Civilian Count",
         "Number of dynamic civilians."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Civilians"],
     [0, 25, 8, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -315,7 +315,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Static Civilian Count",
         "Number of static civilians."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Civilians"],
     [0, 25, 6, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -327,7 +327,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "House Waypoints",
         "Number of waypoints per house for civilians."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Civilians"],
     [0, 22, 10, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -339,7 +339,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Random Waypoints",
         "Number of random waypoints for civilians."
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Civilians"],
     [0, 25, 10, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -351,7 +351,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Civilians as Agents",
         "Should civilians be spawned as agents?"
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Civilians"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -363,7 +363,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
         "Civilians Panic",
         "Should civilians panic?"
     ],
-    "GOL Dynamic",
+    ["GOL Dynamic", "Civilians"],
     false,
     1
 ] call CBA_fnc_addSetting;

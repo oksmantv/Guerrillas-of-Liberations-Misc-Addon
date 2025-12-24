@@ -6,7 +6,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_faceswap.sqf executed";
     "GOL_FaceSwap_Enabled",
     "CHECKBOX",
     ["Allow FaceSwap", "When enabled, AI will change faces based on your choices on mission start and when spawned."],
-    "GOL FaceSwap",
+    ["GOL FaceSwap", "General"],
     true,
     1
 ] call CBA_fnc_addSetting;
@@ -16,7 +16,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_faceswap.sqf executed";
     "GOL_FaceSwap_BLUFOR",
     "LIST",
     ["BLUFOR Ethnicity", "Set ethnic appearance for spawned BLUFOR units"],
-    "GOL FaceSwap",
+    ["GOL FaceSwap", "Factions"],
     [
         ["african", "asian", "english", "american", "middleeast", "russian", "french", "greek", "polish"],
         ["African", "Asian", "English", "American", "Middle Eastern", "Russian", "French", "Greek", "Polish"], 
@@ -29,7 +29,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_faceswap.sqf executed";
     "GOL_FaceSwap_OPFOR",
     "LIST",
     ["OPFOR Ethnicity", "Set ethnic appearance for spawned OPFOR units"],
-    "GOL FaceSwap",
+    ["GOL FaceSwap", "Factions"],
     [
         ["african", "asian", "english", "american", "middleeast", "russian", "french", "greek", "polish"],
         ["African", "Asian", "English", "American", "Middle Eastern", "Russian", "French", "Greek", "Polish"], 
@@ -42,7 +42,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_faceswap.sqf executed";
     "GOL_FaceSwap_INDEPENDENT",
     "LIST",
     ["INDEPENDENT Ethnicity", "Set ethnic appearance for spawned INDEPENDENT units"],
-    "GOL FaceSwap",
+    ["GOL FaceSwap", "Factions"],
     [
         ["african", "asian", "english", "american", "middleeast", "russian", "french", "greek", "polish"],
         ["African", "Asian", "English", "American", "Middle Eastern", "Russian", "French", "Greek", "Polish"], 
@@ -55,7 +55,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_faceswap.sqf executed";
     "GOL_FaceSwap_CIVILIAN",
     "LIST",
     ["CIVILIAN Ethnicity", "Set ethnic appearance for spawned CIVILIAN units"],
-    "GOL FaceSwap",
+    ["GOL FaceSwap", "Factions"],
     [
         ["african", "asian", "english", "american", "middleeast", "russian", "french", "greek", "polish"],
         ["African", "Asian", "English", "American", "Middle Eastern", "Russian", "French", "Greek", "Polish"], 

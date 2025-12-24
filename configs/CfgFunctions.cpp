@@ -231,7 +231,6 @@ class CfgFunctions // Defines a function
 			class ORBATHandler {};
 			class ACE_MoveMHQ {};
 			class BLU_SetChannel {};
-			class CheckFrameworkObjects {};
 			class TFAR_RadioSetup {};
 			class FastropeDamageProtection {};
 		};

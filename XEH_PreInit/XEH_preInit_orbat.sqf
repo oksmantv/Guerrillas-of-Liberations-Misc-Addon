@@ -5,7 +5,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_orbat.sqf executed";
     "GOL_SelectedComposition",
     "LIST",
     ["ORBAT Composition", "Set the ORBAT Composition."],
-    "GOL ORBAT",
+    ["GOL ORBAT", "General"],
     [
         [0, 1],
         ["Infantry", "Mechanized"], 

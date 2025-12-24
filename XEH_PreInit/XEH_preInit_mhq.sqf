@@ -5,7 +5,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "MHQSAFEZONE",
     "SLIDER",
     ["MHQ Safe Zone Radius", "Radius (in meters) of the MHQ safe zone."],
-    "GOL MHQ",
+    ["GOL MHQ", "General"],
     [25, 300, 100, 0], // [min, max, default, decimals]
     1
 ] call CBA_fnc_addSetting;
@@ -14,7 +14,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "MHQ_ShouldBe_ServiceStation",
     "CHECKBOX",
     ["MHQ Service Station", "If enabled the MHQ vehicle itself will be a service station, if disabled, it will be loaded with a mobile service station."],
-    "GOL MHQ",
+    ["GOL MHQ", "General"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -23,7 +23,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_MissileWarning_Enabled",
     "CHECKBOX",
     ["Enable Missile Warning", "If enabled vehicles will have a missile warning system that will alert the crew of incoming missiles."],
-    "GOL Vehicle",
+    ["GOL Vehicle", "General"],
     true,
     1
 ] call CBA_fnc_addSetting;
@@ -32,7 +32,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_MissileWarningSound_Enabled",
     "CHECKBOX",
     ["Enable Missile Warning Sound", "If enabled vehicles will have a missile warning sound effects that will alert the crew of incoming missiles."],
-    "GOL Vehicle",
+    ["GOL Vehicle", "General"],
     true,
     1
 ] call CBA_fnc_addSetting;
@@ -41,7 +41,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_Vehicle_Flag",
     "EDITBOX",
     ["Vehicle Flag Texture", "If defined will put a flag texture on the vehicle. Use the full path to the texture, e.g. a3\ui_f\data\flag_usa_co.paa. (No quotation marks)"],
-    "GOL Vehicle",
+    ["GOL Vehicle", "General"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -50,7 +50,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_Helicopter_TI",
     "CHECKBOX",
     ["Disable Helicopter Thermals", "If disabled helicopters will no longer receive thermal vision in cameras."],
-    "GOL Helicopters",
+    ["GOL Helicopters", "General"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -59,7 +59,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_Helicopter_NVG",
     "CHECKBOX",
     ["Disable Helicopter NVGs", "If disabled helicopters will no longer receive night vision in cameras."],
-    "GOL Helicopters",
+    ["GOL Helicopters", "General"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -68,7 +68,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_Helicopter_DoorgunReplace",
     "CHECKBOX",
     ["Enable Doorgun Replacement", "If enabled helicopters will receive other door guns."],
-    "GOL Helicopters",
+    ["GOL Helicopters", "General"],
     true,
     1
 ] call CBA_fnc_addSetting;

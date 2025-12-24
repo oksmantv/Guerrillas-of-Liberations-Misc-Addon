@@ -6,7 +6,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Enabled",
     "CHECKBOX",
     ["Enable Surrender", "When enabled, AI can surrender when threatened, suppressed, shot, flashbanged."],
-    "GOL Surrender",
+    ["GOL Surrender", "Activate"],
     true,
     1
 ] call CBA_fnc_addSetting;
@@ -16,7 +16,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Shot",
     "CHECKBOX",
     ["Allow Surrender by Shot", "When enabled, AI can surrender when shot at."],
-    "GOL Surrender",
+    ["GOL Surrender", "Triggers"],
     true,
     1
 ] call CBA_fnc_addSetting;
@@ -26,7 +26,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Flashbang",
     "CHECKBOX",
     ["Allow Surrender by Flashbang", "When enabled, AI can surrender when flashbanged."],
-    "GOL Surrender",
+    ["GOL Surrender", "Triggers"],
     true,
     1
 ] call CBA_fnc_addSetting;
@@ -36,7 +36,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Threat",
     "CHECKBOX",
     ["Allow Surrender by Threat", "When enabled, AI can surrender when threatened (aimed at)"],
-    "GOL Surrender",
+    ["GOL Surrender", "Triggers"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -46,7 +46,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_FriendlyDistance",
     "SLIDER",
     ["Check Friendly Distance", "For every friendly below 10 in the vicinity (this value) of the candidate, chance to surrender will increase."],
-    "GOL Surrender",
+    ["GOL Surrender", "Probability"],
     [20, 300, 200, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -56,7 +56,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Chance",
     "SLIDER",
     ["Surrender Chance", "Probability (0 = never, 0.3 = very likely) that AI will surrender."],
-    "GOL Surrender",
+    ["GOL Surrender", "Probability"],
     [0, 0.3, 0.05, 2],
     1
 ] call CBA_fnc_addSetting;
@@ -66,7 +66,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_ChanceWeaponAim",
     "SLIDER",
     ["Surrender Chance Weapon Aim", "Probability (0 = never, 0.3 = very likely) that AI will surrender when aimed at."],
-    "GOL Surrender",
+    ["GOL Surrender", "Probability"],
     [0, 0.3, 0.05, 2],
     1
 ] call CBA_fnc_addSetting;
@@ -75,7 +75,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Adjust_Flashbang",
     "SLIDER",
     ["Additional % Chance Flashbang", "Additional chance to surrender when flashbanged."],
-    "GOL Surrender",
+    ["GOL Surrender", "Probability"],
     [0, 100, 30, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -84,7 +84,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Adjust_Shot",
     "SLIDER",
     ["Additional % Chance Shot", "Additional chance to surrender when shot."],
-    "GOL Surrender",
+    ["GOL Surrender", "Probability"],
     [0, 100, 5, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -93,7 +93,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Adjust_Suppressed",
     "SLIDER",
     ["Additional % Chance Suppressed", "Additional chance to surrender when suppressed."],
-    "GOL Surrender",
+    ["GOL Surrender", "Probability"],
     [0, 100, 5, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -102,7 +102,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Adjust_Unarmed",
     "SLIDER",
     ["Additional % Chance Unarmed ", "Additional chance to surrender when unarmed."],
-    "GOL Surrender",
+    ["GOL Surrender", "Probability"],
     [0, 100, 15, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -111,7 +111,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Adjust_NearFriendlies",
     "SLIDER",
     ["Additional % Chance Near Friendlies", "Additional chance to surrender when under 10 friendlies nearby. Per unit below 10."],
-    "GOL Surrender",
+    ["GOL Surrender", "Probability"],
     [0, 5, 1.5, 2],
     1
 ] call CBA_fnc_addSetting;
@@ -121,7 +121,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_Distance",
     "SLIDER",
     ["Surrender Distance", "Maximum distance (in meters) for surrender checks."],
-    "GOL Surrender",
+    ["GOL Surrender", "Conditions"],
     [10, 300, 200, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -131,7 +131,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "GOL_Surrender_DistanceWeaponAim",
     "SLIDER",
     ["Surrender Distance Weapon Aim", "Maximum distance (in meters) for surrender checks by player aiming at unit."],
-    "GOL Surrender",
+    ["GOL Surrender", "Conditions"],
     [10, 100, 50, 0],
     1
 ] call CBA_fnc_addSetting;

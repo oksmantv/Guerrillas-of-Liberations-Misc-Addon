@@ -8,7 +8,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_jets.sqf executed";
     "GOL_JetSuppression_Radius",
     "SLIDER",
     ["Jet Suppression Radius", "Radius (meters) for jet flyby suppression."],
-    "GOL Jets",
+    ["GOL Jets", "Suppression"],
     [100, 500, 300, 1],
     1
 ] call CBA_fnc_addSetting;
@@ -17,7 +17,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_jets.sqf executed";
     "GOL_JetSuppression_MinAGL",
     "SLIDER",
     ["Jet Suppression Min AGL", "Minimum altitude (meters) for jet suppression to trigger."],
-    "GOL Jets",
+    ["GOL Jets", "Suppression"],
     [100, 500, 250, 1],
     1
 ] call CBA_fnc_addSetting;
@@ -26,7 +26,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_jets.sqf executed";
     "GOL_JetSuppression_MinSpeed",
     "SLIDER",
     ["Jet Suppression Min Speed", "Minimum speed (kph) for jet suppression to trigger."],
-    "GOL Jets",
+    ["GOL Jets", "Suppression"],
     [200, 1000, 600, 1],
     1
 ] call CBA_fnc_addSetting;
@@ -35,7 +35,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_jets.sqf executed";
     "GOL_JetSuppression_Multiplier",
     "SLIDER",
     ["Jet Suppression Time Multiplier", "Multiplier for suppression time when jet is involved."],
-    "GOL Jets",
+    ["GOL Jets", "Suppression"],
     [1, 5, 3, 1],
     1
 ] call CBA_fnc_addSetting;
