@@ -7,7 +7,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "CHECKBOX",
     ["Enable Surrender", "When enabled, AI can surrender when threatened, suppressed, shot, flashbanged."],
     ["GOL Surrender", "Activate"],
-    true,
+    false,
     1
 ] call CBA_fnc_addSetting;
 
@@ -17,7 +17,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "CHECKBOX",
     ["Allow Surrender by Shot", "When enabled, AI can surrender when shot at."],
     ["GOL Surrender", "Triggers"],
-    true,
+    false,
     1
 ] call CBA_fnc_addSetting;
 
@@ -27,7 +27,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
     "CHECKBOX",
     ["Allow Surrender by Flashbang", "When enabled, AI can surrender when flashbanged."],
     ["GOL Surrender", "Triggers"],
-    true,
+    false,
     1
 ] call CBA_fnc_addSetting;
 
