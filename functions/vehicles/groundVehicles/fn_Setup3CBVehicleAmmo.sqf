@@ -3,7 +3,7 @@
 
 params ["_Vehicle"];
 
-Private _GroundVehiclesDebug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
+private _GroundVehiclesDebug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
 
 if(_GroundVehiclesDebug) then {
 	format["[3CB-AMMO] Setting up UK3CB ammunition for vehicle: %1", typeOf _Vehicle] spawn OKS_fnc_LogDebug;

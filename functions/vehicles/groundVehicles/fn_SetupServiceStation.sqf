@@ -3,7 +3,7 @@
 
 params ["_Vehicle", "_ServiceStation"];
 
-Private _GroundVehiclesDebug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
+private _GroundVehiclesDebug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
 
 if(_GroundVehiclesDebug) then {
 	format["[SERVICESTATION] Starting service station setup for: %1 | ServiceStation enabled: %2", typeOf _Vehicle, _ServiceStation] spawn OKS_fnc_LogDebug;

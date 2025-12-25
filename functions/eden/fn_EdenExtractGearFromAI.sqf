@@ -1,9 +1,61 @@
 /*
     OKS_fnc_ExtractGearFromAI
 
-	Extract gear from selected AI units
+	Extract gear from selected AI units in Eden Editor
+	Reads gear configuration from unit configs
 */
 private _Objects = get3DENSelected "object";
+
+if (count _Objects == 0) exitWith {
+	"Extract Gear: No objects selected!" call OKS_fnc_LogDebug;
+	["Extract Gear: select one or more units", 1, 5, true] call BIS_fnc_3DENNotification;
+};
+
+// Helper function to get gear from config
+private _fnc_getUnitGear = {
+	params ["_unitClass"];
+	
+	private _cfg = configFile >> "CfgVehicles" >> _unitClass;
+	if (!isClass _cfg) exitWith {
+		["", "", "", "", [], [], "", "", "", ""]
+	};
+	
+	private _headgearList = getArray (_cfg >> "headgearList");
+	private _helmet = "";
+	if (!(_headgearList isEqualTo [])) then {
+		private _h0 = _headgearList select 0;
+		_helmet = if (_h0 isEqualType []) then {
+			if ((count _h0) > 0) then { _h0 select 0 } else { "" }
+		} else {
+			_h0
+		};
+	};
+	
+	private _uniform = getText (_cfg >> "uniformClass");
+	private _vest = getText (_cfg >> "vestClass"); 
+	private _backpack = getText (_cfg >> "backpack");
+	
+	private _weapons = getArray (_cfg >> "weapons");
+	private _magazines = getArray (_cfg >> "magazines");
+	
+	private _primary = "";
+	private _secondary = "";
+	private _handgun = "";
+	private _items = [];
+	
+	{
+		private _weaponCfg = configFile >> "CfgWeapons" >> _x;
+		private _type = getNumber (_weaponCfg >> "type");
+		
+		switch (_type) do {
+			case 1: {_primary = _x}; // Primary weapon
+			case 2: {_handgun = _x}; // Handgun
+			case 4: {_secondary = _x}; // Secondary (launcher)
+		};
+	} forEach _weapons;
+	
+	[_helmet, _uniform, _vest, _backpack, _weapons, _magazines, _primary, _secondary, _handgun, _items]
+};
 
 private _copyOfficerHelmet = "";
 private _copyLMGVariable = "";
@@ -75,128 +127,217 @@ private _bipods = [];
 private _rifles = [];
 private _pistols = [];
 
-{
-    private _displayName = [configFile >> 'CfgVehicles' >> typeOf _X] call BIS_fnc_displayName;
+private _processedCount = 0;
 
+{
+	private _entity = _x;
+	private _unitClass = _entity get3DENAttribute "ItemClass" select 0;
+	
+	if (_unitClass == "") then {continue};
+	
+	private _displayName = getText (configFile >> "CfgVehicles" >> _unitClass >> "displayName");
+	private _cfg = configFile >> "CfgVehicles" >> _unitClass;
+	
+	// Get gear from config
+	private _headgearList = getArray (_cfg >> "headgearList");
+	private _helmet = "";
+	if (!(_headgearList isEqualTo [])) then {
+		private _h0 = _headgearList select 0;
+		_helmet = if (_h0 isEqualType []) then {
+			if ((count _h0) > 0) then { _h0 select 0 } else { "" }
+		} else {
+			_h0
+		};
+	};
+	private _uniform = getText (_cfg >> "uniformClass");
+	private _vest = getText (_cfg >> "vestClass");
+	private _backpack = getText (_cfg >> "backpack");
+	private _goggles = getText (_cfg >> "goggles");
+	
+	// Get weapons from config
+	private _weapons = getArray (_cfg >> "weapons");
+	private _magazines = getArray (_cfg >> "magazines");
+	private _items = getArray (_cfg >> "items");
+	private _linkedItems = getArray (_cfg >> "linkedItems");
+	
+	// Parse weapons
+	private _primary = "";
+	private _secondary = "";
+	private _handgun = "";
+	
+	{
+		private _weaponCfg = configFile >> "CfgWeapons" >> _x;
+		private _type = getNumber (_weaponCfg >> "type");
+		
+		switch (_type) do {
+			case 1: {_primary = _x}; // Primary weapon
+			case 2: {_handgun = _x}; // Handgun  
+			case 4: {_secondary = _x}; // Secondary (launcher)
+		};
+	} forEach _weapons;
+	
+	// Get weapon attachments from primary weapon
+	private _primaryItems = [];
+	if (_primary != "") then {
+		private _weaponCfg = configFile >> "CfgWeapons" >> _primary;
+		private _muzzles = getArray (_weaponCfg >> "muzzles");
+		
+		{
+			private _itemSlot = _x;
+			{
+				if (isClass (configFile >> "CfgWeapons" >> _x >> _itemSlot)) then {
+					_primaryItems pushBack _x;
+				};
+			} forEach _items;
+		} forEach ["MuzzleSlot", "PointerSlot", "OpticSlot", "UnderBarrelSlot"];
+	};
+	
+	// Role detection and assignment
 	if (["Officer", _displayName] call BIS_fnc_inString) then {
-        _copyOfficerHelmet = (headgear _X);
+        _copyOfficerHelmet = _helmet;
     };
-	if (["radio", _displayName] call BIS_fnc_inString) then {
-        _copyBackpackRadio = (backpack _X);
+	if (["radio", toLower _displayName] call BIS_fnc_inString) then {
+        _copyBackpackRadio = _backpack;
     };	
 	if (["Grenadier", _displayName] call BIS_fnc_inString) then {
-        _copyRifleGLVariable = primaryWeapon _X;
-		_copyRifleGL_mag = (compatibleMagazines primaryWeapon _X) select 0;
-		_copyRifleGL_mag_tr = (compatibleMagazines primaryWeapon _X) select 1;
+        _copyRifleGLVariable = _primary;
+		if (_primary != "") then {
+			private _mags = compatibleMagazines _primary;
+			if (count _mags > 0) then {_copyRifleGL_mag = _mags select 0};
+			if (count _mags > 1) then {_copyRifleGL_mag_tr = _mags select 1};
+		};
     };	
 	if (["Marksman", _displayName] call BIS_fnc_inString) then {
-        _copyRifleLVariable = primaryWeapon _X;
-		_copyRifleL_mag = (compatibleMagazines primaryWeapon _X) select 0;
-		_copyRifleL_mag_tr = (compatibleMagazines primaryWeapon _X) select 1;
+        _copyRifleLVariable = _primary;
+		if (_primary != "") then {
+			private _mags = compatibleMagazines _primary;
+			if (count _mags > 0) then {_copyRifleL_mag = _mags select 0};
+			if (count _mags > 1) then {_copyRifleL_mag_tr = _mags select 1};
+		};
     };	
 	if (["Sniper", _displayName] call BIS_fnc_inString) then {
-        _copyRifleMarksmanVariable = primaryWeapon _X;
-		_copyRifleMarksman_mag = (compatibleMagazines primaryWeapon _X) select 0;
-		_copyRifleMarksman_mag_tr = (compatibleMagazines primaryWeapon _X) select 1;
-	    _sniperUniform = (uniform _X);
-		_items = primaryWeaponItems _X;
-		_copyMarksmanSilencer = _items select 0;
-		_copyMarksmanPointer = _items select 1;
-		_copyMarksmanSight = _items select 2;
-		_copyMarksmanBipod = _items select 3; 
+        _copyRifleMarksmanVariable = _primary;
+		if (_primary != "") then {
+			private _mags = compatibleMagazines _primary;
+			if (count _mags > 0) then {_copyRifleMarksman_mag = _mags select 0};
+			if (count _mags > 1) then {_copyRifleMarksman_mag_tr = _mags select 1};
+		};
+	    _sniperUniform = _uniform;
+		
+		// Get attachments
+		if (count _primaryItems >= 4) then {
+			_copyMarksmanSilencer = _primaryItems select 0;
+			_copyMarksmanPointer = _primaryItems select 1;
+			_copyMarksmanSight = _primaryItems select 2;
+			_copyMarksmanBipod = _primaryItems select 3;
+		};
     };				
 	if (["Ammo Bearer", _displayName] call BIS_fnc_inString || ["Medic", _displayName] call BIS_fnc_inString || ["Engineer", _displayName] call BIS_fnc_inString || ["Asst. Gunner", _displayName] call BIS_fnc_inString) then {
-        _MedicBag = (backpack _X);
+        _MedicBag = _backpack;
     };
 	if (["Automatic Rifleman", _displayName] call BIS_fnc_inString || ["Light Machine Gunner", _displayName] call BIS_fnc_inString) then {
-        _copyLMGVariable = (primaryWeapon _X);
-		_copyLMG_mag = (compatibleMagazines primaryWeapon _X) select 0;
+        _copyLMGVariable = _primary;
+		if (_primary != "") then {
+			private _mags = compatibleMagazines _primary;
+			if (count _mags > 0) then {_copyLMG_mag = _mags select 0};
+		};
     };
 	if (["Machine Gunner", _displayName] call BIS_fnc_inString) then {
-        _copyMMGVariable = (primaryWeapon _X);
-		_copyMMG_mag = (compatibleMagazines primaryWeapon _X) select 0;
+        _copyMMGVariable = _primary;
+		if (_primary != "") then {
+			private _mags = compatibleMagazines _primary;
+			if (count _mags > 0) then {_copyMMG_mag = _mags select 0};
+		};
     };
 	if (["Crew", _displayName] call BIS_fnc_inString) then {
-        _crewHelmet = (headgear _X); // Crew helmet
-		_copyRifleCVariable = primaryWeapon _X;
-		_copyRifleC_mag = (compatibleMagazines primaryWeapon _X) select 0;
-		_copyRifleC_mag_tr = (compatibleMagazines primaryWeapon _X) select 1;
+        _crewHelmet = _helmet;
+		_copyRifleCVariable = _primary;
+		if (_primary != "") then {
+			private _mags = compatibleMagazines _primary;
+			if (count _mags > 0) then {_copyRifleC_mag = _mags select 0};
+			if (count _mags > 1) then {_copyRifleC_mag_tr = _mags select 1};
+		};
     };
 	if (["Pilot", _displayName] call BIS_fnc_inString) then {
-        _pilotHelmet = (headgear _X);
-        _pilotUniform = (uniform _X);
-        _pilotVest = (vest _X);
+        _pilotHelmet = _helmet;
+        _pilotUniform = _uniform;
+        _pilotVest = _vest;
     };
 
 	if (["LAT", _displayName] call BIS_fnc_inString) then {
-		_LATVariable = (secondaryWeapon _X);
-		if(!isNil "_LATVariable" && _LATVariable != "") then {
-        	_copyLATVariable = (secondaryWeapon _X);
-			_copyLAT_mag = (compatibleMagazines secondaryWeapon _X) select 0;
+		if (_secondary != "") then {
+        	_copyLATVariable = _secondary;
+			private _mags = compatibleMagazines _secondary;
+			if (count _mags > 0) then {_copyLAT_mag = _mags select 0};
 		};
     };	
 
 	if (["Anti-Air", _displayName] call BIS_fnc_inString || ["AA", _displayName] call BIS_fnc_inString || ["Igla", _displayName] call BIS_fnc_inString || ["FIM", _displayName] call BIS_fnc_inString) then {
-		_AAVariable = (secondaryWeapon _X);
-		if(!isNil "_AAVariable" && _AAVariable != "") then {
-        	_copyAAVariable = _AAVariable;
-			_copyAA_mag = selectRandom (secondaryWeaponMagazine _X);
-			//systemchat str [_copyAA_mag, _AAVariable];
+		if (_secondary != "") then {
+        	_copyAAVariable = _secondary;
+			// Get magazine from unit's magazines array
+			{
+				if (_x in (compatibleMagazines _secondary)) exitWith {
+					_copyAA_mag = _x;
+				};
+			} forEach _magazines;
 		};
     };	
 
 	if (["Anti Tank", _displayName] call BIS_fnc_inString || ["Anti-tank", _displayName] call BIS_fnc_inString) then {
-		_MATVariable = (secondaryWeapon _X);
-		if(!isNil "_MATVariable" && _MATVariable != "") then {
-        	_copyMATVariable = (secondaryWeapon _X);
-			_copyMAT_mag = selectRandom (secondaryWeaponMagazine _X);
-			systemChat str [_copyMATVariable, _copyMAT_mag];
+		if (_secondary != "") then {
+        	_copyMATVariable = _secondary;
+			{
+				if (_x in (compatibleMagazines _secondary)) exitWith {
+					_copyMAT_mag = _x;
+				};
+			} forEach _magazines;
 		};	
     };	
-	if (["AT Specialist", _displayName] call BIS_fnc_inString || ["Anti Tank", _displayName] call BIS_fnc_inString || ["Anti-tank", _displayName] call BIS_fnc_inString) then {
-		_HATVariable = (secondaryWeapon _X);
-		if(!isNil "_HATVariable" && _HATVariable != "") then {
-        	_copyHATVariable = (secondaryWeapon _X);
-			_copyHAT_mag = selectRandom (secondaryWeaponMagazine _X);
+	if (["AT Specialist", _displayName] call BIS_fnc_inString) then {
+		if (_secondary != "") then {
+        	_copyHATVariable = _secondary;
+			{
+				if (_x in (compatibleMagazines _secondary)) exitWith {
+					_copyHAT_mag = _x;
+				};
+			} forEach _magazines;
 		};
     };
 
-	_copyHelmet pushBackUnique (headgear _X);
-	_copyUniform pushBackUnique (uniform _X);
-	_copyVest pushBackUnique (vest _X);
-    _copyGoggles pushBackUnique (goggles _X);
-	if (backpack _X != "") then {
-    	_copyBackpack pushBackUnique (backpack _X);
-	};
+	// Collect unique items
+	if (_helmet != "") then {_copyHelmet pushBackUnique _helmet};
+	if (_uniform != "") then {_copyUniform pushBackUnique _uniform};
+	if (_vest != "") then {_copyVest pushBackUnique _vest};
+    if (_goggles != "") then {_copyGoggles pushBackUnique _goggles};
+	if (_backpack != "") then {_copyBackpack pushBackUnique _backpack};
 
-    // Sights collection
-    private _silence = (primaryWeaponItems _X) select 0;
-	if(!isNil "_silence") then {
-        _silencers pushBackUnique _silence;
-    };	
-    private _pointer = (primaryWeaponItems _X) select 1;
-	if(!isNil "_pointer") then {
-        _pointers pushBackUnique _pointer;
-    };	
-    private _sight = (primaryWeaponItems _X) select 2;
-	if(!isNil "_sight") then {
-        _sights pushBackUnique _sight;
-    };
-    private _bipod = (primaryWeaponItems _X) select 3;
-	if(!isNil "_bipod") then {
-        _bipods pushBackUnique _bipod;
-    };	
-    private _rifle = (primaryWeapon _X);
-	if(!isNil "_rifle") then {
-        _rifles pushBackUnique _rifle;
-    };		
-
-	_copyPistol = (handgunWeapon _X);
-	if(!isNil "_copyPistol") then {
-		_Pistols pushBackUnique _copyPistol;
+    // Collect attachments
+	if (count _primaryItems >= 4) then {
+		private _silence = _primaryItems select 0;
+		private _pointer = _primaryItems select 1;
+		private _sight = _primaryItems select 2;
+		private _bipod = _primaryItems select 3;
+		
+		if (_silence != "") then {_silencers pushBackUnique _silence};
+		if (_pointer != "") then {_pointers pushBackUnique _pointer};
+		if (_sight != "") then {_sights pushBackUnique _sight};
+		if (_bipod != "") then {_bipods pushBackUnique _bipod};
 	};
-    // You can later count and select the most common sight from _copySightList
+	
+    if (_primary != "") then {_rifles pushBackUnique _primary};
+	if (_handgun != "") then {_pistols pushBackUnique _handgun};
+	
+	_processedCount = _processedCount + 1;
 } foreach _Objects;
+
+if (_processedCount == 0) exitWith {
+	"Extract Gear: No valid units found in selection!" call OKS_fnc_LogDebug;
+	["Extract Gear: no valid units", 1, 5, true] call BIS_fnc_3DENNotification;
+};
+
+(format ["Extract Gear: Processed %1 units", _processedCount]) call OKS_fnc_LogDebug;
+[format ["Extract Gear: processed %1 units", _processedCount], 0, 4, true] call BIS_fnc_3DENNotification;
 
 /// Assigning the variables from the object array.
 _copyInsignia = "";
@@ -220,7 +361,7 @@ if (count _Pistols > 0) then {
 	private _mostCommon = "";
 	private _maxCount = 0;
 	{
-		_foreachItem = _X;
+		private _foreachItem = _x;
 		private _currentCount = {_x == _foreachItem} count _Pistols;
 		if (_currentCount > _maxCount) then {
 			_maxCount = _currentCount;
@@ -228,7 +369,8 @@ if (count _Pistols > 0) then {
 		};
 	} forEach _Pistols;
 	_copyPistolVariable = _mostCommon;
-	_copyPistol_mag = (compatibleMagazines _mostCommon) select 0;
+	private _mags = compatibleMagazines _mostCommon;
+	if (count _mags > 0) then {_copyPistol_mag = _mags select 0};
 };
 
 _copySilencer = "";
@@ -236,7 +378,7 @@ if (count _silencers > 0) then {
 	private _mostCommon = "";
 	private _maxCount = 0;
 	{
-		_foreachItem = _X;
+		private _foreachItem = _x;
 		private _currentCount = {_x == _foreachItem} count _silencers;
 		if (_currentCount > _maxCount) then {
 			_maxCount = _currentCount;
@@ -251,7 +393,7 @@ if (count _pointers > 0) then {
 	private _mostCommon = "";
 	private _maxCount = 0;
 	{
-		_foreachItem = _X;		
+		private _foreachItem = _x;
 		private _currentCount = {_x == _foreachItem} count _pointers;
 		if (_currentCount > _maxCount) then {
 			_maxCount = _currentCount;
@@ -266,7 +408,7 @@ if (count _sights > 0) then {
 	private _mostCommon = "";
 	private _maxCount = 0;
 	{
-		_foreachItem = _X;		
+		private _foreachItem = _x;
 		private _currentCount = {_x == _foreachItem} count _sights;
 		if (_currentCount > _maxCount) then {
 			_maxCount = _currentCount;
@@ -281,7 +423,7 @@ if (count _bipods > 0) then {
 	private _mostCommon = "";
 	private _maxCount = 0;
 	{
-		_foreachItem = _X;		
+		private _foreachItem = _x;
 		private _currentCount = {_x == _foreachItem} count _bipods;
 		if (_currentCount > _maxCount) then {
 			_maxCount = _currentCount;
@@ -296,7 +438,7 @@ if (count _rifles > 0) then {
 	private _mostCommon = "";
 	private _maxCount = 0;
 	{
-		_foreachItem = _X;		
+		private _foreachItem = _x;
 		private _currentCount = {_x == _foreachItem} count _rifles;
 		if (_currentCount > _maxCount) then {
 			_maxCount = _currentCount;
@@ -304,8 +446,9 @@ if (count _rifles > 0) then {
 		};
 	} forEach _rifles;
 	_copyRifleVariable = _mostCommon;
-	_copyRifle_mag = (compatibleMagazines _mostCommon) select 0;
-	_copyRifle_mag_tr = (compatibleMagazines _mostCommon) select 1;
+	private _mags = compatibleMagazines _mostCommon;
+	if (count _mags > 0) then {_copyRifle_mag = _mags select 0};
+	if (count _mags > 1) then {_copyRifle_mag_tr = _mags select 1};
 };
 
 /// Replace Empty Values.
@@ -338,7 +481,7 @@ _copyRifle = format ["[%1, _silencer, _pointer, _sight, _bipod];", _copyRifleVar
 _copyRifleC = format ["[%1, _silencer, _pointer, _sight, _bipod];", _copyRifleCVariable];
 _copyRifleGL = format ["[%1, _silencer, _pointer, _sight, _bipod];", _copyRifleGLVariable];
 _copyRifleL = format ["[%1, _silencer, _pointer, _sight, _bipod];", _copyRifleLVariable];
-_copyLMG = format ["[%11, _silencer, _pointer, _sight, _bipod];", _copyLMGVariable];
+_copyLMG = format ["[%1, _silencer, _pointer, _sight, _bipod];", _copyLMGVariable];
 _copyMMG = format ["[%1, _silencer, _pointer, _sight, _bipod];", _copyMMGVariable];
 _copyLAT = format ["[%1, _silencer, _pointer, _sight, _bipod];", _copyLATVariable];
 _copyMAT = format ["[%1, _silencer, _pointer, _sight, _bipod];", _copyMATVariable];
@@ -417,3 +560,6 @@ _output =
 	"_rifleMarksman_mag_tr = " + str _copyRifleMarksman_mag_tr + ";" + toString [13,10];
 
 copyToClipboard _output;
+
+(format ["Extract Gear: Copied gear configuration for %1 units to clipboard!", _processedCount]) call OKS_fnc_LogDebug;
+[format ["Extract Gear copied (%1 units)", _processedCount], 0, 5, true] call BIS_fnc_3DENNotification;

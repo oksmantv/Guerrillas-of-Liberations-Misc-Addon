@@ -62,7 +62,8 @@ if (_vehicleClasses isNotEqualTo []) then {
     ]
 };
 copyToClipboard _example;
-systemChat format["CopiedToClipboard: %1",_example];
+[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
+["Hunter Base copied to clipboard", 0, 4, true] call BIS_fnc_3DENNotification;
 delete3DENEntities _selected;
 
 

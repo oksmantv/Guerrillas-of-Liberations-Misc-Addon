@@ -6,6 +6,11 @@
 private _selected = get3DENSelected "object";
 private _objectNames = [];
 
+if (_selected isEqualTo []) exitWith {
+    ["Select an object to create a Destroy Task for.", 1, 5, true] call BIS_fnc_3DENNotification;
+    false
+};
+
 {
     private _nameAttr = (_x get3DENAttribute "name") select 0;
     if (_nameAttr isEqualTo "") then {
@@ -24,4 +29,7 @@ private _example = format [
     _objectNamesStr
 ];
 copyToClipboard _example;
-systemChat format["CopiedToClipboard: %1",_example];
+[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
+["Destroy Task copied to clipboard", 0, 4, true] call BIS_fnc_3DENNotification;
+
+true

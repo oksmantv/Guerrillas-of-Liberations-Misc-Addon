@@ -101,11 +101,24 @@ class CfgFunctions // Defines a function
 
 		class OKS_Eden {
 			file = "\OKS_GOL_Misc\functions\eden";
+			class EdenPosFromArray {};
+			class EdenSanitizePos {};
+			class EdenFindPosIn {};
+			class EdenMortars {};
+			class EdenAmbientAAA {};
+			class EdenRadar {};
 			class EdenHuntBase {};
 			class EdenAirBase {};
 			class EdenDestroyTask {};
 			class EdenHostageTask {};
+			class EdenEvacuateHVT {};
 			class EdenLambsGroup {};
+			class EdenLambsWaveSpawn {};
+			class EdenAIBattle {};
+			class EdenConvoySpawn {};
+			class EdenAttackSpawnGroup {};
+			class EdenMechanizedSpawn {};
+			class EdenOpenDocs {};
 			class EdenExtractGearFromAI {};
 			class next3DENName {};
 			class EdenMarkOrgStrength {};
@@ -334,7 +347,6 @@ class CfgFunctions // Defines a function
 			class Mechanized_Spawn {};
 			class Follow_Squad {};
 			class Scout {};
-			class SpawnPatrol {};
 			class SpawnStatic {};
 			class AirSpawn {};
 		};	

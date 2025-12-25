@@ -4,9 +4,9 @@
 
 if(!isServer) exitWith {};
 
-Params
+params
 [
-	["_Vehicle", ObjNull, [ObjNull]],
+	["_Vehicle", objNull, [objNull]],
 	["_Flag",(missionNamespace getVariable ["GOL_Vehicle_Flag",""]),[""]],
 	["_AddMortar", false, [true]],
 	["_ServiceStation", true, [true]],
@@ -15,7 +15,7 @@ Params
 	["_MortarType","heavy",[""]]
 ];
 
-Private _Debug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
+private _Debug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
 
 if(_Debug) then {
 	format["[MECHANIZED] Starting setup for vehicle: %1 (%2)", [configFile >> "CfgVehicles" >> typeOf _Vehicle] call BIS_fnc_displayName, typeOf _Vehicle] spawn OKS_fnc_LogDebug;
@@ -31,7 +31,7 @@ if(_Flag != "" && flagTexture _Vehicle == "") then {
 	};
 };
 
-Private _Debug_Variable = false;
+private _Debug_Variable = false;
 _Vehicle setVariable ["GW_Disable_autoRemoveCargo",true,true];
 
 if(_Debug) then {

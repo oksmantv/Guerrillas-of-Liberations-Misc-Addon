@@ -25,14 +25,15 @@
 	for "_i" from 1 to _AmountOfWaves do {
 		if(typeName _SpawnPos == "ARRAY") then {
 			if(typeName (_SpawnPos select 0) == "SCALAR") then {
-				[_SpawnPos,_Side,_UnitsPerWave,_UnitArray,_AllSpawnedUnits,_Range,_LambsType] spawn OKS_fnc_Lambs_WaveSpawn_Code;
+				[_SpawnPos,_Side,_UnitsPerWave,_UnitArray,_AllSpawnedUnits,_Range,_LambsType] spawn OKS_fnc_Lambs_Wavespawn_Code;
 			} else {
 				{
-					[_X,_Side,_UnitsPerWave,_UnitArray,_AllSpawnedUnits,_Range,_LambsType] spawn OKS_fnc_Lambs_WaveSpawn_Code;				
+					[_X,_Side,_UnitsPerWave,_UnitArray,_AllSpawnedUnits,_Range,_LambsType] spawn OKS_fnc_Lambs_Wavespawn_Code;				
 				} forEach _SpawnPos;
 			};
 		} else {
-			[getPos _SpawnPos,_Side,_UnitsPerWave,_UnitArray,_AllSpawnedUnits,_Range,_LambsType] spawn OKS_fnc_Lambs_WaveSpawn_Code;
+			// Keep it dynamic: pass the object through so moving it in Eden changes future waves.
+			[_SpawnPos,_Side,_UnitsPerWave,_UnitArray,_AllSpawnedUnits,_Range,_LambsType] spawn OKS_fnc_Lambs_Wavespawn_Code;
 		};
 		
 		if(_i != _AmountOfWaves) then {
@@ -42,7 +43,8 @@
 		SystemChat format ["Wavespawn Current Count: %1",count _AllSpawnedUnits];
 	};
 
-	waitUntil { sleep 5; {Alive _X || [_X] call ace_common_fnc_isAwake} count _AllSpawnedUnits < 1};
-	Call Compile Format ["%1 = True; PublicVariable '%1'",_Variable];
+	// Done when no spawned unit remains both alive AND awake.
+	waitUntil { sleep 5; {alive _x && ([_x] call ace_common_fnc_isAwake)} count _AllSpawnedUnits < 1};
+	missionNamespace setVariable [_Variable, true, true];
 	SystemChat "Rush Wavespawner Ended.";
 

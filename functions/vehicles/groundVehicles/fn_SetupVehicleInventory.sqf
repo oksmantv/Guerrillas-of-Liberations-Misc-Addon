@@ -3,7 +3,7 @@
 
 params ["_Vehicle", "_AddMortar", "_MortarType"];
 
-Private _GroundVehiclesDebug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
+private _GroundVehiclesDebug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
 
 if(_GroundVehiclesDebug) then {
 	format["[VEHICLE-INVENTORY] Setting up basic inventory for: %1 | MHQ: %2 | AddMortar: %3", typeOf _Vehicle, _Vehicle getVariable ["GOL_isMHQ",false], _AddMortar] spawn OKS_fnc_LogDebug;
@@ -34,7 +34,7 @@ if(_AddMortar) then {
 		format["[VEHICLE-INVENTORY] Adding mortar setup - Type: %1 to vehicle: %2", _MortarType, typeOf _Vehicle] spawn OKS_fnc_LogDebug;
 	};
 	
-	Switch (_MortarType) do {
+	switch (_MortarType) do {
 		case "light": {
 			_Vehicle addWeaponCargoGlobal ["UK3CB_BAF_M6",2];
 			_Vehicle addItemCargoGlobal ["Packed_60mm_HE",6];

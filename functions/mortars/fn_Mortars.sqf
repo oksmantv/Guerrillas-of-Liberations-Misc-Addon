@@ -51,19 +51,19 @@
 //	Version 1.11
 ///////////////////////
 
-Private ["_Ammo","_EnableMarking","_Dir","_ScreenSize","_NewInaccuracy","_ScreenReloadTime","_TempPos","_Roll","_GuidedSize","_GuidedReloadTime","_GuidedInaccuracyMultiplier""_SoundOn","_In","_Sound","_SoundTypes","_Marking","_FriendlyNear","_Danger","_DangerClose","_SelectedFiringMode","_SporadicReloadTime","_PreciseReloadTime","_BarrageReloadTime","_Units","_Scanner","_Gunner","_MinRange","_MaxRange","_Zone","_Unit","_Lock","_Group","_Avoid","_OffMap","_RandomFiringMode","_Temp","_This","_Side","_Position","_FiringMode","_BarrageSize","_PreciseSize","_SporadicSize","_Light","_Medium","_Heavy","_Smoke","_Flare","_TravelTime","_MarkSmoke","_MarkFlare","_RandomFiringMode","_Duration"];
+Private ["_Ammo","_EnableMarking","_Dir","_ScreenSize","_NewInaccuracy","_ScreenReloadTime","_TempPos","_Roll","_GuidedSize","_GuidedReloadTime","_GuidedInaccuracyMultiplier","_SoundOn","_In","_Sound","_SoundTypes","_Marking","_FriendlyNear","_Danger","_DangerClose","_SelectedFiringMode","_SporadicReloadTime","_PreciseReloadTime","_BarrageReloadTime","_Units","_Scanner","_Gunner","_MinRange","_MaxRange","_Zone","_Unit","_Lock","_Group","_Avoid","_OffMap","_RandomFiringMode","_Temp","_This","_Side","_Position","_FiringMode","_BarrageSize","_PreciseSize","_SporadicSize","_Light","_Medium","_Heavy","_Smoke","_Flare","_TravelTime","_MarkSmoke","_MarkFlare","_RandomFiringMode","_Duration"];
 
 if (hasInterface && !isServer) exitWith {false};		// Ensures only server or HC runs this script
 
 #include "fn_Mortar_Settings.sqf"
 
-_Mortar = [_this, 0, objNull, [ObjNull,""]] call BIS_FNC_Param;
+_Mortar = [_this, 0, objNull, [objNull,""]] call BIS_FNC_Param;
 _Side = [_this, 1, sideUnknown, [SideUnknown]] call BIS_FNC_Param;
 _FiringMode = toLower ([_this, 2, "random", [""]] call BIS_FNC_Param);
 _MortarType = toLower ([_this, 3, "", [""]] call BIS_FNC_Param);
 _Position = [_this, 4, [], [[]]] call BIS_FNC_Param;
-_MinRange = [_This, 5, 0, [0]] call BIS_FNC_Param;
-_MaxRange = [_This, 6, 100, [0]] call BIS_FNC_Param;
+_MinRange = [_this, 5, 0, [0]] call BIS_FNC_Param;
+_MaxRange = [_this, 6, 100, [0]] call BIS_FNC_Param;
 _Ammo = [_this, 7, _Ammo, [0]] call BIS_FNC_Param;
 _Inaccuracy = (_Position select 1);
 _EnableMarking = True;

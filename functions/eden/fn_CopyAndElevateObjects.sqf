@@ -49,21 +49,40 @@ if (_positionOrMenuData isEqualType []) then {
 private _foundObjects = [];
 private _createdObjects = [];
 
-// Get all terrain objects in range
-private _allTerrain = nearestTerrainObjects [_searchPos, [], _searchRange, false, true];
+// Debug position
+systemChat format ["Searching at position: %1 with range: %2m", _searchPos, _searchRange];
+
+// Get all 3DEN entities (terrain objects are in the "Object" layer)
+private _all3DENObjects = (all3DENEntities select 0); // Index 0 = objects
+
+// Filter objects within range
+private _objectsInRange = _all3DENObjects select {
+    private _objPos = _x get3DENAttribute "position" select 0;
+    (_objPos distance _searchPos) <= _searchRange
+};
+
+systemChat format ["Found %1 total objects in range", count _objectsInRange];
 
 // Filter by model name or classname
 if (_modelName != "") then {
-    _foundObjects = _allTerrain select {
-        private _objModel = toLower (getModelInfo _x select 1);
-        _objModel find (toLower _modelName) >= 0
+    _foundObjects = _objectsInRange select {
+        private _obj3DEN = _x;
+        private _type = _obj3DEN get3DENAttribute "ItemClass" select 0;
+        private _objModel = toLower (getText (configFile >> "CfgVehicles" >> _type >> "model"));
+        (_objModel find (toLower _modelName) >= 0)
     };
+    systemChat format ["Filtered to %1 objects matching model: %2", count _foundObjects, _modelName];
 } else {
-    _foundObjects = _allTerrain select {typeOf _x == _objectClass};
+    _foundObjects = _objectsInRange select {
+        private _type = _x get3DENAttribute "ItemClass" select 0;
+        _type == _objectClass
+    };
+    systemChat format ["Filtered to %1 objects matching class: %2", count _foundObjects, _objectClass];
 };
 
 if (count _foundObjects == 0) exitWith {
     systemChat "Copy & Elevate Objects: No matching objects found!";
+    systemChat format ["Search criteria: Class='%1' Model='%2'", _objectClass, _modelName];
     []
 };
 
@@ -78,8 +97,10 @@ private _skippedCount = 0;
 {
     private _obj = _x;
     
-    // Get original properties
-    private _pos = getPosATL _obj;
+    // Get original properties from 3DEN entity
+    private _pos = _obj get3DENAttribute "position" select 0;
+    private _rotation = _obj get3DENAttribute "rotation" select 0;
+    private _itemClass = _obj get3DENAttribute "ItemClass" select 0;
     
     // Check if this position has already been processed (within 0.1m tolerance)
     private _alreadyProcessed = false;
@@ -95,29 +116,18 @@ private _skippedCount = 0;
         _skippedCount = _skippedCount + 1;
     };
     
-    private _vectorDir = vectorDir _obj;
-    private _dir = getDir _obj;
-    
     // Create new position with height offset
     private _newPos = [_pos select 0, _pos select 1, (_pos select 2) + _heightOffset];
     
     // Create the new object in Eden Editor
-    private _newObj = create3DENEntity ["Object", _objectClass, _newPos];
+    private _newObj = create3DENEntity ["Object", _itemClass, _newPos];
     
     if (!isNil "_newObj") then {
         // Set position
         _newObj set3DENAttribute ["Position", _newPos];
         
-        // Calculate pitch based on VectorDir.z sign
-        private _rawPitch = asin (_vectorDir select 2);
-        private _edenPitch = if ((_vectorDir select 2) < 0) then {
-            _rawPitch * -1
-        } else {
-            _rawPitch
-        };
-        
-        // Set rotation (pitch, bank=0 for terrain objects, direction)
-        _newObj set3DENAttribute ["rotation", [_edenPitch, 0, _dir]];
+        // Copy rotation from original (Eden stores as [pitch, bank, yaw])
+        _newObj set3DENAttribute ["rotation", _rotation];
         
         // Mark this position as processed
         OKS_CopyElevate_ProcessedObjects pushBack _pos;

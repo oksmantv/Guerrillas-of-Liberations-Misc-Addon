@@ -3,7 +3,7 @@
 
 params ["_Vehicle", "_cargoSize"];
 
-Private _Debug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
+private _Debug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
 
 if(_Debug) then {
 	format["[CARGOSPACE] Starting cargo space setup for: %1 with size: %2", typeOf _Vehicle, _cargoSize] spawn OKS_fnc_LogDebug;
@@ -17,7 +17,7 @@ if(_Debug) then {
 
 [_Vehicle, _cargoSize] spawn {
 	params ["_Vehicle", "_cargoSize"];
-	Private _Debug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
+	private _Debug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
 	
 	if(_Debug) then {
 		format["[CARGOSPACE] Started background cargo space maintenance for: %1", typeOf _Vehicle] spawn OKS_fnc_LogDebug;

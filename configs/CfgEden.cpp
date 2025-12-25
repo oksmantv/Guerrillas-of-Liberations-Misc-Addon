@@ -3,7 +3,7 @@
 Eden Editor Context Menu Entry: Hunt Base (Right-click Terrain)
 ================================================================================
 - Right-click terrain in Eden Editor
-- Select "GOL SCRIPTS" > "SPAWN" > "Hunter Base"
+- Select "GOL SCRIPTS" > "Hunter Base"
 - Calls your SQF handler to place the base, spawn, and trigger objects
 ================================================================================
 */
@@ -16,25 +16,260 @@ class Display3DEN {
                 text = "GOL SCRIPTS";
 				picture = "\OKS_GOL_Misc\data\images\logo.paa";
                 value = 0;
-                items[] = {"GOL_SCRIPTS_SPAWN","GOL_SCRIPTS_TASK", "GOL_SCRIPTS_GEAR", "GOL_SCRIPTS_AMBIENCE", "GOL_SCRIPTS_MARKER"};
+                items[] = {
+                    "GOL_SCRIPTS_QRF_BASES",
+                    "GOL_SCRIPTS_LAMBS",
+                    "GOL_SCRIPTS_AI_BATTLE",
+                    "GOL_SCRIPTS_ATTACK_SPAWNGROUP",
+                    "GOL_SCRIPTS_MECHANIZED_SPAWN",
+                    "GOL_SCRIPTS_CONVOY",
+                    "GOL_SCRIPTS_FIRESUPPORT",
+                    "GOL_SCRIPTS_TASK",
+                    "GOL_SCRIPTS_GEAR",
+                    "GOL_SCRIPTS_AMBIENCE",
+                    "GOL_SCRIPTS_MARKER"
+                };
             };
-            class GOL_SCRIPTS_SPAWN {
-                text = "SPAWN";
+
+            class GOL_SCRIPTS_AI_BATTLE {
+                text = "AI Battle";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_AI_BATTLE_CREATE",
+                    "GOL_SCRIPTS_AI_BATTLE_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_AI_BATTLE_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_AI_Battle'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_AI_BATTLE_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenAIBattle;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_ATTACK_SPAWNGROUP {
+                text = "Attack SpawnGroup";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_ATTACK_SPAWNGROUP_INFANTRY",
+                    "GOL_SCRIPTS_ATTACK_SPAWNGROUP_VEHICLE",
+                    "GOL_SCRIPTS_ATTACK_SPAWNGROUP_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_ATTACK_SPAWNGROUP_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Attack_SpawnGroup'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_ATTACK_SPAWNGROUP_INFANTRY {
+                text = "INFANTRY";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'infantry'] call OKS_fnc_EdenAttackSpawnGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_ATTACK_SPAWNGROUP_VEHICLE {
+                text = "VEHICLE";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'vehicle'] call OKS_fnc_EdenAttackSpawnGroup;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_MECHANIZED_SPAWN {
+                text = "Mechanized Spawn";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_MECHANIZED_SPAWN_CREATE",
+                    "GOL_SCRIPTS_MECHANIZED_SPAWN_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_MECHANIZED_SPAWN_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Mechanized_Spawn'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_MECHANIZED_SPAWN_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenMechanizedSpawn;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_CONVOY {
+                text = "Convoy Spawn";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_CONVOY_CREATE",
+                    "GOL_SCRIPTS_CONVOY_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_CONVOY_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Convoy_Spawn'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_CONVOY_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenConvoySpawn;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT {
+                text = "FIRE SUPPORT";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_MORTARS",
+                    "GOL_SCRIPTS_FIRESUPPORT_AAA",
+                    "GOL_SCRIPTS_FIRESUPPORT_RADAR"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_MORTARS {
+                text = "Mortars (ArtyFire)";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_MORTARS_OFFMAP_DESIGNATED",
+                    "GOL_SCRIPTS_FIRESUPPORT_MORTARS_MANNED_DESIGNATED",
+                    "GOL_SCRIPTS_FIRESUPPORT_MORTARS_MANNED_AUTO",
+                    "GOL_SCRIPTS_FIRESUPPORT_MORTARS_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_MORTARS_OFFMAP_DESIGNATED {
+                text = "OFFMAP (Designated Target)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'offmap','designated','precise','light'] call OKS_fnc_EdenMortars;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_MORTARS_MANNED_DESIGNATED {
+                text = "MANNED (Designated Target)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'manned','designated','precise','light'] call OKS_fnc_EdenMortars;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_MORTARS_MANNED_AUTO {
+                text = "MANNED (Dynamic Support / AUTO)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'manned','auto','random','light'] call OKS_fnc_EdenMortars;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_MORTARS_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Mortars'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_AAA {
+                text = "Ambient AAA";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_AAA_RADAR_ON",
+                    "GOL_SCRIPTS_FIRESUPPORT_AAA_RADAR_OFF",
+                    "GOL_SCRIPTS_FIRESUPPORT_AAA_HMG_RADAR_ON",
+                    "GOL_SCRIPTS_FIRESUPPORT_AAA_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_AAA_RADAR_ON {
+                text = "Dynamic Support (Radar ON)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),true,false,1500] call OKS_fnc_EdenAmbientAAA;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_AAA_RADAR_OFF {
+                text = "Dynamic Support (Radar OFF)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),false,false,1500] call OKS_fnc_EdenAmbientAAA;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_AAA_HMG_RADAR_ON {
+                text = "Dynamic Support (isHMG=true, Radar ON)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),true,true,1500] call OKS_fnc_EdenAmbientAAA;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_AAA_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Ambient_AAA'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_RADAR {
+                text = "Radar Share";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_RADAR_RANGE_1500",
+                    "GOL_SCRIPTS_FIRESUPPORT_RADAR_RANGE_2500",
+                    "GOL_SCRIPTS_FIRESUPPORT_RADAR_RANGE_3500",
+                    "GOL_SCRIPTS_FIRESUPPORT_RADAR_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_RADAR_RANGE_1500 {
+                text = "Dynamic Support (Range 1500m)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),1500,1500,100] call OKS_fnc_EdenRadar;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_RADAR_RANGE_2500 {
+                text = "Dynamic Support (Range 2500m)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),2500,2500,100] call OKS_fnc_EdenRadar;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_RADAR_RANGE_3500 {
+                text = "Dynamic Support (Range 3500m)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),3500,3500,100] call OKS_fnc_EdenRadar;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_RADAR_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Radar'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_QRF_BASES {
+                text = "QRF BASES";
                 value = 0;
                 items[] = {
                     "GOL_SCRIPTS_SPAWN_HUNTERBASE",
-                    "GOL_SCRIPTS_SPAWN_HELICOPTERBASE",
-                    "GOL_SCRIPTS_LAMBS"
+                    "GOL_SCRIPTS_SPAWN_HELICOPTERBASE"
                 };
             };
             class GOL_SCRIPTS_SPAWN_HUNTERBASE {
                 text = "Hunter Base";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_SPAWN_HUNTERBASE_CREATE",
+                    "GOL_SCRIPTS_SPAWN_HUNTERBASE_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_SPAWN_HUNTERBASE_CREATE {
+                text = "Create";
                 action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenHuntBase;";
                 conditionShow = "1";
-            };            
+            };
+            class GOL_SCRIPTS_SPAWN_HUNTERBASE_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_HuntBase'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
             class GOL_SCRIPTS_SPAWN_HELICOPTERBASE {
                 text = "Helicopter Base";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_SPAWN_HELICOPTERBASE_CREATE",
+                    "GOL_SCRIPTS_SPAWN_HELICOPTERBASE_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_SPAWN_HELICOPTERBASE_CREATE {
+                text = "Create";
                 action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenAirBase;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_SPAWN_HELICOPTERBASE_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Airbase'] call OKS_fnc_EdenOpenDocs;";
                 conditionShow = "1";
             };
 
@@ -42,39 +277,247 @@ class Display3DEN {
                 text = "LAMBS";
                 value = 0;
                 items[] = {
-                    "GOL_SCRIPTS_LAMBSGROUP"
+                    "GOL_SCRIPTS_LAMBSGROUP",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN"
                 };
+            };
+
+            class GOL_SCRIPTS_LAMBSWAVESPAWN {
+                text = "LAMBS WaveSpawn";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Lambs_Wavespawn'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE {
+                text = "SINGLE";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_RUSH",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_HUNT",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_CREEP",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_AMBUSHATTACK",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_AMBUSHRUSH",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_AMBUSHHUNT",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_AMBUSHCQB"
+                };
+            };
+
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE {
+                text = "TRIPLE (3 spawnpoints)";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_RUSH",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_HUNT",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_CREEP",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_AMBUSHATTACK",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_AMBUSHRUSH",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_AMBUSHHUNT",
+                    "GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_AMBUSHCQB"
+                };
+            };
+
+            // WaveSpawn SINGLE
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_RUSH {
+                text = "Rush";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'rush','single'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_HUNT {
+                text = "Hunt";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'hunt','single'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_CREEP {
+                text = "Creep";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'creep','single'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_AMBUSHATTACK {
+                text = "Ambush Attack";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushattack','single'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_AMBUSHRUSH {
+                text = "Ambush Rush";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushrush','single'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_AMBUSHHUNT {
+                text = "Ambush Hunt";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushhunt','single'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_SINGLE_AMBUSHCQB {
+                text = "Ambush CQB";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushcqb','single'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+
+            // WaveSpawn TRIPLE
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_RUSH {
+                text = "Rush";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'rush','triple'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_HUNT {
+                text = "Hunt";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'hunt','triple'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_CREEP {
+                text = "Creep";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'creep','triple'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_AMBUSHATTACK {
+                text = "Ambush Attack";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushattack','triple'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_AMBUSHRUSH {
+                text = "Ambush Rush";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushrush','triple'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_AMBUSHHUNT {
+                text = "Ambush Hunt";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushhunt','triple'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSWAVESPAWN_TRIPLE_AMBUSHCQB {
+                text = "Ambush CQB";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushcqb','triple'] call OKS_fnc_EdenLambsWaveSpawn;";
+                conditionShow = "1";
             };
             class GOL_SCRIPTS_LAMBSGROUP {
                 text = "LAMBS SpawnGroup";
                 value = 0;
                 items[] = {
-                    "GOL_SCRIPTS_SPAWN_LAMBSGROUP_RUSH",
-                    "GOL_SCRIPTS_SPAWN_LAMBSGROUP_HUNT",
-                    "GOL_SCRIPTS_SPAWN_LAMBSGROUP_AMBUSHRUSH",
-                    "GOL_SCRIPTS_SPAWN_LAMBSGROUP_AMBUSHHUNT"
+                    "GOL_SCRIPTS_LAMBSGROUP_INFANTRY",
+                    "GOL_SCRIPTS_LAMBSGROUP_VEHICLE",
+                    "GOL_SCRIPTS_LAMBSGROUP_OPENFUNC"
                 };
             };                     
-            class GOL_SCRIPTS_SPAWN_LAMBSGROUP_RUSH {
-                text = "LAMBS SpawnGroup (Rush)";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'rush'] call OKS_fnc_EdenLambsGroup;";
+
+            class GOL_SCRIPTS_LAMBSGROUP_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Lambs_SpawnGroup'] call OKS_fnc_EdenOpenDocs;";
                 conditionShow = "1";
-            };  
-            class GOL_SCRIPTS_SPAWN_LAMBSGROUP_HUNT {
-                text = "LAMBS SpawnGroup (Hunt)";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'hunt'] call OKS_fnc_EdenLambsGroup;";
+            };
+
+            class GOL_SCRIPTS_LAMBSGROUP_INFANTRY {
+                text = "INFANTRY";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_LAMBSGROUP_INFANTRY_RUSH",
+                    "GOL_SCRIPTS_LAMBSGROUP_INFANTRY_HUNT",
+                    "GOL_SCRIPTS_LAMBSGROUP_INFANTRY_CREEP",
+                    "GOL_SCRIPTS_LAMBSGROUP_INFANTRY_AMBUSHATTACK",
+                    "GOL_SCRIPTS_LAMBSGROUP_INFANTRY_AMBUSHRUSH",
+                    "GOL_SCRIPTS_LAMBSGROUP_INFANTRY_AMBUSHHUNT",
+                    "GOL_SCRIPTS_LAMBSGROUP_INFANTRY_AMBUSHCQB"
+                };
+            };
+
+            class GOL_SCRIPTS_LAMBSGROUP_VEHICLE {
+                text = "VEHICLE";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_LAMBSGROUP_VEHICLE_RUSH",
+                    "GOL_SCRIPTS_LAMBSGROUP_VEHICLE_HUNT",
+                    "GOL_SCRIPTS_LAMBSGROUP_VEHICLE_CREEP",
+                    "GOL_SCRIPTS_LAMBSGROUP_VEHICLE_AMBUSHATTACK",
+                    "GOL_SCRIPTS_LAMBSGROUP_VEHICLE_AMBUSHRUSH",
+                    "GOL_SCRIPTS_LAMBSGROUP_VEHICLE_AMBUSHHUNT",
+                    "GOL_SCRIPTS_LAMBSGROUP_VEHICLE_AMBUSHCQB"
+                };
+            };
+
+            // INFANTRY variants
+            class GOL_SCRIPTS_LAMBSGROUP_INFANTRY_RUSH {
+                text = "Rush";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'rush','infantry'] call OKS_fnc_EdenLambsGroup;";
                 conditionShow = "1";
-            };  
-            class GOL_SCRIPTS_SPAWN_LAMBSGROUP_AMBUSHRUSH {
-                text = "LAMBS SpawnGroup (Ambush Rush)";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushrush'] call OKS_fnc_EdenLambsGroup;";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_INFANTRY_HUNT {
+                text = "Hunt";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'hunt','infantry'] call OKS_fnc_EdenLambsGroup;";
                 conditionShow = "1";
-            };  
-            class GOL_SCRIPTS_SPAWN_LAMBSGROUP_AMBUSHHUNT {
-                text = "LAMBS SpawnGroup (Ambush Hunt)";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushhunt'] call OKS_fnc_EdenLambsGroup;";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_INFANTRY_CREEP {
+                text = "Creep";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'creep','infantry'] call OKS_fnc_EdenLambsGroup;";
                 conditionShow = "1";
-            };  
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_INFANTRY_AMBUSHATTACK {
+                text = "Ambush Attack";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushattack','infantry'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_INFANTRY_AMBUSHRUSH {
+                text = "Ambush Rush";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushrush','infantry'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_INFANTRY_AMBUSHHUNT {
+                text = "Ambush Hunt";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushhunt','infantry'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_INFANTRY_AMBUSHCQB {
+                text = "Ambush CQB";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushcqb','infantry'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+
+            // VEHICLE variants
+            class GOL_SCRIPTS_LAMBSGROUP_VEHICLE_RUSH {
+                text = "Rush";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'rush','vehicle'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_VEHICLE_HUNT {
+                text = "Hunt";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'hunt','vehicle'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_VEHICLE_CREEP {
+                text = "Creep";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'creep','vehicle'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_VEHICLE_AMBUSHATTACK {
+                text = "Ambush Attack";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushattack','vehicle'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_VEHICLE_AMBUSHRUSH {
+                text = "Ambush Rush";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushrush','vehicle'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_VEHICLE_AMBUSHHUNT {
+                text = "Ambush Hunt";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushhunt','vehicle'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_LAMBSGROUP_VEHICLE_AMBUSHCQB {
+                text = "Ambush CQB";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'ambushcqb','vehicle'] call OKS_fnc_EdenLambsGroup;";
+                conditionShow = "1";
+            };
 
             class GOL_SCRIPTS_GEAR {
                 text = "GEAR";
@@ -95,19 +538,68 @@ class Display3DEN {
                 value = 0;
                 items[] = {
                     "GOL_SCRIPTS_TASK_DESTROYTASK",
-                    "GOL_SCRIPTS_TASK_HOSTAGETASK"
+                    "GOL_SCRIPTS_TASK_HOSTAGETASK",
+                    "GOL_SCRIPTS_TASK_EVACUATEHVT"
                 };
             };
             class GOL_SCRIPTS_TASK_DESTROYTASK {
                 text = "Destroy Task";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TASK_DESTROYTASK_CREATE",
+                    "GOL_SCRIPTS_TASK_DESTROYTASK_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_TASK_DESTROYTASK_CREATE {
+                text = "Create";
                 action = "[] call OKS_fnc_EdenDestroyTask;";
                 conditionShow = "1";
-            };      
+            };
+            class GOL_SCRIPTS_TASK_DESTROYTASK_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Destroy_Task'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
             class GOL_SCRIPTS_TASK_HOSTAGETASK {
                 text = "Hostage Task";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TASK_HOSTAGETASK_CREATE",
+                    "GOL_SCRIPTS_TASK_HOSTAGETASK_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_TASK_HOSTAGETASK_CREATE {
+                text = "Create";
                 action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenHostageTask;";
                 conditionShow = "1";
-            }; 
+            };
+            class GOL_SCRIPTS_TASK_HOSTAGETASK_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Hostage'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_TASK_EVACUATEHVT {
+                text = "Evacuate HVT";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TASK_EVACUATEHVT_CREATE",
+                    "GOL_SCRIPTS_TASK_EVACUATEHVT_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_TASK_EVACUATEHVT_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenEvacuateHVT;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TASK_EVACUATEHVT_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Evacuate_HVT'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
 
             class GOL_SCRIPTS_AMBIENCE {
                 text = "AMBIENCE";

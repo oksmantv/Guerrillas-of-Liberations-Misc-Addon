@@ -5,8 +5,8 @@ params ["_Vehicle"];
 
 if (hasInterface && !isServer) exitWith {};
 
-Private _Debug = missionNamespace getVariable ["GOL_PlayerVehicle_Debug", false];
-Private _PlayerVehicleDamageDebug = missionNamespace getVariable ["GOL_PlayerVehicleDamage_Debug", false];
+private _Debug = missionNamespace getVariable ["GOL_PlayerVehicle_Debug", false];
+private _PlayerVehicleDamageDebug = missionNamespace getVariable ["GOL_PlayerVehicleDamage_Debug", false];
 
 if (_PlayerVehicleDamageDebug) then {
 	format["[PLAYER-VEHICLE-DAMAGE] Processing damage adjustment for vehicle: %1", typeOf _Vehicle] spawn OKS_fnc_LogDebug;
@@ -83,8 +83,8 @@ _Vehicle addEventHandler ["HandleDamage",
 			private _currentDamage = if (_hitPoint == "") then {damage _unit} else {_unit getHitPointDamage _hitPoint};
 			_currentDamage
 		};
-		Private _Debug = missionNamespace getVariable ["GOL_PlayerVehicle_Debug", false];
-		Private _PlayerVehicleDamageDebug = missionNamespace getVariable ["GOL_PlayerVehicleDamage_Debug", false];
+		private _Debug = missionNamespace getVariable ["GOL_PlayerVehicle_Debug", false];
+		private _PlayerVehicleDamageDebug = missionNamespace getVariable ["GOL_PlayerVehicleDamage_Debug", false];
 
 		// Exits
 		if !(alive _unit) exitWith {};

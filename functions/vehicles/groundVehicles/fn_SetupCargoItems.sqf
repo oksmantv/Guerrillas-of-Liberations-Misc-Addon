@@ -3,7 +3,7 @@
 
 params ["_Vehicle"];
 
-Private _GroundVehiclesDebug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
+private _GroundVehiclesDebug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];
 
 if(_GroundVehiclesDebug) then {
 	format["[CARGO-ITEMS] Setting up cargo items for: %1 | Tank: %2 | MHQ: %3", typeOf _Vehicle, _Vehicle isKindOf "Tank", _Vehicle getVariable ["GOL_isMHQ",false]] spawn OKS_fnc_LogDebug;

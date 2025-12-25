@@ -29,8 +29,8 @@
 		_Group = [_Vehicle,_Side,0,_InfantryNumber] call OKS_fnc_AddVehicleCrew;
 	};
 	if(typeName _VehicleType == "ARRAY") then {
-		_VehicleType = selectRandom _VehicleType;
-		_Vehicle = CreateVehicle [_Classname,_Spawn];
+		private _chosenClass = selectRandom _VehicleType;
+		_Vehicle = CreateVehicle [_chosenClass,_Spawn];
 		_Vehicle setDir _Dir;
 		_Group = [_Vehicle,_Side,0,_InfantryNumber] call OKS_fnc_AddVehicleCrew;
 	};
@@ -45,8 +45,8 @@
 	_Infantry = (units _Group) select {gunner _vehicle != _X || driver _vehicle != _X  || commander _vehicle != _X};
 	_Crew = (units _Group) select {gunner _vehicle == _X || driver _vehicle == _X  || commander _vehicle == _X};
 
-	systemChat str _Infantry;
-	systemChat str _Crew;
+	(format ["Mechanized_Spawn: Infantry=%1", _Infantry]) call OKS_fnc_LogDebug;
+	(format ["Mechanized_Spawn: Crew=%1", _Crew]) call OKS_fnc_LogDebug;
 
 	_Infantry join grpNull;
 	_Infantry join _InfantryGroup;
