@@ -104,9 +104,11 @@ class CfgFunctions // Defines a function
 			class EdenPosFromArray {};
 			class EdenSanitizePos {};
 			class EdenFindPosIn {};
+			class EdenAirScout {};
 			class EdenMortars {};
 			class EdenAmbientAAA {};
 			class EdenRadar {};
+			class EdenArtyFire {};
 			class EdenHuntBase {};
 			class EdenAirBase {};
 			class EdenDestroyTask {};
@@ -347,6 +349,7 @@ class CfgFunctions // Defines a function
 			class Mechanized_Spawn {};
 			class Follow_Squad {};
 			class Scout {};
+			class AirScout {};
 			class SpawnStatic {};
 			class AirSpawn {};
 		};	

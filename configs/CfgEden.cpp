@@ -123,8 +123,37 @@ class Display3DEN {
                 items[] = {
                     "GOL_SCRIPTS_FIRESUPPORT_MORTARS",
                     "GOL_SCRIPTS_FIRESUPPORT_AAA",
-                    "GOL_SCRIPTS_FIRESUPPORT_RADAR"
+                    "GOL_SCRIPTS_FIRESUPPORT_RADAR",
+                    "GOL_SCRIPTS_FIRESUPPORT_ARTYFIRE",
+                    "GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT"
                 };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT {
+                text = "Air Scout";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT_MORTARS_ON",
+                    "GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT_MORTARS_OFF",
+                    "GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT_MORTARS_ON {
+                text = "Create (On-call Mortars: ON)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), sideUnknown, true] call OKS_fnc_EdenAirScout;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT_MORTARS_OFF {
+                text = "Create (On-call Mortars: OFF)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), sideUnknown, false] call OKS_fnc_EdenAirScout;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_AirScout'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
             };
 
             class GOL_SCRIPTS_FIRESUPPORT_MORTARS {
@@ -150,7 +179,7 @@ class Display3DEN {
             };
             class GOL_SCRIPTS_FIRESUPPORT_MORTARS_MANNED_AUTO {
                 text = "MANNED (Dynamic Support / AUTO)";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'manned','auto','random','light'] call OKS_fnc_EdenMortars;";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'manned','auto','precise','light'] call OKS_fnc_EdenMortars;";
                 conditionShow = "1";
             };
             class GOL_SCRIPTS_FIRESUPPORT_MORTARS_OPENFUNC {
@@ -223,6 +252,26 @@ class Display3DEN {
                 text = "Open Function";
                 picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
                 action = "['OKS_fnc_Radar'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_ARTYFIRE {
+                text = "ArtyFire (Ambience)";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_ARTYFIRE_DEFAULT",
+                    "GOL_SCRIPTS_FIRESUPPORT_ARTYFIRE_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_ARTYFIRE_DEFAULT {
+                text = "Create (Default)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),7,300,30,false] call OKS_fnc_EdenArtyFire;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_ARTYFIRE_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_ArtyFire'] call OKS_fnc_EdenOpenDocs;";
                 conditionShow = "1";
             };
 

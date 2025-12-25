@@ -13,6 +13,8 @@
 
 params ["_menuData"];
 
+private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
+
 private _selected = get3DENSelected "object";
 private _men = _selected select { _x isKindOf "Man" };
 
@@ -78,15 +80,33 @@ private _createHiddenLogic = {
     _n
 };
 
-private _p0 = [_selected, _menuData] call _anchorPos;
+private _p0 = [_selected, _md] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
-    (format ["EdenEvacuateHVT: invalid click position. menuData=%1", _menuData]) call OKS_fnc_LogDebug;
+    (format ["EdenEvacuateHVT: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
     ["Evacuate HVT: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
 
-// Exfil site always created.
-private _exfilName = ["ExfilSite", _p0] call _createHiddenLogic;
+private _offsetPosFrom = {
+    params ["_pos", "_dist", "_dirDeg"];
+    private _p = +_pos;
+    if ((count _p) < 2) exitWith {[]};
+    if ((count _p) == 2) then { _p pushBack 0; };
+    _p set [0, (_p select 0) + (sin _dirDeg) * _dist];
+    _p set [1, (_p select 1) + (cos _dirDeg) * _dist];
+    _p set [2, 0];
+    [_p] call _fnc_sanitizePos0
+};
+
+// Exfil site always created. Offset 5m when units are selected so it doesn't overlap them.
+private _exfilPos = _p0;
+if !(_men isEqualTo []) then {
+    private _dir = if ((count _men) > 0) then { getDir (_men select 0) } else { 0 };
+    private _p = ([_p0, 5, _dir + 90] call _offsetPosFrom);
+    if !(_p isEqualTo []) then { _exfilPos = _p; };
+};
+
+private _exfilName = ["ExfilSite", _exfilPos] call _createHiddenLogic;
 if (_exfilName isEqualTo "") exitWith {
     ["Evacuate HVT: Failed to create ExfilSite helper", 1, 6, true] call BIS_fnc_3DENNotification;
     false

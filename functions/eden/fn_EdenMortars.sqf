@@ -19,10 +19,16 @@ params [
     ["_roundType", "light", [""]]
 ];
 
+private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
+
+if (missionNamespace getVariable ["OKS_3DEN_DEBUG", false]) then {
+    ["[3DEN] EdenMortars: action fired", 0, 2, true] call BIS_fnc_3DENNotification;
+};
+
 private _selectedObjects = get3DENSelected "object";
 
 // Some Eden context menus pass a clicked entity even when not selected.
-private _md0 = _menuData param [0, objNull];
+private _md0 = _md param [0, objNull];
 private _clickedObj = if (_md0 isEqualType objNull && {!isNull _md0}) then {_md0} else {objNull};
 private _contextObjects = +_selectedObjects;
 if (!isNull _clickedObj && { !(_clickedObj in _contextObjects) }) then {
@@ -104,9 +110,9 @@ private _createHiddenLogic = {
     _n
 };
 
-private _p0 = [_contextObjects, _menuData] call _anchorPos;
+private _p0 = [_contextObjects, _md] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
-    (format ["Mortars: invalid click position. menuData=%1", _menuData]) call OKS_fnc_LogDebug;
+    (format ["Mortars: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
     ["Mortars: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
@@ -139,7 +145,7 @@ if (_requiresMortar && {isNull _mortarObj}) exitWith {
     false
 };
 
-private _mortarArg = "\"OffMap\"";
+private _mortarArg = str "OffMap";
 private _mortarName = "OffMap";
 
 if (_platformResolved == "manned") then {
@@ -151,7 +157,7 @@ private _posArg = "";
 private _targetName = "";
 
 if (_targetingLower == "auto") then {
-    _posArg = "\"auto\"";
+    _posArg = str "auto";
 } else {
     _targetName = ["MortarTarget", _p0] call _createHiddenLogic;
     if (_targetName isEqualTo "") exitWith {
@@ -162,11 +168,11 @@ if (_targetingLower == "auto") then {
 };
 
 private _example = format [
-    "null = [%1,%2,\"%3\",\"%4\",[%5,%6],%7,%8,%9] spawn OKS_fnc_Mortars;",
+    "null = [%1,%2,%3,%4,[%5,%6],%7,%8,%9] spawn OKS_fnc_Mortars;",
     _mortarArg,
     _sideStr,
-    _firingModeLower,
-    _roundTypeLower,
+    str _firingModeLower,
+    str _roundTypeLower,
     _posArg,
     _inaccuracy,
     _minRange,

@@ -1327,7 +1327,7 @@ Edited by OksmanTV & Bluwolf.
 
 </details>
 <details>
-  <summary>OKS_fnc_Scout</summary>
+  <summary>OKS_fnc_AirScout</summary>
 
   ### Description
   Spawns a scout aircraft (UAV, helicopter, or plane) that patrols or loiters over a target area, spots players, and can call in mortar strikes when players are detected.  
@@ -1359,7 +1359,7 @@ Edited by OksmanTV & Bluwolf.
           [250, 500],
           ["", "", "", "", "", "", ""],
           true
-      ] spawn OKS_fnc_Scout;
+      ] spawn OKS_fnc_AirScout;
 </details>
 <details>
   <summary>OKS_fnc_Ambient_AAA</summary>

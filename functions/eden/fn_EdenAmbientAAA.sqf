@@ -17,10 +17,12 @@ params [
     ["_range", 1500, [0]]
 ];
 
+private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
+
 private _selectedObjects = get3DENSelected "object";
 
 // Some Eden context menus pass a clicked entity even when not selected.
-private _md0 = _menuData param [0, objNull];
+private _md0 = _md param [0, objNull];
 private _clickedObj = if (_md0 isEqualType objNull && {!isNull _md0}) then {_md0} else {objNull};
 private _contextObjects = +_selectedObjects;
 if (!isNull _clickedObj && { !(_clickedObj in _contextObjects) }) then {
@@ -83,6 +85,14 @@ private _example = format [
 ];
 
 copyToClipboard _example;
+// If the AAA has crew placed in Eden, remove them after copy.
+private _crewToDelete = (crew _aaaObj) select { _x isKindOf "Man" };
+private _crewDeleted = 0;
+if !(_crewToDelete isEqualTo []) then {
+    delete3DENEntities _crewToDelete;
+    _crewDeleted = count _crewToDelete;
+};
+
 private _desc = format [
     "Ambient AAA copied: AAA=%1 | Side=%2 | Radar=%3 | isHMG=%4 | Range=%5",
     _aaaName,
@@ -92,6 +102,12 @@ private _desc = format [
     _range
 ];
 
-[format ["CopiedToClipboard: %1\n%2", _desc, _example], true] call OKS_fnc_LogDebug;
-[_desc, 0, 5, true] call BIS_fnc_3DENNotification;
+private _desc2 = if (_crewDeleted > 0) then {
+    format ["%1 | DeletedCrew=%2", _desc, _crewDeleted]
+} else {
+    _desc
+};
+
+[format ["CopiedToClipboard: %1\n%2", _desc2, _example], true] call OKS_fnc_LogDebug;
+[_desc2, 0, 5, true] call BIS_fnc_3DENNotification;
 true;

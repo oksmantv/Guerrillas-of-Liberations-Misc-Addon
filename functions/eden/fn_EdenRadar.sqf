@@ -17,10 +17,16 @@ params [
     ["_minimumAltitude", 100, [0]]
 ];
 
+private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
+
+if (missionNamespace getVariable ["OKS_3DEN_DEBUG", false]) then {
+    ["[3DEN] EdenRadar: action fired", 0, 2, true] call BIS_fnc_3DENNotification;
+};
+
 private _selectedObjects = get3DENSelected "object";
 
 // Some Eden context menus pass a clicked entity even when not selected.
-private _md0 = _menuData param [0, objNull];
+private _md0 = _md param [0, objNull];
 private _clickedObj = if (_md0 isEqualType objNull && {!isNull _md0}) then {_md0} else {objNull};
 private _contextObjects = +_selectedObjects;
 if (!isNull _clickedObj && { !(_clickedObj in _contextObjects) }) then {
@@ -64,7 +70,7 @@ if (_aaaClassnames isEqualTo []) then {
     _aaaClassnames = ["rhsgref_ins_zsu234"]; // placeholder from script header
 };
 
-private _classQuoted = _aaaClassnames apply { format ["\"%1\"", _x] };
+private _classQuoted = _aaaClassnames apply { str _x };
 private _classArrayStr = format ["[%1]", _classQuoted joinString ","]; 
 
 private _example = format [
