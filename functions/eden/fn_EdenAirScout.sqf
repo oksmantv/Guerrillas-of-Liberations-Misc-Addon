@@ -2,10 +2,11 @@
 	OKS_fnc_EdenAirScout
 
 	Eden helper for OKS_fnc_AirScout.
-	- Requires selecting a flying rotary airframe (helicopter or rotary UAV)
+	- Requires selecting an airframe (helicopter/plane/UAV)
 	- Right-click terrain to choose loiter/target position
-	- Ensures the selected airframe has a unique variable name
+	- Creates a named ground helper logic for spawn position
 	- Creates a target helper logic at the clicked position
+	- Deletes the selected Eden airframe (and any placed crew) after copy
 	- Copies a spawnList-ready OKS_fnc_AirScout call to clipboard
 
 	Usage from CfgEden:
@@ -89,6 +90,23 @@ private _anchorPos = {
 	_p
 };
 
+private _offsetPosFrom = {
+	params ["_pos", "_dist", "_dirDeg"];
+	private _p = +_pos;
+	if ((count _p) < 2) exitWith {[]};
+	if ((count _p) == 2) then { _p pushBack 0; };
+	_p set [
+		0,
+		(_p select 0) + (sin _dirDeg) * _dist
+	];
+	_p set [
+		1,
+		(_p select 1) + (cos _dirDeg) * _dist
+	];
+	_p set [2, 0];
+	[_p] call OKS_fnc_EdenSanitizePos
+};
+
 private _ensureNamed = {
 	params ["_entity", "_namePrefix"];
 	private _n = (_entity get3DENAttribute "name") select 0;
@@ -113,33 +131,61 @@ private _createLogic = {
 	_n
 };
 
-// Validate selected rotary airframe.
+private _isAirframe = {
+	params ["_obj"];
+	if (isNull _obj) exitWith {false};
+	private _cfg = configFile >> "CfgVehicles" >> typeOf _obj;
+	(_obj isKindOf "Air")
+	|| {_obj isKindOf "UAV"}
+	|| {getNumber (_cfg >> "isUav") isEqualTo 1}
+	|| {getNumber (_cfg >> "uavCamera") > 0}
+};
+
+// Validate selected airframe (supports mod UAVs like Pchela).
 private _airObj = objNull;
 {
-	if (_x isKindOf "Air") exitWith { _airObj = _x; };
+	if ([_x] call _isAirframe) exitWith { _airObj = _x; };
 } forEach _contextObjects;
 
 if (isNull _airObj) exitWith {
-	["Air Scout: You must select an airframe", 1, 6, true] call BIS_fnc_3DENNotification;
-	false
-};
-
-private _isRotary = (_airObj isKindOf "Helicopter") || ((_airObj isKindOf "UAV") && {!(_airObj isKindOf "Plane")});
-
-if (!_isRotary) exitWith {
-	["Air Scout: Selected airframe must be a flying rotary airframe (helicopter/rotary UAV)", 1, 6, true] call BIS_fnc_3DENNotification;
+	["Air Scout: You must select an airframe (helicopter/plane/UAV)", 1, 6, true] call BIS_fnc_3DENNotification;
+	if (missionNamespace getVariable ["OKS_3DEN_DEBUG", false]) then {
+		(format ["[3DEN] Air Scout: selection types=%1", (_contextObjects apply {typeOf _x})]) call OKS_fnc_LogDebug;
+	};
 	false
 };
 
 private _p0 = [_contextObjects, _md] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
-	(format ["[3DEN] Air Scout: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
+	if (missionNamespace getVariable ["OKS_3DEN_DEBUG", false]) then {
+		(format ["[3DEN] Air Scout: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
+	};
 	["Air Scout: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
 	false
 };
 
-private _airName = [_airObj, "AirScout"] call _ensureNamed;
-private _targetName = ["AirScoutTarget", _p0] call _createLogic;
+private _spawnPos = getPosATL _airObj;
+_spawnPos set [2, 0];
+
+private _spawnName = ["AirScout", _spawnPos] call _createLogic;
+
+// If the click lands on top of the spawn position (common when right-clicking the airframe),
+// offset the target helper so both are easy to grab/move.
+private _targetPos = _p0;
+if ((_targetPos distance2D _spawnPos) < 2) then {
+	private _dir = getDir _airObj;
+	private _tp = ([_spawnPos, 25, _dir] call _offsetPosFrom);
+	if !(_tp isEqualTo []) then {
+		_targetPos = _tp;
+	};
+};
+
+private _targetName = ["AirScoutTarget", _targetPos] call _createLogic;
+
+if (_spawnName isEqualTo "") exitWith {
+	["Air Scout: Failed to create spawn helper", 1, 6, true] call BIS_fnc_3DENNotification;
+	false
+};
 
 if (_targetName isEqualTo "") exitWith {
 	["Air Scout: Failed to create target helper", 1, 6, true] call BIS_fnc_3DENNotification;
@@ -169,7 +215,7 @@ private _mortarsStr = if (_shouldCallMortars) then {"true"} else {"false"};
 
 private _example = format [
 	"null = [getPos %1,getPos %2,%3,%4,%5,%6,%7,%8,%9] spawn OKS_fnc_AirScout;",
-	_airName,
+	_spawnName,
 	_targetName,
 	_sideStr,
 	_classStr,
@@ -181,17 +227,41 @@ private _example = format [
 ];
 
 private _desc = format [
-	"[3DEN] Air Scout copied: Air=%1 | Target=%2 | Side=%3 | Class=%4 | WP=LOITER | Careless=false | Spot=%5 | Fly=%6 | Mortars=%7",
-	_airName,
+	"[3DEN] Air Scout copied: Spawn=%1 | Target=%2 | Side=%3 | Class=%4 | Mortars=%5",
+	_spawnName,
 	_targetName,
 	_sideStr,
 	_classStr,
-	_spottingStr,
-	_flyingStr,
 	_mortarsStr
 ];
 
 copyToClipboard _example;
-[format ["CopiedToClipboard: %1\n%2", _desc, _example], true] call OKS_fnc_LogDebug;
-[_desc, 0, 5, true] call BIS_fnc_3DENNotification;
+[_example] call OKS_fnc_EdenClipboardCacheAdd;
+private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
+
+// Remove the Eden airframe and any placed crew (the script spawns its own).
+private _crewToDelete = (crew _airObj) select { _x isKindOf "Man" };
+private _toDelete = [];
+if !(_crewToDelete isEqualTo []) then { _toDelete append _crewToDelete; };
+_toDelete pushBack _airObj;
+delete3DENEntities _toDelete;
+
+private _deletedCrewCount = count _crewToDelete;
+private _desc2 = if (_deletedCrewCount > 0) then {
+	format ["%1 | DeletedAirframe=1 | DeletedCrew=%2", _desc, _deletedCrewCount]
+} else {
+	format ["%1 | DeletedAirframe=1", _desc]
+};
+
+private _debug = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+private _logText = if (_debug) then {
+	format ["CopiedToClipboard: %1\n%2", _desc2, _example]
+} else {
+	format ["CopiedToClipboard: %1", _example]
+};
+[_logText, true] call OKS_fnc_LogDebug;
+
+private _notify = if (_debug) then {_desc2} else {"Air Scout copied to clipboard"};
+_notify = format ["%1 | Cache=%2", _notify, _cacheCount];
+[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
 true;

@@ -162,7 +162,9 @@ private _example = format [
 ];
 
 copyToClipboard _example;
+[_example] call OKS_fnc_EdenClipboardCacheAdd;
+private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 [format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["Convoy Spawn copied (%1) (helpers: %2, %3, %4)", _sideStr, _spawnName, _wpName, _endName], 0, 5, true] call BIS_fnc_3DENNotification;
+[format ["Convoy Spawn copied (%1) (helpers: %2, %3, %4) | Cache=%5", _sideStr, _spawnName, _wpName, _endName, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
 
 true

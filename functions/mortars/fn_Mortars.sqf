@@ -1,4 +1,4 @@
-//	[MortarName, side, "Firing Mode", "round type", ["position", inaccuracy], minimum range, maximum range, ammo] spawn OKS_fnc_Mortars;
+//	[MortarName, side, "Firing Mode", "round type", ["position", inaccuracy], minimum range, maximum range, ammo, roundIntervalSeconds, forcedRoundCount] spawn OKS_fnc_Mortars;
 ////////////
 //	
 //	1. MortarName
@@ -22,7 +22,9 @@
 //	6. Minimum Range, The minimum range of the Mortar. Ignore this if 5b is not set to "Auto".
 //	7. Maximum Range, The maximum range of the Mortar. Ignore this if 5b is not set to "Auto".
 //	8. Ammo, the total ammo the mortar can spend. This will override the _Ammo in settings.sqf for this specific mortar. 
-//	9. Look in to fn_Mortar_Settings to tweak settings to your taste.
+//	9. roundIntervalSeconds (OPTIONAL): seconds between rounds. Use -1 to keep mode defaults.
+//	10. forcedRoundCount (OPTIONAL): forced rounds per engagement burst. Use -1 to keep mode defaults.
+//	11. Look in to fn_Mortar_Settings to tweak settings to your taste.
 //
 //////////
 //	Usage
@@ -45,6 +47,7 @@
 //	null = [this, east, "precise", "light", ["auto", 50],150,400,300] spawn OKS_fnc_Mortars;
 //	null = [Mortar1, west, "Barrage", "Medium", ["auto", 30],100,500,20] spawn OKS_fnc_Mortars;
 //	null = ["OffMap", west, "Precise", "light", ["marker_position", 75]] spawn OKS_fnc_Mortars;	
+//	null = [this, east, "barrage", "medium", ["auto", 30],100,500,20, 2.5, 10] spawn OKS_fnc_Mortars;
 //	
 ///////////////////////
 //	Made By NeKo-ArroW
@@ -65,6 +68,8 @@ _Position = [_this, 4, [], [[]]] call BIS_FNC_Param;
 _MinRange = [_this, 5, 0, [0]] call BIS_FNC_Param;
 _MaxRange = [_this, 6, 100, [0]] call BIS_FNC_Param;
 _Ammo = [_this, 7, _Ammo, [0]] call BIS_FNC_Param;
+_RoundIntervalSeconds = [_this, 8, -1, [0]] call BIS_FNC_Param;
+_ForcedRoundCount = [_this, 9, -1, [0]] call BIS_FNC_Param;
 _Inaccuracy = (_Position select 1);
 _EnableMarking = True;
 
@@ -300,7 +305,9 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 			Private ["_Temp","_Count","_TempPos","_SleepGuided","_TempInaccuracy"];
 			case "sporadic": 
 			{
-				_Count = _SporadicSize call BIS_FNC_SelectRandom;
+				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_SporadicSize call BIS_FNC_SelectRandom};
+				_Count = _Count min _Ammo;
+				private _InterRound = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {8};
 				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 0) && _EnableMarking) then 
@@ -324,14 +331,16 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 							Sleep _SporadicReloadTime;
 						};
 					} else {
-						sleep 8;
+						sleep _InterRound;
 					};
 				};
 			};
 	
 			case "precise":
 			{
-				_Count = _PreciseSize call BIS_FNC_SelectRandom;
+				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_PreciseSize call BIS_FNC_SelectRandom};
+				_Count = _Count min _Ammo;
+				private _InterRound = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {11};
 				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 1) && _EnableMarking) then 
@@ -355,14 +364,16 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 							Sleep _PreciseReloadTime;
 						};
 					} else {
-						sleep 11;
+						sleep _InterRound;
 					};
 				};
 			};
 	
 			case "barrage":
 			{
-				_Count = _BarrageSize call BIS_FNC_SelectRandom;
+				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_BarrageSize call BIS_FNC_SelectRandom};
+				_Count = _Count min _Ammo;
+				private _InterRound = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {4};
 				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 2) && _EnableMarking) then 
@@ -387,15 +398,16 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 							Sleep _BarrageReloadTime;
 						};
 					} else {
-						sleep 4;
+						sleep _InterRound;
 					};
 				};
 			};
 	
 			case "guided":
 			{
-				_Count = _GuidedSize call BIS_FNC_SelectRandom;
-				_SleepGuided = (_TravelTime +5);
+				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_GuidedSize call BIS_FNC_SelectRandom};
+				_Count = _Count min _Ammo;
+				_SleepGuided = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {(_TravelTime + 5)};
 				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 3) && _EnableMarking) then 
@@ -453,14 +465,19 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 						};
 					} else {
 						sleep _SleepGuided;
-						if ( ((_TempPos distance _Position) < 20) && (_SleepGuided > 3) ) then {_SleepGuided = 3};
+						if (_RoundIntervalSeconds <= 0) then
+						{
+							if ( ((_TempPos distance _Position) < 20) && (_SleepGuided > 3) ) then {_SleepGuided = 3};
+						};
 					};
 				};
 			};
 	
 			case "screen":
 			{
-				_Count = _ScreenSize call BIS_FNC_SelectRandom;
+				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_ScreenSize call BIS_FNC_SelectRandom};
+				_Count = _Count min _Ammo;
+				private _InterRound = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {3};
 				if (isNil "_Dir") then {_Dir = round (random 360)};
 				_TempPos = _Position;
 				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
@@ -487,7 +504,7 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 							Sleep _ScreenReloadTime;
 						};
 					} else {
-						sleep 3;
+						sleep _InterRound;
 						_TempPos = [_TempPos, 15, _Dir] call BIS_fnc_relPos;
 					};
 				};

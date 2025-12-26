@@ -27,6 +27,7 @@ class CfgFunctions // Defines a function
 			class Destroy_Barricade {};
 			class Destroy_Barricade_Action {};
 			class Destroy_Task {};
+			class Insert_Task {};
 			class Evacuate_HVT {};
 			class Fallback_Artillery {};			
 			class RandomArtillery {};			
@@ -103,7 +104,12 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\eden";
 			class EdenPosFromArray {};
 			class EdenSanitizePos {};
+			class EdenClipboardCacheAdd {};
+			class EdenClipboardCacheExportClear {};
 			class EdenFindPosIn {};
+			class EdenTemplateStaticUnits {};
+			class EdenTemplateStaticGarrison {};
+			class EdenTemplatePatrol {};
 			class EdenAirScout {};
 			class EdenMortars {};
 			class EdenAmbientAAA {};
@@ -112,8 +118,10 @@ class CfgFunctions // Defines a function
 			class EdenHuntBase {};
 			class EdenAirBase {};
 			class EdenDestroyTask {};
+			class EdenInsertTask {};
 			class EdenHostageTask {};
 			class EdenEvacuateHVT {};
+			class EdenSetupIntel {};
 			class EdenLambsGroup {};
 			class EdenLambsWaveSpawn {};
 			class EdenAIBattle {};

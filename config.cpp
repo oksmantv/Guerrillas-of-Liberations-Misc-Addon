@@ -5,6 +5,7 @@ class CfgPatches
         requiredAddons[] = { 
             "A3_UI_F", 
             "A3_Modules_F",
+            "A3_Weapons_F",
             "cba_main",
             "cba_ui",
             "cba_xeh_a3",

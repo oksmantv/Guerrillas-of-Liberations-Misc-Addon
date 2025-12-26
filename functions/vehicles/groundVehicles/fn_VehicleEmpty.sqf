@@ -56,7 +56,6 @@ private _SetupTarget = {
 	
 	// Move into vehicle and lock them in
 	_InvisibleSoldier moveInDriver _Vehicle;
-	_InvisibleSoldier allowGetOut false;
 	_Vehicle lockDriver true;
 	
 	// Re-hide after getting in vehicle (hideObject can be reset by vehicle entry)
@@ -67,7 +66,6 @@ private _SetupTarget = {
 		params ["_unit", "_role", "_vehicle", "_turret"];
 		// Force them back in immediately
 		_unit moveInDriver _vehicle;
-		_unit allowGetOut false;
 		_unit hideObjectGlobal true;  // Re-hide after any exit attempt
 		format["[VEHICLEMPTY] WARNING: Unit attempted to exit vehicle %1, forcing back in", _vehicle] call OKS_fnc_LogDebug;
 	}];

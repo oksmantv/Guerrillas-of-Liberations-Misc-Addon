@@ -23,6 +23,34 @@ params [
 
 private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
 
+private _anchorPos = {
+    params ["_objs", "_md"];
+    private _p = [];
+
+    if (_md isEqualType []) then {
+        _p = [_md] call OKS_fnc_EdenPosFromArray;
+    };
+
+    if (_p isEqualTo []) then {
+        private _md0 = _md param [0, []];
+        if (_md0 isEqualType objNull) then {
+            if (!isNull _md0) then { _p = getPosATL _md0; };
+        } else {
+            if (_md0 isEqualType []) then { _p = [_md0] call OKS_fnc_EdenPosFromArray; };
+        };
+    };
+
+    if (_p isEqualTo [] && {!(_objs isEqualTo [])}) then {
+        _p = getPosATL (_objs select 0);
+    };
+
+    if (_p isEqualTo []) then { _p = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+    _p set [2, 0];
+    _p = [_p] call OKS_fnc_EdenSanitizePos;
+    if (_p isEqualTo []) exitWith {[]};
+    _p
+};
+
 private _selectedObjects = get3DENSelected "object";
 
 // Some Eden context menus pass a clicked entity even when not selected.
@@ -80,6 +108,18 @@ private _ensureNamed = {
     _n
 };
 
+private _createVehicleAt = {
+    params ["_class", "_pos", "_namePrefix"];
+    private _p = [_pos] call OKS_fnc_EdenSanitizePos;
+    if (_p isEqualTo []) then { _p = [0, 0, 0]; };
+    _p set [2, 0];
+    private _obj = create3DENEntity ["Object", _class, _p];
+    if (isNull _obj) exitWith {[objNull, ""]};
+    private _n = [_namePrefix] call OKS_fnc_next3DENName;
+    _obj set3DENAttribute ["name", _n];
+    [_obj, _n]
+};
+
 private _createHiddenLogic = {
     params ["_namePrefix", "_pos"];
     private _p = [_pos] call OKS_fnc_EdenSanitizePos;
@@ -115,8 +155,18 @@ private _artyObj = objNull;
     if (_x isKindOf "AllVehicles") exitWith { _artyObj = _x; };
 } forEach _contextObjects;
 
+if (isNull _artyObj) then {
+    private _p0 = [_contextObjects, _md] call _anchorPos;
+    if (_p0 isEqualTo []) exitWith {
+        ["ArtyFire: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
+        false
+    };
+    private _created = ["rhs_2s1_tv", _p0, "Arty"] call _createVehicleAt;
+    _artyObj = _created select 0;
+};
+
 if (isNull _artyObj) exitWith {
-    ["ArtyFire: You must select an artillery vehicle/object", 1, 6, true] call BIS_fnc_3DENNotification;
+    ["ArtyFire: Failed to create/select artillery", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
 
@@ -138,7 +188,7 @@ private _sideStr = [([_contextObjects] call _sideFromSelection)] call _sideToStr
 private _fullCrewStr = if (_fullCrew) then {"true"} else {"false"};
 
 private _example = format [
-    "null = [%1,%2,%3,%4,%5,%6,%7] spawn OKS_fnc_ArtyFire;",
+    "null = [%1,%2,getpos %3,%4,%5,%6,%7] spawn OKS_fnc_ArtyFire;",
     _sideStr,
     _artyName,
     _targetName,
@@ -160,6 +210,8 @@ private _desc = format [
 ];
 
 copyToClipboard _example;
+[_example] call OKS_fnc_EdenClipboardCacheAdd;
+private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 
 // If the artillery has crew placed in Eden, remove them after copy.
 private _crewToDelete = (crew _artyObj) select { _x isKindOf "Man" };
@@ -175,6 +227,16 @@ private _desc2 = if (_crewDeleted > 0) then {
     _desc
 };
 
-[format ["CopiedToClipboard: %1\n%2", _desc2, _example], true] call OKS_fnc_LogDebug;
-[_desc2, 0, 5, true] call BIS_fnc_3DENNotification;
+_desc2 = format ["%1 | Cache=%2", _desc2, _cacheCount];
+
+private _debug = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+private _logText = if (_debug) then {
+    format ["CopiedToClipboard: %1\n%2", _desc2, _example]
+} else {
+    format ["CopiedToClipboard: %1", _example]
+};
+[_logText, true] call OKS_fnc_LogDebug;
+
+private _notify = if (_debug) then {_desc2} else {"ArtyFire copied to clipboard"};
+[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
 true;

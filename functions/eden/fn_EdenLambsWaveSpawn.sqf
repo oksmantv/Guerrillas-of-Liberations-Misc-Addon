@@ -199,8 +199,10 @@ private _example = format [
 ];
 
 copyToClipboard _example;
+[_example] call OKS_fnc_EdenClipboardCacheAdd;
+private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 [format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-["LAMBS WaveSpawn copied to clipboard", 0, 4, true] call BIS_fnc_3DENNotification;
+[format ["LAMBS WaveSpawn copied to clipboard | Cache=%1", _cacheCount], 0, 4, true] call BIS_fnc_3DENNotification;
 
 // Match behavior of other Eden helpers: remove selected template units/objects after copy.
 if !(_selectedToDelete isEqualTo []) then {

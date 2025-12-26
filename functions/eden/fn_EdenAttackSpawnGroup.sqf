@@ -157,8 +157,10 @@ private _example = format [
 ];
 
 copyToClipboard _example;
+[_example] call OKS_fnc_EdenClipboardCacheAdd;
+private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 [format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["Attack SpawnGroup copied (%1/%2) (helpers: %3, %4)", _modeLower, _sideStr, _spawnName, _targetName], 0, 5, true] call BIS_fnc_3DENNotification;
+[format ["Attack SpawnGroup copied (%1/%2) (helpers: %3, %4) | Cache=%5", _modeLower, _sideStr, _spawnName, _targetName, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
 
 // Delete template objects (avoid deleting helper logics if the user had any selected).
 private _selectedToDelete = _selected select { !(_x isKindOf "Logic") };

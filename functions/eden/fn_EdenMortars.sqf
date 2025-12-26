@@ -21,7 +21,9 @@ params [
 
 private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
 
-if (missionNamespace getVariable ["OKS_3DEN_DEBUG", false]) then {
+private _debug3DEN = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+
+if (_debug3DEN) then {
     ["[3DEN] EdenMortars: action fired", 0, 2, true] call BIS_fnc_3DENNotification;
 };
 
@@ -53,6 +55,23 @@ private _sideToString = {
     if (_side isEqualTo independent) exitWith {"independent"};
     if (_side isEqualTo civilian) exitWith {"civilian"};
     "east"
+};
+
+private _offsetPosFrom = {
+    params ["_pos", "_dist", "_dirDeg"];
+    private _p = +_pos;
+    if ((count _p) < 2) exitWith {[]};
+    if ((count _p) == 2) then { _p pushBack 0; };
+    _p set [
+        0,
+        (_p select 0) + (sin _dirDeg) * _dist
+    ];
+    _p set [
+        1,
+        (_p select 1) + (cos _dirDeg) * _dist
+    ];
+    _p set [2, 0];
+    [_p] call OKS_fnc_EdenSanitizePos
 };
 
 private _anchorPos = {
@@ -112,7 +131,9 @@ private _createHiddenLogic = {
 
 private _p0 = [_contextObjects, _md] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
-    (format ["Mortars: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
+    if (_debug3DEN) then {
+        (format ["Mortars: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
+    };
     ["Mortars: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
@@ -121,6 +142,29 @@ private _mortarObj = objNull;
 {
     if (_x isKindOf "StaticMortar" || {_x isKindOf "StaticWeapon"}) exitWith { _mortarObj = _x; };
 } forEach _contextObjects;
+
+private _createVehicleAt = {
+    params ["_class", "_pos", "_namePrefix"];
+    private _p = [_pos] call OKS_fnc_EdenSanitizePos;
+    if (_p isEqualTo []) then { _p = [0, 0, 0]; };
+    _p set [2, 0];
+    private _obj = create3DENEntity ["Object", _class, _p];
+    if (isNull _obj) exitWith {[objNull, ""]};
+    private _n = [_namePrefix] call OKS_fnc_next3DENName;
+    _obj set3DENAttribute ["name", _n];
+    [_obj, _n]
+};
+
+// If the user right-clicked the mortar itself, Eden often anchors to the mortar position.
+// Offset the target helper so it's easy to grab/move.
+if (!isNull _mortarObj && {(_p0 distance2D (getPosATL _mortarObj)) < 1}) then {
+    private _mp = getPosATL _mortarObj;
+    private _dir = getDir _mortarObj;
+    private _tp = ([_mp, 6, _dir + 90] call _offsetPosFrom);
+    if !(_tp isEqualTo []) then {
+        _p0 = _tp;
+    };
+};
 
 private _sideStr = [([_contextObjects] call _sideFromSelection)] call _sideToString;
 
@@ -136,12 +180,24 @@ private _targetingLower = toLower _targeting;
 
 private _platformResolved = _platformLower;
 if (_platformResolved == "auto") then {
-    _platformResolved = if (isNull _mortarObj) then {"offmap"} else {"manned"};
+    // New behavior: if no mortar is selected, spawn one so the snippet is always a manned mortar.
+    _platformResolved = "manned";
 };
 
+private _mortarAutoSpawned = false;
+
 private _requiresMortar = (_platformResolved == "manned");
+if (_requiresMortar && {isNull _mortarObj}) then {
+    // No mortar selected: interpret the click as mortar placement (always).
+    // If DESIGNATED, we'll offset the target helper logic instead so the mortar is easy to spot.
+    private _spawnPos = _p0;
+    private _created = ["O_Mortar_01_F", _spawnPos, "Mortar"] call _createVehicleAt;
+    _mortarObj = _created select 0;
+    _mortarAutoSpawned = !isNull _mortarObj;
+};
+
 if (_requiresMortar && {isNull _mortarObj}) exitWith {
-    ["Mortars: Manned mode requires selecting/right-clicking a mortar", 1, 6, true] call BIS_fnc_3DENNotification;
+    ["Mortars: Failed to create/select a mortar", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
 
@@ -159,6 +215,11 @@ private _targetName = "";
 if (_targetingLower == "auto") then {
     _posArg = str "auto";
 } else {
+    // If we auto-spawned the mortar at the click position, offset the target helper so it doesn't overlap.
+    if (_mortarAutoSpawned) then {
+        private _tp = ([_p0, 8, 90] call _offsetPosFrom);
+        if !(_tp isEqualTo []) then { _p0 = _tp; };
+    };
     _targetName = ["MortarTarget", _p0] call _createHiddenLogic;
     if (_targetName isEqualTo "") exitWith {
         ["Mortars: Failed to create target helper", 1, 6, true] call BIS_fnc_3DENNotification;
@@ -168,7 +229,7 @@ if (_targetingLower == "auto") then {
 };
 
 private _example = format [
-    "null = [%1,%2,%3,%4,[%5,%6],%7,%8,%9] spawn OKS_fnc_Mortars;",
+    "null = [%1,%2,%3,%4,[%5,%6],%7,%8,%9,%10,%11] spawn OKS_fnc_Mortars;",
     _mortarArg,
     _sideStr,
     str _firingModeLower,
@@ -177,24 +238,48 @@ private _example = format [
     _inaccuracy,
     _minRange,
     _maxRange,
-    _ammo
+    _ammo,
+    -1,
+    -1
 ];
 
 copyToClipboard _example;
+[_example] call OKS_fnc_EdenClipboardCacheAdd;
+private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
+// Mortar examples do not need crew in Eden; remove any placed crew after copy.
+private _crewDeleted = 0;
+if (_platformResolved == "manned" && {!isNull _mortarObj}) then {
+    private _crewToDelete = (crew _mortarObj) select { _x isKindOf "Man" };
+    if !(_crewToDelete isEqualTo []) then {
+        delete3DENEntities _crewToDelete;
+        _crewDeleted = count _crewToDelete;
+    };
+};
 private _targetDesc = if (_targetingLower == "auto") then {"AUTO"} else {format ["DESIGNATED (%1)", _targetName]};
 private _platformDesc = if (_platformResolved == "offmap") then {"OFFMAP"} else {format ["MANNED (%1)", _mortarName]};
 
 private _desc = format [
-    "Mortars copied: %1 | %2 | Mode=%3 | Round=%4 | Side=%5 | Inacc=%6 | Ammo=%7",
+    "Mortars copied: %1 | %2 | Mode=%3 | Round=%4 | Side=%5",
     _platformDesc,
     _targetDesc,
     _firingModeLower,
     _roundTypeLower,
-    _sideStr,
-    _inaccuracy,
-    _ammo
+    _sideStr
 ];
 
-[format ["CopiedToClipboard: %1\n%2", _desc, _example], true] call OKS_fnc_LogDebug;
-[_desc, 0, 5, true] call BIS_fnc_3DENNotification;
+if (_crewDeleted > 0) then {
+    _desc = format ["%1 | DeletedCrew=%2", _desc, _crewDeleted];
+};
+
+_desc = format ["%1 | Cache=%2", _desc, _cacheCount];
+
+private _logText = if (_debug3DEN) then {
+    format ["CopiedToClipboard: %1\n%2", _desc, _example]
+} else {
+    format ["CopiedToClipboard: %1", _example]
+};
+[_logText, true] call OKS_fnc_LogDebug;
+
+private _notify = if (_debug3DEN) then {_desc} else {"Mortars copied to clipboard"};
+[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
 true;

@@ -174,8 +174,10 @@ private _example = format [
 ];
 
 copyToClipboard _example;
+[_example] call OKS_fnc_EdenClipboardCacheAdd;
+private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 [format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["Mechanized Spawn copied (%1) (helpers: %2, %3)", _sideStr, _spawnName, _triggerName], 0, 5, true] call BIS_fnc_3DENNotification;
+[format ["Mechanized Spawn copied (%1) (helpers: %2, %3) | Cache=%4", _sideStr, _spawnName, _triggerName, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
 
 // Delete selected template objects (keep selected logics; never delete right-clicked entity unless it was selected).
 private _selectedToDelete = _selectedObjects select { !(_x isKindOf "Logic") };

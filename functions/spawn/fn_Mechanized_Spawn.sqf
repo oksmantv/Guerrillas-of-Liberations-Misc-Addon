@@ -75,5 +75,5 @@
 	[_InfantryGroup,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskHunt",0];
 	sleep 10;
 	_Vehicle lock true;
-
+	_InfantryGroup setBehaviour "AWARE";
 	[_CrewGroup,_InfantryGroup,_Vehicle] spawn OKS_fnc_Follow_Squad;

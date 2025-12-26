@@ -3,7 +3,7 @@
 Eden Editor Context Menu Entry: Hunt Base (Right-click Terrain)
 ================================================================================
 - Right-click terrain in Eden Editor
-- Select "GOL SCRIPTS" > "Hunter Base"
+- Select "GOL Spawns" / "GOL Tools" for actions
 - Calls your SQF handler to place the base, spawn, and trigger objects
 ================================================================================
 */
@@ -11,24 +11,329 @@ Eden Editor Context Menu Entry: Hunt Base (Right-click Terrain)
 class Display3DEN {
     class ContextMenu {
         class Items {
-            items[] += {"GOL_SCRIPTS"};
-            class GOL_SCRIPTS {
-                text = "GOL SCRIPTS";
+            items[] += {"GOL_SPAWNS","GOL_TOOLS"};
+
+            class GOL_SPAWNS {
+                text = "GOL Spawns";
 				picture = "\OKS_GOL_Misc\data\images\logo.paa";
                 value = 0;
                 items[] = {
-                    "GOL_SCRIPTS_QRF_BASES",
                     "GOL_SCRIPTS_LAMBS",
-                    "GOL_SCRIPTS_AI_BATTLE",
-                    "GOL_SCRIPTS_ATTACK_SPAWNGROUP",
+                    "GOL_SCRIPTS_FIRESUPPORT",
+                    "GOL_SCRIPTS_QRF_BASES",
                     "GOL_SCRIPTS_MECHANIZED_SPAWN",
                     "GOL_SCRIPTS_CONVOY",
-                    "GOL_SCRIPTS_FIRESUPPORT",
+                    "GOL_SCRIPTS_ATTACK_SPAWNGROUP",
+                    "GOL_SCRIPTS_AI_BATTLE"
+                };
+            };
+
+            class GOL_TOOLS {
+                text = "GOL Tools";
+				picture = "\OKS_GOL_Misc\data\images\logo.paa";
+                value = 0;
+                items[] = {
                     "GOL_SCRIPTS_TASK",
                     "GOL_SCRIPTS_GEAR",
                     "GOL_SCRIPTS_AMBIENCE",
-                    "GOL_SCRIPTS_MARKER"
+					"GOL_SCRIPTS_MARKER"
                 };
+            };
+
+            class GOL_SCRIPTS_TEMPLATES {
+                text = "Create Units";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\map_ca.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_STATIC",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL"
+                };
+            };
+
+            class GOL_SCRIPTS_TEMPLATES_STATIC {
+                text = "Static Units";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\b_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_WEST",
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_EAST",
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_INDEP"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_WEST {
+                text = "WEST";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\b_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_WEST_2",
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_WEST_6",
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_WEST_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_WEST_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 2] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_WEST_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 6] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_WEST_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 10] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_EAST {
+                text = "EAST";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\o_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_EAST_2",
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_EAST_6",
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_EAST_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_EAST_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 2] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_EAST_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 6] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_EAST_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 10] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_INDEP {
+                text = "INDEPENDENT";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\n_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_INDEP_2",
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_INDEP_6",
+                    "GOL_SCRIPTS_TEMPLATES_STATIC_INDEP_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_INDEP_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 2] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_INDEP_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 6] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_STATIC_INDEP_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 10] call OKS_fnc_EdenTemplateStaticUnits;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_TEMPLATES_GARRISON {
+                text = "Static Garrison";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\defend_ca.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_WEST",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_EAST",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_INDEP"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_WEST {
+                text = "WEST";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\b_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_WEST_2",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_WEST_6",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_WEST_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_WEST_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 2] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_WEST_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 6] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_WEST_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 10] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_EAST {
+                text = "EAST";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\o_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_EAST_2",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_EAST_6",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_EAST_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_EAST_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 2] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_EAST_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 6] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_EAST_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 10] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_INDEP {
+                text = "INDEPENDENT";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\n_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_INDEP_2",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_INDEP_6",
+                    "GOL_SCRIPTS_TEMPLATES_GARRISON_INDEP_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_INDEP_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 2] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_INDEP_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 6] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_GARRISON_INDEP_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 10] call OKS_fnc_EdenTemplateStaticGarrison;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_TEMPLATES_PATROL {
+                text = "Patrol";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\move_ca.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_WEST",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_EAST",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_INDEP"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_WEST {
+                text = "WEST";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\b_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_WEST_2",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_WEST_6",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_WEST_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_WEST_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 2] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_WEST_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 6] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_WEST_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), west, 10] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_EAST {
+                text = "EAST";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\o_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_EAST_2",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_EAST_6",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_EAST_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_EAST_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 2] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_EAST_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 6] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_EAST_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), east, 10] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_INDEP {
+                text = "INDEPENDENT";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\n_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_INDEP_2",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_INDEP_6",
+                    "GOL_SCRIPTS_TEMPLATES_PATROL_INDEP_10"
+                };
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_INDEP_2 {
+                text = "2 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 2] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_INDEP_6 {
+                text = "6 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 6] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TEMPLATES_PATROL_INDEP_10 {
+                text = "10 MAN";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 10] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
             };
 
             class GOL_SCRIPTS_AI_BATTLE {
@@ -157,7 +462,7 @@ class Display3DEN {
             };
 
             class GOL_SCRIPTS_FIRESUPPORT_MORTARS {
-                text = "Mortars (ArtyFire)";
+                text = "Mortars";
                 value = 0;
                 items[] = {
                     "GOL_SCRIPTS_FIRESUPPORT_MORTARS_OFFMAP_DESIGNATED",
@@ -587,9 +892,31 @@ class Display3DEN {
                 value = 0;
                 items[] = {
                     "GOL_SCRIPTS_TASK_DESTROYTASK",
+                    "GOL_SCRIPTS_TASK_INSERTTASK",
                     "GOL_SCRIPTS_TASK_HOSTAGETASK",
-                    "GOL_SCRIPTS_TASK_EVACUATEHVT"
+                    "GOL_SCRIPTS_TASK_EVACUATEHVT",
+                    "GOL_SCRIPTS_TASK_SETUPINTEL"
                 };
+            };
+
+            class GOL_SCRIPTS_TASK_INSERTTASK {
+                text = "Insert Task";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TASK_INSERTTASK_CREATE",
+                    "GOL_SCRIPTS_TASK_INSERTTASK_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_TASK_INSERTTASK_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenInsertTask;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TASK_INSERTTASK_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Insert_Task'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
             };
             class GOL_SCRIPTS_TASK_DESTROYTASK {
                 text = "Destroy Task";
@@ -647,6 +974,26 @@ class Display3DEN {
                 text = "Open Function";
                 picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
                 action = "['OKS_fnc_Evacuate_HVT'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_TASK_SETUPINTEL {
+                text = "Setup Intel";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TASK_SETUPINTEL_CREATE",
+                    "GOL_SCRIPTS_TASK_SETUPINTEL_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_TASK_SETUPINTEL_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenSetupIntel;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TASK_SETUPINTEL_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_SetupIntel'] call OKS_fnc_EdenOpenDocs;";
                 conditionShow = "1";
             };
 

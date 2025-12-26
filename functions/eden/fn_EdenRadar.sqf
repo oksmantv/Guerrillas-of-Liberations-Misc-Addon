@@ -19,7 +19,37 @@ params [
 
 private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
 
-if (missionNamespace getVariable ["OKS_3DEN_DEBUG", false]) then {
+private _debug3DEN = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+
+private _anchorPos = {
+    params ["_objs", "_md"];
+    private _p = [];
+
+    if (_md isEqualType []) then {
+        _p = [_md] call OKS_fnc_EdenPosFromArray;
+    };
+
+    if (_p isEqualTo []) then {
+        private _md0 = _md param [0, []];
+        if (_md0 isEqualType objNull) then {
+            if (!isNull _md0) then { _p = getPosATL _md0; };
+        } else {
+            if (_md0 isEqualType []) then { _p = [_md0] call OKS_fnc_EdenPosFromArray; };
+        };
+    };
+
+    if (_p isEqualTo [] && {!(_objs isEqualTo [])}) then {
+        _p = getPosATL (_objs select 0);
+    };
+
+    if (_p isEqualTo []) then { _p = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+    _p set [2, 0];
+    _p = [_p] call OKS_fnc_EdenSanitizePos;
+    if (_p isEqualTo []) exitWith {[]};
+    _p
+};
+
+if (_debug3DEN) then {
     ["[3DEN] EdenRadar: action fired", 0, 2, true] call BIS_fnc_3DENNotification;
 };
 
@@ -43,15 +73,39 @@ private _ensureNamed = {
     _n
 };
 
-// Must select a radar object/vehicle.
+private _createVehicleAt = {
+    params ["_class", "_pos", "_namePrefix"];
+    private _p = [_pos] call OKS_fnc_EdenSanitizePos;
+    if (_p isEqualTo []) then { _p = [0, 0, 0]; };
+    _p set [2, 0];
+    private _obj = create3DENEntity ["Object", _class, _p];
+    if (isNull _obj) exitWith {[objNull, ""]};
+    private _n = [_namePrefix] call OKS_fnc_next3DENName;
+    _obj set3DENAttribute ["name", _n];
+    [_obj, _n]
+};
+
+// Find a selected radar by radarType==2; if none is selected, spawn a default radar at the click position.
 private _radarObj = objNull;
 {
-    // Most radar assets are vehicles (AllVehicles). Using a broad check keeps it flexible.
-    if (_x isKindOf "AllVehicles") exitWith { _radarObj = _x; };
+    if (_x isKindOf "AllVehicles") then {
+        private _rt = getNumber (configFile >> "CfgVehicles" >> typeOf _x >> "radarType");
+        if (_rt isEqualTo 2) exitWith { _radarObj = _x; };
+    };
 } forEach _contextObjects;
 
+if (isNull _radarObj) then {
+    private _p0 = [_contextObjects, _md] call _anchorPos;
+    if (_p0 isEqualTo []) exitWith {
+        ["Radar Share: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
+        false
+    };
+    private _created = ["O_Radar_System_02_F", _p0, "Radar"] call _createVehicleAt;
+    _radarObj = _created select 0;
+};
+
 if (isNull _radarObj) exitWith {
-    ["Radar Share: You must select a radar vehicle/object", 1, 6, true] call BIS_fnc_3DENNotification;
+    ["Radar Share: Failed to create/select a radar", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
 
@@ -74,7 +128,7 @@ private _classQuoted = _aaaClassnames apply { str _x };
 private _classArrayStr = format ["[%1]", _classQuoted joinString ","]; 
 
 private _example = format [
-    "null = [%1,%2,%3,%4,%5] spawn OKS_fnc_Radar;",
+    "if ((count crew %1) == 0) then { createVehicleCrew %1; };\nnull = [%1,%2,%3,%4,%5] spawn OKS_fnc_Radar;",
     _radarName,
     _classArrayStr,
     _shareDistance,
@@ -97,6 +151,16 @@ private _desc = format [
 ];
 
 copyToClipboard _example;
-[format ["CopiedToClipboard: %1\n%2", _desc, _example], true] call OKS_fnc_LogDebug;
-[_desc, 0, 5, true] call BIS_fnc_3DENNotification;
+[_example] call OKS_fnc_EdenClipboardCacheAdd;
+private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
+private _logText = if (_debug3DEN) then {
+    format ["CopiedToClipboard: %1\n%2", _desc, _example]
+} else {
+    format ["CopiedToClipboard: %1", _example]
+};
+[_logText, true] call OKS_fnc_LogDebug;
+
+private _notify = if (_debug3DEN) then {_desc} else {"Radar Share copied to clipboard"};
+_notify = format ["%1 | Cache=%2", _notify, _cacheCount];
+[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
 true;
