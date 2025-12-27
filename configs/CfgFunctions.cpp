@@ -133,6 +133,9 @@ class CfgFunctions // Defines a function
 			class next3DENName {};
 			class EdenMarkOrgStrength {};
 			class EdenMarkFrontlineDoubleRect {};
+			class EdenFrontlineNodePlace {};
+			class EdenFrontlineCreateFromNodes {};
+			class EdenFrontlineNodeOnPasteRenumber {};
 			class CopyAndElevateObjects {};
 			class CopyAndElevateObjectsMenu {};
 		};

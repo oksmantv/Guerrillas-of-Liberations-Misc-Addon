@@ -4,7 +4,11 @@
     Description:
         Creates organization strength markers on top of existing military markers.
         Adds a strength indicator marker 3 meters north of each selected marker.
-        Optionally creates a flag marker 15 meters north of the original marker.
+        Optionally creates a flag marker further north of the original marker.
+
+        If no markers are selected, attempts to create a new base marker at the
+        3DEN context-click position (or mouse position fallback) and then applies
+        the same strength/flag logic relative to that new marker.
         
         Note: Due to Eden Editor limitations, marker attributes cannot be read,
         so the new markers will use default color (ColorBlack) and alpha (1).
@@ -29,6 +33,12 @@
         _addFlag - BOOL: Whether to create a flag marker above the original marker (default: false)
         
         _side - STRING: Which side's flag to use ("BLUFOR", "OPFOR", "INDEP") - only used if _addFlag is true
+
+        _category - STRING (optional): Marker category/branch (e.g. "INFANTRY", "MECHANIZED", "AIR").
+                Currently unused by this function; reserved for menu grouping / future behavior.
+
+        _menuData - ARRAY (optional): 3DEN context menu data (usually BIS_fnc_3DENEntityMenu_data).
+                Only used when no markers are selected.
     
     Returns:
         NUMBER - Count of strength markers created
@@ -42,49 +52,152 @@
 params [
     ["_strengthType", "group_3", [""]],
     ["_addFlag", false, [false]],
-    ["_side", "BLUFOR", [""]]
+    ["_side", "BLUFOR", [""]],
+    ["_category", "", [""]],
+    ["_menuData", [], [[]]]
 ];
+
+private _logPrefix = "[OKS][3DEN][OrgStrength]";
+
+private _allMarkers = all3DENEntities select 5; // Index 5 is markers
+
+// Build a list of existing marker names (Eden marker identifiers).
+private _existingMarkerNames = [];
+{
+    private _markerEntityAsString = str _x;
+    if ((count _markerEntityAsString) >= 2) then {
+        private _n = _markerEntityAsString select [1, (count _markerEntityAsString) - 2];
+        _existingMarkerNames pushBackUnique _n;
+    };
+} forEach _allMarkers;
+
+private _makeUniqueMarkerName = {
+    params ["_base"];
+    private _candidate = _base;
+    private _suffixIndex = 1;
+    while { _candidate in _existingMarkerNames } do {
+        _candidate = format ["%1_%2", _base, _suffixIndex];
+        _suffixIndex = _suffixIndex + 1;
+    };
+    _existingMarkerNames pushBack _candidate;
+    _candidate
+};
 
 // Get selected marker NAMES (strings, not entities!)
 private _selectedMarkerNames = get3DENSelected "marker";
 
-if (_selectedMarkerNames isEqualTo []) exitWith {
-    systemChat "No markers selected! Please select markers in the editor first.";
-    0
+// If nothing is selected, try to place a new base marker at the click position.
+if (_selectedMarkerNames isEqualTo []) then {
+    private _md = _menuData;
+    if (_md isEqualTo []) then {
+        _md = uiNamespace getVariable ["BIS_fnc_3DENEntityMenu_data", []];
+    };
+
+    private _clickPos = [];
+
+    // Some Eden contexts pass menuData as [x,y,z] directly.
+    if (_md isEqualType []) then {
+        _clickPos = [_md] call OKS_fnc_EdenPosFromArray;
+    };
+
+    // Other contexts pass menuData as [[x,y,z], <entity>, ...] or [<entity>, ...].
+    if (_clickPos isEqualTo []) then {
+        private _md0 = _md param [0, []];
+        if (_md0 isEqualType objNull) then {
+            if (!isNull _md0) then { _clickPos = getPosATL _md0; };
+        } else {
+            if (_md0 isEqualType []) then { _clickPos = [_md0] call OKS_fnc_EdenPosFromArray; };
+        };
+    };
+
+    if (_clickPos isEqualTo []) then {
+        _clickPos = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray;
+    };
+
+    if (_clickPos isEqualTo []) exitWith {
+        diag_log format ["%1 no markers selected and no valid click position | menuData=%2", _logPrefix, _md];
+        systemChat "OrgStrength: no markers selected and no valid click position.";
+        0
+    };
+
+    _clickPos set [2, 0];
+    _clickPos = [_clickPos] call OKS_fnc_EdenSanitizePos;
+
+    private _cat = toUpper _category;
+    if (_cat isEqualTo "") then { _cat = "INFANTRY"; };
+
+    private _sidePrefix = switch (toUpper _side) do {
+        case "BLUFOR": { "b_" };
+        case "OPFOR": { "o_" };
+        case "INDEP": { "n_" };
+        default { "b_" };
+    };
+
+    private _suffix = switch (_cat) do {
+        case "INFANTRY": { "inf" };
+        case "MOTORISED": { "motor_inf" };
+        case "MECHANIZED": { "mech_inf" };
+        case "ARMORED": { "armor" };
+        case "AIR": { "plane" };
+        case "HELICOPTER": { "air" };
+        case "SUPPORT": { "support" };
+        case "ARTILLERY": { "art" };
+        case "MORTARS": { "mortar" };
+        case "SERVICE": { "service" };
+        case "NAVAL": { "naval" };
+        case "INSTALLATION": { "installation" };
+        case "LOGISTICS": { "service" };
+        case "MEDICAL": { "med" };
+        case "RECON": { "recon" };
+        case "AA": { "antiair" };
+        case "ENGINEER": { "maint" };
+        default { "inf" };
+    };
+
+    private _baseMarkerType = format ["%1%2", _sidePrefix, _suffix];
+    if !(isClass (configFile >> "CfgMarkers" >> _baseMarkerType)) then {
+        diag_log format ["%1 unknown base marker type in CfgMarkers | requested=%2 side=%3 category=%4 -> falling back to inf", _logPrefix, _baseMarkerType, _side, _cat];
+        _baseMarkerType = format ["%1inf", _sidePrefix];
+    };
+    private _baseMarker = create3DENEntity ["Marker", _baseMarkerType, _clickPos];
+    if (isNil "_baseMarker") exitWith {
+        diag_log format ["%1 failed to create base marker | type=%2 pos=%3", _logPrefix, _baseMarkerType, _clickPos];
+        systemChat format ["OrgStrength: failed to create base marker type '%1'", _baseMarkerType];
+        0
+    };
+
+    private _baseName = [format ["ORG_%1", _cat]] call _makeUniqueMarkerName;
+    _baseMarker set3DENAttribute ["name", _baseName];
+    _baseMarker set3DENAttribute ["markerName", _baseName];
+	_baseMarker set3DENAttribute ["text", _baseName];
+	_baseName set3DENAttribute ["size2", [0.7, 0.7]];
+
+	private _createdAsString = str _baseMarker;
+	private _createdName = if ((count _createdAsString) >= 2) then { _createdAsString select [1, (count _createdAsString) - 2] } else { "" };
+	if (_createdName != _baseName) then {
+		diag_log format ["%1 base marker rename mismatch | wanted=%2 got=%3 type=%4 pos=%5", _logPrefix, _baseName, _createdName, _baseMarkerType, _clickPos];
+	};
+
+    diag_log format ["%1 created base marker | name=%2 type=%3 side=%4 category=%5 pos=%6", _logPrefix, _baseName, _baseMarkerType, _side, _cat, _clickPos];
+    systemChat format ["Created base marker '%1' (%2) at %3", _baseName, _baseMarkerType, _clickPos];
+    _selectedMarkerNames = [_baseName];
 };
 
 systemChat format ["Processing %1 selected marker(s)...", count _selectedMarkerNames];
-
-// Get all marker entities from Eden
-private _allMarkers = all3DENEntities select 5; // Index 5 is markers
+diag_log format ["%1 start | strengthType=%2 addFlag=%3 side=%4 category=%5 selectedMarkers=%6", _logPrefix, _strengthType, _addFlag, _side, _category, _selectedMarkerNames];
 
 private _createdCount = 0;
 
 // Process each selected marker name
 {
     private _markerName = _x;
-    
-    // Find the marker entity from all markers by matching the string representation
-    private _markerEntity = objNull;
-    private _found = false;
-    {
-        private _entityString = str _x;
-        
-        // Remove quotes from the entity string for comparison
-        private _cleanEntityName = _entityString select [1, (count _entityString) - 2];
-        
-        // Check if marker name matches
-        if (_cleanEntityName == _markerName) exitWith {
-            _markerEntity = _x;
-            _found = true;
-        };
-    } forEach _allMarkers;
-    
-    if (!_found) then {
-        systemChat format ["Warning: Could not find marker entity for '%1', skipping...", _markerName];
-    } else {
-        // Get the marker's position (this is one of the few attributes that works)
-        private _posResult = _markerEntity get3DENAttribute "position";
+
+	// Treat selected marker values as Eden marker identifiers (strings like "marker_12" or renamed ones).
+	private _posResult = _markerName get3DENAttribute "position";
+	if (_posResult isEqualTo []) then {
+		diag_log format ["%1 could not read marker position | markerName=%2", _logPrefix, _markerName];
+		systemChat format ["Warning: Could not read marker position for '%1', skipping...", _markerName];
+	} else {
         private _markerPos = if (count _posResult > 0) then {_posResult select 0} else {[0,0,0]};
         
         // Calculate new position 3 meters north (add to Y coordinate), at ground level
@@ -94,8 +207,8 @@ private _createdCount = 0;
             0
         ];
         
-        // Create new strength marker name
-        private _strengthMarkerName = format ["%1_strength", _markerName];
+        // Create new strength marker name (unique)
+        private _strengthMarkerName = [format ["%1_strength", _markerName]] call _makeUniqueMarkerName;
         
         // Create the strength marker in Eden Editor
         private _newMarker = create3DENEntity ["Marker", _strengthType, _strengthPos];
@@ -110,7 +223,9 @@ private _createdCount = 0;
             
             _createdCount = _createdCount + 1;
             systemChat format ["Created '%1' at position %2", _strengthMarkerName, _strengthPos];
+            diag_log format ["%1 created strength marker | base=%2 strengthName=%3 type=%4 pos=%5", _logPrefix, _markerName, _strengthMarkerName, _strengthType, _strengthPos];
         } else {
+            diag_log format ["%1 failed to create strength marker | base=%2 strengthName=%3 type=%4 pos=%5", _logPrefix, _markerName, _strengthMarkerName, _strengthType, _strengthPos];
             systemChat format ["Failed to create strength marker '%1'", _strengthMarkerName];
         };
         
@@ -127,15 +242,15 @@ private _createdCount = 0;
                 };
             };
             
-            // Calculate flag position 15 meters north of original (add to Y coordinate), at ground level
+            // Calculate flag position north of original (add to Y coordinate), at ground level
             private _flagPos = [
                 (_markerPos select 0),
-                (_markerPos select 1) + 90,
+                (_markerPos select 1) + 125,
                 0
             ];
             
-            // Create flag marker name
-            private _flagMarkerName = format ["%1_flag", _markerName];
+            // Create flag marker name (unique)
+            private _flagMarkerName = [format ["%1_flag", _markerName]] call _makeUniqueMarkerName;
             
             // Create the flag marker
             private _flagMarker = create3DENEntity ["Marker", _flagType, _flagPos];
@@ -149,7 +264,9 @@ private _createdCount = 0;
                 _flagMarker set3DENAttribute ["size2", [0.5, 0.5]];  // Smaller flag marker
                 
                 systemChat format ["Created flag marker '%1' (%2) at position %3", _flagMarkerName, _side, _flagPos];
+                diag_log format ["%1 created flag marker | base=%2 flagName=%3 flagType=%4 side=%5 pos=%6", _logPrefix, _markerName, _flagMarkerName, _flagType, _side, _flagPos];
             } else {
+                diag_log format ["%1 failed to create flag marker | base=%2 flagName=%3 flagType=%4 side=%5 pos=%6", _logPrefix, _markerName, _flagMarkerName, _flagType, _side, _flagPos];
                 systemChat format ["Failed to create flag marker '%1'", _flagMarkerName];
             };
         };
