@@ -132,6 +132,7 @@ class CfgFunctions // Defines a function
 			class EdenExtractGearFromAI {};
 			class next3DENName {};
 			class EdenMarkOrgStrength {};
+			class EdenMarkFrontlineDoubleRect {};
 			class CopyAndElevateObjects {};
 			class CopyAndElevateObjectsMenu {};
 		};

@@ -28,6 +28,20 @@ private _closestAA = objNull;
 private _minDist = 1e9;
 {
     if (isNull _x || !alive _x || !canMove _x) then { continue };
+
+    // Never select a vehicle that currently has cargo passengers.
+    private _cargoUnits = [];
+    {
+        if ((_x select 1) == "cargo") then {
+            _cargoUnits pushBack (_x select 0);
+        };
+    } forEach (fullCrew _x);
+    if ((count _cargoUnits) > 0) then {
+        if (_isConvoyAADebug) then {
+            format ["[CONVOY_AA_SELECT] Skipping %1 - cargo aboard: %2", typeOf _x, count _cargoUnits] spawn OKS_fnc_LogDebug;
+        };
+        continue;
+    };
     
     // Check if AA vehicle is available (not currently returning from previous engagement)
     private _isAAAvailable = _x getVariable ["OKS_AA_Available", true];

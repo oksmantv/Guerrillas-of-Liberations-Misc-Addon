@@ -18,6 +18,21 @@ private _travelDirection = getDir _EndWP;
 private _originDirection = _travelDirection - 180;
 private _nearestRoad = [getPosATL _EndWP, 100] call BIS_fnc_nearestRoad;
 
+// If the end waypoint isn't near a road, avoid road commands (engine will spam "Road not found").
+// Try a wider radius once, then fall back to using the end waypoint position directly.
+if (isNull _nearestRoad) then {
+	_nearestRoad = [getPosATL _EndWP, 500] call BIS_fnc_nearestRoad;
+};
+
+if (isNull _nearestRoad) exitWith {
+	private _fallbackPos = getPosATL _EndWP;
+	_fallbackPos set [2, 0];
+	if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
+		format ["[CONVOY-HERRINGBONE] No road near EndWP %1. Using fallback pos %2", _EndWP, _fallbackPos] spawn OKS_fnc_LogDebug;
+	};
+	[_fallbackPos, _PreferLeft]
+};
+
 if (_FirstWaypoint) exitWith {
 	private _centerATL = getPos _nearestRoad;
 	private _roadDirection = _travelDirection;

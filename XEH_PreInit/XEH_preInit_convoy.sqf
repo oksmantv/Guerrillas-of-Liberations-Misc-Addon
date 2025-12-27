@@ -56,3 +56,27 @@ diag_log "OKS_GOL_Misc: XEH_preInit_convoy.sqf executed";
     [500, 4000, 2500],
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "OKS_Convoy_AA_ForcedClassnames",
+    "EDITBOX",
+    [
+        "Forced AA Vehicle Classnames",
+        "Comma-separated vehicle classnames that should be treated as dedicated convoy AA vehicles. Matching vehicles will not spawn cargo units, preventing dismount/eject issues during AA engagement. Example: O_APC_Tracked_02_AA_F"
+    ],
+    ["GOL Convoy", "Air Defense"],
+    "",
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_Convoy_AA_ForcedMaxCount",
+    "SLIDER",
+    [
+        "Forced AA Max Count",
+        "Maximum number of vehicles per convoy (in spawn order) that may be treated as forced AA from the Forced AA Vehicle Classnames list. Extra matching vehicles spawn normally and will be excluded from AA selection."
+    ],
+    ["GOL Convoy", "Air Defense"],
+    [0, 10, 1],
+    1
+] call CBA_fnc_addSetting;

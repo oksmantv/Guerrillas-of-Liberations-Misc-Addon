@@ -15,6 +15,16 @@ private _excludedVehicles = [];
 private _aaVehicles = [];
 {
     if (isNull _x || !alive _x || !canMove _x) then { continue };
+    if (_x getVariable ["OKS_Convoy_ExcludeFromAA", false]) then {
+        if (_isConvoyDebugEnabled) then {
+            format [
+                "[CONVOY_AA_CHECK] Skipping %1 (%2) - explicitly excluded from AA",
+                getText (configFile >> "CfgVehicles" >> typeOf _x >> "displayName"),
+                typeOf _x
+            ] spawn OKS_fnc_LogDebug;
+        };
+        continue;
+    };
     private _vehicleTypeLower = toLower (typeOf _x);
     private _vehicleConfig = configFile >> "CfgVehicles" >> typeOf _x;
     // Check if vehicle has actual cargo units aboard
@@ -33,6 +43,20 @@ private _aaVehicles = [];
             format [
                 "[CONVOY_AA_CHECK] Excluding %1 (%2) from AA selection - Cargo aboard: %3",
                 _displayName, typeOf _x, count _cargoUnits
+            ] spawn OKS_fnc_LogDebug;
+        };
+        continue;
+    };
+
+    // If explicitly forced as AA by convoy spawn, treat as dedicated (still requires no cargo aboard).
+    if (_x getVariable ["OKS_Convoy_ForceAA", false]) then {
+        _x setVariable ["isAAvehicle", true, true];
+        _aaVehicles pushBack _x;
+        if (_isConvoyDebugEnabled) then {
+            format [
+                "[CONVOY_AA_CHECK] Forced AA vehicle accepted: %1 (%2)",
+                _displayName,
+                typeOf _x
             ] spawn OKS_fnc_LogDebug;
         };
         continue;

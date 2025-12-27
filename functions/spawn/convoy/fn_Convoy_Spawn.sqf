@@ -60,6 +60,35 @@ if (isNil "_ConvoyGroupArray") then {
 	_ConvoyGroupArray = [];
 };
 
+private _parseCSV = {
+	params ["_raw"];
+	if !(_raw isEqualType "") exitWith { [] };
+	private _out = [];
+	private _dq = """"; // a single double-quote character in SQF
+	{
+		private _s = trim _x;
+		// Allow entries with surrounding quotes (common when copying classnames).
+		if ((count _s) >= 2) then {
+			private _c0 = _s select [0, 1];
+			private _cN = _s select [(count _s) - 1, 1];
+			if ((_c0 == _dq) && (_cN == _dq)) then {
+				_s = _s select [1, (count _s) - 2];
+			} else {
+				if ((_c0 == "'") && (_cN == "'")) then {
+					_s = _s select [1, (count _s) - 2];
+				};
+			};
+			_s = trim _s;
+		};
+		if (_s != "") then { _out pushBack _s; };
+	} forEach (_raw splitString ",;");
+	_out
+};
+
+private _forcedAAClassnames = [missionNamespace getVariable ["OKS_Convoy_AA_ForcedClassnames", ""]] call _parseCSV;
+private _forcedAAMaxCount = floor (missionNamespace getVariable ["OKS_Convoy_AA_ForcedMaxCount", 0]);
+private _forcedAAUsed = 0;
+
 
 private _ReserveQueue = [];
 for "_i" from 0 to ((_Count - 1) + 4) do {
@@ -123,6 +152,23 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 	_Vehicle setDir (getDir _Spawn);
 	_Vehicle setVehicleLock "LOCKED";
 	_VehicleArray pushBack _Vehicle;
+
+	private _isForcedAAClass = (_forcedAAClassnames find _Classname) >= 0;
+	private _forceAsAA = _isForcedAAClass && (_forcedAAMaxCount > 0) && (_forcedAAUsed < _forcedAAMaxCount);
+	if (_forceAsAA) then {
+		_forcedAAUsed = _forcedAAUsed + 1;
+		_Vehicle setVariable ["OKS_Convoy_ForceAA", true, true];
+		if (_ConvoyDebug) then {
+			format ["[CONVOY-SPAWN] Forced AA vehicle (%1/%2): %3", _forcedAAUsed, _forcedAAMaxCount, _Classname] spawn OKS_fnc_LogDebug;
+		};
+	} else {
+		if (_isForcedAAClass && (_forcedAAMaxCount > 0)) then {
+			_Vehicle setVariable ["OKS_Convoy_ExcludeFromAA", true, true];
+			if (_ConvoyDebug) then {
+				format ["[CONVOY-SPAWN] Excluding from AA (max reached): %1", _Classname] spawn OKS_fnc_LogDebug;
+			};
+		};
+	};
 
 	private _PreviousVehicle = objNull;
 	private _CargoGroup = grpNull;
@@ -213,8 +259,13 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 			_isBlacklisted = true;
 		};
 	} forEach _Blacklist;
+	private _suppressCargoForAA = _Vehicle getVariable ["OKS_Convoy_ForceAA", false];
 	
-    if(_ShouldHaveCargo && !_isBlacklisted) then {
+	if (_suppressCargoForAA && {_ConvoyDebug}) then {
+		format ["[CONVOY-SPAWN] Cargo suppressed for forced AA vehicle: %1", typeOf _Vehicle] spawn OKS_fnc_LogDebug;
+	};
+
+    if(_ShouldHaveCargo && !_isBlacklisted && !_suppressCargoForAA) then {
 		_CargoGroup = [_Vehicle, _Side, -1, _CargoCount, true] call OKS_fnc_AddVehicleCrew;
     };
 	_CargoGroup setBehaviour "CARELESS"; _CargoGroup setCombatMode "BLUE";
@@ -235,6 +286,12 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 
 _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 _LeadVehicle = _VehicleArray select 0;
+
+// Never allow the lead vehicle to perform AA duties (keeps convoy navigation stable).
+_LeadVehicle setVariable ["OKS_Convoy_ExcludeFromAA", true, true];
+if (_ConvoyDebug) then {
+	format ["[CONVOY-SPAWN] Lead vehicle excluded from AA: %1", typeOf _LeadVehicle] spawn OKS_fnc_LogDebug;
+};
 {
 	_x setVariable ["OKS_Convoy_FrontLeader", _LeadVehicle, true];
 	_x setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];

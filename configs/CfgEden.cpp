@@ -35,8 +35,7 @@ class Display3DEN {
                 items[] = {
                     "GOL_SCRIPTS_TASK",
                     "GOL_SCRIPTS_GEAR",
-                    "GOL_SCRIPTS_AMBIENCE",
-					"GOL_SCRIPTS_MARKER"
+                    "GOL_SCRIPTS_AMBIENCE"
                 };
             };
 

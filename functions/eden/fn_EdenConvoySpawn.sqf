@@ -102,12 +102,34 @@ private _spawnName = "";
 private _wpName = "";
 private _endName = "";
 
+private _spawnObj = objNull;
+private _wpObj = objNull;
+private _endObj = objNull;
+
+// Eden context menu can be opened on an entity without it being in the selection.
+// Collect any object-typed entries from menuData so vehicle/side inference matches editor intent.
+private _menuObjs = [];
+{
+    if (_x isEqualType objNull && {!isNull _x}) then {
+        _menuObjs pushBackUnique _x;
+    };
+} forEach (_menuData select { _x isNotEqualTo [] });
+
+private _contextObjs = _selected + (_menuObjs select { !(_x in _selected) });
+
 // If the user selected at least 3 objects, use the first 3 as spawn/wp/end.
 // Otherwise create helper Logic objects.
-if ((count _selected) >= 3) then {
-    _spawnName = [(_selected select 0), "ConvoySpawn"] call _ensureNamed;
-    _wpName = [(_selected select 1), "ConvoyWP"] call _ensureNamed;
-    _endName = [(_selected select 2), "ConvoyEnd"] call _ensureNamed;
+// IMPORTANT: do NOT treat vehicles as helper objects.
+// Only use explicitly selected Logic entities as helpers; otherwise we create new Logic helpers.
+private _selectedHelpers = _selected select { _x isKindOf "Logic" };
+
+if ((count _selectedHelpers) >= 3) then {
+    _spawnObj = _selectedHelpers select 0;
+    _wpObj = _selectedHelpers select 1;
+    _endObj = _selectedHelpers select 2;
+    _spawnName = [_spawnObj, "ConvoySpawn"] call _ensureNamed;
+    _wpName = [_wpObj, "ConvoyWP"] call _ensureNamed;
+    _endName = [_endObj, "ConvoyEnd"] call _ensureNamed;
 } else {
     private _p0 = [_selected, _menuData] call _anchorPos;
     if (_p0 isEqualTo []) exitWith {
@@ -120,30 +142,36 @@ if ((count _selected) >= 3) then {
     _endName = ["ConvoyEnd", ([_p0, 60, 0] call _offsetPos)] call _createHelper;
 };
 
-private _side = [_selected] call _sideFromSelection;
+private _side = [_contextObjs] call _sideFromSelection;
 private _sideStr = [_side] call _sideToString;
 
 // Vehicle class/count defaults from selection (optional)
-private _vehicleClass = "";
 private _vehicleCount = 4;
 private _cargoCount = 6;
 
-private _selectedVehicles = _selected select { _x isKindOf "LandVehicle" };
+private _vehicleClasses = [];
+private _selectedVehicles = _contextObjs select { _x isKindOf "LandVehicle" };
 if !(_selectedVehicles isEqualTo []) then {
-    _vehicleClass = typeOf (_selectedVehicles select 0);
-    _vehicleCount = (count _selectedVehicles) max 1;
+    // Preserve the selected mix (incl duplicates) so the output reflects exactly what the editor selection contains.
+    _vehicleClasses = _selectedVehicles apply { typeOf _x };
+    _vehicleCount = (count _vehicleClasses) max 1;
 
-    private _cfg = configFile >> "CfgVehicles" >> _vehicleClass;
-    private _ts = getNumber (_cfg >> "transportSoldier");
-    if (_ts > 0) then { _cargoCount = _ts; };
+    // Pick a safe cargo size that fits all selected vehicles (min positive capacity).
+    private _caps = _vehicleClasses apply {
+        getNumber (configFile >> "CfgVehicles" >> _x >> "transportSoldier")
+    };
+    private _posCaps = _caps select { _x > 0 };
+    if !(_posCaps isEqualTo []) then {
+        _cargoCount = selectMin _posCaps;
+    };
 };
 
 // If no vehicle was selected, leave a safe-ish placeholder and let user edit.
-if (_vehicleClass isEqualTo "") then {
-    _vehicleClass = "O_MRAP_02_F";
+if (_vehicleClasses isEqualTo []) then {
+    _vehicleClasses = ["O_MRAP_02_F"];
 };
 
-private _vehParams = [_vehicleCount, [_vehicleClass], 35, 50];
+private _vehParams = [_vehicleCount, _vehicleClasses, 35, 50];
 private _cargoParams = [true, _cargoCount];
 private _rushTypes = ["rush"];
 
@@ -166,5 +194,16 @@ copyToClipboard _example;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 [format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
 [format ["Convoy Spawn copied (%1) (helpers: %2, %3, %4) | Cache=%5", _sideStr, _spawnName, _wpName, _endName, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
+
+// Optional editor cleanup: remove the selected vehicle entities after generating the call.
+// Never delete the 3 helper objects (Spawn/WP/End) when the user provided them via selection.
+if (is3DEN && {!(_selectedVehicles isEqualTo [])}) then {
+    private _protected = [_spawnObj, _wpObj, _endObj] select { !isNull _x };
+    private _toDelete = _selectedVehicles select { !(_x in _protected) };
+    if !(_toDelete isEqualTo []) then {
+        delete3DENEntities _toDelete;
+        diag_log (format ["Convoy Spawn: deleted %1 selected vehicles", count _toDelete]);
+    };
+};
 
 true
