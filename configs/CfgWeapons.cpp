@@ -63,7 +63,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
 		model = "\fpv_ua\drone_pg7vl.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 40;
+			mass = 17;
 		};
 	};	
 	class GOL_Packed_Drone_AP: ACE_ItemCore {
@@ -76,7 +76,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
 		model = "\fpv_ua\drone_ied.p3d";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 40;
+			mass = 17;
 		};
 	};
 	class GOL_Packed_Drone_Supply: ACE_ItemCore {
@@ -753,4 +753,25 @@ class CfgWeapons {
 			};
 		};		
 	};		
+
+	// FPV throwables (soft dependency on BOT_FPV_Enhanced)
+	class GrenadeLauncher;
+	class Throw: GrenadeLauncher {
+		Muzzles[] += {"GOL_Weapon_FPV_AT_Throw","GOL_Weapon_FPV_AP_Throw","GOL_Weapon_FPV_AP_OG7V_Throw","GOL_Weapon_FPV_AP_IED_Throw"};
+		class ThrowMuzzle: GrenadeLauncher {};
+
+		class GOL_Weapon_FPV_base: ThrowMuzzle {};
+		class GOL_Weapon_FPV_AT_Throw: GOL_Weapon_FPV_base {
+			magazines[] = {"GOL_Mag_FPV_AT_Throw"};
+		};
+		class GOL_Weapon_FPV_AP_Throw: GOL_Weapon_FPV_base {
+			magazines[] = {"GOL_Mag_FPV_AP_Throw"};
+		};
+		class GOL_Weapon_FPV_AP_OG7V_Throw: GOL_Weapon_FPV_base {
+			magazines[] = {"GOL_Mag_FPV_AP_OG7V_Throw"};
+		};
+		class GOL_Weapon_FPV_AP_IED_Throw: GOL_Weapon_FPV_base {
+			magazines[] = {"GOL_Mag_FPV_AP_IED_Throw"};
+		};
+	};
 };

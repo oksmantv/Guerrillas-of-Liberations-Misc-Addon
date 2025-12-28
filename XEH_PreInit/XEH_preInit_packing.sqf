@@ -1,39 +1,117 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_packing.sqf executed";
 
 // CBA Settings for OKS Packing
-[
-    "GOL_PackedDroneAPClass", // Unique setting variable name
-    "EDITBOX",                           // Setting type (string input)
-    ["Packed AP Drone Class", "Classname for the packed AP drone."], // Display name & tooltip
-    ["GOL Packing", "Drones"],                    // Category in Addon Options
-    "B_UAFPV_RKG_AP",                    // Default value
-    1                                // Is global (true for mission/server-wide, false for local)
-] call cba_settings_fnc_init;
+// Drone vehicle classnames (used for BOTH packed deploy and throwable FPV)
+// Exactly 4 drone types (AP/AT/Recon/Supply) per side (BLUFOR/OPFOR/INDFOR).
 
+// BLUFOR
 [
-    "GOL_PackedDroneATClass",
+    "GOL_DroneAPClass_BLUFOR",
     "EDITBOX",
-    ["Packed AT Drone Class", "Classname for the packed AT drone."],
-    ["GOL Packing", "Drones"],
-    "B_UAFPV_AT",
+    ["Drone AP Class", "Vehicle classname for AP drone (BLUFOR)."],
+    ["GOL Packing", "Drones - BLUFOR"],
+    "B_UAFPV_RKG_AP",
     1
 ] call cba_settings_fnc_init;
 
 [
-    "GOL_PackedDroneReconClass",
+    "GOL_DroneATClass_BLUFOR",
     "EDITBOX",
-    ["Packed Recon Drone Class", "Classname for the packed Recon drone."],
-    ["GOL Packing", "Drones"],
+    ["Drone AT Class", "Vehicle classname for AT drone (BLUFOR)."],
+    ["GOL Packing", "Drones - BLUFOR"],
+    "B_UAFPV_PG7VL_AT",
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_DroneReconClass_BLUFOR",
+    "EDITBOX",
+    ["Drone Recon Class", "Vehicle classname for Recon drone (BLUFOR)."],
+    ["GOL Packing", "Drones - BLUFOR"],
     "B_UAV_01_F",
     1
 ] call cba_settings_fnc_init;
 
 [
-    "GOL_PackedDroneSupplyClass",
+    "GOL_DroneSupplyClass_BLUFOR",
     "EDITBOX",
-    ["Packed Supply Drone Class", "Classname for the packed Supply drone."],
-    ["GOL Packing", "Drones"],
+    ["Drone Supply Class", "Vehicle classname for Supply drone (BLUFOR)."],
+    ["GOL Packing", "Drones - BLUFOR"],
     "B_UAV_06_F",
+    1
+] call cba_settings_fnc_init;
+
+// OPFOR
+[
+    "GOL_DroneAPClass_OPFOR",
+    "EDITBOX",
+    ["Drone AP Class", "Vehicle classname for AP drone (OPFOR)."],
+    ["GOL Packing", "Drones - OPFOR"],
+    "O_UAFPV_RKG_AP",
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_DroneATClass_OPFOR",
+    "EDITBOX",
+    ["Drone AT Class", "Vehicle classname for AT drone (OPFOR)."],
+    ["GOL Packing", "Drones - OPFOR"],
+    "O_UAFPV_PG7VL_AT",
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_DroneReconClass_OPFOR",
+    "EDITBOX",
+    ["Drone Recon Class", "Vehicle classname for Recon drone (OPFOR)."],
+    ["GOL Packing", "Drones - OPFOR"],
+    "O_UAV_01_F",
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_DroneSupplyClass_OPFOR",
+    "EDITBOX",
+    ["Drone Supply Class", "Vehicle classname for Supply drone (OPFOR)."],
+    ["GOL Packing", "Drones - OPFOR"],
+    "O_UAV_06_F",
+    1
+] call cba_settings_fnc_init;
+
+// INDFOR
+[
+    "GOL_DroneAPClass_INDEPENDENT",
+    "EDITBOX",
+    ["Drone AP Class", "Vehicle classname for AP drone (INDFOR)."],
+    ["GOL Packing", "Drones - Independent"],
+    "I_UAFPV_RKG_AP",
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_DroneATClass_INDEPENDENT",
+    "EDITBOX",
+    ["Drone AT Class", "Vehicle classname for AT drone (INDFOR)."],
+    ["GOL Packing", "Drones - Independent"],
+    "I_UAFPV_PG7VL_AT",
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_DroneReconClass_INDEPENDENT",
+    "EDITBOX",
+    ["Drone Recon Class", "Vehicle classname for Recon drone (INDFOR)."],
+    ["GOL Packing", "Drones - Independent"],
+    "I_UAV_01_F",
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_DroneSupplyClass_INDEPENDENT",
+    "EDITBOX",
+    ["Drone Supply Class", "Vehicle classname for Supply drone (INDFOR)."],
+    ["GOL Packing", "Drones - Independent"],
+    "I_UAV_06_F",
     1
 ] call cba_settings_fnc_init;
 

@@ -2,13 +2,37 @@
     Code to deploy AP Drone.
 */
 
-params ["_player"];	
+private _args = _this;
+if (_args isEqualType objNull) then {
+    _args = [_args];
+};
+
+if (_args isEqualType []) then {
+    if ((count _args) == 1 && {(_args select 0) isEqualType []}) then {
+        _args = _args select 0;
+    };
+
+    if ((count _args) >= 1 && {(_args select 0) isEqualType []}) then {
+        private _first = _args select 0;
+        if ((count _first) >= 1 && {(_first select 0) isEqualType objNull}) then {
+            _args = [(_first select 0)] + (_args select [1]);
+        };
+    };
+};
+
+_args params [["_player", objNull, [objNull]]];
 
 [
     {
         _player = _this select 0;
         private _item = "GOL_Packed_Drone_AP";
-        private _type = missionNamespace getVariable ["GOL_PackedDroneAPClass", "B_UAFPV_RKG_AP"];
+        private _sideKey = switch (side group _player) do {
+            case WEST: {"BLUFOR"};
+            case EAST: {"OPFOR"};
+            case independent: {"INDEPENDENT"};
+            default {"BLUFOR"};
+        };
+        private _type = missionNamespace getVariable [format ["GOL_DroneAPClass_%1", _sideKey], "B_UAFPV_RKG_AP"];
         if (primaryWeapon _player != "") then {
             _player playMoveNow "AmovPknlMstpSlowWrflDnon";
         };
@@ -16,7 +40,7 @@ params ["_player"];
         private _actionName = "Deploying AP Drone...";
         [
             _actionName,
-            3,
+            1.5,
             {true},
             {
                 (_this select 0) params ["_player","_item","_type"];

@@ -40,4 +40,48 @@ class CfgAmmo {
 			// You can add more ACE parameters as needed
 		};
     };	
+
+	// FPV throwables (soft dependency on BOT_FPV_Enhanced)
+	class GrenadeHand;
+
+	class GOL_Ammo_FPV_AT_Throw: GrenadeHand {
+		model = "\fpv_ua\drone_pg7vl.p3d";
+		// BOT_fnc_fpv_deploy selects by side index: [BLUFOR, OPFOR, INDEP, CIV].
+		// UAFPV (PG7VL) variants
+		BOT_vehicleSide[] = {"B_UAFPV_PG7VL_AT","O_UAFPV_PG7VL_AT","I_UAFPV_PG7VL_AT","B_UAFPV_PG7VL_AT"};
+		GOL_spawnSetting = "GOL_DroneATClass";
+		class EventHandlers {
+			fired = "if !(isNil 'OKS_fnc_FPV_Deploy_Override') then { [_this#6] spawn OKS_fnc_FPV_Deploy_Override; } else { if !(isNil 'BOT_fnc_fpv_deploy') then { [_this#6] spawn BOT_fnc_fpv_deploy; }; };";
+		};
+	};
+
+	class GOL_Ammo_FPV_AP_Throw: GrenadeHand {
+		model = "\fpv_ua\drone_rkg.p3d";
+		// UAFPV (RKG) variants
+		BOT_vehicleSide[] = {"B_UAFPV_RKG_AP","O_UAFPV_RKG_AP","I_UAFPV_RKG_AP","B_UAFPV_RKG_AP"};
+		GOL_spawnSetting = "GOL_DroneAPClass";
+		class EventHandlers {
+			fired = "if !(isNil 'OKS_fnc_FPV_Deploy_Override') then { [_this#6] spawn OKS_fnc_FPV_Deploy_Override; } else { if !(isNil 'BOT_fnc_fpv_deploy') then { [_this#6] spawn BOT_fnc_fpv_deploy; }; };";
+		};
+	};
+
+	class GOL_Ammo_FPV_AP_OG7V_Throw: GrenadeHand {
+		model = "\fpv_ua\drone_ied.p3d";
+		// UAFPV (OG7V) variants
+		BOT_vehicleSide[] = {"B_UAFPV_OG7V_AP","O_UAFPV_OG7V_AP","I_UAFPV_OG7V_AP","B_UAFPV_OG7V_AP"};
+		GOL_spawnSetting = "GOL_DroneAPClass";
+		class EventHandlers {
+			fired = "if !(isNil 'OKS_fnc_FPV_Deploy_Override') then { [_this#6] spawn OKS_fnc_FPV_Deploy_Override; } else { if !(isNil 'BOT_fnc_fpv_deploy') then { [_this#6] spawn BOT_fnc_fpv_deploy; }; };";
+		};
+	};
+
+	class GOL_Ammo_FPV_AP_IED_Throw: GrenadeHand {
+		model = "\fpv_ua\drone_ied.p3d";
+		// UAFPV (IED) variants
+		BOT_vehicleSide[] = {"B_UAFPV_IED_AP","O_UAFPV_IED_AP","I_UAFPV_IED_AP","B_UAFPV_IED_AP"};
+		GOL_spawnSetting = "GOL_DroneAPClass";
+		class EventHandlers {
+			fired = "if !(isNil 'OKS_fnc_FPV_Deploy_Override') then { [_this#6] spawn OKS_fnc_FPV_Deploy_Override; } else { if !(isNil 'BOT_fnc_fpv_deploy') then { [_this#6] spawn BOT_fnc_fpv_deploy; }; };";
+		};
+	};
 };

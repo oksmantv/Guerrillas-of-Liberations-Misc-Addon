@@ -3,6 +3,8 @@ class CfgFunctions // Defines a function
 	class OKS {
 		class OKS_Packing {
 			file = "\OKS_GOL_Misc\functions\staticWeapons";
+			class FPV_Deploy_Override {};
+			class FPV_Connect_Client {};
 			class Unpack_60mm_HE_Code {};
 			class Unpack_60mm_HEAB_Code {};
 			class Unpack_60mm_Smoke_Code {};
@@ -11,6 +13,7 @@ class CfgFunctions // Defines a function
 			class Deploy_AT_Drone_Code {};
 			class Deploy_Recon_Drone_Code {};
 			class Deploy_Supply_Drone_Code {};			
+			class Convert_Packed_Drone_To_Throwable {};
 			class Deploy_HMG_Code {};			
 			class Deploy_GMG_Code {};			
 			class Deploy_AT_Code {};			

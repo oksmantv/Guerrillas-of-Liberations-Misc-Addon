@@ -81,6 +81,62 @@ class CfgVehicles {
 	class CAManBase: Man {
 		class ACE_SelfActions {
 			class ACE_Equipment {
+				class Drones {
+					displayName = "Drones";
+					condition = "vehicle _player == _player";
+					statement = "";
+					exceptions[] = {};
+					icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
+
+					class Deploy_Drone_AP {
+						displayName = "Deploy Drone (AP)";
+						condition = "('GOL_Packed_Drone_AP' in (itemsWithMagazines _player)) && vehicle _player == _player";
+						exceptions[] = {};
+						statement = "[_player] call OKS_fnc_Deploy_AP_Drone_Code;";
+						icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
+					};
+
+					class Convert_Drone_AP_To_Throwable {
+						displayName = "Convert Drone (AP) to Throwable";
+						condition = "('GOL_Packed_Drone_AP' in (itemsWithMagazines _player)) && vehicle _player == _player";
+						exceptions[] = {};
+						statement = "[0.5, [_player], { [_this select 0,'AP'] call OKS_fnc_Convert_Packed_Drone_To_Throwable; }, {}, 'Converting...'] call ace_common_fnc_progressBar;";
+						icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
+					};
+
+					class Deploy_Drone_AT {
+						displayName = "Deploy Drone (AT)";
+						condition = "('GOL_Packed_Drone_AT' in (itemsWithMagazines _player)) && vehicle _player == _player";
+						exceptions[] = {};
+						statement = "[_player] call OKS_fnc_Deploy_AT_Drone_Code;";
+						icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
+					};
+
+					class Convert_Drone_AT_To_Throwable {
+						displayName = "Convert Drone (AT) to Throwable";
+						condition = "('GOL_Packed_Drone_AT' in (itemsWithMagazines _player)) && vehicle _player == _player";
+						exceptions[] = {};
+						statement = "[0.5, [_player], { [_this select 0,'AT'] call OKS_fnc_Convert_Packed_Drone_To_Throwable; }, {}, 'Converting...'] call ace_common_fnc_progressBar;";
+						icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
+					};
+
+					class Deploy_Drone_Recon {
+						displayName = "Deploy Drone (Recon)";
+						condition = "('GOL_Packed_Drone_Recon' in (itemsWithMagazines _player)) && vehicle _player == _player";
+						exceptions[] = {};
+						statement = "[_player] call OKS_fnc_Deploy_Recon_Drone_Code;";
+						icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
+					};
+
+					class Deploy_Drone_Supply {
+						displayName = "Deploy Drone (Supply)";
+						condition = "('GOL_Packed_Drone_Supply' in (itemsWithMagazines _player)) && vehicle _player == _player";
+						exceptions[] = {};
+						statement = "[_player] call OKS_fnc_Deploy_Supply_Drone_Code;";
+						icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
+					};
+				};
+
 				class Unpack_60mm_HE {
 					displayName = "Unpack 60mm HE";
 					condition = "('GOL_Packed_60mm_HE' in (itemsWithMagazines _player)) && vehicle _player == _player";
@@ -112,38 +168,6 @@ class CfgVehicles {
 					statement = "[_player] call OKS_fnc_Unpack_60mm_Flare_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\60mm_Flare.paa";
 				};
-
-				class Deploy_Drone_AP {
-					displayName = "Deploy Drone (AP)";
-					condition = "('GOL_Packed_Drone_AP' in (itemsWithMagazines _player)) && vehicle _player == _player";
-					exceptions[] = {};
-					statement = "[_player] call OKS_fnc_Deploy_AP_Drone_Code";
-					icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-				};
-
-				class Deploy_Drone_AT {
-					displayName = "Deploy Drone (AT)";
-					condition = "('GOL_Packed_Drone_AT' in (itemsWithMagazines _player)) && vehicle _player == _player";
-					exceptions[] = {};
-					statement = "[_player] call OKS_fnc_Deploy_AT_Drone_Code";
-					icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-				};
-
-				class Deploy_Drone_Recon {
-					displayName = "Deploy Drone (Recon)";
-					condition = "('GOL_Packed_Drone_Recon' in (itemsWithMagazines _player)) && vehicle _player == _player";
-					exceptions[] = {};
-					statement = "[_player] call OKS_fnc_Deploy_Recon_Drone_Code";
-					icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-				};
-
-				class Deploy_Drone_Supply {
-					displayName = "Deploy Drone (Supply)";
-					condition = "('GOL_Packed_Drone_Supply' in (itemsWithMagazines _player)) && vehicle _player == _player";
-					exceptions[] = {};
-					statement = "[_player] call OKS_fnc_Deploy_Supply_Drone_Code";
-					icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-				};		
 
 				class Deploy_Static_HMG {
 					displayName = "Deploy Static HMG";
@@ -185,6 +209,7 @@ class CfgVehicles {
 	class B_supplyCrate_F;	
 	class Box_Syndicate_Ammo_F;
 	class Box_Syndicate_Wps_F;
+	class Box_Syndicate_WpsLaunch_F;
 	class FlexibleTank_base_F;
 	class Land_HelipadSquare_F;
 	class Land_RepairDepot_01_green_F;
@@ -260,6 +285,14 @@ class CfgVehicles {
 						statement = "[_target, 'GOL_MedicalResupply_WEST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};										
+					class GOL_SupportResupply
+					{
+						displayName = "Support Crate";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SupportBox_WEST', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\Map\VehicleIcons\iconCrateAmmo_ca.paa";
+					};
 				};
 			};
 		};
@@ -336,6 +369,15 @@ class CfgVehicles {
 						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};											
+					class GOL_SupportResupply
+					{
+						displayName = "Support Crate";
+						distance = 5;
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SupportBox_EAST', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\Map\VehicleIcons\iconCrateAmmo_ca.paa";
+					};
 				};
 			};
 		};
@@ -406,6 +448,14 @@ class CfgVehicles {
 						statement = "[_target, 'GOL_MedicalResupply_GUER', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};										
+					class GOL_SupportResupply
+					{
+						displayName = "Support Crate";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SupportBox_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\Map\VehicleIcons\iconCrateAmmo_ca.paa";
+					};
 				};
 			};
 		};
@@ -483,6 +533,15 @@ class CfgVehicles {
 						statement = "[_target, 'GOL_MedicalResupply_WEST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};										
+					class GOL_SupportResupply
+					{
+						displayName = "Support Crate";
+						distance = 10;
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SupportBox_WEST', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\Map\VehicleIcons\iconCrateAmmo_ca.paa";
+					};
 				};
 			};
 		};
@@ -554,6 +613,14 @@ class CfgVehicles {
 						statement = "[_target, 'GOL_MedicalResupply_EAST', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};											
+					class GOL_SupportResupply
+					{
+						displayName = "Support Crate";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SupportBox_EAST', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\Map\VehicleIcons\iconCrateAmmo_ca.paa";
+					};
 				};
 			};
 		};
@@ -625,6 +692,14 @@ class CfgVehicles {
 						statement = "[_target, 'GOL_MedicalResupply_GUER', _player] call OKS_fnc_spawnCrate;";
 						icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\heal_ca.paa";
 					};											
+					class GOL_SupportResupply
+					{
+						displayName = "Support Crate";
+						exceptions[] = {};
+						condition = "alive _target";
+						statement = "[_target, 'GOL_SupportBox_GUER', _player] call OKS_fnc_spawnCrate;";
+						icon = "\A3\ui_f\data\Map\VehicleIcons\iconCrateAmmo_ca.paa";
+					};
 				};
 			};
 		};
@@ -710,6 +785,54 @@ class CfgVehicles {
         class TransportBackpacks {};
 		class EventHandlers {
 			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [_this select 0, ['gearbox','independent']] call GW_Gear_Fnc_Init; }";
+		};
+    };
+
+	class GOL_SupportBox_WEST: Box_Syndicate_WpsLaunch_F
+	{
+        displayName = "Support Box (WEST)";
+		scope = 2;
+    	scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";
+		class TransportMagazines {};
+        class TransportWeapons {};
+        class TransportItems {};
+        class TransportBackpacks {};
+		class EventHandlers {
+			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [_this select 0, ['support_box','west']] call GW_Gear_Fnc_Init; }";
+		};
+    };
+
+	class GOL_SupportBox_EAST: Box_Syndicate_WpsLaunch_F
+	{
+        displayName = "Support Box (EAST)";
+		scope = 2;
+    	scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";
+		class TransportMagazines {};
+        class TransportWeapons {};
+        class TransportItems {};
+        class TransportBackpacks {};
+		class EventHandlers {
+			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [_this select 0, ['support_box','east']] call GW_Gear_Fnc_Init; }";
+		};
+    };
+
+	class GOL_SupportBox_GUER: Box_Syndicate_WpsLaunch_F
+	{
+        displayName = "Support Box (GUER)";
+		scope = 2;
+    	scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";
+		class TransportMagazines {};
+        class TransportWeapons {};
+        class TransportItems {};
+        class TransportBackpacks {};
+		class EventHandlers {
+			init = "_this spawn { waitUntil {sleep 1; !isNil 'GW_Gear_Fnc_Init'}; [_this select 0, ['support_box','independent']] call GW_Gear_Fnc_Init; }";
 		};
     };
 
