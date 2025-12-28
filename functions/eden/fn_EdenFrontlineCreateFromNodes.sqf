@@ -294,6 +294,9 @@ private _minSegmentLength = 10;
 
 private _createdPairs = 0;
 
+private _aoLayer = ["Area of Operations Markers"] call OKS_fnc_EdenGetOrCreateLayer;
+private _aoLayerValid = (_aoLayer isEqualType 0 && {_aoLayer >= 0}) || {(_aoLayer isEqualType objNull) && {!isNull _aoLayer}};
+
 // Segment creation
 for "_i" from 0 to ((count _points) - 2) do {
     private _a = _points select _i;
@@ -361,6 +364,11 @@ for "_i" from 0 to ((count _points) - 2) do {
 
     private _outerEnt = create3DENEntity ["Marker", "", _outerPos];
     private _innerEnt = create3DENEntity ["Marker", "", _innerPos];
+
+    if (_aoLayerValid) then {
+        [_outerEnt, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+        [_innerEnt, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+    };
 
     if (_dbg) then {
         diag_log format ["[OKS][3DEN][FrontlineNodes][Create] created markers | outerEnt=%1 innerEnt=%2", _outerEnt, _innerEnt];

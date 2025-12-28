@@ -10,7 +10,21 @@
       (uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenMechanizedSpawn;
 */
 
-params ["_menuData"];
+private _args = _this;
+if !(_args isEqualType []) then { _args = [_args]; };
+
+_args params [
+    ["_menuData", [], [[], objNull]],
+    ["_vehicleClassOverride", "", [""]],
+    ["_infCountOverride", -1, [0]],
+    ["_sideStrOverride", "", [""]]
+];
+
+if (_menuData isEqualType objNull) then {
+    _menuData = [_menuData];
+};
+
+private _debug3DEN = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
 
 private _selectedObjects = get3DENSelected "object";
 private _selectedTriggers = get3DENSelected "trigger";
@@ -66,7 +80,7 @@ private _anchorPos = {
         _p = getPosATL (_objs select 0);
     };
 
-    if (_p isEqualTo []) then { _p = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+    if (_p isEqualTo []) then { _p = [screenToWorld getMousePosition] call OKS_fnc_EdenPosFromArray; };
     _p set [2, 0];
     _p = [_p] call OKS_fnc_EdenSanitizePos;
     if (_p isEqualTo []) exitWith {[]};
@@ -98,7 +112,9 @@ private _triggerName = "";
 
 private _p0 = [_selectedObjects, _menuData] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
-    (format ["Mechanized Spawn: invalid click position. menuData=%1", _menuData]) call OKS_fnc_LogDebug;
+    if (_debug3DEN) then {
+		[format ["[3DEN] Mechanized Spawn: invalid click position. menuData=%1", _menuData], false, true] call OKS_fnc_LogDebug;
+    };
     ["Mechanized Spawn: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
@@ -151,6 +167,10 @@ if (!isNull _veh) then {
     _vehicleClass = typeOf _veh;
 };
 
+if !(_vehicleClassOverride isEqualTo "") then {
+    _vehicleClass = _vehicleClassOverride;
+};
+
 // Infantry count from selection (optional)
 private _infCount = 5;
 private _men = _selectedObjects select { _x isKindOf "Man" };
@@ -158,8 +178,16 @@ if (!(_men isEqualTo [])) then {
     _infCount = (count _men) max 0;
 };
 
+if (_infCountOverride >= 0) then {
+    _infCount = _infCountOverride;
+};
+
 private _side = [_contextObjects] call _sideFromSelection;
 private _sideStr = [_side] call _sideToString;
+
+if !(_sideStrOverride isEqualTo "") then {
+    _sideStr = _sideStrOverride;
+};
 
 private _vehicleClassStr = str _vehicleClass;
 
@@ -176,8 +204,11 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["Mechanized Spawn copied (%1) (helpers: %2, %3) | Cache=%4", _sideStr, _spawnName, _triggerName, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenMechanizedSpawn", [_vehicleClass, _infCount, _sideStr], []] call OKS_fnc_EdenRememberLastAction;
+systemChat format ["CopiedToClipboard | Mechanized Spawn copied to clipboard | Cache=%1", _cacheCount];
+[format ["CopiedToClipboard | Mechanized Spawn copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
+[format ["Mechanized Spawn copied to clipboard (%1) (helpers: %2, %3) | Cache=%4", _sideStr, _spawnName, _triggerName, _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 
 // Delete selected template objects (keep selected logics; never delete right-clicked entity unless it was selected).
 private _selectedToDelete = _selectedObjects select { !(_x isKindOf "Logic") };

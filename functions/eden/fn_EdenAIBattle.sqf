@@ -104,7 +104,7 @@ if ((count _selected) >= 3) then {
 } else {
     private _p0 = [_selected, _menuData] call _anchorPos;
     if (_p0 isEqualTo []) exitWith {
-        (format ["AI Battle: invalid click position. menuData=%1", _menuData]) call OKS_fnc_LogDebug;
+        [format ["AI Battle: invalid click position. menuData=%1", _menuData], false, true] call OKS_fnc_LogDebug;
         ["AI Battle: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
         false
     };
@@ -116,7 +116,7 @@ if ((count _selected) >= 3) then {
 };
 
 if (_f1 isEqualTo "" || {_f2 isEqualTo ""} || {_meet isEqualTo ""}) exitWith {
-    (format ["AI Battle: Failed to create helper objects. f1=%1 f2=%2 meet=%3", _f1, _f2, _meet]) call OKS_fnc_LogDebug;
+    [format ["AI Battle: Failed to create helper objects. f1=%1 f2=%2 meet=%3", _f1, _f2, _meet], false, true] call OKS_fnc_LogDebug;
     ["AI Battle: Failed to create helper objects", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
@@ -142,7 +142,10 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["AI Battle copied (helpers: %1, %2, %3) | Cache=%4", _f1, _f2, _meet, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenAIBattle", [], _selected] call OKS_fnc_EdenRememberLastAction;
+systemChat format ["CopiedToClipboard | AI Battle copied to clipboard | Cache=%1", _cacheCount];
+[format ["CopiedToClipboard | AI Battle copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
+[format ["AI Battle copied to clipboard (helpers: %1, %2, %3) | Cache=%4", _f1, _f2, _meet, _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 
 true

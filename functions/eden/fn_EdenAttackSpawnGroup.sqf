@@ -110,7 +110,7 @@ private _targetName = "";
 // Selection is treated as template objects (for side/count/classname) and may be deleted at the end.
 private _p0 = [_selected, _menuData] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
-    (format ["EdenAttackSpawnGroup: invalid click position. menuData=%1", _menuData]) call OKS_fnc_LogDebug;
+    [format ["EdenAttackSpawnGroup: invalid click position. menuData=%1", _menuData], false, true] call OKS_fnc_LogDebug;
     ["Attack SpawnGroup: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
@@ -159,8 +159,11 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["Attack SpawnGroup copied (%1/%2) (helpers: %3, %4) | Cache=%5", _modeLower, _sideStr, _spawnName, _targetName, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenAttackSpawnGroup", [_mode], _selected] call OKS_fnc_EdenRememberLastAction;
+systemChat format ["CopiedToClipboard | Attack SpawnGroup copied to clipboard | Cache=%1", _cacheCount];
+[format ["CopiedToClipboard | Attack SpawnGroup copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
+[format ["Attack SpawnGroup copied to clipboard (%1/%2) (helpers: %3, %4) | Cache=%5", _modeLower, _sideStr, _spawnName, _targetName, _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 
 // Delete template objects (avoid deleting helper logics if the user had any selected).
 private _selectedToDelete = _selected select { !(_x isKindOf "Logic") };

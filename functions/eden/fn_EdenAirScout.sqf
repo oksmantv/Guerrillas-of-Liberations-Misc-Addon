@@ -150,7 +150,7 @@ private _airObj = objNull;
 if (isNull _airObj) exitWith {
 	["Air Scout: You must select an airframe (helicopter/plane/UAV)", 1, 6, true] call BIS_fnc_3DENNotification;
 	if (missionNamespace getVariable ["OKS_3DEN_DEBUG", false]) then {
-		(format ["[3DEN] Air Scout: selection types=%1", (_contextObjects apply {typeOf _x})]) call OKS_fnc_LogDebug;
+		[format ["[3DEN] Air Scout: selection types=%1", (_contextObjects apply {typeOf _x})], false, true] call OKS_fnc_LogDebug;
 	};
 	false
 };
@@ -158,7 +158,7 @@ if (isNull _airObj) exitWith {
 private _p0 = [_contextObjects, _md] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
 	if (missionNamespace getVariable ["OKS_3DEN_DEBUG", false]) then {
-		(format ["[3DEN] Air Scout: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
+		[format ["[3DEN] Air Scout: invalid click position. menuData=%1", _md], false, true] call OKS_fnc_LogDebug;
 	};
 	["Air Scout: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
 	false
@@ -227,7 +227,7 @@ private _example = format [
 ];
 
 private _desc = format [
-	"[3DEN] Air Scout copied: Spawn=%1 | Target=%2 | Side=%3 | Class=%4 | Mortars=%5",
+	"[3DEN] Air Scout copied to clipboard: Spawn=%1 | Target=%2 | Side=%3 | Class=%4 | Mortars=%5",
 	_spawnName,
 	_targetName,
 	_sideStr,
@@ -238,6 +238,8 @@ private _desc = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
+
+["OKS_fnc_EdenAirScout", [_side, _shouldCallMortars], _contextObjects] call OKS_fnc_EdenRememberLastAction;
 
 // Remove the Eden airframe and any placed crew (the script spawns its own).
 private _crewToDelete = (crew _airObj) select { _x isKindOf "Man" };
@@ -254,14 +256,17 @@ private _desc2 = if (_deletedCrewCount > 0) then {
 };
 
 private _debug = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
-private _logText = if (_debug) then {
-	format ["CopiedToClipboard: %1\n%2", _desc2, _example]
-} else {
-	format ["CopiedToClipboard: %1", _example]
+private _chatText = format ["CopiedToClipboard | Air Scout copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
+
+private _logExample = _example splitString "\r\n" joinString " ";
+private _logText = format ["CopiedToClipboard | Air Scout copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
+if (_debug) then {
+	[format ["Air Scout | %1", _desc2], false, true, true] call OKS_fnc_LogDebug;
 };
-[_logText, true] call OKS_fnc_LogDebug;
 
 private _notify = if (_debug) then {_desc2} else {"Air Scout copied to clipboard"};
 _notify = format ["%1 | Cache=%2", _notify, _cacheCount];
-[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
+[_notify, 0, 10, true] call BIS_fnc_3DENNotification;
 true;

@@ -54,11 +54,16 @@ if (_clickPos isEqualTo []) then {
 
 if (_dbg) then { diag_log format ["[OKS][3DEN][FrontlineNodes][Place] after md0 parse | md0Type=%1 clickPos=%2", typeName (_menuData param [0, []]), _clickPos]; };
 
-if (_clickPos isEqualTo []) then { _clickPos = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+if (_clickPos isEqualTo []) then {
+    private _stw = screenToWorld getMousePosition;
+    if (_stw isEqualType []) then {
+        _clickPos = [_stw] call OKS_fnc_EdenPosFromArray;
+    };
+};
 _clickPos set [2, 0];
 _clickPos = [_clickPos] call OKS_fnc_EdenSanitizePos;
 
-if (_dbg) then { diag_log format ["[OKS][3DEN][FrontlineNodes][Place] final clickPos=%1 mouse3DEN=%2", _clickPos, get3DENMousePosition]; };
+if (_dbg) then { diag_log format ["[OKS][3DEN][FrontlineNodes][Place] final clickPos=%1", _clickPos]; };
 
 if (_clickPos isEqualTo []) exitWith {
     ["Frontline Node: invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
@@ -76,6 +81,12 @@ if (isNull _logic) exitWith {
     false
 };
 
+private _aoLayer = ["Area of Operations Markers"] call OKS_fnc_EdenGetOrCreateLayer;
+private _aoLayerValid = (_aoLayer isEqualType 0 && {_aoLayer >= 0}) || {(_aoLayer isEqualType objNull) && {!isNull _aoLayer}};
+if (_aoLayerValid) then {
+    [_logic, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+};
+
 if (_dbg) then { diag_log format ["[OKS][3DEN][FrontlineNodes][Place] created logic=%1 typeOf=%2 pos=%3", _logic, typeOf _logic, getPosATL _logic]; };
 
 _logic set3DENAttribute ["name", _name];
@@ -87,4 +98,6 @@ if (_dbg) then {
 };
 
 systemChat format ["Frontline Node placed: %1", _name];
+
+["OKS_fnc_EdenFrontlineNodePlace", [_sideName], []] call OKS_fnc_EdenRememberLastAction;
 true

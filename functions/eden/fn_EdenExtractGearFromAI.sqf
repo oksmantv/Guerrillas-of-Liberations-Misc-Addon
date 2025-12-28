@@ -6,8 +6,12 @@
 */
 private _Objects = get3DENSelected "object";
 
+private _debug3DEN = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+
 if (count _Objects == 0) exitWith {
-	"Extract Gear: No objects selected!" call OKS_fnc_LogDebug;
+	if (_debug3DEN) then {
+				["[3DEN] Extract Gear: No objects selected", false, true] call OKS_fnc_LogDebug;
+	};
 	["Extract Gear: select one or more units", 1, 5, true] call BIS_fnc_3DENNotification;
 };
 
@@ -332,11 +336,11 @@ private _processedCount = 0;
 } foreach _Objects;
 
 if (_processedCount == 0) exitWith {
-	"Extract Gear: No valid units found in selection!" call OKS_fnc_LogDebug;
+	if (_debug3DEN) then {
+				["[3DEN] Extract Gear: No valid units found in selection", false, true] call OKS_fnc_LogDebug;
+	};
 	["Extract Gear: no valid units", 1, 5, true] call BIS_fnc_3DENNotification;
 };
-
-(format ["Extract Gear: Processed %1 units", _processedCount]) call OKS_fnc_LogDebug;
 [format ["Extract Gear: processed %1 units", _processedCount], 0, 4, true] call BIS_fnc_3DENNotification;
 
 /// Assigning the variables from the object array.
@@ -560,6 +564,6 @@ _output =
 	"_rifleMarksman_mag_tr = " + str _copyRifleMarksman_mag_tr + ";" + toString [13,10];
 
 copyToClipboard _output;
-
-(format ["Extract Gear: Copied gear configuration for %1 units to clipboard!", _processedCount]) call OKS_fnc_LogDebug;
-[format ["Extract Gear copied (%1 units)", _processedCount], 0, 5, true] call BIS_fnc_3DENNotification;
+systemChat format ["CopiedToClipboard | Extract Gear output copied to clipboard (%1 units)", _processedCount];
+[format ["CopiedToClipboard | Extract Gear output copied to clipboard | %1", _output], false, true, true] call OKS_fnc_LogDebug;
+[format ["Extract Gear copied to clipboard (%1 units)", _processedCount], 0, 10, true] call BIS_fnc_3DENNotification;

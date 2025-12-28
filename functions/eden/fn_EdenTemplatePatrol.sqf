@@ -29,6 +29,7 @@ private _isFast = _profileUp isEqualTo "FAST";
 private _radiusMul = 0.5;
 
 private _debug3DEN = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+private _debugLines = [];
 
 private _p0 = [];
 if (_menuData isEqualType []) then {
@@ -43,7 +44,12 @@ if (_p0 isEqualTo [] && {_menuData isEqualType []}) then {
     };
 };
 
-if (_p0 isEqualTo []) then { _p0 = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+if (_p0 isEqualTo []) then {
+    private _stw = screenToWorld getMousePosition;
+    if (_stw isEqualType []) then {
+        _p0 = [_stw] call OKS_fnc_EdenPosFromArray;
+    };
+};
 _p0 set [2, 0];
 _p0 = [_p0] call OKS_fnc_EdenSanitizePos;
 if (_p0 isEqualTo []) exitWith {
@@ -52,8 +58,8 @@ if (_p0 isEqualTo []) exitWith {
 };
 
 if (_debug3DEN) then {
-    [format ["[3DEN] Template Patrol: menuData=%1", _menuData]] call OKS_fnc_LogDebug;
-    [format ["[3DEN] Template Patrol: clickPos=%1", _p0]] call OKS_fnc_LogDebug;
+    _debugLines pushBack (format ["menuData=%1", _menuData]);
+    _debugLines pushBack (format ["clickPos=%1", _p0]);
 };
 
 private _readNum = {
@@ -152,12 +158,12 @@ if (!isNull _spawn) then {
     if (!(_gwWpFncName isEqualTo "")) then {
         private _gwFnc = missionNamespace getVariable [_gwWpFncName, {}];
         if (_debug3DEN) then {
-            [format ["[3DEN] Template Patrol: calling %1 (leader=%2 radiusMul=%3 profile=%4)", _gwWpFncName, _spawn, _radiusMul, _profileUp]] call OKS_fnc_LogDebug;
+            _debugLines pushBack (format ["calling %1 (leader=%2 radiusMul=%3 profile=%4)", _gwWpFncName, _spawn, _radiusMul, _profileUp]);
         };
         [_spawn, _radiusMul, _profileUp] call _gwFnc;
     } else {
         if (_debug3DEN) then {
-            ["[3DEN] Template Patrol: GW waypoint function not found; using fallback"] call OKS_fnc_LogDebug;
+            _debugLines pushBack "GW waypoint function not found; using fallback";
         };
         // Fallback: keep the predictable 4 waypoint cardinal pattern.
         private _wpPos1 = [_p0, _radius, 0] call _mkPos;   // North
@@ -190,8 +196,13 @@ if (!isNull _spawn) then {
 };
 
 if (_debug3DEN) then {
-    [format ["[3DEN] Template Patrol: side=%1 units=%2 radius=%3", _sideName, _countCreated, _radius]] call OKS_fnc_LogDebug;
+    _debugLines pushBack (format ["side=%1 units=%2 radius=%3", _sideName, _countCreated, _radius]);
+    if !(_debugLines isEqualTo []) then {
+        [format ["[3DEN] Template Patrol | %1", _debugLines joinString " | "], false, true] call OKS_fnc_LogDebug;
+    };
 };
 
 [format ["Template Patrol placed (%1) | Units=%2", _sideName, _countCreated], 0, 5, false] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenTemplatePatrol", [_side, _unitCountOverride, _profile], []] call OKS_fnc_EdenRememberLastAction;
 true

@@ -137,6 +137,8 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
+
+["OKS_fnc_EdenAmbientAAA", [_radar, _isHMG, _range], _contextObjects] call OKS_fnc_EdenRememberLastAction;
 // If the AAA has crew placed in Eden, remove them after copy.
 private _crewToDelete = (crew _aaaObj) select { _x isKindOf "Man" };
 private _crewDeleted = 0;
@@ -146,7 +148,7 @@ if !(_crewToDelete isEqualTo []) then {
 };
 
 private _desc = format [
-    "Ambient AAA copied: AAA=%1 | Side=%2 | Radar=%3 | isHMG=%4 | Range=%5",
+    "Ambient AAA copied to clipboard: AAA=%1 | Side=%2 | Radar=%3 | isHMG=%4 | Range=%5",
     _aaaName,
     _sideStr,
     if (_radar) then {"ON"} else {"OFF"},
@@ -161,14 +163,17 @@ private _desc2 = if (_crewDeleted > 0) then {
 };
 
 private _debug = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
-private _logText = if (_debug) then {
-    format ["CopiedToClipboard: %1\n%2", _desc2, _example]
-} else {
-    format ["CopiedToClipboard: %1", _example]
+private _chatText = format ["CopiedToClipboard | Ambient AAA copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
+
+private _logExample = _example splitString "\r\n" joinString " ";
+private _logText = format ["CopiedToClipboard | Ambient AAA copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
+if (_debug) then {
+    [format ["Ambient AAA | %1", _desc2], false, true, true] call OKS_fnc_LogDebug;
 };
-[_logText, true] call OKS_fnc_LogDebug;
 
 private _notify = if (_debug) then {_desc2} else {"Ambient AAA copied to clipboard"};
 _notify = format ["%1 | Cache=%2", _notify, _cacheCount];
-[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
+[_notify, 0, 10, true] call BIS_fnc_3DENNotification;
 true;

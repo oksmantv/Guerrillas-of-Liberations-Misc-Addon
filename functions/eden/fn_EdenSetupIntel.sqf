@@ -73,7 +73,7 @@ private _ensureNamed = {
 private _p0 = [_contextObjects, _md] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
     if (_debug3DEN) then {
-        (format ["[3DEN] EdenSetupIntel: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
+		[format ["[3DEN] EdenSetupIntel: invalid click position. menuData=%1", _md], false, true] call OKS_fnc_LogDebug;
     };
     ["Setup Intel: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
@@ -149,14 +149,21 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-private _logText = format ["CopiedToClipboard: %1", _example];
-[_logText, true] call OKS_fnc_LogDebug;
+
+["OKS_fnc_EdenSetupIntel", [], _contextObjects] call OKS_fnc_EdenRememberLastAction;
+private _logText = format ["CopiedToClipboard | Setup Intel copied to clipboard | Cache=%1 | %2", _cacheCount, _example];
+private _chatText = format ["CopiedToClipboard | Setup Intel copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
+
+private _logExample = _example splitString "\r\n" joinString " ";
+_logText = format ["CopiedToClipboard | Setup Intel copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
 
 private _notify = if (_debug3DEN) then {
-    format ["Setup Intel copied: Intel=%1 (%2) | Targets=%3", _intelName, _intelClass, _targetExpr]
+    format ["Setup Intel copied to clipboard: Intel=%1 (%2) | Targets=%3", _intelName, _intelClass, _targetExpr]
 } else {
     "Setup Intel copied to clipboard"
 };
 _notify = format ["%1 | Cache=%2", _notify, _cacheCount];
-[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
+[_notify, 0, 10, true] call BIS_fnc_3DENNotification;
 true;

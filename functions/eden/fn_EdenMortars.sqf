@@ -132,7 +132,7 @@ private _createHiddenLogic = {
 private _p0 = [_contextObjects, _md] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
     if (_debug3DEN) then {
-        (format ["Mortars: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
+		[format ["Mortars: invalid click position. menuData=%1", _md], false, true] call OKS_fnc_LogDebug;
     };
     ["Mortars: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
@@ -246,6 +246,8 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
+
+["OKS_fnc_EdenMortars", [_platform, _targeting, _firingMode, _roundType], _contextObjects] call OKS_fnc_EdenRememberLastAction;
 // Mortar examples do not need crew in Eden; remove any placed crew after copy.
 private _crewDeleted = 0;
 if (_platformResolved == "manned" && {!isNull _mortarObj}) then {
@@ -259,7 +261,7 @@ private _targetDesc = if (_targetingLower == "auto") then {"AUTO"} else {format 
 private _platformDesc = if (_platformResolved == "offmap") then {"OFFMAP"} else {format ["MANNED (%1)", _mortarName]};
 
 private _desc = format [
-    "Mortars copied: %1 | %2 | Mode=%3 | Round=%4 | Side=%5",
+    "Mortars copied to clipboard: %1 | %2 | Mode=%3 | Round=%4 | Side=%5",
     _platformDesc,
     _targetDesc,
     _firingModeLower,
@@ -271,15 +273,18 @@ if (_crewDeleted > 0) then {
     _desc = format ["%1 | DeletedCrew=%2", _desc, _crewDeleted];
 };
 
-_desc = format ["%1 | Cache=%2", _desc, _cacheCount];
+private _logText = format ["CopiedToClipboard | Mortars copied to clipboard | Cache=%1 | %2", _cacheCount, _example];
+private _chatText = format ["CopiedToClipboard | Mortars copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
 
-private _logText = if (_debug3DEN) then {
-    format ["CopiedToClipboard: %1\n%2", _desc, _example]
-} else {
-    format ["CopiedToClipboard: %1", _example]
+private _logExample = _example splitString "\r\n" joinString " ";
+_logText = format ["CopiedToClipboard | Mortars copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
+if (_debug3DEN) then {
+    [format ["Mortars | %1", _desc], false, true, true] call OKS_fnc_LogDebug;
 };
-[_logText, true] call OKS_fnc_LogDebug;
 
 private _notify = if (_debug3DEN) then {_desc} else {"Mortars copied to clipboard"};
-[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
+_notify = format ["%1 | Cache=%2", _notify, _cacheCount];
+[_notify, 0, 10, true] call BIS_fnc_3DENNotification;
 true;

@@ -24,12 +24,27 @@
             outer depth: 100m (Eden "Size B")
 */
 
-params [
-    ["_frontlineTotalWidthMeters", 100, [0]],
-    ["_frontlineSideName", "WEST", [""]]
-];
+private _menuData = [];
+private _frontlineTotalWidthMeters = 100;
+private _frontlineSideName = "WEST";
 
-private _contextMenuData = uiNamespace getVariable ["BIS_fnc_3DENEntityMenu_data", []];
+// Supports both calling conventions:
+// - Eden menu legacy: [width, side] call ...
+// - RepeatLastAction: [menuData, width, side] call ...
+if ((count _this) > 0 && {(_this select 0) isEqualType []}) then {
+    _menuData = _this param [0, [], [[]]];
+    _frontlineTotalWidthMeters = _this param [1, 100, [0]];
+    _frontlineSideName = _this param [2, "WEST", [""]];
+} else {
+    _frontlineTotalWidthMeters = _this param [0, 100, [0]];
+    _frontlineSideName = _this param [1, "WEST", [""]];
+    _menuData = _this param [2, [], [[]]];
+};
+
+private _contextMenuData = _menuData;
+if (_contextMenuData isEqualTo []) then {
+    _contextMenuData = uiNamespace getVariable ["BIS_fnc_3DENEntityMenu_data", []];
+};
 diag_log format ["[OKS][3DEN][FrontlineDoubleRect] called with width=%1 side=%2 menuData=%3", _frontlineTotalWidthMeters, _frontlineSideName, _contextMenuData];
 
 private _allowedWidths = [250, 500, 750, 1000];
@@ -78,6 +93,9 @@ private _makeUniqueName = {
 };
 
 private _logPrefix = "[OKS][3DEN][FrontlineDoubleRect]";
+
+private _aoLayer = ["Area of Operations Markers"] call OKS_fnc_EdenGetOrCreateLayer;
+private _aoLayerValid = (_aoLayer isEqualType 0 && {_aoLayer >= 0}) || {(_aoLayer isEqualType objNull) && {!isNull _aoLayer}};
 
 private _debugLoggingEnabled = true;
 private _logDebug = {
@@ -231,12 +249,18 @@ if (_selectedMarkerNames isEqualTo []) then {
     // NOTE (BI Wiki): to create a shape marker, create the marker with empty class name.
     // NOTE (BI Wiki): to create a shape marker, create the marker with empty class name.
     private _outerMarker = create3DENEntity ["Marker", "", _markerPos];
+    if (_aoLayerValid) then {
+        [_outerMarker, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+    };
     [_outerMarker, _outerName, _markerColorClassName, "DiagGrid", _outerHalfDepthMeters, _frontlineHalfWidthMeters, _logPrefix] call _applyRect;
 
     // Place the shallow marker just outside the outer marker edge.
     private _innerOffsetMeters = _outerHalfDepthMeters + _innerHalfDepthMeters;
     private _innerMarkerPos = _markerPos vectorAdd (_offsetDirectionVector vectorMultiply _innerOffsetMeters);
     private _innerMarker = create3DENEntity ["Marker", "", _innerMarkerPos];
+    if (_aoLayerValid) then {
+        [_innerMarker, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+    };
     [_innerMarker, _innerName, _markerColorClassName, "SolidFull", _innerHalfDepthMeters, _frontlineHalfWidthMeters, _logPrefix] call _applyRect;
 
     ["computed", ["outerPos", _markerPos, "innerPos", _innerMarkerPos, "innerOffset", _innerOffsetMeters, "offsetDir", _offsetDirectionVector]] call _logDebug;
@@ -245,6 +269,8 @@ if (_selectedMarkerNames isEqualTo []) then {
     if (_createdPairs > 0) then {
         systemChat format ["Created %1 frontline marker pair(s) (width=%2m, innerDepth=%3m, outerDepth=%4m, color=%5)", _createdPairs, _frontlineTotalWidthMeters, _innerDepth, _outerDepth, _markerColorClassName];
         ["created pair", ["pos", _markerPos, "width", _frontlineTotalWidthMeters]] call _logDebug;
+
+        ["OKS_fnc_EdenMarkFrontlineDoubleRect", [_frontlineTotalWidthMeters, _frontlineSideName], []] call OKS_fnc_EdenRememberLastAction;
     } else {
         systemChat "No frontline markers created.";
         ["no markers created (create3DENEntity returned nil?)", []] call _logDebug;
@@ -286,12 +312,18 @@ private _createdPairs = 0;
 
         // Outer marker (grid)
         private _outerMarker = create3DENEntity ["Marker", "", _markerPos];
+        if (_aoLayerValid) then {
+            [_outerMarker, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+        };
         [_outerMarker, _outerName, _markerColorClassName, "grid", _outerHalfDepthMeters, _frontlineHalfWidthMeters, _logPrefix] call _applyRect;
 
         // Inner marker (solid) placed just outside outer edge
         private _innerOffsetMeters = _outerHalfDepthMeters + _innerHalfDepthMeters;
         private _innerMarkerPos = _markerPos vectorAdd (_offsetDirectionVector vectorMultiply _innerOffsetMeters);
         private _innerMarker = create3DENEntity ["Marker", "", _innerMarkerPos];
+        if (_aoLayerValid) then {
+            [_innerMarker, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+        };
         [_innerMarker, _innerName, _markerColorClassName, "solid", _innerHalfDepthMeters, _frontlineHalfWidthMeters, _logPrefix] call _applyRect;
 
         ["computed", ["outerPos", _markerPos, "innerPos", _innerMarkerPos, "innerOffset", _innerOffsetMeters, "offsetDir", _offsetDirectionVector]] call _logDebug;
@@ -305,6 +337,8 @@ private _createdPairs = 0;
 
 if (_createdPairs > 0) then {
     systemChat format ["Created %1 frontline marker pair(s) (width=%2m, innerDepth=%3m, outerDepth=%4m, color=%5)", _createdPairs, _frontlineTotalWidthMeters, _innerDepth, _outerDepth, _markerColorClassName];
+
+    ["OKS_fnc_EdenMarkFrontlineDoubleRect", [_frontlineTotalWidthMeters, _frontlineSideName], []] call OKS_fnc_EdenRememberLastAction;
 } else {
     systemChat "No frontline markers created.";
 };

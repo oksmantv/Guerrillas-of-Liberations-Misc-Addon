@@ -14,8 +14,27 @@
         For docs: Use the Eden menu item "Open Docs" (Functions Viewer search).
 */
 
-params ["_positionArray", "_lambsType", ["_mode", "infantry", [""]]];
+params [
+    "_positionArray",
+    "_lambsType",
+    ["_mode", "infantry", [""]],
+    ["_resolvedParam", nil],
+    ["_sideCodeOverride", "", [""]]
+];
 _positionArray params ["_position"];
+
+_position = [_position] call OKS_fnc_EdenPosFromArray;
+if (_position isEqualTo []) exitWith {
+    ["LAMBS SpawnGroup: invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
+    false
+};
+
+_position set [2, 0];
+_position = [_position] call OKS_fnc_EdenSanitizePos;
+if (_position isEqualTo []) exitWith {
+    ["LAMBS SpawnGroup: invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
+    false
+};
 
 private _spawnName = ["LambsGroupSpawn"] call OKS_fnc_next3DENName;
 _position set [2, 0];
@@ -73,6 +92,12 @@ if (_sideCandidates isNotEqualTo []) then {
     _side = _uniqueSides select 0;
 };
 
+private _sideCode = if !(_sideCodeOverride isEqualTo "") then {
+    _sideCodeOverride
+} else {
+    [_side] call _fnc_sideToCode
+};
+
 if (_unitCount == 0 && _vehicleClasses isEqualTo []) then {
     _unitCount = 6;
 };
@@ -108,6 +133,20 @@ if (_mode == "vehicle") then {
     };
 };
 
+// Apply remembered/resolved overrides (RepeatLastAction)
+if (!isNil "_resolvedParam") then {
+    if (_mode == "vehicle") then {
+        if (_resolvedParam isEqualType [] && {(count _resolvedParam) >= 2}) then {
+            _vehicleClasses = _resolvedParam select 0;
+            _cargoCount = _resolvedParam select 1;
+        };
+    } else {
+        if (_resolvedParam isEqualType 0) then {
+            _unitCount = _resolvedParam;
+        };
+    };
+};
+
 private _example = "";
 private _range = 1500;
 
@@ -118,7 +157,7 @@ if (_mode == "vehicle") then {
         _spawnName,
         str _lambsType,
         str _vehicleParam,
-        [_side] call _fnc_sideToCode,
+        _sideCode,
         _range
     ];
 } else {
@@ -128,15 +167,19 @@ if (_mode == "vehicle") then {
         _spawnName,
         str _lambsType,
         _unitCount,
-        [_side] call _fnc_sideToCode,
+        _sideCode,
         _range
     ];
 };
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["LAMBS SpawnGroup copied to clipboard | Cache=%1", _cacheCount], 0, 4, true] call BIS_fnc_3DENNotification;
+
+private _rememberParam = if (_mode == "vehicle") then { [_vehicleClasses, _cargoCount] } else { _unitCount };
+["OKS_fnc_EdenLambsGroup", [_lambsType, _mode, _rememberParam, _sideCode], []] call OKS_fnc_EdenRememberLastAction;
+systemChat format ["CopiedToClipboard | LAMBS SpawnGroup copied to clipboard | Cache=%1", _cacheCount];
+[format ["CopiedToClipboard | LAMBS SpawnGroup copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
+[format ["LAMBS SpawnGroup copied to clipboard | Cache=%1", _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 delete3DENEntities _selected;
 
 

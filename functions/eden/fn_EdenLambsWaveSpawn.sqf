@@ -51,7 +51,7 @@ _clickPos set [2, 0];
 _clickPos = [_clickPos] call OKS_fnc_EdenSanitizePos;
 
 if (_clickPos isEqualTo []) exitWith {
-    (format ["LAMBS WaveSpawn: invalid click position. menuData=%1", _menuData]) call OKS_fnc_LogDebug;
+    [format ["LAMBS WaveSpawn: invalid click position. menuData=%1", _menuData], false, true] call OKS_fnc_LogDebug;
     ["LAMBS WaveSpawn: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
 };
 _layout = toLower _layout;
@@ -167,7 +167,7 @@ if (_layout == "triple") then {
 };
 
 if (_spawnObjects isEqualTo [] || {isNull (_spawnObjects select 0)} || {(_layout == "triple") && {(count _spawnObjects) < 3}} || {(_layout == "triple") && {isNull (_spawnObjects select 1) || {isNull (_spawnObjects select 2)}}}) exitWith {
-    (format ["LAMBS WaveSpawn: Could not create 3DEN spawn object(s). clickPos=%1 md0Type=%2", _clickPos, typeName (_menuData param [0, objNull])]) call OKS_fnc_LogDebug;
+    [format ["LAMBS WaveSpawn: Could not create 3DEN spawn object(s). clickPos=%1 md0Type=%2", _clickPos, typeName (_menuData param [0, objNull])], false, true] call OKS_fnc_LogDebug;
     ["LAMBS WaveSpawn: Failed to create helper objects", 1, 6, true] call BIS_fnc_3DENNotification;
 };
 
@@ -201,8 +201,11 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["LAMBS WaveSpawn copied to clipboard | Cache=%1", _cacheCount], 0, 4, true] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenLambsWaveSpawn", [_lambsType, _layout], _selected] call OKS_fnc_EdenRememberLastAction;
+systemChat format ["CopiedToClipboard | LAMBS WaveSpawn copied to clipboard | Cache=%1", _cacheCount];
+[format ["CopiedToClipboard | LAMBS WaveSpawn copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
+[format ["LAMBS WaveSpawn copied to clipboard | Cache=%1", _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 
 // Match behavior of other Eden helpers: remove selected template units/objects after copy.
 if !(_selectedToDelete isEqualTo []) then {

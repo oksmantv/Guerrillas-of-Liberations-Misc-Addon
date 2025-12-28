@@ -17,7 +17,7 @@
 params ["_functionName", ["_openUI", true, [true]]];
 
 if !(_functionName isEqualType "") exitWith {
-  "Open Docs: function name must be a string." call OKS_fnc_LogDebug;
+  ["Open Docs: function name must be a string.", false, true] call OKS_fnc_LogDebug;
   ["Open Docs: invalid function name", 1, 5, true] call BIS_fnc_3DENNotification;
 };
 
@@ -31,7 +31,9 @@ if (_idx > -1) then {
 _searchTerm = toUpper _searchTerm;
 
 copyToClipboard _searchTerm;
-[format ["Open Function: %1 (search '%2' copied)", _functionName, _searchTerm], 0, 4, true] call BIS_fnc_3DENNotification;
+systemChat format ["CopiedToClipboard | OpenDocs search term copied to clipboard | %1", _searchTerm];
+[format ["CopiedToClipboard | OpenDocs search term copied to clipboard | %1", _searchTerm], false, true, true] call OKS_fnc_LogDebug;
+[format ["Open Function: %1 (search '%2' copied to clipboard)", _functionName, _searchTerm], 0, 10, true] call BIS_fnc_3DENNotification;
 
 if (_openUI) then {
   [_functionName, _searchTerm] spawn {

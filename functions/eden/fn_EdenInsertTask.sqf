@@ -78,10 +78,18 @@ copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 
+["OKS_fnc_EdenInsertTask", [], [_trg]] call OKS_fnc_EdenRememberLastAction;
+
+private _logText = format ["CopiedToClipboard | Insert Task copied to clipboard | Cache=%1 | %2", _cacheCount, _example];
+private _chatText = format ["CopiedToClipboard | Insert Task copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
+
+private _logExample = _example splitString "\r\n" joinString " ";
+_logText = format ["CopiedToClipboard | Insert Task copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
 if (_debug3DEN) then {
-    [format ["[3DEN] EdenInsertTask: trigger=%1 pos=%2", _trgName, _p0]] call OKS_fnc_LogDebug;
-    [format ["[3DEN] EdenInsertTask: code=%1", _example]] call OKS_fnc_LogDebug;
+    [format ["Insert Task | trigger=%1 pos=%2", _trgName, _p0], false, true, true] call OKS_fnc_LogDebug;
 };
 
-[format ["Insert Task copied (trigger: %1) | Cache=%2", _trgName, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
+[format ["Insert Task copied to clipboard (trigger: %1) | Cache=%2", _trgName, _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 true

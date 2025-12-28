@@ -20,6 +20,7 @@ params [
 ];
 
 private _debug3DEN = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+private _debugLines = [];
 
 private _p0 = [];
 // Some Eden contexts pass menuData as [x,y,z] directly.
@@ -36,18 +37,25 @@ if (_p0 isEqualTo [] && {_menuData isEqualType []}) then {
     };
 };
 
-if (_p0 isEqualTo []) then { _p0 = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+if (_p0 isEqualTo []) then {
+    private _stw = screenToWorld getMousePosition;
+    if (_stw isEqualType []) then {
+        _p0 = [_stw] call OKS_fnc_EdenPosFromArray;
+    };
+};
 _p0 set [2, 0];
 _p0 = [_p0] call OKS_fnc_EdenSanitizePos;
 if (_p0 isEqualTo []) exitWith {
-    ["[3DEN] Template Static Units: invalid click position"] call OKS_fnc_LogDebug;
+    if (_debug3DEN) then {
+        ["[3DEN] Template Static Units: invalid click position", false, true] call OKS_fnc_LogDebug;
+    };
     ["Template Static Units: invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
 
 if (_debug3DEN) then {
-    [format ["[3DEN] Template Static Units: menuData=%1", _menuData]] call OKS_fnc_LogDebug;
-    [format ["[3DEN] Template Static Units: clickPos=%1", _p0]] call OKS_fnc_LogDebug;
+    _debugLines pushBack (format ["menuData=%1", _menuData]);
+    _debugLines pushBack (format ["clickPos=%1", _p0]);
 };
 
 private _readNum = {
@@ -112,6 +120,9 @@ collect3DENHistory {
 
 private _countCreated = count _created;
 if (_countCreated <= 0) exitWith {
+    if (_debug3DEN) then {
+        ["[3DEN] Template Static Units: failed to create units", false, true] call OKS_fnc_LogDebug;
+    };
     ["Template Static Units: failed to create units", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
@@ -124,8 +135,13 @@ private _sideName = switch (_side) do {
 };
 
 if (_debug3DEN) then {
-    [format ["[3DEN] Template Static Units: side=%1 count=%2 spacing=%3 facing=%4", _sideName, _countCreated, _spacing, _facingDir]] call OKS_fnc_LogDebug;
+    _debugLines pushBack (format ["side=%1 count=%2 spacing=%3 facing=%4", _sideName, _countCreated, _spacing, _facingDir]);
+    if !(_debugLines isEqualTo []) then {
+        [format ["[3DEN] Template Static Units | %1", _debugLines joinString " | "], false, true] call OKS_fnc_LogDebug;
+    };
 };
 
 [format ["Template Static Units placed (%1) | Count=%2", _sideName, _countCreated], 0, 5, false] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenTemplateStaticUnits", [_side, _unitCountOverride], []] call OKS_fnc_EdenRememberLastAction;
 true

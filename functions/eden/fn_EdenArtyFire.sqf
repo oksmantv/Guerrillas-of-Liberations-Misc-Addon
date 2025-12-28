@@ -199,7 +199,7 @@ private _example = format [
 ];
 
 private _desc = format [
-    "ArtyFire (Ambience) copied: Arty=%1 | Target=%2 (spawned next to arty) | Side=%3 | Rounds=%4 | Rearm=%5 | Reload=%6 | FullCrew=%7",
+    "ArtyFire (Ambience) copied to clipboard: Arty=%1 | Target=%2 (spawned next to arty) | Side=%3 | Rounds=%4 | Rearm=%5 | Reload=%6 | FullCrew=%7",
     _artyName,
     _targetName,
     _sideStr,
@@ -212,6 +212,8 @@ private _desc = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
+
+["OKS_fnc_EdenArtyFire", [_rounds, _rearmTime, _reloadTime, _fullCrew], _contextObjects] call OKS_fnc_EdenRememberLastAction;
 
 // If the artillery has crew placed in Eden, remove them after copy.
 private _crewToDelete = (crew _artyObj) select { _x isKindOf "Man" };
@@ -226,17 +228,18 @@ private _desc2 = if (_crewDeleted > 0) then {
 } else {
     _desc
 };
-
-_desc2 = format ["%1 | Cache=%2", _desc2, _cacheCount];
-
 private _debug = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
-private _logText = if (_debug) then {
-    format ["CopiedToClipboard: %1\n%2", _desc2, _example]
-} else {
-    format ["CopiedToClipboard: %1", _example]
+private _chatText = format ["CopiedToClipboard | ArtyFire copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
+
+private _logExample = _example splitString "\r\n" joinString " ";
+private _logText = format ["CopiedToClipboard | ArtyFire copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
+if (_debug) then {
+    [format ["ArtyFire | %1", _desc2], false, true, true] call OKS_fnc_LogDebug;
 };
-[_logText, true] call OKS_fnc_LogDebug;
 
 private _notify = if (_debug) then {_desc2} else {"ArtyFire copied to clipboard"};
-[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
+_notify = format ["%1 | Cache=%2", _notify, _cacheCount];
+[_notify, 0, 10, true] call BIS_fnc_3DENNotification;
 true;

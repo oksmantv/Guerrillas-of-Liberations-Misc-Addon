@@ -9,7 +9,22 @@
       (uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenConvoySpawn;
 */
 
-params ["_menuData"];
+private _args = _this;
+if !(_args isEqualType []) then { _args = [_args]; };
+
+// NOTE: Some Eden contexts call the action with a raw clicked entity (OBJECT).
+// Also, some builds are picky about `params` typing. Parse via `param` + normalize.
+private _menuData = _args param [0, []];
+private _vehicleClassesOverride = _args param [1, []];
+private _cargoCountOverride = _args param [2, -1];
+private _sideStrOverride = _args param [3, ""]; 
+
+if (_menuData isEqualType objNull) then { _menuData = [_menuData]; };
+if !(_menuData isEqualType []) then { _menuData = []; };
+
+if !(_vehicleClassesOverride isEqualType []) then { _vehicleClassesOverride = []; };
+if !(_cargoCountOverride isEqualType 0) then { _cargoCountOverride = -1; };
+if !(_sideStrOverride isEqualType "") then { _sideStrOverride = ""; };
 
 private _selected = get3DENSelected "object";
 
@@ -61,7 +76,7 @@ private _anchorPos = {
         _p = _sum vectorMultiply (1 / (count _objs));
     };
 
-    if (_p isEqualTo []) then { _p = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+    if (_p isEqualTo []) then { _p = [screenToWorld getMousePosition] call OKS_fnc_EdenPosFromArray; };
     _p set [2, 0];
     _p = [_p] call OKS_fnc_EdenSanitizePos;
     if (_p isEqualTo []) exitWith {[]};
@@ -133,7 +148,7 @@ if ((count _selectedHelpers) >= 3) then {
 } else {
     private _p0 = [_selected, _menuData] call _anchorPos;
     if (_p0 isEqualTo []) exitWith {
-        (format ["Convoy Spawn: invalid click position. menuData=%1", _menuData]) call OKS_fnc_LogDebug;
+        [format ["Convoy Spawn: invalid click position. menuData=%1", _menuData], false, true] call OKS_fnc_LogDebug;
         ["Convoy Spawn: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
         false
     };
@@ -144,6 +159,10 @@ if ((count _selectedHelpers) >= 3) then {
 
 private _side = [_contextObjs] call _sideFromSelection;
 private _sideStr = [_side] call _sideToString;
+
+if !(_sideStrOverride isEqualTo "") then {
+    _sideStr = _sideStrOverride;
+};
 
 // Vehicle class/count defaults from selection (optional)
 private _vehicleCount = 4;
@@ -171,6 +190,15 @@ if (_vehicleClasses isEqualTo []) then {
     _vehicleClasses = ["O_MRAP_02_F"];
 };
 
+if !(_vehicleClassesOverride isEqualTo []) then {
+    _vehicleClasses = _vehicleClassesOverride;
+    _vehicleCount = (count _vehicleClasses) max 1;
+};
+
+if (_cargoCountOverride >= 0) then {
+    _cargoCount = _cargoCountOverride;
+};
+
 private _vehParams = [_vehicleCount, _vehicleClasses, 35, 50];
 private _cargoParams = [true, _cargoCount];
 private _rushTypes = ["rush"];
@@ -192,8 +220,11 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["Convoy Spawn copied (%1) (helpers: %2, %3, %4) | Cache=%5", _sideStr, _spawnName, _wpName, _endName, _cacheCount], 0, 5, true] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenConvoySpawn", [_vehicleClasses, _cargoCount, _sideStr], []] call OKS_fnc_EdenRememberLastAction;
+systemChat format ["CopiedToClipboard | Convoy Spawn copied to clipboard | Cache=%1", _cacheCount];
+[format ["CopiedToClipboard | Convoy Spawn copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
+[format ["Convoy Spawn copied to clipboard (%1) (helpers: %2, %3, %4) | Cache=%5", _sideStr, _spawnName, _wpName, _endName, _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 
 // Optional editor cleanup: remove the selected vehicle entities after generating the call.
 // Never delete the 3 helper objects (Spawn/WP/End) when the user provided them via selection.

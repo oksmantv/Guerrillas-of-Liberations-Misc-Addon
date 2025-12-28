@@ -10,12 +10,20 @@
       (uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenRadar;
 */
 
-params [
-    "_menuData",
+private _args = _this;
+if !(_args isEqualType []) then { _args = [_args]; };
+
+_args params [
+    ["_menuData", [], [[], objNull]],
     ["_shareDistance", 2000, [0]],
     ["_maxRangeAAA", 2500, [0]],
-    ["_minimumAltitude", 100, [0]]
+    ["_minimumAltitude", 100, [0]],
+    ["_aaaClassnamesOverride", [], [[]]]
 ];
+
+if (_menuData isEqualType objNull) then {
+    _menuData = [_menuData];
+};
 
 private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
 
@@ -42,15 +50,11 @@ private _anchorPos = {
         _p = getPosATL (_objs select 0);
     };
 
-    if (_p isEqualTo []) then { _p = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+    if (_p isEqualTo []) then { _p = [screenToWorld getMousePosition] call OKS_fnc_EdenPosFromArray; };
     _p set [2, 0];
     _p = [_p] call OKS_fnc_EdenSanitizePos;
     if (_p isEqualTo []) exitWith {[]};
     _p
-};
-
-if (_debug3DEN) then {
-    ["[3DEN] EdenRadar: action fired", 0, 2, true] call BIS_fnc_3DENNotification;
 };
 
 private _selectedObjects = get3DENSelected "object";
@@ -124,8 +128,11 @@ if (_aaaClassnames isEqualTo []) then {
     _aaaClassnames = ["rhsgref_ins_zsu234"]; // placeholder from script header
 };
 
-private _classQuoted = _aaaClassnames apply { str _x };
-private _classArrayStr = format ["[%1]", _classQuoted joinString ","]; 
+if !(_aaaClassnamesOverride isEqualTo []) then {
+    _aaaClassnames = _aaaClassnamesOverride;
+};
+
+private _classArrayStr = str _aaaClassnames;
 
 private _example = format [
     "if ((count crew %1) == 0) then { createVehicleCrew %1; };\nnull = [%1,%2,%3,%4,%5] spawn OKS_fnc_Radar;",
@@ -143,7 +150,7 @@ private _rangeDesc = if (_shareDistance isEqualTo _maxRangeAAA) then {
 };
 
 private _desc = format [
-    "Radar Share copied: Radar=%1 | AAA Classes=%2 | %3 | MinAlt=%4",
+    "Radar Share copied to clipboard: Radar=%1 | AAA Classes=%2 | %3 | MinAlt=%4",
     _radarName,
     _classArrayStr,
     _rangeDesc,
@@ -153,14 +160,19 @@ private _desc = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-private _logText = if (_debug3DEN) then {
-    format ["CopiedToClipboard: %1\n%2", _desc, _example]
-} else {
-    format ["CopiedToClipboard: %1", _example]
+
+["OKS_fnc_EdenRadar", [_shareDistance, _maxRangeAAA, _minimumAltitude, _aaaClassnames], []] call OKS_fnc_EdenRememberLastAction;
+private _chatText = format ["CopiedToClipboard | Radar Share copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
+
+private _logExample = _example splitString "\r\n" joinString " ";
+private _logText = format ["CopiedToClipboard | Radar Share copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
+if (_debug3DEN) then {
+    [format ["Radar Share | %1", _desc], false, true, true] call OKS_fnc_LogDebug;
 };
-[_logText, true] call OKS_fnc_LogDebug;
 
 private _notify = if (_debug3DEN) then {_desc} else {"Radar Share copied to clipboard"};
 _notify = format ["%1 | Cache=%2", _notify, _cacheCount];
-[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
+[_notify, 0, 10, true] call BIS_fnc_3DENNotification;
 true;

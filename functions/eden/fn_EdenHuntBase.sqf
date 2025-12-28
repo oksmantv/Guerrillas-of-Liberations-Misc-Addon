@@ -1,13 +1,43 @@
 /*
     OKS_fnc_EdenHuntBase
+
+    Supports being called from 3DEN context menus and from OKS_fnc_EdenRepeatLastAction.
+    Repeat passes BIS_fnc_3DENEntityMenu_data-style menuData as param 0.
 */
 
-params ["_Position"];
+private _menuData = _this param [0, [], [[]]];
+
+private _pos = [];
+if (_menuData isEqualType []) then {
+    // menuData might be a raw position [x,y,z]
+    _pos = [_menuData] call OKS_fnc_EdenPosFromArray;
+
+    // ...or a wrapped position like [[x,y,z], ...] or [[x,y,z]]
+    if (_pos isEqualTo []) then {
+        private _md0 = _menuData param [0, []];
+        if (_md0 isEqualType []) then {
+            _pos = [_md0] call OKS_fnc_EdenPosFromArray;
+        };
+    };
+};
+
+// Fallback: screen-to-world under cursor
+if (_pos isEqualTo []) then {
+    private _stw = screenToWorld getMousePosition;
+    if (_stw isEqualType []) then {
+        _pos = [_stw] call OKS_fnc_EdenPosFromArray;
+    };
+};
+
+_pos set [2, 0];
+
+// Keep old variable name used throughout
+private _Position = _pos;
 
 private _baseName = ["HuntBase"] call OKS_fnc_next3DENName;
 private _spawnName = ["HuntSpawn"] call OKS_fnc_next3DENName;
 private _triggerName = ["HuntTrigger"] call OKS_fnc_next3DENName;
-private _dirToCam = [_Position, position get3DENCamera] call BIS_fnc_dirTo;
+private _dirToCam = [_Position, position get3DENCamera, 0] call BIS_fnc_dirTo;
 
 private _basePos =+ _Position;
 _basePos set [2, 0];
@@ -64,8 +94,11 @@ if (_vehicleClasses isNotEqualTo []) then {
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["Hunter Base copied to clipboard | Cache=%1", _cacheCount], 0, 4, true] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenHuntBase", [], _selected] call OKS_fnc_EdenRememberLastAction;
+systemChat format ["CopiedToClipboard | Hunt Base copied to clipboard | Cache=%1", _cacheCount];
+[format ["CopiedToClipboard | Hunt Base copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
+[format ["Hunter Base copied to clipboard | Cache=%1", _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 delete3DENEntities _selected;
 
 

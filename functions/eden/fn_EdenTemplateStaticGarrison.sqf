@@ -19,6 +19,7 @@ params [
 ];
 
 private _debug3DEN = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+private _debugLines = [];
 
 private _p0 = [];
 if (_menuData isEqualType []) then {
@@ -33,7 +34,12 @@ if (_p0 isEqualTo [] && {_menuData isEqualType []}) then {
     };
 };
 
-if (_p0 isEqualTo []) then { _p0 = [get3DENMousePosition] call OKS_fnc_EdenPosFromArray; };
+if (_p0 isEqualTo []) then {
+    private _stw = screenToWorld getMousePosition;
+    if (_stw isEqualType []) then {
+        _p0 = [_stw] call OKS_fnc_EdenPosFromArray;
+    };
+};
 _p0 set [2, 0];
 _p0 = [_p0] call OKS_fnc_EdenSanitizePos;
 if (_p0 isEqualTo []) exitWith {
@@ -42,8 +48,8 @@ if (_p0 isEqualTo []) exitWith {
 };
 
 if (_debug3DEN) then {
-    [format ["[3DEN] Template Static Garrison: menuData=%1", _menuData]] call OKS_fnc_LogDebug;
-    [format ["[3DEN] Template Static Garrison: clickPos=%1", _p0]] call OKS_fnc_LogDebug;
+    _debugLines pushBack (format ["menuData=%1", _menuData]);
+    _debugLines pushBack (format ["clickPos=%1", _p0]);
 };
 
 private _readNum = {
@@ -126,13 +132,13 @@ if (_gwGarrisonFncName isEqualTo "" && {!isNil "GW_3DEN_fnc_setUnitGarrison"}) t
 if (!(_gwGarrisonFncName isEqualTo "")) then {
     private _gwFnc = missionNamespace getVariable [_gwGarrisonFncName, {}];
     if (_debug3DEN) then {
-        [format ["[3DEN] Template Static Garrison: calling %1 (units=%2)", _gwGarrisonFncName, count _created]] call OKS_fnc_LogDebug;
+        _debugLines pushBack (format ["calling %1 (units=%2)", _gwGarrisonFncName, count _created]);
     };
     [_p0, _created] call _gwFnc;
     _movedCount = _countCreated;
 } else {
     if (_debug3DEN) then {
-        ["[3DEN] Template Static Garrison: GW garrison function not found; using fallback"] call OKS_fnc_LogDebug;
+        _debugLines pushBack "GW garrison function not found; using fallback";
     };
     // Fallback: local building-position garrison.
     private _buildingPositions = [];
@@ -166,8 +172,13 @@ private _sideName = switch (_side) do {
 };
 
 if (_debug3DEN) then {
-    [format ["[3DEN] Template Static Garrison: side=%1 count=%2 moved=%3 radius=%4", _sideName, _countCreated, _movedCount, _radius]] call OKS_fnc_LogDebug;
+    _debugLines pushBack (format ["side=%1 count=%2 moved=%3 radius=%4", _sideName, _countCreated, _movedCount, _radius]);
+    if !(_debugLines isEqualTo []) then {
+        [format ["[3DEN] Template Static Garrison | %1", _debugLines joinString " | "], false, true] call OKS_fnc_LogDebug;
+    };
 };
 
 [format ["Template Static Garrison placed (%1) | Units=%2", _sideName, _countCreated], 0, 5, false] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenTemplateStaticGarrison", [_side, _unitCountOverride], []] call OKS_fnc_EdenRememberLastAction;
 true

@@ -3,13 +3,35 @@
     _this: [position, ...] from Eden context menu
 */
 
-params ["_Position"];
+private _menuData = _this param [0, [], [[]]];
+
+private _pos = [];
+if (_menuData isEqualType []) then {
+    _pos = [_menuData] call OKS_fnc_EdenPosFromArray;
+    if (_pos isEqualTo []) then {
+        private _md0 = _menuData param [0, []];
+        if (_md0 isEqualType []) then {
+            _pos = [_md0] call OKS_fnc_EdenPosFromArray;
+        };
+    };
+};
+
+if (_pos isEqualTo []) then {
+    private _stw = screenToWorld getMousePosition;
+    if (_stw isEqualType []) then {
+        _pos = [_stw] call OKS_fnc_EdenPosFromArray;
+    };
+};
+
+_pos set [2, 0];
+
+private _Position = _pos;
 
 // Helper to get next available name with prefix
 private _baseName = ["AirBase"] call OKS_fnc_next3DENName;
 private _spawnName = ["AirSpawn"] call OKS_fnc_next3DENName;
 private _triggerName = ["AirHuntTrigger"] call OKS_fnc_next3DENName;
-private _dirToCam = [_Position, position get3DENCamera] call BIS_fnc_dirTo;
+private _dirToCam = [_Position, position get3DENCamera, 0] call BIS_fnc_dirTo;
 
 private _basePos =+ _Position;
 _basePos set [2, 0];
@@ -53,8 +75,11 @@ private _example = format [
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-[format ["CopiedToClipboard: %1", _example], true] call OKS_fnc_LogDebug;
-[format ["Helicopter Base copied to clipboard | Cache=%1", _cacheCount], 0, 4, true] call BIS_fnc_3DENNotification;
+
+["OKS_fnc_EdenAirBase", [], _selected] call OKS_fnc_EdenRememberLastAction;
+systemChat format ["CopiedToClipboard | AirBase copied to clipboard | Cache=%1", _cacheCount];
+[format ["CopiedToClipboard | AirBase copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
+[format ["Helicopter Base copied to clipboard | Cache=%1", _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
 delete3DENEntities _selected;
 
 

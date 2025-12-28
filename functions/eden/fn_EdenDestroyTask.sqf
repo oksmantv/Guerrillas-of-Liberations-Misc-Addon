@@ -33,16 +33,19 @@ copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 
-private _debug = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
-private _logText = if (_debug) then {
-    format ["CopiedToClipboard: %1", _example]
-} else {
-    format ["CopiedToClipboard: %1", _example]
-};
-[_logText, true] call OKS_fnc_LogDebug;
+["OKS_fnc_EdenDestroyTask", [], _selected] call OKS_fnc_EdenRememberLastAction;
 
-private _notify = if (_debug) then {"Destroy Task copied"} else {"Destroy Task copied to clipboard"};
+private _debug = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+private _logText = format ["CopiedToClipboard | Destroy Task copied to clipboard | Cache=%1 | %2", _cacheCount, _example];
+private _chatText = format ["CopiedToClipboard | Destroy Task copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
+
+private _logExample = _example splitString "\r\n" joinString " ";
+_logText = format ["CopiedToClipboard | Destroy Task copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
+
+private _notify = if (_debug) then {"Destroy Task copied to clipboard"} else {"Destroy Task copied to clipboard"};
 _notify = format ["%1 | Cache=%2", _notify, _cacheCount];
-[_notify, 0, 4, true] call BIS_fnc_3DENNotification;
+[_notify, 0, 10, true] call BIS_fnc_3DENNotification;
 
 true

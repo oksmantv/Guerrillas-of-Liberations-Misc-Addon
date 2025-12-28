@@ -104,6 +104,10 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\eden";
 			class EdenPosFromArray {};
 			class EdenSanitizePos {};
+			class EdenGetOrCreateLayer {};
+			class EdenSetLayerSafe {};
+			class EdenRememberLastAction {};
+			class EdenRepeatLastAction {};
 			class EdenClipboardCacheAdd {};
 			class EdenClipboardCacheExportClear {};
 			class EdenFindPosIn {};

@@ -49,15 +49,33 @@
         ["group_5", true, "OPFOR"] call OKS_fnc_EdenMarkOrgStrength;    // Platoon with OPFOR flag
 */
 
-params [
-    ["_strengthType", "group_3", [""]],
-    ["_addFlag", false, [false]],
-    ["_side", "BLUFOR", [""]],
-    ["_category", "", [""]],
-    ["_menuData", [], [[]]]
-];
+private _menuData = [];
+private _strengthType = "group_3";
+private _addFlag = false;
+private _side = "BLUFOR";
+private _category = "";
+
+// Supports both calling conventions:
+// - Eden menu legacy: [strengthType, addFlag, side, category?, menuData?] call ...
+// - RepeatLastAction: [menuData, strengthType, addFlag, side, category?] call ...
+if ((count _this) > 0 && {(_this select 0) isEqualType []}) then {
+    _menuData = _this param [0, [], [[]]];
+    _strengthType = _this param [1, "group_3", [""]];
+    _addFlag = _this param [2, false, [false]];
+    _side = _this param [3, "BLUFOR", [""]];
+    _category = _this param [4, "", [""]];
+} else {
+    _strengthType = _this param [0, "group_3", [""]];
+    _addFlag = _this param [1, false, [false]];
+    _side = _this param [2, "BLUFOR", [""]];
+    _category = _this param [3, "", [""]];
+    _menuData = _this param [4, [], [[]]];
+};
 
 private _logPrefix = "[OKS][3DEN][OrgStrength]";
+
+private _aoLayer = ["Area of Operations Markers"] call OKS_fnc_EdenGetOrCreateLayer;
+private _aoLayerValid = (_aoLayer isEqualType 0 && {_aoLayer >= 0}) || {(_aoLayer isEqualType objNull) && {!isNull _aoLayer}};
 
 private _allMarkers = all3DENEntities select 5; // Index 5 is markers
 
@@ -166,6 +184,10 @@ if (_selectedMarkerNames isEqualTo []) then {
         0
     };
 
+    if (_aoLayerValid) then {
+        [_baseMarker, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+    };
+
     private _baseName = [format ["ORG_%1", _cat]] call _makeUniqueMarkerName;
     _baseMarker set3DENAttribute ["name", _baseName];
     _baseMarker set3DENAttribute ["markerName", _baseName];
@@ -214,6 +236,9 @@ private _createdCount = 0;
         private _newMarker = create3DENEntity ["Marker", _strengthType, _strengthPos];
         
         if (!isNil "_newMarker") then {
+            if (_aoLayerValid) then {
+                [_newMarker, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+            };
             // Set marker attributes
             _newMarker set3DENAttribute ["name", _strengthMarkerName];
             _newMarker set3DENAttribute ["color", "ColorBlack"];  // Default color since we can't read source
@@ -256,6 +281,9 @@ private _createdCount = 0;
             private _flagMarker = create3DENEntity ["Marker", _flagType, _flagPos];
             
             if (!isNil "_flagMarker") then {
+                if (_aoLayerValid) then {
+                    [_flagMarker, _aoLayer] call OKS_fnc_EdenSetLayerSafe;
+                };
                 // Set flag marker attributes
                 _flagMarker set3DENAttribute ["name", _flagMarkerName];
                 _flagMarker set3DENAttribute ["color", "Default"];  // Default color for flags
@@ -278,6 +306,8 @@ if (_createdCount > 0) then {
     private _flagText = if (_addFlag) then {" (with flags)"} else {""};
     systemChat format ["Successfully created %1 organization strength marker(s) of type '%2'%3", _createdCount, _strengthType, _flagText];
     systemChat "Note: Markers created with default color (black). Adjust manually if needed.";
+
+    ["OKS_fnc_EdenMarkOrgStrength", [_strengthType, _addFlag, _side, _category], []] call OKS_fnc_EdenRememberLastAction;
 } else {
     systemChat "Failed to create any markers. Please ensure markers are properly selected.";
 };

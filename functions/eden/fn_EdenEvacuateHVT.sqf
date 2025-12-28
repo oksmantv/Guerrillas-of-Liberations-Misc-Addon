@@ -14,6 +14,7 @@
 params ["_menuData"];
 
 private _debug3DEN = uiNamespace getVariable ["OKS_3DEN_DEBUG", missionNamespace getVariable ["OKS_3DEN_DEBUG", false]];
+private _debugLines = [];
 
 private _md = if (_menuData isEqualType []) then {_menuData} else {[]};
 
@@ -84,7 +85,9 @@ private _createHiddenLogic = {
 
 private _p0 = [_selected, _md] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
-    (format ["EdenEvacuateHVT: invalid click position. menuData=%1", _md]) call OKS_fnc_LogDebug;
+    if (_debug3DEN) then {
+		[format ["[3DEN] EdenEvacuateHVT: invalid click position. menuData=%1", _md], false, true] call OKS_fnc_LogDebug;
+    };
     ["Evacuate HVT: Invalid click position", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
@@ -199,21 +202,21 @@ private _getFriendlySideFromEden = {
 
     if (_debug3DEN) then {
         private _pickedSideDbg = if (!isNull _best) then {side group _best} else {_fallbackSide};
-        (format ["[3DEN] EdenEvacuateHVT: player-detect best=%1 side=%2 score=%3 c1=%4 c2=%5 menAll=%6", _best, _pickedSideDbg, _bestScore, _bestC1, _bestC2, count _menAll]) call OKS_fnc_LogDebug;
+        _debugLines pushBack (format ["player-detect best=%1 side=%2 score=%3 c1=%4 c2=%5 menAll=%6", _best, _pickedSideDbg, _bestScore, _bestC1, _bestC2, count _menAll]);
         if !(_candidatesDbg isEqualTo []) then {
-            (format ["[3DEN] EdenEvacuateHVT: player-detect candidates: %1", _candidatesDbg joinString " | "]) call OKS_fnc_LogDebug;
+            _debugLines pushBack (format ["player-detect candidates: %1", _candidatesDbg joinString " | "]);
         };
         if ((count _sideVotes) > 0) then {
             private _votePairs = [];
             {
                 _votePairs pushBack format ["%1=%2", _x, _sideVotes get _x];
             } forEach (keys _sideVotes);
-            (format ["[3DEN] EdenEvacuateHVT: player-detect sideVotes: %1", _votePairs joinString " | "]) call OKS_fnc_LogDebug;
+            _debugLines pushBack (format ["player-detect sideVotes: %1", _votePairs joinString " | "]);
         };
         if ((count _playerCandidates) > 1) then {
             private _names = [];
-            { _names pushBack (((_x get3DENAttribute "name") param [0, ""]) + ":" + str (side group _x)); } forEach _playerCandidates;
-            (format ["[3DEN] EdenEvacuateHVT: WARNING multiple PLAYER candidates (Control==1): %1", _names joinString " | "]) call OKS_fnc_LogDebug;
+            { _names pushBack ((((_x get3DENAttribute "name") param [0, ""]) + ":" + str (side group _x))); } forEach _playerCandidates;
+            _debugLines pushBack (format ["WARNING multiple PLAYER candidates (Control==1): %1", _names joinString " | "]);
         };
     };
 
@@ -402,7 +405,7 @@ private _hvtNames = [];
 private _friendlySide = [_men] call _getFriendlySideFromEden;
 private _friendlySideToken = [_friendlySide] call _sideToken;
 if (_debug3DEN) then {
-    (format ["[3DEN] EdenEvacuateHVT: clickPos=%1 exfilPos=%2 friendlySide=%3 (%4) selectedMen=%5", _p0, _exfilPos, _friendlySideToken, _friendlySide, count _men]) call OKS_fnc_LogDebug;
+    _debugLines pushBack (format ["clickPos=%1 exfilPos=%2 friendlySide=%3 (%4) selectedMen=%5", _p0, _exfilPos, _friendlySideToken, _friendlySide, count _men]);
 };
 
 private _example = "";
@@ -448,7 +451,7 @@ if (_men isEqualTo []) then {
     private _isEnemy = (_sideHvt != civilian) && {_friendVal < 0.6};
     private _isCaptive = !_isEnemy;
     if (_debug3DEN) then {
-        (format ["[3DEN] EdenEvacuateHVT: sideHvt=%1 friendlySide=%2 friend=%3 (%4) isEnemy=%5 isCaptive=%6", _sideHvt, _friendlySide, _friendVal, _friendSrc, _isEnemy, _isCaptive]) call OKS_fnc_LogDebug;
+        _debugLines pushBack (format ["sideHvt=%1 friendlySide=%2 friend=%3 (%4) isEnemy=%5 isCaptive=%6", _sideHvt, _friendlySide, _friendVal, _friendSrc, _isEnemy, _isCaptive]);
     };
     _example = format ["[%1, getPos %2, %3, false, nil, %4, false] spawn OKS_fnc_Evacuate_HVT;", _unitsExpr, _exfilName, _friendlySideToken, _isCaptive];
 };
@@ -456,11 +459,20 @@ if (_men isEqualTo []) then {
 copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
-private _logText = format ["CopiedToClipboard: %1", _example];
-[_logText, true] call OKS_fnc_LogDebug;
 
-private _notify = if (_debug3DEN) then {format ["Evacuate HVT copied (exfil: %1)", _exfilName]} else {"Evacuate HVT copied to clipboard"};
+["OKS_fnc_EdenEvacuateHVT", [], _selected] call OKS_fnc_EdenRememberLastAction;
+private _chatText = format ["CopiedToClipboard | Evacuate HVT copied to clipboard | Cache=%1", _cacheCount];
+systemChat _chatText;
+
+private _logExample = _example splitString "\r\n" joinString " ";
+private _logText = format ["CopiedToClipboard | Evacuate HVT copied to clipboard | Cache=%1 | %2", _cacheCount, _logExample];
+[_logText, false, true, true] call OKS_fnc_LogDebug;
+if (_debug3DEN && {!(_debugLines isEqualTo [])}) then {
+    [format ["Evacuate HVT | %1", _debugLines joinString " | "], false, true, true] call OKS_fnc_LogDebug;
+};
+
+private _notify = if (_debug3DEN) then {format ["Evacuate HVT copied to clipboard (exfil: %1)", _exfilName]} else {"Evacuate HVT copied to clipboard"};
 _notify = format ["%1 | Cache=%2", _notify, _cacheCount];
-[_notify, 0, 5, true] call BIS_fnc_3DENNotification;
+[_notify, 0, 10, true] call BIS_fnc_3DENNotification;
 
 true
