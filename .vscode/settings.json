@@ -1,0 +1,9 @@
+{
+  // Ensure VS Code reads .github/copilot-instructions.md
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+
+  // Force commit message generation to include the repo's instruction file
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    { "file": ".github/copilot-instructions.md" }
+  ]
+}

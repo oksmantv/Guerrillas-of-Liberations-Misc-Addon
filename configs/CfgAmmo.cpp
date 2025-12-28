@@ -66,7 +66,7 @@ class CfgAmmo {
 	};
 
 	class GOL_Ammo_FPV_AP_OG7V_Throw: GrenadeHand {
-		model = "\fpv_ua\drone_ied.p3d";
+		model = "\fpv_ua\drone_og7v.p3d";
 		// UAFPV (OG7V) variants
 		BOT_vehicleSide[] = {"B_UAFPV_OG7V_AP","O_UAFPV_OG7V_AP","I_UAFPV_OG7V_AP","B_UAFPV_OG7V_AP"};
 		GOL_spawnSetting = "GOL_DroneAPClass";

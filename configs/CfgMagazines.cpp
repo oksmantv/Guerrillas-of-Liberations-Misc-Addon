@@ -52,7 +52,7 @@ class CfgMagazines {
         ammo = "GOL_Ammo_FPV_AP_OG7V_Throw";
         picture = "\ArmaFPV\data\drononmap.paa";
         icon = "\ArmaFPV\data\drononmap.paa";
-        model = "\fpv_ua\drone_ied.p3d";
+        model = "\fpv_ua\drone_og7v.p3d";
     };
 
     class GOL_Mag_FPV_AP_IED_Throw: HandGrenade {

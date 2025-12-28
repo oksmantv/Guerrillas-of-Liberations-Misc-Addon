@@ -30,6 +30,13 @@ if (isNull _player) exitWith {false};
 private _packedItem = "";
 private _throwMag = "";
 
+private _sideKey = switch (side group _player) do {
+    case WEST: {"BLUFOR"};
+    case EAST: {"OPFOR"};
+    case independent: {"INDEPENDENT"};
+    default {"BLUFOR"};
+};
+
 switch (toUpper _variant) do {
     case "AT": {
         _packedItem = "GOL_Packed_Drone_AT";
@@ -37,7 +44,17 @@ switch (toUpper _variant) do {
     };
     case "AP": {
         _packedItem = "GOL_Packed_Drone_AP";
-        _throwMag = "GOL_Mag_FPV_AP_Throw";
+        private _apVehicleClass = missionNamespace getVariable [format ["GOL_DroneAPClass_%1", _sideKey], "B_UAFPV_RKG_AP"];
+        private _apVehicleUpper = toUpper _apVehicleClass;
+        if ((_apVehicleUpper find "IED") >= 0) then {
+            _throwMag = "GOL_Mag_FPV_AP_IED_Throw";
+        } else {
+            if ((_apVehicleUpper find "OG7V") >= 0) then {
+                _throwMag = "GOL_Mag_FPV_AP_OG7V_Throw";
+            } else {
+                _throwMag = "GOL_Mag_FPV_AP_Throw";
+            };
+        };
     };
     default {
         _packedItem = _variant;
@@ -46,11 +63,6 @@ switch (toUpper _variant) do {
 
 if (_packedItem isEqualTo "" || _throwMag isEqualTo "") exitWith {
     systemChat "Invalid drone conversion type.";
-    false
-};
-
-if (vehicle _player != _player) exitWith {
-    systemChat "You must be on foot to convert drones.";
     false
 };
 
