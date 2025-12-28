@@ -3,7 +3,15 @@
     _this: [position, ...] from Eden context menu
 */
 
-private _menuData = _this param [0, [], [[]]];
+private _args = _this;
+if !(_args isEqualType []) then { _args = [_args]; };
+
+private _menuData = _args param [0, []];
+private _sideOverride = _args param [1, sideUnknown];
+private _helicopterClassOverride = _args param [2, ""]; 
+
+if (_menuData isEqualType objNull) then { _menuData = [_menuData]; };
+if !(_menuData isEqualType []) then { _menuData = []; };
 
 private _pos = [];
 if (_menuData isEqualType []) then {
@@ -57,7 +65,7 @@ _spawn set3DENAttribute ["hideObject", true];
 
 private _selected = get3DENSelected "object";
 private _helicopterClass = "O_Heli_Light_02_unarmed_F";
-private _side = "EAST";
+private _side = east;
 
 {
     private _type = typeOf _x;
@@ -66,6 +74,10 @@ private _side = "EAST";
         _helicopterClass = _type;
     };
 } forEach _selected;
+
+// Apply remembered overrides from RepeatLastAction, if present.
+if (_sideOverride isEqualType west) then { _side = _sideOverride; };
+if (_helicopterClassOverride isEqualType "" && {_helicopterClassOverride != ""}) then { _helicopterClass = _helicopterClassOverride; };
 
 private _example = format [
     "[%1, %2, %3, %4, %5, 'Unload', [2,1], 900, 100, 90, 5] spawn OKS_fnc_Airbase;",
@@ -76,7 +88,7 @@ copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 
-["OKS_fnc_EdenAirBase", [], _selected] call OKS_fnc_EdenRememberLastAction;
+["OKS_fnc_EdenAirBase", [_side, _helicopterClass], []] call OKS_fnc_EdenRememberLastAction;
 systemChat format ["CopiedToClipboard | AirBase copied to clipboard | Cache=%1", _cacheCount];
 [format ["CopiedToClipboard | AirBase copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
 [format ["Helicopter Base copied to clipboard | Cache=%1", _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;

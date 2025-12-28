@@ -2,10 +2,19 @@
     OKS_fnc_EdenHuntBase
 
     Supports being called from 3DEN context menus and from OKS_fnc_EdenRepeatLastAction.
-    Repeat passes BIS_fnc_3DENEntityMenu_data-style menuData as param 0.
+    Repeat passes menuData as param 0 and we also store resolved parameters as fixedArgs.
 */
 
-private _menuData = _this param [0, [], [[]]];
+private _args = _this;
+if !(_args isEqualType []) then { _args = [_args]; };
+
+private _menuData = _args param [0, []];
+private _sideOverride = _args param [1, sideUnknown];
+private _vehicleClassesOverride = _args param [2, []];
+private _unitCountOverride = _args param [3, -1];
+
+if (_menuData isEqualType objNull) then { _menuData = [_menuData]; };
+if !(_menuData isEqualType []) then { _menuData = []; };
 
 private _pos = [];
 if (_menuData isEqualType []) then {
@@ -63,7 +72,7 @@ _spawn set3DENAttribute ["hideObject", true];
 private _selected = get3DENSelected "object";
 private _vehicleClasses = [];
 private _unitCount = 0;
-private _side = "EAST";
+private _side = east;
 
 {
     private _type = typeOf _x;
@@ -74,6 +83,15 @@ private _side = "EAST";
         _vehicleClasses pushBack _type;
     };
 } forEach _selected;
+
+// Apply remembered overrides from RepeatLastAction, if present.
+if (_sideOverride isEqualType west) then { _side = _sideOverride; };
+if (_vehicleClassesOverride isEqualType [] && {!(_vehicleClassesOverride isEqualTo [])}) then {
+    _vehicleClasses = _vehicleClassesOverride;
+};
+if (_unitCountOverride isEqualType 0 && {_unitCountOverride >= 0} && {(_vehicleClassesOverride isEqualType []) && (_vehicleClassesOverride isEqualTo [])}) then {
+    _unitCount = _unitCountOverride;
+};
 
 if(_unitCount == 0 && _vehicleClasses isEqualTo []) then {
     _unitCount = 6
@@ -95,7 +113,8 @@ copyToClipboard _example;
 [_example] call OKS_fnc_EdenClipboardCacheAdd;
 private _cacheCount = count (uiNamespace getVariable ["OKS_3DEN_CLIPBOARD_CACHE", []]);
 
-["OKS_fnc_EdenHuntBase", [], _selected] call OKS_fnc_EdenRememberLastAction;
+private _rememberVehicles = if (_vehicleClasses isEqualTo []) then { [] } else { +_vehicleClasses };
+["OKS_fnc_EdenHuntBase", [_side, _rememberVehicles, _unitCount], []] call OKS_fnc_EdenRememberLastAction;
 systemChat format ["CopiedToClipboard | Hunt Base copied to clipboard | Cache=%1", _cacheCount];
 [format ["CopiedToClipboard | Hunt Base copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
 [format ["Hunter Base copied to clipboard | Cache=%1", _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
