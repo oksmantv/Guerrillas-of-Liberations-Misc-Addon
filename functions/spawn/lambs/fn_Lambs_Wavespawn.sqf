@@ -6,6 +6,8 @@
 
  	if(!isServer) exitWith {};
 
+	[[attack_1,attack_2,attack_3,attack_4,attack_5,attack_6,attack_7],2,3,180,"rush",east,1500,"Wave1Complete"] spawn OKS_fnc_Lambs_Wavespawn;
+
 	Params [
 		"_SpawnPos",
 		"_UnitsPerWave",
@@ -16,6 +18,7 @@
 		["_Range",1500,[-1]],
 		["_Variable","Rush_WaveSpawn_Variable",[""]]
 	];
+
 	private ["_RandomPos","_Center","_AllSpawnedUnits"];
 	_AllSpawnedUnits = [];
 

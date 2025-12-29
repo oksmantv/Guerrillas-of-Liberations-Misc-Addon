@@ -8,7 +8,7 @@
 	CrewSelect // 0 = full crew, 1 = driver only, 2 = gunner only, 3 = commander only
 	CargoCount // Amount of Infantry in Cargo
 
-	Types = "hunt", "creep", "ambushattack", "ambushrush", "ambushhunt", "ambushcqb" or "rush"
+	Types = "hunt", "creep", "attack", "ambushattack", "ambushrush", "ambushhunt", "ambushcqb" or "rush"
 	_Range for tracking range, and ambush trigger range.
 	
 */
@@ -45,14 +45,15 @@
 		private _nearestPlayer = _sortedPlayers select 0;
 		private _direction = _OriginPosition getDir _nearestPlayer;
 
-		_direction
+		[_direction,_nearestPlayer]
 	};
 
 	if(typeName _SpawnPos == "OBJECT") then {
 		_Direction = getDir _SpawnPos;
 		_Position = getPosATL _SpawnPos;
 	} else {
-		_Direction = [_SpawnPos] call _GetDirToNearestPlayer;
+		_return = [_SpawnPos] call _GetDirToNearestPlayer;
+		_return params ["_Direction","_NearestPlayer"];
 		_Position = _SpawnPos;
 	};
 
@@ -64,15 +65,16 @@
 		for "_i" from 1 to (_InfantryCountOrVehicleArray) do
 		{
 			Private "_Unit";
+			private _SpawnAt = [_Position, (5 + (random 5)), (random 360)] call BIS_fnc_relPos;
 			if ( (count (units _Group)) == 0 ) then
 			{
-				_Unit = _Group CreateUnit [(_Leaders call BIS_FNC_selectRandom), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
+				_Unit = _Group CreateUnit [(_Leaders call BIS_FNC_selectRandom), _SpawnAt, [], 0, "NONE"];
 				_Unit setRank "SERGEANT";
 			} else {
 				if(count (units _Group) == 1) then {
-					_Unit = _Group CreateUnit [(_Units select 0), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
+					_Unit = _Group CreateUnit [(_Units select 0), _SpawnAt, [], 0, "NONE"];
 				} else {
-					_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), _SpawnPos getPos [(5+(random 5)),(random 360)], [], 0, "NONE"];
+					_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), _SpawnAt, [], 0, "NONE"];
 				};			
 				_Unit setRank "PRIVATE";
 			};
@@ -126,6 +128,20 @@
 			_Group setBehaviour "AWARE";
 			_Group setCombatMode "RED";
 		};
+
+		case "attack": {		
+			{_X setBehaviour "AWARE"; _X setCombatMode "YELLOW"; } foreach units _Group;
+			_Group setBehaviour "AWARE";
+			_Group setCombatMode "YELLOW";			
+
+			_return = [getPos leader _Group] call _GetDirToNearestPlayer;
+			_return params ["_Direction","_NearestPlayer"];
+			_SADWaypoint = _Group addWaypoint [getPos _NearestPlayer,0];
+			_SADWaypoint setWaypointType "SAD";
+			_SADWaypoint setWaypointBehaviour "AWARE";
+			_SADWaypoint setWaypointCombatMode "RED";
+		};
+
 		case "ambushattack": {		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
 			_Group setBehaviour "STEALTH";
@@ -190,4 +206,6 @@
 			[_Group,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];	
 		};
 	};
+
+	_Group
 

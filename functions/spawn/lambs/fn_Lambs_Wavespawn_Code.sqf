@@ -1,4 +1,12 @@
-Params ["_SpawnPos","_Side","_UnitsPerWave","_UnitArray","_AllSpawnedUnits","_Range","_LambsType"];
+Params [
+	"_SpawnPos",
+	"_Side",
+	"_UnitsPerWave",
+	"_UnitArray",
+	"_AllSpawnedUnits",
+	"_Range",
+	"_LambsType"
+];
 
 _UnitArray Params ["_Leaders","_Units","_Officer"];
 private _ForceMultiplier = missionNameSpace getVariable ["GOL_ForceMultiplier",1];
