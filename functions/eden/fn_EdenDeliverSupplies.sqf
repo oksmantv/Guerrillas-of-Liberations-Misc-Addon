@@ -70,10 +70,10 @@ _trg set3DENAttribute ["repeatable", false];
 _trg set3DENAttribute ["repeating", false];
 
 private _exampleLines = [
-    format ["[%1, \"ammo\", 1, \"OKS_Delivery_MainTask\", \"Delivery to Area\", \"Deliver Ammo\"] spawn OKS_fnc_Deliver_Supplies;", _trgName],
-    format ["[%1, \"water\", 1, \"OKS_Delivery_MainTask\", \"Delivery to Area\", \"Deliver Water\"] spawn OKS_fnc_Deliver_Supplies;", _trgName],
-    format ["[%1, \"food\", 1, \"OKS_Delivery_MainTask\", \"Delivery to Area\", \"Deliver Food\"] spawn OKS_fnc_Deliver_Supplies;", _trgName],
-    format ["[%1, \"fuel\", 1, \"OKS_Delivery_MainTask\", \"Delivery to Area\", \"Deliver Fuel\"] spawn OKS_fnc_Deliver_Supplies;", _trgName]
+    format ["[%1, ""ammo"", 1, ""OKS_Delivery_MainTask"", ""Delivery to Area"", ""Deliver Ammo""] spawn OKS_fnc_Deliver_Supplies;", _trgName],
+    format ["[%1, ""water"", 1, ""OKS_Delivery_MainTask"", ""Delivery to Area"", ""Deliver Water""] spawn OKS_fnc_Deliver_Supplies;", _trgName],
+    format ["[%1, ""food"", 1, ""OKS_Delivery_MainTask"", ""Delivery to Area"", ""Deliver Food""] spawn OKS_fnc_Deliver_Supplies;", _trgName],
+    format ["[%1, ""fuel"", 1, ""OKS_Delivery_MainTask"", ""Delivery to Area"", ""Deliver Fuel""] spawn OKS_fnc_Deliver_Supplies;", _trgName]
 ];
 
 private _example = _exampleLines joinString "\n";

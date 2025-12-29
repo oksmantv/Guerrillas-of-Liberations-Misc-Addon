@@ -180,13 +180,21 @@ if(_Debug_Variable) then {
 	format ["[CIV] Creating Civilian Module.."] spawn OKS_fnc_LogDebug;
 };
 if(_CivilianCount > 0) then {
+	// Normalize common Eden-style numeric booleans (0/1) into real SQF bools.
+	if (_UseAgents isEqualType 0) then { _UseAgents = _UseAgents != 0; };
+	if (_UsePanicMode isEqualType 0) then { _UsePanicMode = _UsePanicMode != 0; };
+	if (_Undercover isEqualType 0) then { _Undercover = _Undercover != 0; };
+	if (_Debug_Variable isEqualType 0) then { _Debug_Variable = _Debug_Variable != 0; };
+
 	_Module = _Group createUnit ["ModuleCivilianPresence_F", [0,0,0], [], 0, "NONE"];
 	_Trigger setVariable ["GOL_Civilians_Module", _Module, true];
 
 	_AllModules pushBackUnique _Module;
 	_Module setVariable ["#area",[getPos _Trigger,_Area#0,_Area#1,0,true,-1]];  // Fixed! this gets passed to https://community.bistudio.com/wiki/inAreaArray
-	_Module setVariable ["#debug",_Debug_Variable]; // Debug mode on
-	_Module setVariable ["#unitcount",_CivilianCount];
+	// Set both canonical (camelCase) and legacy (lowercase) keys for robustness.
+	_Module setVariable ["#debug", _Debug_Variable]; // Debug mode on
+	_Module setVariable ["#unitCount", _CivilianCount];
+	_Module setVariable ["#unitcount", _CivilianCount];
 	if(_Undercover) then {
 		if(_Debug_Variable) then { 
 			format ["[UNDERCOVER] Undercover: %1",_Trigger] spawn OKS_fnc_LogDebug
@@ -197,15 +205,19 @@ if(_CivilianCount > 0) then {
 			_this setVariable ["GOL_NonCombatant", true, true];
 			[_this] spawn OKS_fnc_UndercoverAI;
 		}];
-		_Module setVariable ["#useagents",false];
-		_Module setVariable ["#usepanicmode",false];
+		_Module setVariable ["#useAgents", false];
+		_Module setVariable ["#useagents", false];
+		_Module setVariable ["#usePanicMode", false];
+		_Module setVariable ["#usepanicmode", false];
 	} else {
 		_Module setVariable ["#onCreated",{
 			format["[CIV] Civilian Spawned %1",_this] spawn OKS_fnc_LogDebug;
 			_this setVariable ["GOL_NonCombatant", true, true];
 		}];
-		_Module setVariable ["#useagents",_UseAgents];
-		_Module setVariable ["#usepanicmode",_UsePanicMode];
+		_Module setVariable ["#useAgents", _UseAgents];
+		_Module setVariable ["#useagents", _UseAgents];
+		_Module setVariable ["#usePanicMode", _UsePanicMode];
+		_Module setVariable ["#usepanicmode", _UsePanicMode];
 	};
 };
 if(_Debug_Variable) then { format ["[UNDERCOVER] Area %1 - %2 - Count %3",_Area#0,_Area#1,_CivilianCount] spawn OKS_fnc_LogDebug};

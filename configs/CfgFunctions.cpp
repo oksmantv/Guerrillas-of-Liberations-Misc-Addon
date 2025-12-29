@@ -36,6 +36,7 @@ class CfgFunctions // Defines a function
 			class Fallback_Artillery {};			
 			class RandomArtillery {};			
 			class Hostage {};			
+			class Request_Intel {};
 			class Task_Settings {};
 			class TaskRun {};
 			class NekyTasks {};
