@@ -387,6 +387,7 @@ class CfgFunctions // Defines a function
 			class Lambs_SpawnGroup {};
 			class Lambs_Wavespawn {};
 			class Lambs_Wavespawn_Code {};
+			class LambsChargeSpawn {};
 		};	
 
 		class OKS_Spawn_Convoy {
