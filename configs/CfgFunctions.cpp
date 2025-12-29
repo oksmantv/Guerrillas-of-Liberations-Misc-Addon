@@ -307,6 +307,7 @@ class CfgFunctions // Defines a function
 			class Destroy_Houses {};
 			class Fire {};
 			class IncomingAlarm {};
+			class MortarZone {};
 			class PowerGenerator {};
 			class SignalFlare {};
 			class AddExplosiveEffect {};
