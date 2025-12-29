@@ -300,6 +300,7 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\ambience";
 			class aaAmbient {};
 			class AddGeneratorAction {};
+			class AlarmSound {};
 			class Chat {};
 			class CreateExplosion {};
 			class DeleteDeadAndObjects {};
@@ -373,7 +374,10 @@ class CfgFunctions // Defines a function
 			class Scout {};
 			class AirScout {};
 			class SpawnStatic {};
+			class AirCargoDrop {};
+			class AirStrike {};
 			class AirSpawn {};
+			class Helicopter_Attack {};
 		};	
 
 		class OKS_Spawn_Lambs {
