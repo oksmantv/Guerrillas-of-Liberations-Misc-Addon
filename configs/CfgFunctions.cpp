@@ -30,6 +30,7 @@ class CfgFunctions // Defines a function
 			class Destroy_Barricade {};
 			class Destroy_Barricade_Action {};
 			class Destroy_Task {};
+			class Deliver_Supplies {};
 			class Insert_Task {};
 			class Evacuate_HVT {};
 			class Fallback_Artillery {};			
@@ -127,6 +128,7 @@ class CfgFunctions // Defines a function
 			class EdenDestroyTask {};
 			class EdenInsertTask {};
 			class EdenHostageTask {};
+			class EdenDeliverSupplies {};
 			class EdenEvacuateHVT {};
 			class EdenSetupIntel {};
 			class EdenLambsGroup {};

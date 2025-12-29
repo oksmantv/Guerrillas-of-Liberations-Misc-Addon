@@ -891,11 +891,32 @@ class Display3DEN {
                 value = 0;
                 items[] = {
                     "GOL_SCRIPTS_TASK_DESTROYTASK",
+                    "GOL_SCRIPTS_TASK_DELIVERSUPPLIES",
                     "GOL_SCRIPTS_TASK_INSERTTASK",
                     "GOL_SCRIPTS_TASK_HOSTAGETASK",
                     "GOL_SCRIPTS_TASK_EVACUATEHVT",
                     "GOL_SCRIPTS_TASK_SETUPINTEL"
                 };
+            };
+
+            class GOL_SCRIPTS_TASK_DELIVERSUPPLIES {
+                text = "Deliver Supplies";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TASK_DELIVERSUPPLIES_CREATE",
+                    "GOL_SCRIPTS_TASK_DELIVERSUPPLIES_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_TASK_DELIVERSUPPLIES_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenDeliverSupplies;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_TASK_DELIVERSUPPLIES_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Deliver_Supplies'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
             };
 
             class GOL_SCRIPTS_TASK_INSERTTASK {
