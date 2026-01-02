@@ -35,11 +35,11 @@
 			}, "ASCEND"] call BIS_fnc_sortBy select 0;
 
 		if(!(isNull _ClosestAI)) then {
-			_closePlayers = (_ClosestAI nearEntities [["Man"], 15]) select {
+			_closePlayers = (_ClosestAI nearEntities [["Man"], 25]) select {
 				(side _X != (side _Group)) &&
 				((side _Group) getFriend (side _X) <= 0.6) &&
 				isPlayer _X &&
-				(side _Group) knowsAbout _X > 2.5
+				(side _Group) knowsAbout _X > 1.5
 			};
 
 			if(!(_closePlayers isEqualTo [])) then {
@@ -57,7 +57,7 @@
 						[_Unit, "PATH"] remoteExec ["enableAI",0];
 						[_Unit] spawn OKS_fnc_Suppressed;
 
-						if(_Debug) then { format ["[EnablePath]Garrison Unit Detached: %1",_Unit] spawn OKS_fnc_LogDebug;};
+						if(_Debug) then { format ["[EnablePath] Garrison Unit Detached: %1",_Unit] spawn OKS_fnc_LogDebug;};
 					} else {
 						if(_Debug) then { format ["[EnablePath] Ignored (Unit in Vehicle): %1",_Unit] spawn OKS_fnc_LogDebug;};
 					};

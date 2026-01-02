@@ -260,6 +260,14 @@ class CfgFunctions // Defines a function
 			class StaticJump_EventCode {};
 		};
 
+		class OKS_ScudIntercept {
+			file = "\OKS_GOL_Misc\functions\scudIntercept";
+			class ScudIntercept_RegisterLauncher {};
+			class ScudIntercept_OnFired {};
+			class ScudIntercept_PickTargetPos {};
+			class ScudIntercept_LaunchAI {};
+		};
+
 		class OKS_PlayerSetup {
 			file = "\OKS_GOL_Misc\functions\playersetup";
 			class SetupUnconsciousCamera {};

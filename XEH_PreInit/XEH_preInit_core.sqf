@@ -121,6 +121,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_ScudIntercept_Debug",
+    "CHECKBOX",
+    ["Enable SCUD/Cruise Intercept DEBUG", "Enables debugging for SCUD (RHS) and Cruise Missile (VLS) launch/intercept scripts."],
+    ["GOL DEBUG", "Module Specific"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_RotorProtection_Debug",
     "CHECKBOX",
     ["Enable Rotor DEBUG", "Enables debugging for the handleDamage scripts for Mi-8/Mi-24 rotors."],
