@@ -1203,25 +1203,91 @@ Edited by OksmanTV & Bluwolf.
 
   ### Description
   Spawns an aircraft at a specified position, assigns a waypoint, and sets crew behavior and altitude.  
-  Supports customizable aircraft class, side, flight mode, and waypoint type.
+  Supports selecting aircraft templates (including pylon magazines), optional loadout override, and optional
+  initial intel (reveal) of hostile ground targets near the target/waypoint.
 
   ### Parameters
 
   | Name                | Type          | Default | Description                                                                |
   |---------------------|---------------|---------|----------------------------------------------------------------------------|
-  | `_SpawnPos`         | Array, Object | —       | Spawn position (array `[x,y,z]` or object).                                |
-  | `_MoveToPos`        | Array, Object | —       | Destination position (array or object).                                    |
-  | `_Classname`        | String        | —       | Classname of the aircraft to spawn.                                        |
-  | `_Side`             | Side          | —       | Side to assign to the aircraft and crew.                                   |
-  | `_ShouldBeCareless` | Boolean       | —       | If true, crew is set to "CARELESS"; otherwise, "STEALTH".                  |
-  | `_WaypointType`     | String        | —       | Waypoint type (e.g., `"SAD"`, `"MOVE"`).                                   |
-  | `_Height`           | Number        | —       | Altitude (in meters) for the aircraft to fly at spawn.                     |
+    | `_SpawnPos`         | Array, Object | —       | Spawn position (array `[x,y,z]` or object). Z is overridden by `_Height`.  |
+    | `_MoveToPos`        | Array, Object | —       | Destination/waypoint position (array or object).                           |
+    | `_Airframes`        | String, Array | —       | Aircraft selection. Supports classname, list of classnames, or templates.  |
+    | `_Side`             | Side          | `east`  | Side to assign to the aircraft and crew (defaults to `east` if unknown).   |
+    | `_ShouldBeCareless` | Boolean       | `false` | If true, crew is set to `CARELESS`; otherwise `STEALTH`.                    |
+    | `_WaypointType`     | String        | `"SAD"` | Waypoint type (e.g., `"SAD"`, `"MOVE"`).                                   |
+    | `_Height`           | Number        | `1000`  | Altitude (in meters) for the aircraft to fly at spawn.                     |
+    | `_Loadout`          | Any           | `nil`   | `nil` = use template pylons (if provided). `true`/string = run `OKS_fnc_AirLoadout`. Array = apply custom pylons. |
+    | `_RevealTargets`    | Boolean       | `true`  | If true, reveals hostile ground targets near `_MoveToPos` to the crew.     |
+    | `_RevealRadius`     | Number        | `1000`  | Radius (meters) around `_MoveToPos` for the reveal/intel scan.             |
+
+    ### Airframe Template Format
+
+    `_Airframes` can be:
+
+    - Classname string:
+
+      "O_Plane_CAS_02_dynamicLoadout_F"
+
+    - List of classnames:
+
+      ["O_Plane_CAS_02_dynamicLoadout_F", "O_Plane_Fighter_02_F"]
+
+    - Templates (copied from Eden via **GOL Spawns → QRF BASES → Air Spawn → Copy**):
+
+      [
+        ["O_Plane_CAS_02_dynamicLoadout_F", ["PylonRack_1Rnd_Missile_AGM_02_F", "PylonRack_1Rnd_Missile_AGM_02_F"]],
+        ["O_Plane_Fighter_02_F",          ["PylonMissile_Missile_AA_R73_x1", "PylonMissile_Missile_AA_R73_x1"]]
+      ]
 
   ### Example Usage
 
+    // Old signature still works
       [airspawn_1, [22278,19441.9,0], selectRandom ["UK3CB_CSAT_B_O_MIG21_AA", "UK3CB_CSAT_B_O_Su25SM", "UK3CB_CSAT_B_O_MIG21", "UK3CB_CSAT_B_O_MIG29SM"], east, false, "SAD", 1000] spawn OKS_fnc_AirSpawn;
 
-      [Plane_1, PlaneExit_1, selectRandom ["UK3CB_AAF_B_L39_AA", "UK3CB_AAF_B_C130J_CARGO", "UK3CB_AAF_B_Gripen"], west, true, "MOVE"] spawn OKS_fnc_AirSpawn;
+    // Minimal usage with defaults (Height=1000, WaypointType="SAD", RevealTargets=true)
+    [Plane_1, PlaneExit_1, "O_Plane_CAS_02_dynamicLoadout_F", east] spawn OKS_fnc_AirSpawn;
+
+    // Templates including pylons (ideal with Eden copy output)
+    private _airframes = [
+      ["O_Plane_CAS_02_dynamicLoadout_F", ["PylonRack_1Rnd_Missile_AGM_02_F", "PylonRack_1Rnd_Missile_AGM_02_F"]],
+      ["O_Plane_Fighter_02_F",          ["PylonMissile_Missile_AA_R73_x1", "PylonMissile_Missile_AA_R73_x1"]]
+    ];
+    [airspawn_1, PlaneExit_1, _airframes, east, false, "SAD", 1200, nil, true, 1000] spawn OKS_fnc_AirSpawn;
+
+    // Force OKS_fnc_AirLoadout (ignores template pylons)
+    [airspawn_1, PlaneExit_1, "rhs_mi28n_vvs", east, false, "SAD", 500, true] spawn OKS_fnc_AirSpawn;
+
+</details>
+
+<details>
+  <summary>OKS_fnc_BeachLanding</summary>
+
+  ### Description
+  Spawns a boat with full crew and cargo, drives it in a straight line to beach, cuts propulsion shortly before the beach so it glides, then dismounts quickly when speed is below 2 km/h.
+  Only gunners stay in the boat; driver + cargo form a new group and receive a reduced-set LAMBS offensive task (rush/hunt/attack).
+
+  ### Eden Helper
+  Right-click terrain → **GOL Spawns → Beach Landing → Create**
+  - Creates `beachLandingSpawn_X` and `beachLandingTarget_X` (move target onto shore)
+  - Copies a spawnList-ready call to clipboard
+
+  ### Parameters (new signature)
+
+  | Name                  | Type          | Default | Description |
+  |-----------------------|---------------|---------|-------------|
+  | `_BeachLandingSpawn`  | Object, Array | —       | Spawn position logic/object or position array. |
+  | `_BeachLandingTarget` | Object, Array | —       | Beach target logic/object or position array. |
+  | `_BoatClassname`      | String        | `"B_Boat_Transport_01_F"` | Boat classname. |
+  | `_CargoUnitCount`     | Number        | `0`     | Infantry count to place in cargo (filled up to available seats). |
+  | `_Side`               | Side          | `east`  | Side for spawned units. |
+  | `_LambsType`          | String        | `"rush"` | `"rush"`, `"hunt"`, or `"attack"` (others fall back to `"rush"`). |
+  | `_LambsRange`         | Number        | `1500`  | Task range for LAMBS. |
+  | `_PublicVariableName` | String        | `""`   | If set, broadcasts `units _dismountGroup` as a missionNamespace variable. |
+
+  ### Example Usage
+
+      null = [beachLandingSpawn_1, beachLandingTarget_1, "B_Boat_Transport_01_F", 8, east, "rush", 1500, ""] spawn OKS_fnc_BeachLanding;
 
 </details>
 <details>
@@ -2544,4 +2610,60 @@ Edited by OksmanTV & Bluwolf.
   - Uses EAST/OPFOR side by default - modify function for other sides as needed
 
 </details>
+</details>
+
+<details>
+  <summary>OKS_fnc_DroneHuntZone</summary>
+
+  ### Description
+  Spawns a drone at a given position, patrols within a target zone, and attacks the first hostile target found.
+  Uses normal AI movement (waypoints / `doMove`) to fly into the zone and loiter while scanning.
+  When a target is found it AI-approaches, and within 125m it switches to a terminal steering run using `OKS_fnc_SteerVehicleToTarget`.
+  The terminal run uses a randomized aim point near the target, so there is a chance the drone misses.
+
+  ### Parameters
+
+  | Name                       | Type               | Default        | Description |
+  |----------------------------|--------------------|----------------|-------------|
+  | `_spawnPosition`           | Array, Object      | —              | Spawn position (ATL). |
+  | `_targetZone`              | String, Array, Object | —           | Marker name, position, or object used as zone center. |
+  | `_droneClassName`          | String             | `""`           | Drone vehicle classname. Empty string uses per-side CBA option `GOL_DroneATClass_<SIDEKEY>`. |
+  | `_droneSide`               | Side               | `east`         | Side used to determine hostility via `getFriend`. |
+  | `_targetZoneRadiusMeters`  | Number             | `750`          | Search radius around zone center. |
+  | `_searchTimeoutSeconds`    | Number             | `300`          | Stop searching after this time (0 = infinite). |
+  | `_cruiseSpeedKilometersPerHour` | Number        | `70`           | Cruise/attack speed. |
+  | `_detonationDistanceMeters`| Number             | `12`           | Detonate when within this distance to target. |
+  | `_explosionClassName`      | String             | `"AUTO"`      | Detonation behavior. `"AUTO"` relies entirely on the FPV_UA drone class' own EventHandler detonation (matches the mod exactly). If you pass a custom ammo classname instead, DroneHuntZone will try to trigger that; if it’s invalid it falls back to `setDamage 1`. |
+
+  ### Example Usage
+
+      null = [[1000,1000,10], "targetMarker", "O_UAV_01_F", east, 1000, 60, 70, 15, "AUTO"] spawn OKS_fnc_DroneHuntZone;
+
+</details>
+
+<details>
+  <summary>OKS_fnc_SteerVehicleToTarget</summary>
+
+  ### Description
+  Steers a vehicle toward a target by forcing orientation (`setVectorDirAndUp`) and velocity (`setVelocity`).
+  This is a reusable building block for FPV-style drones, missiles, and scripted fly-bys.
+
+  ### Parameters
+
+  | Name                      | Type          | Default | Description |
+  |---------------------------|---------------|---------|-------------|
+  | `_vehicle`                | Object        | —       | Vehicle to steer. |
+  | `_target`                 | Object, Array | —       | Target object or position. |
+  | `_speedKilometersPerHour` | Number        | `70`    | Travel speed. |
+  | `_stopDistanceMeters`     | Number        | `30`    | Stop when within this distance. |
+  | `_updateIntervalSeconds`  | Number        | `0.2`   | Steering update interval. |
+  | `_maximumTimeSeconds`     | Number        | `60`    | Timeout (0 = infinite). |
+  | `_targetPositionOffset`   | Array         | `[0,0,0]` | Offset added to the target position. |
+  | `_targetPositionSpace`    | String        | `"ASL"` | Position space for array targets: `"ASL"` or `"ATL"`. |
+  | `_shouldSetVectorDirection` | Boolean     | `true`  | If false, only velocity is set (no forced orientation). |
+
+  ### Example Usage
+
+      null = [myDrone, myTargetObject, 70, 15, 0.2, 60, [0,0,0.6], "ASL", true] spawn OKS_fnc_SteerVehicleToTarget;
+
 </details>

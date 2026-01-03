@@ -14,6 +14,14 @@
     ];
     Private ["_UnitClass","_Group","_Commander","_Gunner","_Driver"];
 
+    private _isAirVehicle = (!isNull _Vehicle) && {
+        (_Vehicle isKindOf "Air")
+        || {_Vehicle isKindOf "UAV"}
+        || {getNumber (configFile >> "CfgVehicles" >> typeOf _Vehicle >> "isUav") isEqualTo 1}
+    };
+
+    private _isHelicopter = _isAirVehicle && { _Vehicle isKindOf "Helicopter" };
+
     _Settings = [_Side] call OKS_fnc_Dynamic_Settings;
     _Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian"];
 	_UnitArray Params ["_Leaders","_Units","_Officer"];
@@ -41,6 +49,35 @@
         };
     };
 
+    // For air vehicles, use pilots for the driver seat.
+    // For helicopters, use helicrew for turret seats (gunner/commander) when possible.
+    private _driverUnitClass = _unitClass;
+    private _turretUnitClass = _unitClass;
+    if (_isAirVehicle) then {
+        switch (_side) do {
+            case WEST: {
+                _driverUnitClass = if (_isHelicopter) then {"B_Helipilot_F"} else {"B_Pilot_F"};
+                _turretUnitClass = if (_isHelicopter) then {"B_Helicrew_F"} else {"B_crew_F"};
+            };
+            case EAST: {
+                _driverUnitClass = if (_isHelicopter) then {"O_Helipilot_F"} else {"O_Pilot_F"};
+                _turretUnitClass = if (_isHelicopter) then {"O_Helicrew_F"} else {"O_crew_F"};
+            };
+            case INDEPENDENT: {
+                _driverUnitClass = if (_isHelicopter) then {"I_Helipilot_F"} else {"I_Pilot_F"};
+                _turretUnitClass = if (_isHelicopter) then {"I_Helicrew_F"} else {"I_crew_F"};
+            };
+            case civilian: {
+                _driverUnitClass = "C_man_pilot_F";
+                _turretUnitClass = "C_man_pilot_F";
+            };
+            default {
+                _driverUnitClass = if (_isHelicopter) then {"O_Helipilot_F"} else {"O_Pilot_F"};
+                _turretUnitClass = if (_isHelicopter) then {"O_Helicrew_F"} else {"O_crew_F"};
+            };
+        };
+    };
+
     _Group = createGroup _Side;
     _Group setVariable ["acex_headless_blacklist",true,true];
 
@@ -52,7 +89,7 @@
             if(_Debug_Variable) then {
                 "[ADDVEHICLECREW] Creating Commander" spawn OKS_fnc_LogDebug;
             };
-            _Commander = _Group CreateUnit [_UnitClass, [0,0,0], [], 5, "NONE"];
+            _Commander = _Group CreateUnit [_turretUnitClass, [0,0,0], [], 5, "NONE"];
             _Commander setRank "SERGEANT";
             _Commander moveinCommander _Vehicle;
         };
@@ -61,7 +98,7 @@
             if(_Debug_Variable) then {
                 "[ADDVEHICLECREW] Creating Gunner" spawn OKS_fnc_LogDebug;
             };
-            _Gunner = _Group CreateUnit [_UnitClass, [0,0,0], [], 5, "NONE"];
+            _Gunner = _Group CreateUnit [_turretUnitClass, [0,0,0], [], 5, "NONE"];
             _Gunner setRank "CORPORAL";
             _Gunner moveinGunner _Vehicle;
         };
@@ -70,7 +107,7 @@
             if(_Debug_Variable) then {
                 "[ADDVEHICLECREW] Creating Driver" spawn OKS_fnc_LogDebug;
             };
-            _Driver = _Group CreateUnit [_UnitClass, [0,0,0], [], 5, "NONE"];
+            _Driver = _Group CreateUnit [_driverUnitClass, [0,0,0], [], 5, "NONE"];
             _Driver setRank "PRIVATE";
             _Driver moveinDriver _Vehicle;
         };

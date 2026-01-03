@@ -21,6 +21,7 @@ class Display3DEN {
                     "GOL_SCRIPTS_LAMBS",
                     "GOL_SCRIPTS_FIRESUPPORT",
                     "GOL_SCRIPTS_QRF_BASES",
+					"GOL_SCRIPTS_BEACH_LANDING",
                     "GOL_SCRIPTS_MECHANIZED_SPAWN",
                     "GOL_SCRIPTS_CONVOY",
                     "GOL_SCRIPTS_ATTACK_SPAWNGROUP",
@@ -355,6 +356,26 @@ class Display3DEN {
                 conditionShow = "1";
             };
 
+            class GOL_SCRIPTS_BEACH_LANDING {
+                text = "Beach Landing";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_BEACH_LANDING_CREATE",
+                    "GOL_SCRIPTS_BEACH_LANDING_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_BEACH_LANDING_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_BeachLanding'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_BEACH_LANDING_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenBeachLanding;";
+                conditionShow = "1";
+            };
+
             class GOL_SCRIPTS_ATTACK_SPAWNGROUP {
                 text = "Attack SpawnGroup";
                 value = 0;
@@ -429,8 +450,62 @@ class Display3DEN {
                     "GOL_SCRIPTS_FIRESUPPORT_AAA",
                     "GOL_SCRIPTS_FIRESUPPORT_RADAR",
                     "GOL_SCRIPTS_FIRESUPPORT_ARTYFIRE",
+                    "GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE",
+                    "GOL_SCRIPTS_FIRESUPPORT_DRONEHUNTZONE",
+                    "GOL_SCRIPTS_FIRESUPPORT_AIRSPAWN",
                     "GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT"
                 };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_DRONEHUNTZONE {
+                text = "Drone Hunt Zone";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_DRONEHUNTZONE_CREATE",
+                    "GOL_SCRIPTS_FIRESUPPORT_DRONEHUNTZONE_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_DRONEHUNTZONE_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenDroneHuntZone;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_DRONEHUNTZONE_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_DroneHuntZone'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE {
+                text = "Ballistic Missile";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE_SCUD",
+                    "GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE_CRUISE",
+                    "GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_ScudIntercept_LaunchAI'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE_SCUD {
+                text = "SCUD";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), 'rhs_9k79'] call OKS_fnc_EdenBallisticMissile;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE_CRUISE {
+                text = "Cruise Missile";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), 'B_Ship_MRLS_01_F'] call OKS_fnc_EdenBallisticMissile;";
+                conditionShow = "1";
             };
 
             class GOL_SCRIPTS_FIRESUPPORT_AIRSCOUT {
@@ -576,6 +651,26 @@ class Display3DEN {
                 text = "Open Function";
                 picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
                 action = "['OKS_fnc_ArtyFire'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_AIRSPAWN {
+                text = "Air Spawn";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_AIRSPAWN_COPY",
+                    "GOL_SCRIPTS_FIRESUPPORT_AIRSPAWN_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_AIRSPAWN_COPY {
+                text = "Copy (Selection → Templates + Target)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data')] call OKS_fnc_EdenAirSpawn;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_AIRSPAWN_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_AirSpawn'] call OKS_fnc_EdenOpenDocs;";
                 conditionShow = "1";
             };
 

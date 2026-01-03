@@ -121,6 +121,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "OKS_AIRSPAWN_DEBUG",
+    "CHECKBOX",
+    ["Enable AirSpawn DEBUG", "Enables extra logging for OKS_fnc_AirSpawn (spawn positions, selected templates, reveal counts)."],
+    ["GOL DEBUG", "Module Specific"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_ScudIntercept_Debug",
     "CHECKBOX",
     ["Enable SCUD/Cruise Intercept DEBUG", "Enables debugging for SCUD (RHS) and Cruise Missile (VLS) launch/intercept scripts."],
@@ -196,6 +205,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     "GOL_Hunt_Debug",
     "CHECKBOX",
     ["Enable Hunt Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL DEBUG", "Module Specific"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Drones_Debug",
+    "CHECKBOX",
+    ["Enable Drones Debug", "Enables debugging for FPV drone scripts such as DroneHuntZone."],
     ["GOL DEBUG", "Module Specific"],
     true,
     1

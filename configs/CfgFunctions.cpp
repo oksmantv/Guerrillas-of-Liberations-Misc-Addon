@@ -47,6 +47,7 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\logic";
 			class GetClientId {};
 			class LogDebug {};
+			class SteerVehicleToTarget {};
 			class FlagTeleport {};
 			class SetMissionComplete {};
 			//class AddKilledScore {};
@@ -120,10 +121,14 @@ class CfgFunctions // Defines a function
 			class EdenTemplateStaticGarrison {};
 			class EdenTemplatePatrol {};
 			class EdenAirScout {};
+			class EdenAirSpawn {};
+			class EdenBeachLanding {};
 			class EdenMortars {};
 			class EdenAmbientAAA {};
 			class EdenRadar {};
 			class EdenArtyFire {};
+			class EdenBallisticMissile {};
+			class EdenDroneHuntZone {};
 			class EdenHuntBase {};
 			class EdenAirBase {};
 			class EdenDestroyTask {};
@@ -375,6 +380,9 @@ class CfgFunctions // Defines a function
 			class AI_ArtilleryBattle {};
 			class AI_HelicopterFlyBy {};
 			class AmphibiousAssault {};
+			class BeachLanding {};
+			class BeachLandingPostDismountTasking {};
+			class BeachLandingInstallNoRemount {};
 			class Attack_SpawnGroup {};
 			class Civilian_Vehicle {};
 			class Hold_Waypoint {};
@@ -386,6 +394,7 @@ class CfgFunctions // Defines a function
 			class AirCargoDrop {};
 			class AirStrike {};
 			class AirSpawn {};
+			class DroneHuntZone {};
 			class Helicopter_Attack {};
 		};	
 

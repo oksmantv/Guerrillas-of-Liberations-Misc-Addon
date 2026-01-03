@@ -1,34 +1,7 @@
 /*
-    OKS_fnc_AmphibiousAssault_v2 - Boat-specific movement version
-    
-    Creates a boat with crew and passengers that moves to a beach position using boat-compatible commands.
-    Uses 3-level waypoint system + forceSpeed/limitSpeed + setVelocityModelSpace for reliable boat movement.
-    
-    3-LEVEL WAYPOINT SYSTEM:
-    Level 1: Spawn -> Initial orientation waypoint (auto-generated)
-    Level 2: Mid waypoints -> User-provided guidance waypoints (optional)
-    Level 3: Final -> Dismount/beach position (always present)
-    
-    Parameters:
-    0. _spawnPos         - Array or Object: Spawn position for the boat
-    1. _waypointArray    - Array: Mid-level waypoint positions [pos1, pos2, ...] [Optional]
-    2. _dismountPos      - Array or Object: Target beach/dismount position  
-    3. _dismountBehavior - String: What units do after dismount ("HUNT", "STAY", "MOVE")
-    4. _boatClassname    - String: Classname of boat to spawn
-    5. _numUnits         - Number: Number of passenger units to create (excluding crew)
-    6. _postBehavior     - String: What boat does after dismount ("STAY", "DESPAWN", "PATROL") [Optional]
-    7. _debug           - Boolean: Enable debug logging [Optional, default: false]
-    
-    Returns: Array - [boat object, main group, crew array, passenger array]
-    
-    Examples:
-    // Basic assault (auto waypoints)
-    [getMarkerPos "boat_spawn", [], getMarkerPos "beach_assault", "HUNT", "B_Boat_Armed_01_minigun_F", 8] call OKS_fnc_AmphibiousAssault_v2;
-    
-    // With custom mid waypoints
-    private _midWP1 = getMarkerPos "nav_point_1";
-    private _midWP2 = getMarkerPos "nav_point_2"; 
-    [boat_spawn_pos, [_midWP1, _midWP2], beach_pos, "HUNT", "B_Boat_Armed_01_minigun_F", 6, "PATROL", true] call OKS_fnc_AmphibiousAssault_v2;
+	OKS_fnc_AmphibiousAssault_v2 - Boat-specific movement version
+
+	Legacy function (kept as-is).
 */
 
 if (!isServer) exitWith {};

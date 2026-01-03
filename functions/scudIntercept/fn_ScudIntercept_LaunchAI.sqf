@@ -20,7 +20,7 @@ params [
 	["_launcherVehicle", objNull, [objNull]],
 	["_target", [], [[], objNull]],
 	["_launcherSide", east, [sideUnknown]],
-	["_preparationTimeSeconds", 15, [0]],
+	["_preparationTimeSeconds", 45, [0]],
 	["_allowedWeaponClassnames", [], [[]]],
 	["_weaponClassnameToFire", "", [""]],
 	["_weaponTurretPath", [-1], [[]]],

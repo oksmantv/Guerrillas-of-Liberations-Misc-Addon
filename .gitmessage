@@ -1,0 +1,11 @@
+<Title>
++ <Added something new>
+~ <Changed something existing>
+- <Removed something>
+
+# Template rules (keep these commented lines if you want reminders):
+# - Title is a short, human-readable summary of the functional intent (no trailing period).
+# - Use `+` only for newly introduced functionality/content.
+# - Use `~` for modifications to existing functionality/content.
+# - Use `-` for removals/deprecations.
+# - Omit unused prefixes if there were no changes of that type.
