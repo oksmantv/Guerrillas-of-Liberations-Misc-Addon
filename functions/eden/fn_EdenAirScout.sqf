@@ -117,6 +117,8 @@ private _ensureNamed = {
 	_n
 };
 
+private _layer = ["Air Scout", "OKS Eden - Spawn Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createLogic = {
 	params ["_namePrefix", "_pos"];
 	private _p = [_pos] call OKS_fnc_EdenSanitizePos;
@@ -125,6 +127,7 @@ private _createLogic = {
 
 	private _obj = create3DENEntity ["Logic", "Logic", _p];
 	if (isNull _obj) exitWith {""};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
 
 	private _n = [_namePrefix] call OKS_fnc_next3DENName;
 	_obj set3DENAttribute ["name", _n];
@@ -246,7 +249,9 @@ private _crewToDelete = (crew _airObj) select { _x isKindOf "Man" };
 private _toDelete = [];
 if !(_crewToDelete isEqualTo []) then { _toDelete append _crewToDelete; };
 _toDelete pushBack _airObj;
-delete3DENEntities _toDelete;
+if (!(uiNamespace getVariable ["OKS_3DEN_IS_REPEAT", false])) then {
+	delete3DENEntities _toDelete;
+};
 
 private _deletedCrewCount = count _crewToDelete;
 private _desc2 = if (_deletedCrewCount > 0) then {

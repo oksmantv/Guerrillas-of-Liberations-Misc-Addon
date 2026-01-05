@@ -108,6 +108,8 @@ private _ensureNamed = {
     _n
 };
 
+private _layer = ["Arty Fire", "OKS Eden - Support Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createVehicleAt = {
     params ["_class", "_pos", "_namePrefix"];
     private _p = [_pos] call OKS_fnc_EdenSanitizePos;
@@ -115,6 +117,7 @@ private _createVehicleAt = {
     _p set [2, 0];
     private _obj = create3DENEntity ["Object", _class, _p];
     if (isNull _obj) exitWith {[objNull, ""]};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
     private _n = [_namePrefix] call OKS_fnc_next3DENName;
     _obj set3DENAttribute ["name", _n];
     [_obj, _n]
@@ -128,6 +131,7 @@ private _createHiddenLogic = {
 
     private _obj = create3DENEntity ["Logic", "Logic", _p];
     if (isNull _obj) exitWith {""};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
 
     private _n = [_namePrefix] call OKS_fnc_next3DENName;
     _obj set3DENAttribute ["name", _n];
@@ -143,6 +147,7 @@ private _createLogic = {
 
     private _obj = create3DENEntity ["Logic", "Logic", _p];
     if (isNull _obj) exitWith {""};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
 
     private _n = [_namePrefix] call OKS_fnc_next3DENName;
     _obj set3DENAttribute ["name", _n];

@@ -122,6 +122,8 @@ if !(_selectedMen isEqualTo []) then {
 private _spawnObjects = [];
 private _spawnPrefix = "LambsWaveSpawn";
 
+private _layer = ["LAMBS Wave Spawn", "OKS Eden - Spawn Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createSpawnObj = {
     // Accept either a raw position array [x,y,z] or a wrapped one [[x,y,z]].
     private _pos = _this;
@@ -141,6 +143,7 @@ private _createSpawnObj = {
         _obj = create3DENEntity ["Logic", "Logic", _p];
     };
     if (isNull _obj) exitWith {[objNull, ""]};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
     _obj set3DENAttribute ["name", _name];
     _obj set3DENAttribute ["hideObject", true];
     [_obj, _name]
@@ -209,5 +212,7 @@ systemChat format ["CopiedToClipboard | LAMBS WaveSpawn copied to clipboard | Ca
 
 // Match behavior of other Eden helpers: remove selected template units/objects after copy.
 if !(_selectedToDelete isEqualTo []) then {
-    delete3DENEntities _selectedToDelete;
+    if (!(uiNamespace getVariable ["OKS_3DEN_IS_REPEAT", false])) then {
+        delete3DENEntities _selectedToDelete;
+    };
 };

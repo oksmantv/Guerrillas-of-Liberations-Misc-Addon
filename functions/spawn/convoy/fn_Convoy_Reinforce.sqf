@@ -124,7 +124,7 @@ For "_i" from 1 to _Count do {
 				"I_medic_F",
 				"I_medic_F",
 				"I_Soldier_GL_F",
-				"I_HeavyGunner_F",
+				"I_support_MG_F",
 				"I_soldier_M_F",
 				"I_Soldier_F",
 				"I_Soldier_F",

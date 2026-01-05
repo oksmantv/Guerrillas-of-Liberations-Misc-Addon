@@ -213,12 +213,25 @@ class CfgVehicles {
 	class FlexibleTank_base_F;
 	class Land_HelipadSquare_F;
 	class Land_RepairDepot_01_green_F;
+	class FlagPole_F;
 	class ReammoBox_F {
 		class ACE_Actions
 		{
 			class ACE_MainActions {};
 		};
 	};			
+
+	class GOL_Flag_Hellfish: FlagPole_F {
+		displayName = "GOL Flag (Hellfish)";
+		scope = 2;
+		scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Objects";
+
+		class EventHandlers {
+			init = "(_this select 0) setFlagTexture '\OKS_GOL_Misc\data\images\hellfishflag.paa'";
+		};
+	};
 
 	class GOL_ResupplyStation_WEST: ReammoBox_F  {
 		displayName = "GOL Resupply Station (WEST)";

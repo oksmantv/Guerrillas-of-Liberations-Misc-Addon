@@ -85,6 +85,8 @@ private _sideFromGWGlobalSelection = {
 	}
 };
 
+private _layer = ["Drone Hunt Zone", "OKS Eden - Hunt Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createLogicAt = {
 	params ["_positionATL", "_namePrefix"];
 
@@ -94,6 +96,7 @@ private _createLogicAt = {
 
 	private _logicObject = create3DENEntity ["Logic", "Logic", _sanitizedPositionATL];
 	if (isNull _logicObject) exitWith { [objNull, ""] };
+	if (!isNil "_layer") then { [_logicObject, _layer] call OKS_fnc_EdenSetLayerSafe; };
 
 	private _logicName = [_namePrefix] call OKS_fnc_next3DENName;
 	_logicObject set3DENAttribute ["name", _logicName];
@@ -109,6 +112,7 @@ private _createTriggerAt = {
 
 	private _triggerObject = create3DENEntity ["Trigger", "EmptyDetector", _sanitizedPositionATL];
 	if (isNull _triggerObject) exitWith { [objNull, ""] };
+	if (!isNil "_layer") then { [_triggerObject, _layer] call OKS_fnc_EdenSetLayerSafe; };
 
 	private _triggerName = [_namePrefix] call OKS_fnc_next3DENName;
 	_triggerObject set3DENAttribute ["name", _triggerName];

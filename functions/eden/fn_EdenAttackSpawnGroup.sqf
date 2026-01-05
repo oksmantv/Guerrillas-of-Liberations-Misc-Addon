@@ -78,12 +78,15 @@ private _offsetPos = {
     ]
 };
 
+private _layer = ["Attack Spawn Group", "OKS Eden - Spawn Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createHelper = {
     params ["_namePrefix", "_pos"];
     private _p = [_pos] call _fnc_sanitizePos0;
     if (_p isEqualTo []) then { _p = [0, 0, 0]; };
     private _obj = create3DENEntity ["Logic", "Logic", _p];
     if (isNull _obj) exitWith {""};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
     private _n = [_namePrefix] call OKS_fnc_next3DENName;
     _obj set3DENAttribute ["name", _n];
     _obj set3DENAttribute ["hideObject", true];
@@ -168,7 +171,9 @@ systemChat format ["CopiedToClipboard | Attack SpawnGroup copied to clipboard | 
 // Delete template objects (avoid deleting helper logics if the user had any selected).
 private _selectedToDelete = _selected select { !(_x isKindOf "Logic") };
 if !(_selectedToDelete isEqualTo []) then {
-    delete3DENEntities _selectedToDelete;
+    if (!(uiNamespace getVariable ["OKS_3DEN_IS_REPEAT", false])) then {
+        delete3DENEntities _selectedToDelete;
+    };
 };
 
 true

@@ -82,6 +82,8 @@ private _startY = -((_rows - 1) * _spacing) / 2;
 private _created = [];
 private _spawn = objNull;
 
+private _layer = ["Template Static Garrison", "OKS Eden - Template Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 collect3DENHistory {
     private _idx = 0;
     for "_r" from 0 to (_rows - 1) do {
@@ -102,6 +104,7 @@ collect3DENHistory {
             };
             if (!isNull _u) then {
                 if (isNull _spawn) then { _spawn = _u; };
+				if (!isNil "_layer") then { [_u, _layer] call OKS_fnc_EdenSetLayerSafe; };
                 _u set3DENAttribute ["position", _pos];
                 _u set3DENAttribute ["rotation", [0, 0, floor (random 360)]];
                 _created pushBack _u;

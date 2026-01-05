@@ -114,6 +114,8 @@ private _sideFromCopySideOption = {
     };
 };
 
+private _layer = ["Beach Landing", "OKS Eden - Spawn Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createLogicAt = {
     params ["_positionATL", "_namePrefix"];
 
@@ -123,6 +125,7 @@ private _createLogicAt = {
 
     private _logicObject = create3DENEntity ["Logic", "Logic", _sanitizedPositionATL];
     if (isNull _logicObject) exitWith { [objNull, ""] };
+	if (!isNil "_layer") then { [_logicObject, _layer] call OKS_fnc_EdenSetLayerSafe; };
 
     private _logicName = [_namePrefix] call OKS_fnc_next3DENName;
     _logicObject set3DENAttribute ["name", _logicName];
@@ -209,7 +212,9 @@ copyToClipboard _example;
 ["OKS_fnc_EdenBeachLanding", [_boatClassname, _cargoSeatCount, _sideString], [_spawnLogicObject, _targetLogicObject]] call OKS_fnc_EdenRememberLastAction;
 
 if !(_boatsToDelete isEqualTo []) then {
-    delete3DENEntities _boatsToDelete;
+    if (!(uiNamespace getVariable ["OKS_3DEN_IS_REPEAT", false])) then {
+        delete3DENEntities _boatsToDelete;
+    };
 };
 
 private _description = format [

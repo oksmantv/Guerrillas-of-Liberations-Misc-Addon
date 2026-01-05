@@ -104,6 +104,8 @@ private _mkPos = {
     [_p] call OKS_fnc_EdenSanitizePos
 };
 
+private _layer = ["Template Patrol", "OKS Eden - Template Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 collect3DENHistory {
     private _idx = 0;
     for "_r" from 0 to (_rows - 1) do {
@@ -124,6 +126,7 @@ collect3DENHistory {
             };
             if (!isNull _u) then {
                 if (isNull _spawn) then { _spawn = _u; };
+				if (!isNil "_layer") then { [_u, _layer] call OKS_fnc_EdenSetLayerSafe; };
                 _u set3DENAttribute ["position", _pos];
                 _u set3DENAttribute ["rotation", [0, 0, floor (random 360)]];
                 _created pushBack _u;
@@ -178,9 +181,15 @@ if (!isNull _spawn) then {
 
         collect3DENHistory {
             private _wp1 = (group _spawn) create3DENEntity ["Waypoint", "MOVE", _wpPos1];
-            (group _spawn) create3DENEntity ["Waypoint", "MOVE", _wpPos2];
-            (group _spawn) create3DENEntity ["Waypoint", "MOVE", _wpPos3];
-            (group _spawn) create3DENEntity ["Waypoint", "CYCLE", _wpPos4];
+            private _wp2 = (group _spawn) create3DENEntity ["Waypoint", "MOVE", _wpPos2];
+            private _wp3 = (group _spawn) create3DENEntity ["Waypoint", "MOVE", _wpPos3];
+            private _wp4 = (group _spawn) create3DENEntity ["Waypoint", "CYCLE", _wpPos4];
+            if (!isNil "_layer") then {
+                if (!isNull _wp1) then { [_wp1, _layer] call OKS_fnc_EdenSetLayerSafe; };
+                if (!isNull _wp2) then { [_wp2, _layer] call OKS_fnc_EdenSetLayerSafe; };
+                if (!isNull _wp3) then { [_wp3, _layer] call OKS_fnc_EdenSetLayerSafe; };
+                if (!isNull _wp4) then { [_wp4, _layer] call OKS_fnc_EdenSetLayerSafe; };
+            };
             if (!isNull _wp1) then {
                 if (_isFast) then {
                     _wp1 set3DENAttribute ["formation", 5];

@@ -14,10 +14,10 @@ private _args = _this;
 if !(_args isEqualType []) then { _args = [_args]; };
 
 _args params [
-    ["_menuData", [], [[], objNull]],
-    ["_vehicleClassOverride", "", [""]],
-    ["_infCountOverride", -1, [0]],
-    ["_sideStrOverride", "", [""]]
+    ["_menuData", []],
+    ["_vehicleClassOverride", ""],
+    ["_infCountOverride", -1],
+    ["_sideStrOverride", ""]
 ];
 
 if (_menuData isEqualType objNull) then {
@@ -110,6 +110,8 @@ private _ensureNamed = {
 private _spawnName = "";
 private _triggerName = "";
 
+private _layer = ["Mechanized Spawn", "OKS Eden - Hunt Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _p0 = [_selectedObjects, _menuData] call _anchorPos;
 if (_p0 isEqualTo []) exitWith {
     if (_debug3DEN) then {
@@ -129,12 +131,14 @@ private _existingLogic = objNull;
 
 if (!isNull _existingLogic) then {
     _spawnName = [_existingLogic, "MechSpawn"] call _ensureNamed;
+	if (!isNil "_layer") then { [_existingLogic, _layer] call OKS_fnc_EdenSetLayerSafe; };
 } else {
     private _spawnObj = create3DENEntity ["Logic", "Logic", _p0];
     if (isNull _spawnObj) exitWith {
         ["Mechanized Spawn: Failed to create spawn helper", 1, 6, true] call BIS_fnc_3DENNotification;
         false
     };
+	if (!isNil "_layer") then { [_spawnObj, _layer] call OKS_fnc_EdenSetLayerSafe; };
     _spawnName = [_spawnObj, "MechSpawn"] call _ensureNamed;
     _spawnObj set3DENAttribute ["hideObject", true];
 };
@@ -142,17 +146,21 @@ if (!isNull _existingLogic) then {
 // Hunt trigger
 if ((count _selectedTriggers) > 0) then {
     _triggerName = [(_selectedTriggers select 0), "MechHunt"] call _ensureNamed;
+	if (!isNil "_layer") then { [(_selectedTriggers select 0), _layer] call OKS_fnc_EdenSetLayerSafe; };
 } else {
     private _tp = ([_p0, 60, 0] call _offsetPos);
 _tp = [_tp] call OKS_fnc_EdenSanitizePos;
     if (_tp isEqualTo []) then { _tp = _p0; };
     private _trg = create3DENEntity ["Trigger", "EmptyDetector", _tp];
+	if (!isNil "_layer") then { [_trg, _layer] call OKS_fnc_EdenSetLayerSafe; };
     _triggerName = [_trg, "MechHunt"] call _ensureNamed;
-    _trg set3DENAttribute ["size2", [100, 100]];
+    _trg set3DENAttribute ["size3", [500, 500, -1]];
+    _trg set3DENAttribute ["IsRectangle", false];
     // HuntRun/ScanZone uses `list _Zone`, which depends on trigger activation filtering.
     // Default to players-in-zone.
     _trg set3DENAttribute ["activationBy", "ANYPLAYER"];
     _trg set3DENAttribute ["activationType", "PRESENT"];
+    _trg set3DENAttribute ["isServerOnly", true];
     _trg set3DENAttribute ["repeating", true];
     _trg set3DENAttribute ["repeatable", true];
 };
@@ -213,7 +221,9 @@ systemChat format ["CopiedToClipboard | Mechanized Spawn copied to clipboard | C
 // Delete selected template objects (keep selected logics; never delete right-clicked entity unless it was selected).
 private _selectedToDelete = _selectedObjects select { !(_x isKindOf "Logic") };
 if !(_selectedToDelete isEqualTo []) then {
-    delete3DENEntities _selectedToDelete;
+    if (!(uiNamespace getVariable ["OKS_3DEN_IS_REPEAT", false])) then {
+        delete3DENEntities _selectedToDelete;
+    };
 };
 
 true

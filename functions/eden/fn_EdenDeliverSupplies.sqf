@@ -48,6 +48,9 @@ if (isNull _trg) exitWith {
     false
 };
 
+private _layer = ["Deliver Supplies", "OKS Eden - Support Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+if (!isNil "_layer") then { [_trg, _layer] call OKS_fnc_EdenSetLayerSafe; };
+
 private _ensureNamed = {
     params ["_entity", "_namePrefix"];
     private _n = (_entity get3DENAttribute "name") select 0;

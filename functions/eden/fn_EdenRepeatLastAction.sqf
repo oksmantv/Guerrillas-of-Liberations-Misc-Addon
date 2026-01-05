@@ -126,7 +126,9 @@ if ((_origSel isEqualTo []) && {!(_fallback isEqualTo [])}) then {
 };
 
 private _result = false;
+uiNamespace setVariable ["OKS_3DEN_IS_REPEAT", true];
 _result = _callParams call _fn;
+uiNamespace setVariable ["OKS_3DEN_IS_REPEAT", false];
 if (isNil "_result") then { _result = false; };
 
 private _isSuccess = {
@@ -143,7 +145,9 @@ private _ok = [_result] call _isSuccess;
 // If the action failed with the current selection, retry once using last remembered objects.
 if (!_ok && {!(_fallback isEqualTo [])} && {!_didSwap}) then {
     set3DENSelected ["object", _fallback];
+    uiNamespace setVariable ["OKS_3DEN_IS_REPEAT", true];
     _result = _callParams call _fn;
+    uiNamespace setVariable ["OKS_3DEN_IS_REPEAT", false];
     if (isNil "_result") then { _result = false; };
     _ok = [_result] call _isSuccess;
 };

@@ -83,6 +83,8 @@ private _facingDir = _dirToCam;
 private _dirLeft = _facingDir - 90;
 private _dirRight = _facingDir + 90;
 
+private _layer = ["Template Static Units", "OKS Eden - Template Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _created = [];
 private _spawn = objNull;
 
@@ -111,6 +113,7 @@ collect3DENHistory {
         };
         if (!isNull _u) then {
             if (isNull _spawn) then { _spawn = _u; };
+			if (!isNil "_layer") then { [_u, _layer] call OKS_fnc_EdenSetLayerSafe; };
             _u set3DENAttribute ["position", _pos];
             _u set3DENAttribute ["rotation", [0, 0, _facingDir]];
             _created pushBack _u;

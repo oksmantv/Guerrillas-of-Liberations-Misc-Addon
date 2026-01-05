@@ -93,6 +93,8 @@ if (isNil "OKS_CopyElevate_ProcessedObjects") then {
 
 private _skippedCount = 0;
 
+private _layer = ["Copy & Elevate", "OKS Eden - Utility"] call OKS_fnc_EdenGetOrCreateLayer;
+
 // Process each found object
 {
     private _obj = _x;
@@ -123,6 +125,7 @@ private _skippedCount = 0;
     private _newObj = create3DENEntity ["Object", _itemClass, _newPos];
     
     if (!isNil "_newObj") then {
+		if (!isNil "_layer") then { [_newObj, _layer] call OKS_fnc_EdenSetLayerSafe; };
         // Set position
         _newObj set3DENAttribute ["Position", _newPos];
         

@@ -217,15 +217,21 @@ _proxy setVariable ["OKS_ScudIntercept_markers", _markerNames];
 _proxy setVariable ["OKS_ScudIntercept_targetPos", _projectile getVariable ["OKS_ScudIntercept_targetPos", []], true];
 _proxy setVariable ["OKS_ScudIntercept_successMinDist", missionNamespace getVariable ["GOL_ScudIntercept_SuccessMinDistanceMeters", 50], true];
 
-_proxy addEventHandler ["Killed", {
-	params ["_proxy"]; 
-	private _taskId = _proxy getVariable ["OKS_ScudIntercept_taskId", ""]; 
-	private _markerNames = _proxy getVariable ["OKS_ScudIntercept_markers", []]; 
-	if (_taskId isEqualTo "") exitWith {};
+// Store target object so EHs can clean it up when finishing.
+_proxy setVariable ["OKS_ScudIntercept_targetObj", _targetObject];
 
-	private _activeProxies = missionNamespace getVariable ["OKS_ScudIntercept_activeProxies", []];
-	_activeProxies = _activeProxies - [_proxy];
-	missionNamespace setVariable ["OKS_ScudIntercept_activeProxies", _activeProxies, true];
+// Intercept should ALWAYS neutralize the real projectile once the proxy takes any damage.
+// This is intentionally aggressive: any hit that registers damage is considered a successful intercept attempt.
+private _fnc_finishIntercept = {
+	params ["_proxy", ["_reason", "", [""]]];
+	if (isNull _proxy) exitWith {};
+
+	// Debounce (HandleDamage can fire many times)
+	if (_proxy getVariable ["OKS_ScudIntercept_neutralized", false]) exitWith {};
+	_proxy setVariable ["OKS_ScudIntercept_neutralized", true];
+
+	private _taskId = _proxy getVariable ["OKS_ScudIntercept_taskId", ""]; 
+	if (_taskId isEqualTo "") exitWith {};
 
 	private _targetPos = _proxy getVariable ["OKS_ScudIntercept_targetPos", []];
 	private _minDist = _proxy getVariable ["OKS_ScudIntercept_successMinDist", 50];
@@ -234,18 +240,44 @@ _proxy addEventHandler ["Killed", {
 		_tooLate = ((getPosATL _proxy) distance2D _targetPos) <= _minDist;
 	};
 
-	// Optional: remove the real projectile when proxy is intercepted (CMC-like behavior)
-	if (isServer && {missionNamespace getVariable ["GOL_ScudIntercept_NeutralizeProjectileOnSuccess", false]}) then {
-		private _proj = attachedTo _proxy;
-		if (!isNull _proj) then {
-			private _posASL = getPosASL _proj;
-			private _minAlt = missionNamespace getVariable ["GOL_ScudIntercept_NeutralizeMinAltitudeASL", 5];
-			private _explClass = missionNamespace getVariable ["GOL_ScudIntercept_NeutralizeExplosionClass", "SmallSecondary"]; 
-			if ((_posASL select 2) > _minAlt) then {
-				deleteVehicle _proj;
-				triggerAmmo (createVehicle [_explClass, _posASL, [], 0, "CAN_COLLIDE"]);
-			};
+	private _fnc_spawnNeutralizeExplosion = {
+		params [
+			["_class", "SmallSecondary", [""]],
+			["_posASL", [0,0,0], [[]], 3]
+		];
+
+		private _resolved = _class;
+		private _cfgAmmo = configFile >> "CfgAmmo" >> _resolved;
+		private _cfgVeh = configFile >> "CfgVehicles" >> _resolved;
+		if (!(isClass _cfgAmmo) && {!(isClass _cfgVeh)}) then {
+			_resolved = "SmallSecondary";
+			_cfgAmmo = configFile >> "CfgAmmo" >> _resolved;
+			_cfgVeh = configFile >> "CfgVehicles" >> _resolved;
 		};
+
+		private _obj = objNull;
+		// If it's ammo, spawn and forcibly detonate.
+		if (isClass _cfgAmmo) then {
+			_obj = createVehicle [_resolved, _posASL, [], 0, "CAN_COLLIDE"];
+			if (!isNull _obj) then {
+				triggerAmmo _obj;
+				// Cleanup if it lingers
+				[_obj] spawn { params ["_o"]; sleep 0.2; if (!isNull _o) then { deleteVehicle _o; }; };
+			};
+		} else {
+			// Vehicle/effect classes generally "do their thing" on creation.
+			_obj = createVehicle [_resolved, _posASL, [], 0, "CAN_COLLIDE"];
+			[_obj] spawn { params ["_o"]; sleep 0.2; if (!isNull _o) then { deleteVehicle _o; }; };
+		};
+	};
+
+	// Always neutralize the real projectile (if still present)
+	private _proj = attachedTo _proxy;
+	if (!isNull _proj) then {
+		private _posASL = getPosASL _proj;
+		deleteVehicle _proj;
+		private _explClass = missionNamespace getVariable ["GOL_ScudIntercept_NeutralizeExplosionClass", "SmallSecondary"]; 
+		[_explClass, _posASL] call _fnc_spawnNeutralizeExplosion;
 	};
 
 	if (_tooLate) then {
@@ -255,7 +287,36 @@ _proxy addEventHandler ["Killed", {
 		missionNamespace setVariable [format ["OKS_ScudIntercept_success_%1", _taskId], true, true];
 		[_taskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
 	};
-	{ if (_x != "") then { deleteMarker _x; }; } forEach _markerNames;
+
+	// Remove target reference object (created by LaunchAI) immediately
+	private _targetObject = _proxy getVariable ["OKS_ScudIntercept_targetObj", objNull];
+	if (!isNull _targetObject) then { deleteVehicle _targetObject; };
+
+	// Best-effort debug
+	if (missionNamespace getVariable ["GOL_ScudIntercept_Debug", true]) then {
+		if !(isNil "OKS_fnc_LogDebug") then {
+			private _chat = missionNamespace getVariable ["GOL_ScudIntercept_DebugChat", false];
+			[format ["[SCUDINT] Intercept finish | reason=%1 task=%2 tooLate=%3", _reason, _taskId, _tooLate], _chat, !_chat, true] call OKS_fnc_LogDebug;
+		};
+	};
+};
+
+// Store finish handler before any damage EH can run.
+_proxy setVariable ["OKS_ScudIntercept_fnc_finish", _fnc_finishIntercept];
+
+_proxy addEventHandler ["HandleDamage", {
+	params ["_proxy", "_selection", "_damage", "_source", "_projectile", "_hitIndex", "_instigator", "_hitPoint"];
+	if (!isServer) exitWith { _damage };
+	if (_damage > 0) then {
+		[_proxy, "damaged"] spawn (_proxy getVariable ["OKS_ScudIntercept_fnc_finish", {}]);
+	};
+	_damage
+}];
+
+_proxy addEventHandler ["Killed", {
+	params ["_proxy"]; 
+	if (!isServer) exitWith {};
+	[_proxy, "killed"] spawn (_proxy getVariable ["OKS_ScudIntercept_fnc_finish", {}]);
 }];
 
 

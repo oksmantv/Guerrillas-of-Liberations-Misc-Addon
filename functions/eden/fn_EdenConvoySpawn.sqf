@@ -93,11 +93,14 @@ private _offsetPos = {
     [_p] call OKS_fnc_EdenSanitizePos
 };
 
+private _layer = ["Convoy Spawn", "OKS Eden - Spawn Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createHelper = {
     params ["_namePrefix", "_pos"];
     private _p = [_pos] call OKS_fnc_EdenSanitizePos;
     if (_p isEqualTo []) exitWith {""};
     private _obj = create3DENEntity ["Logic", "Logic", _p];
+    if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
     private _n = [_namePrefix] call OKS_fnc_next3DENName;
     _obj set3DENAttribute ["name", _n];
     _n
@@ -145,6 +148,11 @@ if ((count _selectedHelpers) >= 3) then {
     _spawnName = [_spawnObj, "ConvoySpawn"] call _ensureNamed;
     _wpName = [_wpObj, "ConvoyWP"] call _ensureNamed;
     _endName = [_endObj, "ConvoyEnd"] call _ensureNamed;
+    if (!isNil "_layer") then {
+        [_spawnObj, _layer] call OKS_fnc_EdenSetLayerSafe;
+        [_wpObj, _layer] call OKS_fnc_EdenSetLayerSafe;
+        [_endObj, _layer] call OKS_fnc_EdenSetLayerSafe;
+    };
 } else {
     private _p0 = [_selected, _menuData] call _anchorPos;
     if (_p0 isEqualTo []) exitWith {

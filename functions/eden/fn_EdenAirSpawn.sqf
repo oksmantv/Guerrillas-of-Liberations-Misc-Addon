@@ -114,6 +114,8 @@ private _anchorPos = {
 	_position
 };
 
+private _layer = ["Air Spawn", "OKS Eden - Spawn Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createLogic = {
 	params ["_namePrefix", "_position"];
 	private _sanitizedPosition = [_position] call OKS_fnc_EdenSanitizePos;
@@ -122,6 +124,7 @@ private _createLogic = {
 
 	private _logicObject = create3DENEntity ["Logic", "Logic", _sanitizedPosition];
 	if (isNull _logicObject) exitWith {""};
+	if (!isNil "_layer") then { [_logicObject, _layer] call OKS_fnc_EdenSetLayerSafe; };
 
 	private _name = [_namePrefix] call OKS_fnc_next3DENName;
 	_logicObject set3DENAttribute ["name", _name];
@@ -196,7 +199,9 @@ systemChat format ["CopiedToClipboard | AirSpawn copied to clipboard | Cache=%1"
 // Delete the template airframes (keeps the created AirSpawnPosition/AirSpawnTarget logics).
 // Note: Eden may auto-create crew for some classes; deleting the vehicle is typically enough.
 if !(_selectedAirframes isEqualTo []) then {
-	delete3DENEntities _selectedAirframes;
+	if (!(uiNamespace getVariable ["OKS_3DEN_IS_REPEAT", false])) then {
+		delete3DENEntities _selectedAirframes;
+	};
 };
 
 true

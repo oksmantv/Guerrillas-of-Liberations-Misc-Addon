@@ -70,12 +70,15 @@ private _offsetPos = {
     [_p] call OKS_fnc_EdenSanitizePos
 };
 
+private _layer = ["AI Battle", "OKS Eden - Spawn Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createHelper = {
     params ["_namePrefix", "_pos"];
     private _p = [_pos] call OKS_fnc_EdenSanitizePos;
     if (_p isEqualTo []) exitWith {""};
     private _obj = create3DENEntity ["Logic", "Logic", _p];
     if (isNull _obj) exitWith {""};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
     private _n = [_namePrefix] call OKS_fnc_next3DENName;
     _obj set3DENAttribute ["name", _n];
     _obj set3DENAttribute ["hideObject", true];
@@ -101,6 +104,11 @@ if ((count _selected) >= 3) then {
     _f1 = [(_selected select 0), "AIBattle_SpawnA"] call _ensureNamed;
     _f2 = [(_selected select 1), "AIBattle_SpawnB"] call _ensureNamed;
     _meet = [(_selected select 2), "AIBattle_Meet"] call _ensureNamed;
+    if (!isNil "_layer") then {
+        [(_selected select 0), _layer] call OKS_fnc_EdenSetLayerSafe;
+        [(_selected select 1), _layer] call OKS_fnc_EdenSetLayerSafe;
+        [(_selected select 2), _layer] call OKS_fnc_EdenSetLayerSafe;
+    };
 } else {
     private _p0 = [_selected, _menuData] call _anchorPos;
     if (_p0 isEqualTo []) exitWith {

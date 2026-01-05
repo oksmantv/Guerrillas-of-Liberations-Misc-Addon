@@ -48,15 +48,19 @@ private _spawnName = ["HuntSpawn"] call OKS_fnc_next3DENName;
 private _triggerName = ["HuntTrigger"] call OKS_fnc_next3DENName;
 private _dirToCam = [_Position, position get3DENCamera, 0] call BIS_fnc_dirTo;
 
+private _layer = ["Hunt Base", "OKS Eden - Hunt Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _basePos =+ _Position;
 _basePos set [2, 0];
 private _base = create3DENEntity ["Object", "Land_Cargo_HQ_V2_F", _basePos];
+if (!isNil "_layer") then { [_base, _layer] call OKS_fnc_EdenSetLayerSafe; };
 _base set3DENAttribute ["name", _baseName];
 _base set3DENAttribute ["rotation", [0,0,_dirToCam]];
 
 private _triggerPos = _basePos getPos [15, _dirToCam];
 _triggerPos set [2, 0];
 private _trigger = create3DENEntity ["Trigger", "EmptyDetector", _triggerPos];
+if (!isNil "_layer") then { [_trigger, _layer] call OKS_fnc_EdenSetLayerSafe; };
 _trigger set3DENAttribute ["name", _triggerName];
 _trigger set3DENAttribute ["size3", [3000,3000,0]];
 _trigger set3DENAttribute ["IsRectangle", false];        
@@ -66,6 +70,7 @@ _trigger set3DENAttribute ["repeatable", true];
 private _spawnPos = _basePos getPos [25, _dirToCam];
 _spawnPos set [2, 0];
 private _spawn = create3DENEntity ["Object", "Land_Matches_F", _spawnPos];
+if (!isNil "_layer") then { [_spawn, _layer] call OKS_fnc_EdenSetLayerSafe; };
 _spawn set3DENAttribute ["name", _spawnName];
 _spawn set3DENAttribute ["hideObject", true];
 
@@ -118,6 +123,8 @@ private _rememberVehicles = if (_vehicleClasses isEqualTo []) then { [] } else {
 systemChat format ["CopiedToClipboard | Hunt Base copied to clipboard | Cache=%1", _cacheCount];
 [format ["CopiedToClipboard | Hunt Base copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
 [format ["Hunter Base copied to clipboard | Cache=%1", _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
-delete3DENEntities _selected;
+if (!(uiNamespace getVariable ["OKS_3DEN_IS_REPEAT", false])) then {
+    delete3DENEntities _selected;
+};
 
 

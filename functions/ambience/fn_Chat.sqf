@@ -18,7 +18,7 @@ if(!HasInterface) exitWith {false};
 Private _Code = {};
 Private ["_Range","_Color"];
 
-showChat true;
+true remoteExec ["showChat",0];
 Switch (toLower _Channel) do {
 
 	case "side":{

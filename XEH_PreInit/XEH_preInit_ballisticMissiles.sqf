@@ -26,31 +26,9 @@ diag_log "OKS_GOL_Misc: XEH_preInit_ballisticMissiles.sqf executed";
 
 
 [
-    "GOL_ScudIntercept_NeutralizeProjectileOnSuccess",
-    "CHECKBOX",
-    ["Neutralize Missile On Intercept", "If enabled, when the proxy is destroyed the attached real projectile is deleted (if airborne) and a small explosion is triggered (CMC-like)."],
-    ["GOL Ballistic Missiles", "Effects"],
-    false,
-    1
-] call cba_settings_fnc_init;
- 
-
-
-[
-    "GOL_ScudIntercept_NeutralizeMinAltitudeASL",
-    "SLIDER",
-    ["Neutralize Min Altitude (ASL)", "Only neutralize the real projectile if it is above this altitude (ASL meters)."],
-    ["GOL Ballistic Missiles", "Effects"],
-    [0, 2000, 5, 0],
-    1
-] call cba_settings_fnc_init;
- 
-
-
-[
     "GOL_ScudIntercept_NeutralizeExplosionClass",
     "EDITBOX",
-    ["Neutralize Explosion Class", "Classname to trigger when neutralizing a projectile (default: SmallSecondary)."],
+    ["Neutralize Explosion Class", "Classname to trigger when neutralizing a projectile. Supports both CfgVehicles (instant effect, e.g. SmallSecondary) and CfgAmmo (ordnance, detonated via triggerAmmo). Examples: SmallSecondary (default), Bo_GBU12_LGB, BombCluster_01_Ammo_F. Browse more in Config Viewer under CfgVehicles/CfgAmmo."],
     ["GOL Ballistic Missiles", "Effects"],
     "SmallSecondary",
     1

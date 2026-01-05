@@ -39,6 +39,10 @@ if (_position isEqualTo []) exitWith {
 private _spawnName = ["LambsGroupSpawn"] call OKS_fnc_next3DENName;
 _position set [2, 0];
 private _spawn = create3DENEntity ["Object", "Land_Matches_F", _position];
+
+private _layer = ["LAMBS SpawnGroup", "OKS Eden - Spawn Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+if (!isNil "_layer") then { [_spawn, _layer] call OKS_fnc_EdenSetLayerSafe; };
+
 _spawn set3DENAttribute ["name", _spawnName];
 _spawn set3DENAttribute ["hideObject", true];
 
@@ -180,6 +184,8 @@ private _rememberParam = if (_mode == "vehicle") then { [_vehicleClasses, _cargo
 systemChat format ["CopiedToClipboard | LAMBS SpawnGroup copied to clipboard | Cache=%1", _cacheCount];
 [format ["CopiedToClipboard | LAMBS SpawnGroup copied to clipboard | Cache=%1 | %2", _cacheCount, _example], false, true, true] call OKS_fnc_LogDebug;
 [format ["LAMBS SpawnGroup copied to clipboard | Cache=%1", _cacheCount], 0, 10, true] call BIS_fnc_3DENNotification;
-delete3DENEntities _selected;
+if (!(uiNamespace getVariable ["OKS_3DEN_IS_REPEAT", false])) then {
+    delete3DENEntities _selected;
+};
 
 

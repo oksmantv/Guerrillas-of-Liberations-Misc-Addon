@@ -5,6 +5,7 @@ class CfgPatches
         requiredAddons[] = { 
             "A3_UI_F", 
             "A3_Modules_F",
+            "A3_Structures_F",
             "A3_Weapons_F",
             "cba_main",
             "cba_ui",
@@ -64,7 +65,8 @@ class CfgPatches
             "OKS_Module_HelicopterSetup",
             "OKS_Module_MHQ",
             "OKS_Module_ApplyUnitGear",
-            "GOL_FastRope_DZ"
+			"GOL_FastRope_DZ",
+			"GOL_Flag_Hellfish"
 		};
 		weapons[] = {
             "UK3CB_V_Invisible_Plate_Low",
@@ -94,6 +96,7 @@ class CfgPatches
 #include "configs\CfgFunctions.cpp"
 #include "configs\CfgSounds.cpp"
 #include "configs\CfgUnitInsignia.cpp"
+#include "configs\CfgMarkers.cpp"
 #include "configs\CfgOrbat.cfg"
 
 class CfgMods {

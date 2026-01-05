@@ -111,11 +111,15 @@ private _pickIntelClass = {
 
 _intelClass = [_intelClassOverride] call _pickIntelClass;
 
+private _layer = ["Setup Intel", "OKS Eden - Task Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _intelObj = create3DENEntity ["Object", _intelClass, _p0];
 if (isNull _intelObj) exitWith {
     ["Setup Intel: Failed to create intel object", 1, 6, true] call BIS_fnc_3DENNotification;
     false
 };
+
+if (!isNil "_layer") then { [_intelObj, _layer] call OKS_fnc_EdenSetLayerSafe; };
 
 private _intelName = [_intelObj, "intel"] call _ensureNamed;
 

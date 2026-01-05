@@ -68,12 +68,15 @@ private _ensureNamed = {
     _n
 };
 
+private _layer = ["Evacuate HVT", "OKS Eden - Task Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createHiddenLogic = {
     params ["_prefix", "_pos"]; 
     private _p = [_pos] call _fnc_sanitizePos0;
     if (_p isEqualTo []) then { _p = [0,0,0]; };
     private _obj = create3DENEntity ["Logic", "Logic", _p];
     if (isNull _obj) exitWith {""};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
     private _n = [_prefix] call OKS_fnc_next3DENName;
     _obj set3DENAttribute ["name", _n];
     _obj set3DENAttribute ["hideObject", true];
@@ -414,6 +417,7 @@ if (_men isEqualTo []) then {
     private _dir = 0;
     private _firstName = ["hvt"] call OKS_fnc_next3DENName;
     private _firstUnit = create3DENEntity ["Object", "C_man_1", (_p0 getPos [0, 0])];
+	if (!isNil "_layer") then { [_firstUnit, _layer] call OKS_fnc_EdenSetLayerSafe; };
     _firstUnit set3DENAttribute ["name", _firstName];
     _firstUnit set3DENAttribute ["init", 'this disableAI "MOVE";'];
     private _grp = group _firstUnit;
@@ -422,6 +426,7 @@ if (_men isEqualTo []) then {
     for "_i" from 2 to 3 do {
         private _unitName = ["hvt"] call OKS_fnc_next3DENName;
         private _unit = _grp create3DENEntity ["Object", "C_man_1", (_p0 getPos [3, _dir])];
+		if (!isNil "_layer") then { [_unit, _layer] call OKS_fnc_EdenSetLayerSafe; };
         _unit set3DENAttribute ["name", _unitName];
         _unit set3DENAttribute ["presence", 1];
         _unit set3DENAttribute ["init", 'this disableAI "MOVE";'];

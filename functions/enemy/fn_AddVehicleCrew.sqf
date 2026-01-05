@@ -111,6 +111,28 @@
             _Driver setRank "PRIVATE";
             _Driver moveinDriver _Vehicle;
         };
+
+        // Fill any additional weapon turrets (e.g., secondary MG turrets) when we're adding gunners.
+        // Note: `moveInGunner/moveInCommander` only covers the primary seats; extra turrets need `moveInTurret`.
+        if (_CrewSlots == 0 || _CrewSlots == 2) then {
+            private _turretPaths = allTurrets [_Vehicle, true];
+            {
+                private _turretPath = _x;
+                private _turretCfg = [_Vehicle, _turretPath] call BIS_fnc_turretConfig;
+                private _isPersonTurret = (getNumber (_turretCfg >> "isPersonTurret")) isEqualTo 1;
+                private _turretHasWeapons = (count (_Vehicle weaponsTurret _turretPath)) > 0;
+                private _turretIsEmpty = isNull (_Vehicle turretUnit _turretPath);
+
+                if (!_isPersonTurret && _turretHasWeapons && _turretIsEmpty) then {
+                    if(_Debug_Variable) then {
+                        format ["[ADDVEHICLECREW] Filling turret gunner %1", _turretPath] spawn OKS_fnc_LogDebug;
+                    };
+                    private _turretGunner = _Group CreateUnit [_turretUnitClass, [0,0,0], [], 5, "NONE"];
+                    _turretGunner setRank "CORPORAL";
+                    _turretGunner moveInTurret [_Vehicle, _turretPath];
+                };
+            } forEach _turretPaths;
+        };
     };
 
     if(_CargoSlots > 0 || _AddCargoCommander) then {

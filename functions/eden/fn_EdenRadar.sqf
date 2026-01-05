@@ -77,6 +77,8 @@ private _ensureNamed = {
     _n
 };
 
+private _layer = ["Radar", "OKS Eden - Support Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+
 private _createVehicleAt = {
     params ["_class", "_pos", "_namePrefix"];
     private _p = [_pos] call OKS_fnc_EdenSanitizePos;
@@ -84,6 +86,7 @@ private _createVehicleAt = {
     _p set [2, 0];
     private _obj = create3DENEntity ["Object", _class, _p];
     if (isNull _obj) exitWith {[objNull, ""]};
+	if (!isNil "_layer") then { [_obj, _layer] call OKS_fnc_EdenSetLayerSafe; };
     private _n = [_namePrefix] call OKS_fnc_next3DENName;
     _obj set3DENAttribute ["name", _n];
     [_obj, _n]
@@ -135,7 +138,7 @@ if !(_aaaClassnamesOverride isEqualTo []) then {
 private _classArrayStr = str _aaaClassnames;
 
 private _example = format [
-    "if ((count crew %1) == 0) then { createVehicleCrew %1; };\nnull = [%1,%2,%3,%4,%5] spawn OKS_fnc_Radar;",
+    "null = [%1,%2,%3,%4,%5] spawn OKS_fnc_Radar;",
     _radarName,
     _classArrayStr,
     _shareDistance,

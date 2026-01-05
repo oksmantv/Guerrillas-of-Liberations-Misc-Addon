@@ -70,6 +70,11 @@ private _hostageNames = [];
     _hostageNames pushBack _n;
 } forEach _men;
 
+private _layer = ["Hostage Task", "OKS Eden - Task Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
+if (!isNil "_layer") then {
+    { [_x, _layer] call OKS_fnc_EdenSetLayerSafe; } forEach _men;
+};
+
 private _example = "";
 
 if (_men isEqualTo []) then {
@@ -77,6 +82,7 @@ if (_men isEqualTo []) then {
     private _dir = 0;
     private _firstName = ["hostage"] call OKS_fnc_next3DENName;
     private _firstUnit = create3DENEntity ["Object", "C_man_1", (_p0 getPos [0, 0])];
+	if (!isNil "_layer") then { [_firstUnit, _layer] call OKS_fnc_EdenSetLayerSafe; };
     _firstUnit set3DENAttribute ["name", _firstName];
     _firstUnit set3DENAttribute ["init", 'this disableAI "MOVE";'];
     private _grp = group _firstUnit;
@@ -85,6 +91,7 @@ if (_men isEqualTo []) then {
     for "_i" from 2 to 3 do {
         private _unitName = ["hostage"] call OKS_fnc_next3DENName;
         private _unit = _grp create3DENEntity ["Object", "C_man_1", (_p0 getPos [3, _dir])];
+		if (!isNil "_layer") then { [_unit, _layer] call OKS_fnc_EdenSetLayerSafe; };
         _unit set3DENAttribute ["name", _unitName];
         _unit set3DENAttribute ["presence", 1];
         _unit set3DENAttribute ["init", 'this disableAI "MOVE";'];
