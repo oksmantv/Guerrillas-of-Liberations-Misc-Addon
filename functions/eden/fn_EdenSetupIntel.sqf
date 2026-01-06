@@ -82,34 +82,11 @@ if (_p0 isEqualTo []) exitWith {
 // Prefer spawning an ACE/ACEX intel *document* object when available.
 // Fallback to a vanilla file prop so the helper always works.
 private _intelClassOverride = missionNamespace getVariable ["OKS_3DEN_INTEL_CLASS", ""]; // optional
-private _intelClass = "Land_File1_F";
+private _intelClass = "acex_intelitems_document";
 
-private _pickIntelClass = {
-    params ["_override"]; 
-    private _candidates = [
-        _override,
-        "acex_intelitems_document",
-        "acex_intelitems_document_01",
-        "acex_intelitems_document_1",
-        "ACEX_IntelItems_Document",
-        "ACEX_IntelItems_Document_01",
-        ("AC" + "E_IntelItems_Document"),
-        ("AC" + "E_Intel_Document"),
-        ("AC" + "E_Intel_File1"),
-        ("AC" + "E_Intel_File2"),
-        ("AC" + "E_Intel_File3"),
-        ("AC" + "E_Intel_Laptop"),
-        ("AC" + "E_Intel_Paper")
-    ];
-
-    {
-        if (_x isEqualType "" && {_x isNotEqualTo ""} && {isClass (configFile >> "CfgVehicles" >> _x)}) exitWith {_x};
-    } forEach _candidates;
-
-    "Land_File1_F"
+if(!isNil _intelClassOverride && _intelClassOverride isNotEqualTo "") then {
+    _intelClass = _intelClassOverride;
 };
-
-_intelClass = [_intelClassOverride] call _pickIntelClass;
 
 private _layer = ["Setup Intel", "OKS Eden - Task Helpers"] call OKS_fnc_EdenGetOrCreateLayer;
 

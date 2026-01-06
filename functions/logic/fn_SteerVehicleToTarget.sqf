@@ -30,6 +30,14 @@ params [
 
 if (isNull _vehicle) exitWith {false};
 
+// Guardrails: keep this function safe even if called with bad parameters.
+// Prevents infinite loops / server perf issues from maximumTimeSeconds <= 0 and updateIntervalSeconds <= 0.
+if (_speedKilometersPerHour <= 0) then { _speedKilometersPerHour = 70; };
+if (_stopDistanceMeters <= 0) then { _stopDistanceMeters = 1; };
+_updateIntervalSeconds = _updateIntervalSeconds max 0.01;
+if (_maximumTimeSeconds <= 0) then { _maximumTimeSeconds = 60; };
+_maximumTimeSeconds = _maximumTimeSeconds min 300;
+
 _vehicle engineOn true;
 
 private _speedMetersPerSecond = _speedKilometersPerHour / 3.6;

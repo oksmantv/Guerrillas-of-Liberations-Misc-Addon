@@ -207,6 +207,10 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Amphibious {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_amphibious.sqf'";
     };
+
+    class OKS_PreInit_Drones {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_drones.sqf'";
+    };
 };
 
 class Extended_PostInit_EventHandlers {
