@@ -23,6 +23,7 @@ class Display3DEN {
                     "GOL_SCRIPTS_QRF_BASES",
 					"GOL_SCRIPTS_BEACH_LANDING",
                     "GOL_SCRIPTS_MECHANIZED_SPAWN",
+                    "GOL_SCRIPTS_VEHICLE_ON_RAILS",
                     "GOL_SCRIPTS_CONVOY",
                     "GOL_SCRIPTS_ATTACK_SPAWNGROUP",
                     "GOL_SCRIPTS_AI_BATTLE"
@@ -419,6 +420,26 @@ class Display3DEN {
             class GOL_SCRIPTS_MECHANIZED_SPAWN_CREATE {
                 text = "Create";
                 action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenMechanizedSpawn;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_VEHICLE_ON_RAILS {
+                text = "Vehicle on Rails";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_VEHICLE_ON_RAILS_CREATE",
+                    "GOL_SCRIPTS_VEHICLE_ON_RAILS_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_VEHICLE_ON_RAILS_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_RailVehicle_Spawn'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_VEHICLE_ON_RAILS_CREATE {
+                text = "Create";
+                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenVehicleOnRails;";
                 conditionShow = "1";
             };
 

@@ -143,6 +143,7 @@ class CfgFunctions // Defines a function
 			class EdenConvoySpawn {};
 			class EdenAttackSpawnGroup {};
 			class EdenMechanizedSpawn {};
+			class EdenVehicleOnRails {};
 			class EdenOpenDocs {};
 			class EdenExtractGearFromAI {};
 			class next3DENName {};
@@ -210,6 +211,7 @@ class CfgFunctions // Defines a function
 		class OKS_Vehicles_GroundVehicles {
 			file = "\OKS_GOL_Misc\functions\vehicles\groundVehicles";
 			class Mechanized {};				
+			class RailMove {};
 			class VehicleEmpty {};
 			class SetupServiceStation {};
 			class SetupCargoItems {};
@@ -387,6 +389,7 @@ class CfgFunctions // Defines a function
 			class Civilian_Vehicle {};
 			class Hold_Waypoint {};
 			class Mechanized_Spawn {};
+			class RailVehicle_Spawn {};
 			class Follow_Squad {};
 			class Scout {};
 			class AirScout {};
