@@ -179,7 +179,11 @@ if ( (isNil "_Mortar") or (TypeName _Mortar == "STRING") ) then
 				_Mortar = (_This select 0);
 				_Unit = (_This select 1);
 		
-				_Temp = _Mortar addEventHandler ["Fired", {(_This select 6) SetPosATL [0,0,10000]; deleteVehicle (_This select 6)}]; 
+				_Temp = _Mortar addEventHandler ["Fired", {
+					params ["","","","","","","_projectile"];
+					_projectile setPosASL [0,0,10000];
+					[_projectile] remoteExec ["deleteVehicle", 0];
+				}]; 
 				WaitUntil {sleep 20; !(_Unit in _Mortar) or !(Alive _Unit)};
 				UnassignVehicle _Unit;
 				_Mortar removeEventHandler ["Fired", _Temp];

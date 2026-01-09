@@ -217,7 +217,29 @@ if (!HasInterface || isServer) then
 	*/
 
 	if (_Debug == 1) then {SystemChat "Disable AI"};
-	[_arty,["Fired",{ [(_this select 6),(_this select 0)] remoteExec ["OKS_fnc_Check_Travel",0]}]] remoteExec ["addEventHandler",0];
+	[_arty,["Fired",{
+		params ["","","","","","","_projectile"];
+		[_projectile] spawn {
+			params ["_projectile"];
+			private _prevAlt = -1;
+			private _timeout = time + 30;
+			
+			waitUntil {
+				sleep 0.1;
+				private _currentAlt = getPosASL _projectile select 2;
+				
+				// Delete when descending, timeout, or destroyed
+				if (_prevAlt > 0 && _currentAlt < _prevAlt) exitWith {true};
+				if (time > _timeout) exitWith {true};
+				if (!alive _projectile) exitWith {true};
+				
+				_prevAlt = _currentAlt;
+				false
+			};
+			
+			[_projectile] remoteExec ["deleteVehicle", 0];
+		};
+	}]] remoteExec ["addEventHandler",0];
 	_arty spawn {
 		waitUntil{sleep 5; { _X distance2d _this < 30 && (side _this) getFriend (side _X) < 0.5} count AllPlayers > 0};
 		systemChat "Enemy Players nearby, exiting artillery..";
