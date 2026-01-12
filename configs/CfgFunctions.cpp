@@ -399,8 +399,40 @@ class CfgFunctions // Defines a function
 			class AirSpawn {};
 			class DroneHuntZone {};
 			class Helicopter_Attack {};
-		};	
+		};
 
+		class OKS_Jammer {
+			file = "\OKS_GOL_Misc\functions\jammer";
+			class DroneJammer_Init {};
+			class DroneJammer_Cleanup {};
+			class DroneJammer_GetNearbyCarriers {};
+			class DroneJammer_UpdateHUD {};
+			class DroneDetector_Init {};
+			class DroneDetector_Cleanup {};
+			class DirectionToText {};
+		};
+		
+		class OKS_Disruptor {
+			file = "\OKS_GOL_Misc\functions\disruptor";
+			class DroneDisruptor_Fired {};
+		};
+
+		class OKS_Drones {
+			file = "\OKS_GOL_Misc\functions\drones";
+			class DroneHuntZone_Patrol {};
+			class DroneHuntZone_Attack {};
+			class DroneHuntZone_Terminal {};
+			class DroneHuntZone_Detonate {};
+		};
+
+		class OKS_Helpers {
+			file = "\OKS_GOL_Misc\functions\helpers";
+			class DroneHelper_NormalizePos {};
+			class DroneHelper_GetZoneInfo {};
+			class DroneHelper_SelectTarget {};
+			class DroneHelper_GetAimPoint {};
+		};
+	
 		class OKS_Spawn_Lambs {
 			file = "\OKS_GOL_Misc\functions\spawn\lambs";
 			class Lambs_Spawner {};

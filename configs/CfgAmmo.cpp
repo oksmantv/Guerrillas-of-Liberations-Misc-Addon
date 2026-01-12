@@ -44,6 +44,34 @@ class CfgAmmo {
 	// FPV throwables (soft dependency on BOT_FPV_Enhanced)
 	class GrenadeHand;
 
+	// Custom drone warhead classes (reduced lethality variants)
+	class G_40mm_HE;
+	class OKS_Drone_Warhead_Small: G_40mm_HE {
+		hit = 80;
+		indirectHit = 15;
+		indirectHitRange = 6;
+		// Ensure visible explosion effect
+		explosionEffects = "GrenadeExplosion";
+		CraterEffects = "GrenadeCrater";
+		explosionSoundEffect = "DefaultExplosion";
+		// Small warhead: effective against infantry, minimal vehicle damage
+	};
+
+	class R_PG7_F;
+	class OKS_Drone_Warhead_Medium: R_PG7_F {
+		hit = 180;
+		indirectHit = 22;
+		indirectHitRange = 8;
+		// Medium warhead: can damage light vehicles, threatens infantry in ~8m radius
+	};
+
+	class OKS_Drone_Warhead_Large: R_PG7_F {
+		hit = 400;
+		indirectHit = 40;
+		indirectHitRange = 12;
+		// Large warhead: full lethality, equivalent to FPV_UA default
+	};
+
 	class GOL_Ammo_FPV_AT_Throw: GrenadeHand {
 		model = "\fpv_ua\drone_pg7vl.p3d";
 		// BOT_fnc_fpv_deploy selects by side index: [BLUFOR, OPFOR, INDEP, CIV].
@@ -83,5 +111,46 @@ class CfgAmmo {
 		class EventHandlers {
 			fired = "if !(isNil 'OKS_fnc_FPV_Deploy_Override') then { [_this#6] spawn OKS_fnc_FPV_Deploy_Override; } else { if !(isNil 'BOT_fnc_fpv_deploy') then { [_this#6] spawn BOT_fnc_fpv_deploy; }; };";
 		};
+	};
+
+	// Drone disruptor pistol ammo - EMP pulses (no physical projectile)
+	class B_9x21_Ball;
+	class OKS_Ammo_DisruptorPulse: B_9x21_Ball {
+		hit = 0;
+		indirectHit = 0;
+		indirectHitRange = 0;
+		typicalSpeed = 1000;
+		caliber = 0;
+		airFriction = 0;
+		
+		// No visual tracer - completely invisible projectile
+		model = "\A3\Weapons_f\empty";
+		tracerScale = 0;
+		tracerStartTime = 0;
+		tracerEndTime = 0;
+		nvgOnly = 0;
+		
+		// No shell casings ejected
+		cartridge = "";
+		
+		// Silent impact - no physical projectile sounds
+		soundHit[] = {"", 0, 1};
+		soundFly[] = {"", 0, 1};
+		supersonicCrackNear[] = {"", 0, 1};
+		supersonicCrackFar[] = {"", 0, 1};
+		
+		// Override inherited bullet impact sounds (bullet1-bullet12)
+		soundHit1[] = {"", 1, 1};
+		soundHit2[] = {"", 1, 1};
+		soundHit3[] = {"", 1, 1};
+		soundHit4[] = {"", 1, 1};
+		soundHit5[] = {"", 1, 1};
+		soundHit6[] = {"", 1, 1};
+		soundHit7[] = {"", 1, 1};
+		soundHit8[] = {"", 1, 1};
+		soundHit9[] = {"", 1, 1};
+		soundHit10[] = {"", 1, 1};
+		soundHit11[] = {"", 1, 1};
+		soundHit12[] = {"", 1, 1};
 	};
 };

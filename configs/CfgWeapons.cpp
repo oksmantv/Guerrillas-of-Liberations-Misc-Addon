@@ -53,6 +53,33 @@ class CfgWeapons {
 			mass = 50;
 		};
 	};
+
+	class OKS_DroneJammer: ACE_ItemCore {
+		scope = 2;
+		author = "OksmanTV from Guerrillas of Liberation";
+		displayName = "Drone Jammer";
+		descriptionUse = "Portable drone jammer. Self-interact to activate.";
+		descriptionShort = "Disrupts drone guidance systems within 350m when activated.";
+		icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
+		picture = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
+		model = "\A3\Weapons_F\Items\GPS.p3d";
+		class ItemInfo: CBA_MiscItem_ItemInfo {
+			mass = 20;
+		};
+	};
+	class OKS_DroneDetector: ACE_ItemCore {
+		scope = 2;
+		author = "OksmanTV from Guerrillas of Liberation";
+		displayName = "Drone Detector";
+		descriptionUse = "Portable drone detector. Self-interact to activate.";
+		descriptionShort = "Detects nearby drones within 500m and displays alerts.";
+		icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\search_ca.paa";
+		picture = "\a3\ui_f\data\igui\cfg\simpleTasks\types\search_ca.paa";
+		model = "\A3\Weapons_F\Items\GPS.p3d";
+		class ItemInfo: CBA_MiscItem_ItemInfo {
+			mass = 15;
+		};
+	};
 	class GOL_Packed_Drone_AT: ACE_ItemCore {
 		scope = 2;
 		author = "OksmanTV from Guerrillas of Liberation";		
@@ -754,9 +781,232 @@ class CfgWeapons {
 		};		
 	};		
 
-	// FPV throwables (soft dependency on BOT_FPV_Enhanced)
-	class GrenadeLauncher;
-	class Throw: GrenadeLauncher {
+	// Drone jammer pistol (inspired by Contact DLC ESD)
+	// Drone Disruptor Pistol - Kills drone crew via cone detection
+	class Pistol_Base_F;
+	class OKS_DroneDisruptor_Pistol: Pistol_Base_F {
+		scope = 2;
+		scopeArsenal = 2;
+		scopeCurator = 2;
+		author = "OksmanTV from Guerrillas of Liberation";
+		displayName = "Drone Disruptor Pistol";
+		descriptionShort = "Electromagnetic pulse weapon. Fires directed energy to disable drones within 200m cone.";
+		
+		// Visual model from Contact DLC ESD
+		model = "\A3\Weapons_F_Enoch\Pistols\ESD_01\ESD_01_F.p3d";
+		picture = "\a3\weapons_f_enoch\pistols\esd_01\data\ui\gear_esd_01_ca.paa";
+		
+		// Base weapon reference for attachments
+		baseWeapon = "OKS_DroneDisruptor_Pistol";
+		
+		magazines[] = {"OKS_Mag_DroneDisruptor"};
+		
+		// Force crosshair to show (weapon has no iron sights)
+		showAimCursorInternal = 1;
+		
+		// Disable all attachment slots except muzzle
+		class WeaponSlotsInfo {
+			mass = 20;
+			
+			// Only allow custom antenna in muzzle slot
+			class MuzzleSlot {
+				linkProxy = "\A3\data_f\proxies\weapon_slots\MUZZLE";
+				compatibleItems[] = {"OKS_Disruptor_Antenna"};
+				iconPosition[] = {0, 0.4};
+				iconScale = 0.2;
+			};
+			
+			// Disable all other slots
+			class CowsSlot {};
+			class PointerSlot {};
+			class UnderBarrelSlot {};
+		};
+		
+		// Override inherited multi-muzzle system - this is a single muzzle weapon
+		Muzzle_Base[] = {};
+		muzzle_1[] = {};
+		muzzle_2[] = {};
+		muzzle_3[] = {};
+		muzzle_4[] = {};
+		muzzle_5[] = {};
+		muzzle_6[] = {};
+		muzzle_7[] = {};
+		muzzle_8[] = {};
+		muzzle_9[] = {};
+		muzzle_10[] = {};
+		muzzle_11[] = {};
+		muzzle_12[] = {};
+		bullet1[] = {};
+		bullet2[] = {};
+		bullet3[] = {};
+		bullet4[] = {};
+		bullet5[] = {};
+		bullet6[] = {};
+		bullet7[] = {};
+		bullet8[] = {};
+		bullet9[] = {};
+		bullet10[] = {};
+		bullet11[] = {};
+		bullet12[] = {};		
+		muzzles[] = {"this"};
+		reloadAction = "GestureReloadPistolHeavy02";
+		
+		// Override muzzle effects - energy weapon has no visible muzzle flash or smoke
+		class GunClouds {
+			access = 0;
+			cloudletDuration = 0;
+			cloudletAnimPeriod = 0;
+			cloudletSize = 0;
+			cloudletAlpha = 0;
+			cloudletGrowUp = 0;
+			cloudletFadeIn = 0;
+			cloudletFadeOut = 0;
+			cloudletAccY = 0;
+			cloudletMinYSpeed = 0;
+			cloudletMaxYSpeed = 0;
+			cloudletShape = "";
+			cloudletColor[] = {0, 0, 0, 0};
+			interval = 0;
+			size = 0;
+			sourceSize = 0;
+			initT = 0;
+			deltaT = 0;
+			class Table {};
+		};
+		class GunFire {
+			access = 0;
+			cloudletDuration = 0;
+			cloudletAnimPeriod = 0;
+			cloudletSize = 0;
+			cloudletAlpha = 0;
+			cloudletGrowUp = 0;
+			cloudletFadeIn = 0;
+			cloudletFadeOut = 0;
+			cloudletAccY = 0;
+			cloudletMinYSpeed = 0;
+			cloudletMaxYSpeed = 0;
+			cloudletShape = "";
+			cloudletColor[] = {0, 0, 0, 0};
+			interval = 0;
+			size = 0;
+			sourceSize = 0;
+			initT = 0;
+			deltaT = 0;
+			class Table {};
+		};
+		class GunParticles {};
+		
+		// Remove shell casing ejection - energy weapon has no physical casings
+		magazineReloadSwitchPhase = 0;
+		drySound[] = {"", 1, 1};
+		reloadMagazineSound[] = {"", 1, 1};
+		
+		// Override inherited bullet impact sounds (bullet1-bullet12)
+		soundHit1[] = {"", 1, 1};
+		soundHit2[] = {"", 1, 1};
+		soundHit3[] = {"", 1, 1};
+		soundHit4[] = {"", 1, 1};
+		soundHit5[] = {"", 1, 1};
+		soundHit6[] = {"", 1, 1};
+		soundHit7[] = {"", 1, 1};
+		soundHit8[] = {"", 1, 1};
+		soundHit9[] = {"", 1, 1};
+		soundHit10[] = {"", 1, 1};
+		soundHit11[] = {"", 1, 1};
+		soundHit12[] = {"", 1, 1};		
+		
+		modes[] = {"Single"};
+		class Single {
+			displayName = "Single";
+			textureType = "semi";
+			burst = 1;
+			reloadTime = 2.0;
+			dispersion = 0.001;
+			multiplier = 1;
+			autoFire = 0;
+			soundContinuous = 0;
+			soundBurst = 0;
+			useAction = 0;
+			useActionTitle = "";
+			showToPlayer = 1;
+			artilleryDispersion = 0;
+			artilleryCharge = 0;
+			minRange = 2;
+			minRangeProbab = 0.3;
+			midRange = 100;
+			midRangeProbab = 0.7;
+			maxRange = 200;
+			maxRangeProbab = 0.05;
+			aiRateOfFire = 2;
+			aiRateOfFireDistance = 100;
+			recoil = "recoil_pistol_light";
+			recoilProne = "recoil_prone_pistol_light";
+			// Override inherited bullet impact sounds - energy weapon has no physical impact
+			soundBullet[] = {};
+			
+			sounds[] = {"StandardSound"};
+			class StandardSound {
+				// Custom EMP weapon firing sound
+				// Place your .ogg file at: OKS_GOL_Misc\Sounds\disruptor_fire.ogg
+				begin1[] = {"\OKS_GOL_Misc\Sounds\disruptor_fire.ogg", 1.5, 1, 500};
+				soundBegin[] = {"begin1", 1};
+				weaponSoundEffect = "";
+			};
+		};
+		
+		class EventHandlers {
+			fired = "_this call OKS_fnc_DroneDisruptor_Fired;";
+		};
+	};
+
+	// Custom antenna attachment for disruptor (cosmetic only, no sound suppression)
+	class InventoryMuzzleItem_Base_F;
+	class muzzle_antenna_02_f;
+	class OKS_Disruptor_Antenna: muzzle_antenna_02_f {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "OksmanTV from Guerrillas of Liberation";
+		displayName = "Long-Range EMP Antenna (+250m)";
+		descriptionShort = "Extends disruptor effective range by 250m. Total range: 750m.";
+		
+		// Override suppressor behavior - this is purely cosmetic
+		class ItemInfo: InventoryMuzzleItem_Base_F {
+			mass = 2;
+			soundTypeIndex = 0;
+			muzzleEnd = "zaslehPoint";
+			alternativeFire = "Zasleh2";
+			class MagazineCoef {
+				initSpeed = 1.0;
+			};
+			class AmmoCoef {
+				hit = 1.0;
+				visibleFire = 1.0;
+				audibleFire = 1.0;
+				visibleFireTime = 1.0;
+				audibleFireTime = 1.0;
+				cost = 1.0;
+				typicalSpeed = 1.0;
+				airFriction = 1.0;
+			};
+			class MuzzleCoef {
+				dispersionCoef = 1.0;
+				artilleryDispersionCoef = 1.0;
+				fireLightCoef = 1.0;
+				recoilCoef = 1.0;
+				recoilProneCoef = 1.0;
+				minRangeCoef = 1.0;
+				minRangeProbabCoef = 1.0;
+				midRangeCoef = 1.0;
+				midRangeProbabCoef = 1.0;
+				maxRangeCoef = 1.0;
+				maxRangeProbabCoef = 1.0;
+			};
+		};
+	};
+
+// FPV throwables (soft dependency on BOT_FPV_Enhanced)
+class GrenadeLauncher;
+class Throw: GrenadeLauncher {
 		Muzzles[] += {"GOL_Weapon_FPV_AT_Throw","GOL_Weapon_FPV_AP_Throw","GOL_Weapon_FPV_AP_OG7V_Throw","GOL_Weapon_FPV_AP_IED_Throw"};
 		class ThrowMuzzle: GrenadeLauncher {};
 

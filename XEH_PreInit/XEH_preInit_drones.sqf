@@ -3,6 +3,72 @@ diag_log "OKS_GOL_Misc: XEH_preInit_drones.sqf executed";
 // Drone-related settings
 // These are intended to provide safe defaults and a consistent place to configure drone classnames per side.
 
+// Master debug toggle (consolidates all 3 debug flags)
+[
+    "GOL_Drones_MasterDebug",
+    "CHECKBOX",
+    ["Enable Drone System Debug", "Master toggle for all drone system debug logging (Hunt, Jammer, Detector). When disabled, no debug messages will appear regardless of individual debug flags."],
+    ["GOL Drones", "Debug"],
+    true,
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_Drones_Debug",
+    "CHECKBOX",
+    ["Enable Drone Hunt Debug", "When enabled, DEBUG messages for drone hunting operations (patrol, approach, terminal guidance, detonation) will appear in debug logs. Requires Master Debug to be enabled."],
+    ["GOL Drones", "Debug"],
+    true,
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_Jammer_Debug",
+    "CHECKBOX",
+    ["Enable Jammer Debug", "When enabled, DEBUG messages for drone jammer suspension/resume will appear in debug logs. Requires Master Debug to be enabled."],
+    ["GOL Drones", "Debug"],
+    true,
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_Detector_Debug",
+    "CHECKBOX",
+    ["Enable Detector Debug", "When enabled, DEBUG messages for drone detector events (new detections, tracking) will appear in debug logs. Requires Master Debug to be enabled."],
+    ["GOL Drones", "Debug"],
+    true,
+    1
+] call cba_settings_fnc_init;
+
+[
+    "GOL_Disruptor_Debug",
+    "CHECKBOX",
+    ["Enable Disruptor Debug", "When enabled, DEBUG messages for drone disruptor pistol firing, cone detection, hits/misses will appear in debug logs and systemChat. Requires Master Debug to be enabled."],
+    ["GOL Drones", "Debug"],
+    true,
+    1
+] call cba_settings_fnc_init;
+
+// Detector range configuration
+[
+    "GOL_Detector_BaseRange",
+    "SLIDER",
+    ["Detector Base Detection Range", "Detection range in meters when on foot. In vehicles, this is multiplied by 2.0 (e.g., 500m becomes 1000m)."],
+    ["GOL Drones", "Detector"],
+    [300, 1000, 500, 0],
+    1
+] call cba_settings_fnc_init;
+
+// Jammer effectiveness range
+[
+    "GOL_Jammer_EffectRange",
+    "SLIDER",
+    ["Jammer Effectiveness Range", "Range in meters where jammer actively degrades drone terminal guidance (increases ballistic distance from 50m to 100m)."],
+    ["GOL Drones", "Jammer"],
+    [200, 500, 350, 0],
+    1
+] call cba_settings_fnc_init;
+
 [
     "GOL_Drones_TerminalBallisticDistance",
     "SLIDER",
@@ -124,3 +190,4 @@ diag_log "OKS_GOL_Misc: XEH_preInit_drones.sqf executed";
     [["I_UAV_06_F"], ["AL-6 Pelican"], 0],
     1
 ] call cba_settings_fnc_init;
+

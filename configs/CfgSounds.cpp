@@ -28,6 +28,11 @@ class CfgSounds {
         name = "Parachute Deploy";
         sound[] = {"\OKS_GOL_Misc\sounds\ParachuteDeploy.wav", 3, 1, 40};
         titles[] = {};
+    };
+    class OKS_DroneEngine {
+        name = "FPV Drone Engine";
+        sound[] = {"\fpv_ua\sounds\quad_engine_full_01.wav", 5, 1, 500};
+        titles[] = {};
     };	
     class GOL_IncomingAlarm {
         name = "Incoming Alarm";

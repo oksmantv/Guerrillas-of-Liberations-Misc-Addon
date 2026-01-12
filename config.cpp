@@ -17,7 +17,8 @@ class CfgPatches
             "rhsusf_main",
             "rhsusf_c_airweapons",
             "rhsusf_c_heavyweapons",
-            "UK3CB_BAF_Weapons_Static"
+            "UK3CB_BAF_Weapons_Static",
+            "FPV_UA"
         };
         requiredVersion = 2.14;
 		author = "OksmanTV";
@@ -81,9 +82,10 @@ class CfgPatches
             "rhs_6b2_SVD_GOL",
             "rhs_beret_vdv1_GOL",
             "rhs_beret_vdv2_GOL",
-            "rhs_beret_vdv3_GOL"
+            "rhs_beret_vdv3_GOL",
+            "OKS_DroneDisruptor_Pistol"
         };
-	}
+	};
 };
 
 #include "version.hpp"
@@ -235,6 +237,7 @@ class CfgSettings {
 };
 
 #include "functions\logic\baseControls.hpp"
+#include "configs\CfgJammerHUD.cpp"
 
 class RscStandardDisplay;
 class OKS_MissionComplete_base: RscButtonMenu  {
@@ -308,5 +311,6 @@ class OKS_ConfirmationDialog {
         };
     };
 };
+
 
 

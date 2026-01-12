@@ -199,6 +199,54 @@ class CfgVehicles {
 					exceptions[] = {};
 					statement = "[_player] call OKS_fnc_Deploy_Mortar_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\GOL_Mortar_Packed.paa";
+				};
+
+				class DroneJammer {
+					displayName = "Drone Jammer";
+					condition = "('OKS_DroneJammer' in (items _player))";
+					statement = "";
+					exceptions[] = {};
+					icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
+
+					class ActivateJammer {
+						displayName = "Activate Jammer";
+						condition = "!(_player getVariable ['OKS_JammerActive', false]) && ('OKS_DroneJammer' in (items _player)) && !((vehicle _player) getVariable ['OKS_VehicleJammerActive', false])";
+						exceptions[] = {};
+						statement = "[_player] call OKS_fnc_DroneJammer_Init;";
+						icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
+					};
+
+					class DeactivateJammer {
+						displayName = "Deactivate Jammer";
+						condition = "(_player getVariable ['OKS_JammerActive', false])";
+						exceptions[] = {};
+						statement = "[_player] call OKS_fnc_DroneJammer_Cleanup;";
+						icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
+					};
+				};
+
+				class DroneDetector {
+					displayName = "Drone Detector";
+					condition = "('OKS_DroneDetector' in (items _player))";
+					statement = "";
+					exceptions[] = {};
+					icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\search_ca.paa";
+
+					class ActivateDetector {
+						displayName = "Activate Detector";
+						condition = "!(_player getVariable ['OKS_DetectorActive', false]) && ('OKS_DroneDetector' in (items _player))";
+						exceptions[] = {};
+						statement = "[_player] call OKS_fnc_DroneDetector_Init;";
+						icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\search_ca.paa";
+					};
+
+					class DeactivateDetector {
+						displayName = "Deactivate Detector";
+						condition = "(_player getVariable ['OKS_DetectorActive', false])";
+						exceptions[] = {};
+						statement = "[_player] call OKS_fnc_DroneDetector_Cleanup;";
+						icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\search_ca.paa";
+					};
 				};					
 			};
 		};
@@ -397,7 +445,7 @@ class CfgVehicles {
 	};
 
 	class GOL_ResupplyStation_GUER: ReammoBox_F  {
-		displayName = "GOL Resupply Station (INDEPENDENT)";
+		displayName = "GOL Resupply Station (GUER)";
 		scope = 2;
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";

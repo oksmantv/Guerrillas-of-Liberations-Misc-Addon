@@ -68,4 +68,19 @@ class CfgMagazines {
         icon = "\ArmaFPV\data\drononmap.paa";
         model = "\fpv_ua\drone_ied.p3d";
     };
+
+    // Drone disruptor pistol magazine
+    class 10Rnd_9x21_Mag;
+    class OKS_Mag_DroneDisruptor: 10Rnd_9x21_Mag {
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "EMP Capacitor Magazine";
+        displayNameShort = "EMP";
+        descriptionShort = "5-round electromagnetic pulse magazine for drone elimination";
+        ammo = "OKS_Ammo_DisruptorPulse";
+        count = 5;
+        mass = 10;
+        initSpeed = 0;
+        picture = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
+    };
 };
