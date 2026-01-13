@@ -22,7 +22,7 @@ if (isNull _origin) exitWith { false };
 
 while { alive _origin } do {
     playSound3D [
-        "16aa_immersion_sounds\\Misc\\Alarm\\zeus_sound_AlarmOpenAir.ogg",
+        "\OKS_GOL_Misc\Sounds\siren.ogg",
         _origin,
         false,
         getPosASL _origin,
@@ -30,7 +30,7 @@ while { alive _origin } do {
         1,
         _distance
     ];
-    sleep 80;
+    sleep 180; // Match the 3-minute sound file duration
 };
 
 true

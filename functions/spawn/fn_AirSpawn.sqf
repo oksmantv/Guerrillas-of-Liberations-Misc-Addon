@@ -78,10 +78,13 @@ _moveToPositionATL = [_moveToPositionATL, _offsetDistance, _directionToTargetFla
 
 _spawnPositionATL set [2, _Height];
 
+private _className = "";
+private _templateLoadout = nil;
+
 private _resolveAirframe = {
     params ["_airframes"];
     private _selectedClassName = "";
-    private _templateLoadout = nil;
+    private _selectedLoadout = nil;
 
     if (_airframes isEqualType "") exitWith {[_airframes, nil]};
     if !(_airframes isEqualType []) exitWith {["", nil]};
@@ -91,15 +94,15 @@ private _resolveAirframe = {
     if (_selectedAirframe isEqualType "") exitWith {[_selectedAirframe, nil]};
     if (_selectedAirframe isEqualType []) exitWith {
         _selectedClassName = _selectedAirframe param [0, ""];
-        _templateLoadout = _selectedAirframe param [1, nil];
-        [_selectedClassName, _templateLoadout]
+        _selectedLoadout = _selectedAirframe param [1, nil];
+        [_selectedClassName, _selectedLoadout]
     };
     ["", nil]
 };
 
 private _resolvedAirframe = [_Airframes] call _resolveAirframe;
-private _className = _resolvedAirframe param [0, ""];
-private _templateLoadout = _resolvedAirframe param [1, nil];
+_className = _resolvedAirframe param [0, ""];
+_templateLoadout = _resolvedAirframe param [1, nil];
 
 if (_className isEqualTo "") exitWith {};
 if (_Side isEqualTo sideUnknown) then { _Side = east; };
