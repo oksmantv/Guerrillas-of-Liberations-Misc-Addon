@@ -63,8 +63,8 @@ switch (toLower _type) do {
 
 	case "hold": {
 		[_Group] call OKS_fnc_Convoy_DeleteAllWaypoints;
-		_GuardWP = _Group addWaypoint [getPos _VehicleObject, 0];
-		_GuardWP setWaypointType "GUARD";
+		_HoldWP = _Group addWaypoint [getPos _VehicleObject, 0];
+		_HoldWP setWaypointType "HOLD";
 	};
 
 	case "hunt": {
@@ -82,12 +82,12 @@ switch (toLower _type) do {
 	
 	case "defend": {
 		[_Group] call OKS_fnc_Convoy_DeleteAllWaypoints;
-		_nearestSuitableBuildings = (getPos _VehicleObject nearObjects ["House", 1000]) select { count ([_X] call BIS_fnc_buildingPositions) >= count units _Group && (_X getVariable ["GOL_isGarrisoned", false])};
+		_nearestSuitableBuildings = (nearestObjects [getPos _VehicleObject,["House","Building"], 1000] ) select { count ([_X] call BIS_fnc_buildingPositions) >= count units _Group && (_X getVariable ["GOL_isGarrisoned", false])};
 		if(count _nearestSuitableBuildings == 0) then {
 			[
 				_Group,
 				getPos _VehicleObject,
-				200,
+				50,
 				4,
 				getPos _VehicleObject,
 				true,
@@ -108,7 +108,7 @@ switch (toLower _type) do {
 		[
 			_Group,
 			getPos _nearestBuilding,
-			25,
+			100,
 			getPos _nearestBuilding,
 			false,
 			false,
