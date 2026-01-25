@@ -113,9 +113,17 @@ while {Alive _Radar} do {
 
 	private _targets = _missileTargets + (_airTargets - _missileTargets);
 
-	// Find AAA assets around the radar that should be assisted
-	private _aaaVehicles = (_Radar nearEntities ["LandVehicle", _ShareDistance]) select {
-		(typeOf _x) in _VehicleClassnames
+	// Find AAA assets around the radar that should be assisted (cached for performance)
+	private _lastAAAUpdate = _Radar getVariable ["OKS_Radar_lastAAAUpdate", -1];
+	private _aaaVehicles = _Radar getVariable ["OKS_Radar_cachedAAA", []];
+	if ((diag_tickTime - _lastAAAUpdate) > 60) then {
+		_aaaVehicles = (_Radar nearEntities ["LandVehicle", _ShareDistance]) select {
+			(typeOf _x) in _VehicleClassnames
+		};
+		// Prune dead/null vehicles from cache
+		_aaaVehicles = _aaaVehicles select { !isNull _x && {alive _x} };
+		_Radar setVariable ["OKS_Radar_cachedAAA", _aaaVehicles];
+		_Radar setVariable ["OKS_Radar_lastAAAUpdate", diag_tickTime];
 	};
 
 	// Periodic summary so we can confirm radar sees proxies and AAA is in range
@@ -146,6 +154,25 @@ while {Alive _Radar} do {
 		};
 	};
 
+	// Pre-calculate target sides to avoid redundant lookups in nested loop (use setVariable for compatibility)
+	{
+		private _target = _x;
+		private _targetSide = sideUnknown;
+		private _targetCrew = crew _target;
+		if !(_targetCrew isEqualTo []) then {
+			_targetSide = side (group (_targetCrew select 0));
+		} else {
+			private _cfgSide = getNumber (configFile >> "CfgVehicles" >> typeOf _target >> "side");
+			_targetSide = switch (_cfgSide) do {
+				case 0: { east };
+				case 1: { west };
+				case 2: { resistance };
+				default { civilian };
+			};
+		};
+		_target setVariable ["OKS_Radar_TargetSide", _targetSide];
+	} forEach _targets;
+
 	{
 		private _aaa = _x;
 		private _aaaGunner = gunner _aaa;
@@ -175,20 +202,8 @@ while {Alive _Radar} do {
 				continue;
 			};
 
-			// Only assist against enemies
-			private _targetSide = sideUnknown;
-			private _targetCrew = crew _target;
-			if !(_targetCrew isEqualTo []) then {
-				_targetSide = side (group (_targetCrew select 0));
-			} else {
-				private _cfgSide = getNumber (configFile >> "CfgVehicles" >> typeOf _target >> "side");
-				_targetSide = switch (_cfgSide) do {
-					case 0: { east };
-					case 1: { west };
-					case 2: { resistance };
-					default { civilian };
-				};
-			};
+			// Only assist against enemies (use cached side from setVariable)
+			private _targetSide = _target getVariable ["OKS_Radar_TargetSide", sideUnknown];
 			if ((_aaaSide getFriend _targetSide) > 0.6) then {
 				continue;
 			};

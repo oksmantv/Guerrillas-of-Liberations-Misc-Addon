@@ -18,7 +18,7 @@
         90,                         // Delay between rounds (seconds)
         -1,                         // Max rounds (-1 = infinite)
         30,                         // Victory delay before cleanup
-        12,                         // Maximum total units per round
+        3,                          // Vehicles per side (1-3: uses center/left/right spawn positions)
         3000                        // Player observation range (meters)
     ] call OKS_fnc_AI_Battle;
     
@@ -39,17 +39,20 @@ params [
     ["_Faction2Classes", ["UK3CB_CHD_O_T72A"], [[]]],
     ["_DefendingSide", sideUnknown, [sideUnknown]],
     ["_ShouldLoop", true, [false]],                     // Enable continuous battles
-    ["_RoundDelay", 240, [0]],                          // Delay between rounds (seconds)
-    ["_MaxRounds", -1, [0]],                           // Maximum rounds (-1 = infinite)
+    ["_RoundDelay", 300, [0]],                          // Delay between rounds (seconds)
+    ["_MaxRounds", 5, [0]],                           // Maximum rounds (-1 = infinite)
     ["_RoundVictoryDelay", 60, [0]],                   // Delay after victory before cleanup
-    ["_MaxUnitsPerRound", 12, [0]],                    // Maximum total units per round
-    ["_PlayerObservationRange", 3000, [0]]             // Range for simulation activation
+    ["_MaxVehiclesPerSide", 3, [0]],                   // Vehicles per side per round (1-3, uses spawn positions)
+    ["_PlayerObservationRange", 2000, [0]]             // Range for simulation activation
 ];
+
+// Clamp vehicles per side to valid range (1-3 spawn positions available)
+_MaxVehiclesPerSide = (_MaxVehiclesPerSide max 1) min 3;
 
 // Debug initialization
 if (missionNamespace getVariable ["GOL_AI_Battle_Debug", false]) then {
-    format["[AI_BATTLE] Initializing battle system - Loop: %1, MaxRounds: %2, MaxUnits: %3, ObsRange: %4m", 
-        _ShouldLoop, _MaxRounds, _MaxUnitsPerRound, _PlayerObservationRange] call OKS_fnc_LogDebug;
+    format["[AI_BATTLE] Initializing battle system - Loop: %1, MaxRounds: %2, VehiclesPerSide: %3, ObsRange: %4m", 
+        _ShouldLoop, _MaxRounds, _MaxVehiclesPerSide, _PlayerObservationRange] call OKS_fnc_LogDebug;
     format["[AI_BATTLE] Faction1: %1 (%2 classes), Faction2: %3 (%4 classes)", 
         _Side1, count _Faction1Classes, _Side2, count _Faction2Classes] call OKS_fnc_LogDebug;
 };
@@ -136,7 +139,7 @@ if (missionNamespace getVariable ["GOL_AI_Battle_Debug", false]) then {
 
 // Main battle system - spawned internally to handle suspension
 private _battleSystem = {
-    params ["_MeetingPos", "_DataObject", "_Faction1Positions", "_Faction2Positions", "_MeetingPosOriginal", "_DefendingSideOriginal", "_Side1", "_Side2", "_Faction1Classes", "_Faction2Classes", "_ShouldLoop", "_RoundDelay", "_MaxRounds", "_RoundVictoryDelay", "_MaxUnitsPerRound", "_PlayerObservationRange", "_isWaterBattle"];
+    params ["_MeetingPos", "_DataObject", "_Faction1Positions", "_Faction2Positions", "_MeetingPosOriginal", "_DefendingSideOriginal", "_Side1", "_Side2", "_Faction1Classes", "_Faction2Classes", "_ShouldLoop", "_RoundDelay", "_MaxRounds", "_RoundVictoryDelay", "_MaxVehiclesPerSide", "_PlayerObservationRange", "_isWaterBattle"];
     
     // Player observation check (inverted logic - only simulate when players nearby)
     private _shouldSimulate = {
@@ -149,15 +152,19 @@ private _battleSystem = {
         _playersNearby
     };
 
-    // Enhanced spawn function with unit limits
+    // Enhanced spawn function with per-side vehicle limits
     private _spawnWave = {
-        params ["_positions", "_meetingPos", "_factionClasses", "_side", "_allUnitsArray", "_allVehiclesArray", "_defendingSide", "_maxUnits", ["_enemyPositions", []], ["_enemySide", sideUnknown], ["_isWaterBattle", false]];
+        params ["_positions", "_meetingPos", "_factionClasses", "_side", "_allUnitsArray", "_allVehiclesArray", "_defendingSide", "_maxVehiclesThisSide", ["_enemyPositions", []], ["_enemySide", sideUnknown], ["_isWaterBattle", false]];
         
         private _spawnedThisWave = 0;
+        private _vehiclesSpawnedThisSide = 0;
+        
+        // Only use the number of positions we need (1-3)
+        private _positionsToUse = _positions select [0, _maxVehiclesThisSide];
         
         if (missionNamespace getVariable ["GOL_AI_Battle_Debug", false]) then {
-            format["[AI_BATTLE] Starting spawn wave for %1 - %2 positions, %3 vehicle classes available", 
-                _side, count _positions, count _factionClasses] call OKS_fnc_LogDebug;
+            format["[AI_BATTLE] Starting spawn wave for %1 - using %2 of %3 positions, %4 vehicle classes available", 
+                _side, count _positionsToUse, count _positions, count _factionClasses] call OKS_fnc_LogDebug;
         };
         
         {
@@ -168,10 +175,12 @@ private _battleSystem = {
                 };
             };
             
-            // Check unit limits
-            if ((count _allUnitsArray) >= _maxUnits) exitWith {
-                format["[AI_BATTLE] Unit limit reached (%1/%2) - stopping spawn for %3", 
-                    count _allUnitsArray, _maxUnits, _side] call OKS_fnc_LogDebug;
+            // Check per-side vehicle limit
+            if (_vehiclesSpawnedThisSide >= _maxVehiclesThisSide) exitWith {
+                if (missionNamespace getVariable ["GOL_AI_Battle_Debug", false]) then {
+                    format["[AI_BATTLE] Vehicle limit reached for %1 (%2/%3 vehicles)", 
+                        _side, _vehiclesSpawnedThisSide, _maxVehiclesThisSide] call OKS_fnc_LogDebug;
+                };
             };
             
             private _selectedClass = selectRandom _factionClasses;
@@ -181,6 +190,7 @@ private _battleSystem = {
                 format["[AI_BATTLE] Failed to create vehicle %1 at position %2", _selectedClass, _x] call OKS_fnc_LogDebug;
             } else {
                 _allVehiclesArray pushBack _vehicle;
+                _vehiclesSpawnedThisSide = _vehiclesSpawnedThisSide + 1;
                 
                 private _crew = [_vehicle, _side] call OKS_fnc_AddVehicleCrew;
                 {_allUnitsArray pushBack _x} forEach units _crew;
@@ -373,10 +383,10 @@ private _battleSystem = {
             };
             
             sleep 30; // Original spawn delay
-        } forEach _positions;
+        } forEach _positionsToUse;
         
         if (missionNamespace getVariable ["GOL_AI_Battle_Debug", false]) then {
-            format["[AI_BATTLE] Spawn wave complete for %1 - spawned %2 units total", _side, _spawnedThisWave] call OKS_fnc_LogDebug;
+            format["[AI_BATTLE] Spawn wave complete for %1 - spawned %2 units in %3 vehicles", _side, _spawnedThisWave, _vehiclesSpawnedThisSide] call OKS_fnc_LogDebug;
         };
         
         _spawnedThisWave
@@ -499,8 +509,8 @@ private _battleSystem = {
         _DataObject setVariable ["OKS_AIBattle_CurrentVehicles", _AllVehiclesArray, true];
         
         // Spawn both factions concurrently (with additional position data for attack waypoints)
-        private _faction1Spawn = [_Faction1Positions, _MeetingPos, _Faction1Classes, _Side1, _AllUnitsArray, _AllVehiclesArray, _DefendingSideOriginal, _MaxUnitsPerRound, _Faction2Positions, _Side2, _isWaterBattle] spawn _spawnWave;
-        private _faction2Spawn = [_Faction2Positions, _MeetingPos, _Faction2Classes, _Side2, _AllUnitsArray, _AllVehiclesArray, _DefendingSideOriginal, _MaxUnitsPerRound, _Faction1Positions, _Side1, _isWaterBattle] spawn _spawnWave;
+        private _faction1Spawn = [_Faction1Positions, _MeetingPos, _Faction1Classes, _Side1, _AllUnitsArray, _AllVehiclesArray, _DefendingSideOriginal, _MaxVehiclesPerSide, _Faction2Positions, _Side2, _isWaterBattle] spawn _spawnWave;
+        private _faction2Spawn = [_Faction2Positions, _MeetingPos, _Faction2Classes, _Side2, _AllUnitsArray, _AllVehiclesArray, _DefendingSideOriginal, _MaxVehiclesPerSide, _Faction1Positions, _Side1, _isWaterBattle] spawn _spawnWave;
         
         // Wait for spawning to complete
         if (missionNamespace getVariable ["GOL_AI_Battle_Debug", false]) then {
@@ -722,7 +732,7 @@ if (missionNamespace getVariable ["GOL_AI_Battle_Debug", false]) then {
     format["[AI_BATTLE] Spawning battle system thread - returning control object %1", _DataObject] call OKS_fnc_LogDebug;
 };
 
-[_MeetingPos, _DataObject, _Faction1Positions, _Faction2Positions, _MeetingPosOriginal, _DefendingSideOriginal, _Side1, _Side2, _Faction1Classes, _Faction2Classes, _ShouldLoop, _RoundDelay, _MaxRounds, _RoundVictoryDelay, _MaxUnitsPerRound, _PlayerObservationRange, _isWaterBattle] spawn _battleSystem;
+[_MeetingPos, _DataObject, _Faction1Positions, _Faction2Positions, _MeetingPosOriginal, _DefendingSideOriginal, _Side1, _Side2, _Faction1Classes, _Faction2Classes, _ShouldLoop, _RoundDelay, _MaxRounds, _RoundVictoryDelay, _MaxVehiclesPerSide, _PlayerObservationRange, _isWaterBattle] spawn _battleSystem;
 
 // Return meeting object for external control
 if (missionNamespace getVariable ["GOL_AI_Battle_Debug", false]) then {

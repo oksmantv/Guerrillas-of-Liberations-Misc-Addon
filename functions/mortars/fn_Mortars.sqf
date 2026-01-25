@@ -285,9 +285,9 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 		_Units = [];
 		if (_ScanVehicles) then
 		{
-			{ if ( (((Side _Unit) knowsAbout _x) > 3.95) && !((side _x) isEqualTo (side _Unit)) && ((side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x > _MinRange) && (_Unit distance _x < _MaxRange) && (Alive _x) && (((getposATL _x) select 2) < 5) ) then {_Units PushBack _x}; } ForEach (list _Zone);
+			{ if ( (((Side _Unit) knowsAbout _x) > 3.3) && !((side _x) isEqualTo (side _Unit)) && ((side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x > _MinRange) && (_Unit distance _x < _MaxRange) && (Alive _x) && (((getposATL _x) select 2) < 5) ) then {_Units PushBack _x}; } ForEach (list _Zone);
 		} else {
-			{ if ( (((Side _Unit) knowsAbout _x) > 3.95) && !((side _x) isEqualTo (side _Unit)) && ((side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x > _MinRange) && (_Unit distance _x < _MaxRange) && (_x isKindOf "CAManBase") && (Alive _x) && (((getposATL _x) select 2) < 5) ) then {_Units PushBack _x}; } ForEach (list _Zone);
+			{ if ( (((Side _Unit) knowsAbout _x) > 3.3) && !((side _x) isEqualTo (side _Unit)) && ((side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x > _MinRange) && (_Unit distance _x < _MaxRange) && (_x isKindOf "CAManBase") && (Alive _x) && (((getposATL _x) select 2) < 5) ) then {_Units PushBack _x}; } ForEach (list _Zone);
 		};
 		
 		sleep 0.5;

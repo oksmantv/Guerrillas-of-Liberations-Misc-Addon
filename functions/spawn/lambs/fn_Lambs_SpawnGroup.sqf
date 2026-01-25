@@ -45,6 +45,7 @@
 		private _nearestPlayer = _sortedPlayers select 0;
 		private _direction = _OriginPosition getDir _nearestPlayer;
 
+		systemChat str [_direction,_nearestPlayer];
 		[_direction,_nearestPlayer]
 	};
 
@@ -59,7 +60,7 @@
 
 	if(typeName _InfantryCountOrVehicleArray == "ARRAY") then {
 		_InfantryCountOrVehicleArray params ["_VehicleTypes","_CargoCount"];
-		_Group = [_Position,_Direction, selectRandom _VehicleTypes, _Side, 0, _CargoCount] call OKS_fnc_CreateVehicleWithCrew;
+		_Group = [_Position, _Direction, selectRandom _VehicleTypes, _Side, 0, _CargoCount] call OKS_fnc_CreateVehicleWithCrew;
 	};
 	if(typeName _InfantryCountOrVehicleArray == "SCALAR") then {
 		for "_i" from 1 to (_InfantryCountOrVehicleArray) do

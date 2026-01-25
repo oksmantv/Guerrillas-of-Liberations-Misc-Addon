@@ -39,3 +39,40 @@ diag_log "OKS_GOL_Misc: XEH_preInit_jets.sqf executed";
     [1, 5, 3, 1],
     1
 ] call CBA_fnc_addSetting;
+
+// AirStrike debug toggle (server-side RPT logging via OKS_fnc_LogDebug)
+[
+    "OKS_AirStrike_Debug",
+    "CHECKBOX",
+    ["AirStrike Debug", "Enable verbose server-side debug logging for OKS_fnc_AirStrike."],
+    ["GOL Jets", "AirStrike"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_AirStrike_BombSpacing",
+    "SLIDER",
+    ["Bomb spacing (m)", "Spacing increment per bomb when using bomb carpet."],
+    ["GOL Jets", "AirStrike"],
+    [5, 150, 40, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_AirStrike_BombCount",
+    "SLIDER",
+    ["Bomb count", "How many bombs to drop in bomb mode."],
+    ["GOL Jets", "AirStrike"],
+    [1, 4, 3, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_AirStrike_BombAmmoClass",
+    "EDITBOX",
+    ["Bomb ammo classname", "Ammo classname for bomb strikes (CfgAmmo). Default: Bo_GBU12_LGB. Options: FIR_GBU39, FIR_GBU55, FIR_GBU24B"],
+    ["GOL Jets", "AirStrike"],
+    "Bo_GBU12_LGB",
+    1
+] call CBA_fnc_addSetting;

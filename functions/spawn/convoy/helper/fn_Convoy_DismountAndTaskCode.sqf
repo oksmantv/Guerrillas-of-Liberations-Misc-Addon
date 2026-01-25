@@ -74,6 +74,8 @@ switch (toLower _type) do {
 			60,
 			[],
 			[],
+			false,
+			false,
 			false
 		] spawn lambs_wp_fnc_taskHunt;
 		sleep 5;

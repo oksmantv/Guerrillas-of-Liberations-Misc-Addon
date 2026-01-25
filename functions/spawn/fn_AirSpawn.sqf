@@ -28,7 +28,7 @@ params [
     ["_ShouldBeCareless", false, [true]],
     ["_WaypointType", "SAD", [""]],
     ["_Height", 500, [0]],
-    ["_Loadout", nil, [nil, true, "", []]],
+    ["_Loadout", [], [nil, true, "", []]],
     ["_RevealTargets", true, [true]],
     ["_RevealRadius", 2000, [0]],
     ["_RevealAirRadius", 10000, [0]]
@@ -130,7 +130,9 @@ if (missionNamespace getVariable ["OKS_AIRSPAWN_DEBUG", false]) then {
 
 private _applyLoadout = {
     params ["_vehicle", "_loadout"];
-    if (isNil "_loadout") exitWith {};
+    // NOTE: `isNil "_loadout"` checks variable existence, not value. `_loadout` is always defined by `params`,
+    // so we must use the code-form to handle actual nil values.
+    if (isNil { _loadout }) exitWith {};
 
     // true / string => use OKS_fnc_AirLoadout fallback
     if (_loadout isEqualType true) exitWith { [_vehicle] spawn OKS_fnc_AirLoadout; };
@@ -157,11 +159,14 @@ private _applyLoadout = {
     };
 };
 
-private _effectiveLoadout = if (isNil "_Loadout") then {_templateLoadout} else {_Loadout};
-[_aircraft, _effectiveLoadout] call _applyLoadout;
+private _effectiveLoadout = if (isNil { _Loadout }) then { _templateLoadout } else { _Loadout };
+// If effective loadout is nil, do not touch the aircraft loadout at all.
+if !(isNil { _effectiveLoadout }) then {
+    [_aircraft, _effectiveLoadout] call _applyLoadout;
+};
 
 if (_ShouldBeCareless) then {
-    _crewGroup setBehaviour "CARELESS";
+    _crewGroup setBehaviour "STEALTH";
     _crewGroup setCombatMode "BLUE";
 } else {
     _crewGroup setBehaviour "COMBAT";
@@ -173,7 +178,7 @@ _waypoint setWaypointType _WaypointType;
 
 // Mirror engagement settings on the waypoint (helps when group inherits other defaults).
 if (_ShouldBeCareless) then {
-    _waypoint setWaypointBehaviour "CARELESS";
+    _waypoint setWaypointBehaviour "STEALTH";
     _waypoint setWaypointCombatMode "BLUE";
 } else {
     _waypoint setWaypointBehaviour "COMBAT";
