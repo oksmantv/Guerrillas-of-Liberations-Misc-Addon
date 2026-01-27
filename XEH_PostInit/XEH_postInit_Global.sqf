@@ -32,6 +32,12 @@ if(GOL_Core_Enabled isEqualTo true) then {
                 };
 
                 if(isServer) then {
+					// Disable ACE's default vehicle turret rearm handling for UK3CB vehicles.
+					// We use a custom cargo-magazine rearm workflow instead (via MSS).
+					if ((typeOf _Vehicle find "UK3CB_BAF") == 0 && _Vehicle isKindOf "LandVehicle") then {
+						_Vehicle setVariable ["ace_rearm_disabled", true, true];
+					};
+
                     if (["vehicle_", _varName] call BIS_fnc_inString) exitWith {
                         [_Vehicle] spawn OKS_fnc_Mechanized;
                     };
@@ -85,6 +91,16 @@ if(GOL_Core_Enabled isEqualTo true) then {
     
     ["LandVehicle", "init", {
         params ["_vehicle"];
+
+		// Disable ACE's default vehicle turret rearm handling for UK3CB vehicles.
+		// Server only, so the publicVariable replication is authoritative.
+		if (isServer) then {
+			private _type = typeOf _vehicle;
+			if ((_type find "UK3CB_BAF") == 0 && _vehicle isKindOf "LandVehicle") then {
+				_vehicle setVariable ["ace_rearm_disabled", true, true];
+			};
+		};
+
         if( 
             !(["vehicle",vehicleVarName _Vehicle, false] call BIS_fnc_inString) &&
             !(["mhq",vehicleVarName _Vehicle, false] call BIS_fnc_inString)

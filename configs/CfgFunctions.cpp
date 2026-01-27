@@ -66,6 +66,7 @@ class CfgFunctions // Defines a function
 			class Ace_MHQDrop {};
 			class Ace_Resupply {};
 			class Ace_VehicleDrop {};
+			class AddMSSRearm3CBAction {};
 			class AI_ResupplyDrop {};
 			class MapClose {};
 			class MHQDrop {};
@@ -213,6 +214,7 @@ class CfgFunctions // Defines a function
 			class Mechanized {};				
 			class RailMove {};
 			class VehicleEmpty {};
+			class Rearm3CBVehicle {};
 			class SetupServiceStation {};
 			class SetupCargoItems {};
 			class Setup3CBVehicleAmmo {};

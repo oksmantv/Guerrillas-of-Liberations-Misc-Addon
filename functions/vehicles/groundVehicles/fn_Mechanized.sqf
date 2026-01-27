@@ -34,6 +34,12 @@ if(_Flag != "" && flagTexture _Vehicle == "") then {
 private _Debug_Variable = false;
 _Vehicle setVariable ["GW_Disable_autoRemoveCargo",true,true];
 
+// Disable ACE's default vehicle turret rearm handling for UK3CB vehicles.
+// We use a custom cargo-magazine rearm workflow instead (via MSS).
+if ((typeOf _Vehicle find "UK3CB_BAF") == 0) then {
+	_Vehicle setVariable ["ace_rearm_disabled", true, true];
+};
+
 if(_Debug) then {
 	format["[MECHANIZED] Clearing vehicle cargo and setting base properties"] spawn OKS_fnc_LogDebug;
 };
@@ -69,7 +75,7 @@ if(_Debug) then {
 [_Vehicle, 40] call OKS_fnc_SetupCargoSpace;
 [_Vehicle, _ServiceStation] call OKS_fnc_SetupServiceStation;
 [_Vehicle, _AddMortar, _MortarType] call OKS_fnc_SetupVehicleInventory;
-[_Vehicle] call OKS_fnc_Setup3CBVehicleAmmo;
+[_Vehicle] call OKS_fnc_Rearm3CBVehicle;
 [_Vehicle] call OKS_fnc_SetupCargoItems;
 [_Vehicle] call OKS_fnc_AdjustPlayerVehicleDamage;
 [_Vehicle] spawn OKS_fnc_VehicleEmpty;

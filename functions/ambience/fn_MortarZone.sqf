@@ -3,10 +3,14 @@
 
 	Usage (scheduled):
 		[thisTrigger, 4] spawn OKS_fnc_MortarZone;
+		[thisTrigger, 4, 30, 55, 65] spawn OKS_fnc_MortarZone;
 
 	Params:
 		0: Trigger <OBJECT>
-		1: Delay per round (seconds) <NUMBER>
+		1: Delay per round (seconds) <NUMBER> (default: 4)
+		2: Min player distance (meters) <NUMBER> (default: 30)
+		3: Offset distance min (meters) <NUMBER> (default: 55)
+		4: Offset distance max (meters) <NUMBER> (default: 65)
 
 	Notes:
 		- Server-only (prevents duplicate barrages in multiplayer)
@@ -14,17 +18,23 @@
 		- Avoids landing within 30m of any player; capped rerolls
 */
 
-params ["_trigger", "_delayPerRound"];
+params [
+	"_trigger",
+	["_delayPerRound", 4, [0]],
+	["_minPlayerDistance", 30, [0]],
+	["_offsetDistMin", 55, [0]],
+	["_offsetDistMax", 65, [0]]
+];
 
 if (!isServer) exitWith {};
 if (isNull _trigger) exitWith {};
 
 if (_delayPerRound < 0.1) then { _delayPerRound = 0.1; };
+if (_minPlayerDistance < 0) then { _minPlayerDistance = 0; };
+if (_offsetDistMin < 0) then { _offsetDistMin = 0; };
+if (_offsetDistMax < _offsetDistMin) then { _offsetDistMax = _offsetDistMin; };
 
-private _minPlayerDistance = 30;
 private _maxRerolls = 30;
-private _offsetDistMin = 55;
-private _offsetDistMax = 65;
 private _spawnHeightMin = 125;
 private _spawnHeightRange = 25;
 
@@ -33,7 +43,12 @@ if (isNull _trigger) exitWith {};
 
 while { triggerActivated _trigger } do {
 	private _allVehicles = [];
-	{ _allVehicles pushBackUnique (vehicle _x) } forEach (list _trigger);
+	{
+		private _veh = vehicle _x;
+		if (!(_veh isKindOf "Air")) then {
+			_allVehicles pushBackUnique _veh;
+		};
+	} forEach (list _trigger);
 
 	if (_allVehicles isEqualTo []) then {
 		sleep 1;

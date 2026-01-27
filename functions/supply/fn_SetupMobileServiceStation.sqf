@@ -31,6 +31,11 @@ _Crate AddMagazineCargoGlobal ["UK3CB_BAF_1Rnd_Milan",8];
 _Crate AddMagazineCargoGlobal ["UK3CB_BAF_762_100Rnd_T",20];
 _Crate AddMagazineCargoGlobal ["UK3CB_BAF_762_200Rnd_T",20];
 
+// Add client-side ACE action for this station only (supports JIP).
+if ((typeOf _Crate) isEqualTo "GOL_MobileServiceStation") then {
+	[_Crate] remoteExec ["OKS_fnc_AddMSSRearm3CBAction", 0, _Crate];
+};
+
 // Set Fuel
 _Debug = missionNamespace getVariable ["MHQ_Debug",false];
 if((typeOf _Crate) isNotEqualTo "FlexibleTank_01_forest_F" &&

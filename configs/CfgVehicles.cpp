@@ -299,7 +299,7 @@ class CfgVehicles {
 		{
 			class ACE_MainActions : ACE_MainActions
 			{
-				distance = 5;	
+				distance = 6;	
 				class OKS_CreateResupply {
 					displayName = "Create Resupply";
 					exceptions[] = {};
