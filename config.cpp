@@ -4,6 +4,8 @@ class CfgPatches
 	class GOL_MISC_ADDON {
         requiredAddons[] = { 
             "A3_UI_F", 
+            "A3_Soft_F",
+            "A3_Soft_F_Beta",
             "A3_Modules_F",
             "A3_Structures_F",
             "A3_Weapons_F",
@@ -67,7 +69,8 @@ class CfgPatches
             "OKS_Module_MHQ",
             "OKS_Module_ApplyUnitGear",
 			"GOL_FastRope_DZ",
-			"GOL_Flag_Hellfish"
+			"GOL_Flag_Hellfish",
+            "Fennek_wd","Fennek_d","Fennek_e","Fennek_hmg_wd","Fennek_hmg_d","Fennek_hmg_e","Fennek_gmg_wd","Fennek_gmg_d","Fennek_gmg_e"
 		};
 		weapons[] = {
             "UK3CB_V_Invisible_Plate_Low",
@@ -99,6 +102,14 @@ class CfgPatches
 #include "configs\CfgSounds.cpp"
 #include "configs\CfgUnitInsignia.cpp"
 #include "configs\CfgMarkers.cpp"
+#include "functions\logic\baseControls.hpp"
+
+class RscTitles {
+    #include "configs\CfgJammerHUD.cpp"
+    #include "configs\CfgSatCamHUD.cpp"
+};
+
+#include "configs\CfgJammerUILayout.cpp"
 #include "configs\CfgOrbat.cfg"
 
 class CfgMods {
@@ -143,6 +154,30 @@ class CfgFactionClasses {
         priority = 1;
         side = 7;
     };
+    class BLU_F_WD
+	{
+		displayName = "NATO (Woodland)";
+		side = 1;
+		flag = "\a3\Data_f\Flags\flag_nato_co.paa";
+		icon = "\a3\Data_f\cfgFactionClasses_BLU_ca.paa";
+		priority = 0;
+	};
+	class BLU_F_D
+	{
+		displayName = "NATO (Desert)";
+		side = 1;
+		flag = "\a3\Data_f\Flags\flag_nato_co.paa";
+		icon = "\a3\Data_f\cfgFactionClasses_BLU_ca.paa";
+		priority = 0;
+	};
+	class BLU_F_A
+	{
+		displayName = "NATO (Arid)";
+		side = 1;
+		flag = "\a3\Data_f\Flags\flag_nato_co.paa";
+		icon = "\a3\Data_f\cfgFactionClasses_BLU_ca.paa";
+		priority = 0;
+	};    
 };
 
 class Extended_PreInit_EventHandlers {
@@ -235,9 +270,6 @@ class CfgSettings {
         };
     };
 };
-
-#include "functions\logic\baseControls.hpp"
-#include "configs\CfgJammerHUD.cpp"
 
 class RscStandardDisplay;
 class OKS_MissionComplete_base: RscButtonMenu  {

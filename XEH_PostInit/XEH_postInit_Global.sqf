@@ -16,6 +16,25 @@ if(GOL_Core_Enabled isEqualTo true) then {
     /* Setup Flag Teleport */
     [] spawn OKS_fnc_FlagTeleport;
 
+	/* Amphibious IFV water boost (client-only, locality-safe) */
+	if (hasInterface) then {
+        [] spawn {
+            ["[AMPHIB_IFV_BOOST] PostInit: client init thread started", false, false, true] spawn OKS_fnc_LogDebug;
+
+            waitUntil { sleep 0.2; !isNil "OKS_fnc_AmphibiousBoostInit" };
+
+            private _enabled = missionNamespace getVariable ["GOL_AmphIFVBoost_Enabled", false];
+            private _debug = missionNamespace getVariable ["GOL_AmphIFVBoost_Debug", false];
+            private _verbose = missionNamespace getVariable ["GOL_AmphIFVBoost_DebugVerbose", false];
+            [format ["[AMPHIB_IFV_BOOST] PostInit: fn available. enabled=%1 debug=%2 verbose=%3", _enabled, _debug, _verbose], false, false, true] spawn OKS_fnc_LogDebug;
+
+            [] call OKS_fnc_AmphibiousBoostInit;
+
+            private _pfhId = missionNamespace getVariable ["OKS_AmphIFVBoost_PFH", -1];
+            [format ["[AMPHIB_IFV_BOOST] PostInit: init complete. PFH=%1", _pfhId], false, false, true] spawn OKS_fnc_LogDebug;
+        };
+	};
+
     /* Setup player vehicles & boxes */
     [] spawn {
         sleep 1;

@@ -235,6 +235,17 @@ _dismountGroup setVariable ["GW_HeadlessController_BlackList", true, true];
 private _dismountStaggerSeconds = 1;
 private _postDismountAttackDelaySeconds = 30;
 
+// If > 0, remaining boat crew will be forced to dismount after this many seconds,
+// then the boat will be parked (simulation disabled) to reduce long-term physics/sim load.
+// This is intended as a performance-safe default for beached boats.
+private _forceCrewDismountAfterSeconds = missionNamespace getVariable ["GOL_Amphibious_ForceCrewDismountAfterSeconds", 30];
+
+// Optional: cleanup parked/beached boats once empty to reduce long-term physics/simulation cost.
+// Defaults are conservative (disabled) to avoid unexpected behavior changes.
+private _boatCleanupEnabled = missionNamespace getVariable ["GOL_Amphibious_BoatCleanupEnabled", false];
+private _boatCleanupDelaySeconds = missionNamespace getVariable ["GOL_Amphibious_BoatCleanupDelaySeconds", 180];
+private _boatCleanupDelete = missionNamespace getVariable ["GOL_Amphibious_BoatCleanupDelete", false];
+
 // Helper: restore AI movement after we intentionally stopped/disabled PATH on the driver.
 // (doStop + disableAI "PATH" will otherwise leave them frozen after dismount)
 private _restoreUnitAI = {
@@ -295,6 +306,93 @@ if (alive _boatVehicle) then {
 private _noRemountExecTarget = groupOwner _dismountGroup;
 [(units _dismountGroup), _boatVehicle] remoteExecCall ["OKS_fnc_BeachLandingInstallNoRemount", _noRemountExecTarget];
 
+// Force-dismount any remaining boat crew after a delay, then park the boat.
+// This avoids an unbounded enemy-scan loop and removes beached vehicle physics from the sim.
+if (_forceCrewDismountAfterSeconds > 0 && {alive _boatVehicle}) then {
+    [_boatVehicle, _dismountGroup, _assaultSide, _dismountStaggerSeconds, _forceCrewDismountAfterSeconds] spawn {
+        params ["_boat", "_assaultGroup", "_side", "_stagger", "_delay"];
+        if (isNull _boat) exitWith {};
+
+        _delay = _delay max 0;
+        _stagger = _stagger max 0;
+        sleep _delay;
+
+        if (isNull _boat || {!alive _boat}) exitWith {};
+
+        // Cleanup dead crew bodies before parking the boat (prevents odd corpses-in-boat visuals).
+        private _deadCrew = (crew _boat) select { !alive _x };
+        { deleteVehicle _x; } forEach _deadCrew;
+
+        private _crewToDismount = (crew _boat) select { alive _x && {vehicle _x == _boat} };
+        if !(_crewToDismount isEqualTo []) then {
+            {
+                private _u = _x;
+                unassignVehicle _u;
+                [_u] orderGetIn false;
+
+                // Ensure they can actually move after leaving the boat.
+                _u enableAI "MOVE";
+                _u enableAI "PATH";
+                _u enableAI "FSM";
+                _u enableAI "AUTOTARGET";
+                _u enableAI "TARGET";
+
+                doGetOut _u;
+                _u action ["GetOut", _boat];
+                if (_stagger > 0) then { sleep _stagger; };
+            } forEach _crewToDismount;
+
+            private _forceStart = diag_tickTime;
+            waitUntil {
+                sleep 0.05;
+                ({vehicle _x == _x} count _crewToDismount) == (count _crewToDismount)
+                || {diag_tickTime - _forceStart > 2}
+            };
+
+            { if (vehicle _x != _x) then { moveOut _x; }; } forEach _crewToDismount;
+
+            // Merge into assault group so they follow the same tasking.
+            if (!isNull _assaultGroup) then {
+                _crewToDismount joinSilent _assaultGroup;
+            };
+
+            // Apply no-remount on the machine where these AI are local.
+            private _execTarget = if (!isNull _assaultGroup) then { groupOwner _assaultGroup } else { 2 };
+            [_crewToDismount, _boat] remoteExecCall ["OKS_fnc_BeachLandingInstallNoRemount", _execTarget];
+        };
+
+        if (isNull _boat || {!alive _boat}) exitWith {};
+
+        // IMPORTANT: do not disable simulation while living crew are still inside the boat.
+        // Keep trying to force them out for a short time.
+        private _emptyTimeoutAt = diag_tickTime + 6;
+        waitUntil {
+            sleep 0.1;
+            if (isNull _boat || {!alive _boat}) exitWith { true };
+
+            private _stillIn = (crew _boat) select { alive _x && {vehicle _x == _boat} };
+            if !(_stillIn isEqualTo []) then {
+                { moveOut _x; unassignVehicle _x; [_x] orderGetIn false; } forEach _stillIn;
+            };
+
+            (_stillIn isEqualTo []) || {diag_tickTime > _emptyTimeoutAt}
+        };
+
+        if (isNull _boat || {!alive _boat}) exitWith {};
+
+        private _stillInFinal = (crew _boat) select { alive _x && {vehicle _x == _boat} };
+        if !(_stillInFinal isEqualTo []) exitWith {
+            // Someone is still inside; don't freeze the boat in a bad state.
+        };
+
+        // Park the boat: lock and disable simulation globally.
+        _boat setFuel 0;
+        _boat engineOn false;
+        _boat lock 2;
+        _boat enableSimulationGlobal false;
+    };
+};
+
 if !(_publicVariableName isEqualTo "") then {
     missionNamespace setVariable [_publicVariableName, units _dismountGroup, true];
     ["PV_SET", format ["%1=%2 units", _publicVariableName, count (units _dismountGroup)]] call _debugLog;
@@ -315,12 +413,59 @@ private _lambsExecTarget = groupOwner _dismountGroup;
 [_dismountGroup, _taskTypeLower, _lambsTaskRange, _assaultTargetPosition, _postDismountAttackDelaySeconds, true, _boatVehicle, 10, 140, 5]
     remoteExec ["OKS_fnc_BeachLandingPostDismountTasking", _lambsExecTarget];
 
+// Cleanup worker: once the boat is empty (no living crew), optionally freeze/hide or delete it after a delay.
+// Runs server-side (this function is server-only).
+if (_boatCleanupEnabled && {!isNull _boatVehicle}) then {
+    [_boatVehicle, _boatCleanupDelaySeconds, _boatCleanupDelete, _debugEnabled, _debugChat] spawn {
+        params ["_boat", "_delay", "_doDelete", "_dbg", "_dbgChatLocal"];
+
+        if (isNull _boat) exitWith {};
+        _delay = _delay max 0;
+
+        waitUntil {
+            sleep 1;
+            isNull _boat
+            || {!alive _boat}
+            || {({alive _x} count (crew _boat)) == 0}
+        };
+
+        if (isNull _boat) exitWith {};
+        if (!alive _boat) exitWith {};
+
+        if (_delay > 0) then { sleep _delay; };
+        if (isNull _boat || {!alive _boat}) exitWith {};
+
+        if (_doDelete) then {
+            if (_dbg) then {
+                private _msg = format ["[GOL Amphibious][BeachLanding] BOAT_CLEANUP_DELETE | boat=%1", _boat];
+                diag_log _msg;
+                if (_dbgChatLocal) then { _msg remoteExec ["systemChat", 0]; };
+            };
+            deleteVehicle _boat;
+        } else {
+            if (_dbg) then {
+                private _msg = format ["[GOL Amphibious][BeachLanding] BOAT_CLEANUP_PARK | boat=%1", _boat];
+                diag_log _msg;
+                if (_dbgChatLocal) then { _msg remoteExec ["systemChat", 0]; };
+            };
+
+            // Park: stop sim and hide globally (removes the expensive physics update burden).
+            _boat setFuel 0;
+            _boat engineOn false;
+            _boat lock 2;
+            _boat enableSimulationGlobal false;
+            _boat hideObjectGlobal true;
+        };
+    };
+};
+
 // Optional: keep boat crew mounted while enemies exist; when enemies disappear, dismount crew and merge into the assault group.
 private _crewDismountWhenNoTargets = missionNamespace getVariable ["GOL_Amphibious_CrewDismountWhenNoTargets", true];
-if (_crewDismountWhenNoTargets && {alive _boatVehicle}) then {
+if (_forceCrewDismountAfterSeconds <= 0 && {_crewDismountWhenNoTargets} && {alive _boatVehicle}) then {
     private _targetCheckRangeMeters = missionNamespace getVariable ["GOL_Amphibious_TargetCheckRangeMeters", 400];
     private _targetCheckIntervalSeconds = missionNamespace getVariable ["GOL_Amphibious_TargetCheckIntervalSeconds", 2];
     private _noTargetTimeoutSeconds = missionNamespace getVariable ["GOL_Amphibious_NoTargetTimeoutSeconds", 15];
+    private _crewMonitorMaxTimeSeconds = missionNamespace getVariable ["GOL_Amphibious_CrewMonitorMaxTimeSeconds", 0];
 
     private _hasNearbyEnemies = {
         params ["_boat", "_friendlySide", "_rangeMeters"];
@@ -360,14 +505,27 @@ if (_crewDismountWhenNoTargets && {alive _boatVehicle}) then {
     ["CREW_MONITOR", format ["keepMounted=%1 range=%2 interval=%3 timeout=%4", count _unitsToKeepInBoat, _targetCheckRangeMeters, _targetCheckIntervalSeconds, _noTargetTimeoutSeconds]] call _debugLog;
 
     private _noTargetStart = diag_tickTime;
+    private _monitorStart = diag_tickTime;
+    private _monitorTimedOut = false;
     waitUntil {
         sleep _targetCheckIntervalSeconds;
         if (!alive _boatVehicle) exitWith { true };
+
+        // Failsafe: if configured, do not keep scanning forever.
+        if (_crewMonitorMaxTimeSeconds > 0 && {(diag_tickTime - _monitorStart) > _crewMonitorMaxTimeSeconds}) exitWith {
+            _monitorTimedOut = true;
+            true
+        };
+
         private _hasTargets = [_boatVehicle, _assaultSide, _targetCheckRangeMeters] call _hasNearbyEnemies;
         if (_hasTargets) then {
             _noTargetStart = diag_tickTime;
         };
         (diag_tickTime - _noTargetStart) > _noTargetTimeoutSeconds
+    };
+
+    if (_monitorTimedOut) then {
+        ["CREW_MONITOR_TIMEOUT", format ["maxTime=%1s", _crewMonitorMaxTimeSeconds]] call _debugLog;
     };
 
     if (alive _boatVehicle) then {

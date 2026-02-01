@@ -80,3 +80,57 @@ diag_log "OKS_GOL_Misc: XEH_preInit_convoy.sqf executed";
     [0, 10, 1],
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "OKS_Convoy_TargetScanInterval",
+    "SLIDER",
+    ["Convoy Target Scan Interval", "Seconds between convoy ground-target scan ticks. Higher values reduce periodic stutter."],
+    ["GOL Convoy", "Performance"],
+    [0.1, 5, 1.5],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_Convoy_TargetScanJitter",
+    "SLIDER",
+    ["Convoy Target Scan Jitter", "Random extra seconds added to each scan tick to de-sync multiple convoys and smooth frame-time spikes."],
+    ["GOL Convoy", "Performance"],
+    [0, 3, 0.8],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_Convoy_TargetScanVehiclesPerTick",
+    "SLIDER",
+    ["Convoy Vehicles Scanned Per Tick", "How many convoy vehicles run target checks per scan tick. 1 = lead vehicle only (recommended for performance)."],
+    ["GOL Convoy", "Performance"],
+    [1, 10, 1],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_Convoy_TargetScanStride",
+    "SLIDER",
+    ["Convoy Detector Stride", "Spacing between detector vehicles along the convoy. Example: 3 = every 3rd vehicle becomes a detector candidate (lead-only when convoy has 3 or fewer vehicles)."],
+    ["GOL Convoy", "Performance"],
+    [1, 10, 3],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_Convoy_TargetScanMaxCandidatesPerVehicle",
+    "SLIDER",
+    ["Convoy Max Target Candidates", "Max candidate targets checked per scanned vehicle per tick (caps expensive LOS checks)."],
+    ["GOL Convoy", "Performance"],
+    [1, 50, 6],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "OKS_Convoy_TargetScanMaxRuntime",
+    "SLIDER",
+    ["Convoy Scan Max Runtime", "Failsafe: stop the convoy ground-target scan after this many seconds (prevents endless background scanning)."],
+    ["GOL Convoy", "Performance"],
+    [30, 3600, 900],
+    1
+] call CBA_fnc_addSetting;

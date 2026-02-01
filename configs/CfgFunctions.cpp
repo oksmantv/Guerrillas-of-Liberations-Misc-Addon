@@ -204,6 +204,20 @@ class CfgFunctions // Defines a function
 			class WaitUntilCaptiveAtBase {};
 		};			
 
+		class OKS_Camera {
+			file = "\OKS_GOL_Misc\functions\helpers\camera";
+			class SatCamPipStart {};
+			class SatCamPipStop {};
+			class SatCamPipStartForVehicleCargo {};
+			class SatCamPipStartFollowUnitView {};
+			class SatCamPipStartFollowVehicleCommanderView {};
+			class SatCamPipStartVehicleDriverReverse {};
+			class SatCamPipStartForVehicleCargoCommanderView {};
+			class SatCamPipToggleCommanderView {};
+			class SatCamPipCommanderZoomIn {};
+			class SatCamPipCommanderZoomOut {};
+		};
+
 		class OKS_Vehicles {
 			file = "\OKS_GOL_Misc\functions\vehicles";
 			class Retexture {};
@@ -214,6 +228,7 @@ class CfgFunctions // Defines a function
 			class Mechanized {};				
 			class RailMove {};
 			class VehicleEmpty {};
+			class AmphibiousBoostInit {};
 			class Rearm3CBVehicle {};
 			class SetupServiceStation {};
 			class SetupCargoItems {};

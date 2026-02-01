@@ -201,7 +201,7 @@ while {Alive _arty && Alive (gunner _arty) && (side (gunner _arty) isEqualTo _si
             _target set [1, ((getPosATL _targetPlayer) select 1) + _RelposY];
             _target set [2, ((getPosATL _targetPlayer) select 2) + (_speed select 2)];
 
-            _delay = 0.1;
+            _delay = 0.2;
             _updateTarget = 15;
         } else {
             if(_Debug_Variable) then {
@@ -255,7 +255,7 @@ while {Alive _arty && Alive (gunner _arty) && (side (gunner _arty) isEqualTo _si
             _target set [0, ((getPosATL _targetPlayer) select 0) + _RelPosX];
             _target set [1, ((getPosATL _targetPlayer) select 1) + _RelposY];
             _target set [2, ((getPosATL _targetPlayer) select 2) + (_speed select 2)];
-            _delay = 0.1;
+            _delay = 0.2;
         };
     };
 

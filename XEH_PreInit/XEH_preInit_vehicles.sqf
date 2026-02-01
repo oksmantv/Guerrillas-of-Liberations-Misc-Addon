@@ -13,6 +13,12 @@ diag_log "OKS_GOL_Misc: XEH_preInit_vehicles.sqf executed";
     1
 ] call CBA_fnc_addSetting;
 
+// SatCam PiP profiles (vehicle-specific anchors)
+missionNamespace setVariable [
+    "OKS_SatCamPip_VehicleProfiles",
+    call compile preprocessFileLineNumbers "\OKS_GOL_Misc\functions\helpers\camera\satCamProfiles.sqf"
+];
+
 [
     "GOL_RailMove_ArrivalRadiusMeters",
     "SLIDER",
@@ -57,3 +63,45 @@ diag_log "OKS_GOL_Misc: XEH_preInit_vehicles.sqf executed";
     true,
     1
 ] call CBA_fnc_addSetting;
+
+// Amphibious IFVs: Water boost while holding Shift
+[
+    "GOL_AmphIFVBoost_Enabled",
+    "CHECKBOX",
+    ["Amphibious IFV Boost", "When enabled, amphibious IFVs get a small forward water-speed boost while the driver holds Shift (turbo) and is pressing forward. Applied locally to reduce MP jitter."],
+    ["GOL Amphibious Vehicles", "IFV Boost"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+	"GOL_AmphIFVBoost_Debug",
+	"CHECKBOX",
+	["Amphibious IFV Boost Debug", "Enables [AMPHIB_IFV_BOOST] logging via OKS_fnc_LogDebug (throttled)."],
+	["GOL Amphibious Vehicles", "IFV Boost"],
+	true,
+	1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_AmphIFVBoost_DebugVerbose",
+    "CHECKBOX",
+    ["Amphibious IFV Boost Verbose", "More frequent [AMPHIB_IFV_BOOST] state snapshots for troubleshooting. Can spam RPT."],
+    ["GOL Amphibious Vehicles", "IFV Boost"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+// Camera: keybinds
+// Note: CBA keybinds are configured by users in Controls -> Addon Options -> CBA.
+["OKS_GOL_Misc", "OKS_SatCam_CommanderView", ["Commander Camera", "Toggle PiP camera. Driver: rear camera. Cargo/other turrets: commander view. (ESC closes)."], {
+    [] call OKS_fnc_SatCamPipToggleCommanderView;
+}, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
+
+["OKS_GOL_Misc", "OKS_SatCam_CommanderZoomIn", ["Commander Camera Zoom In", "Commander/gunner PiP: zoom in (cycles through 4 levels)."], {
+    [] call OKS_fnc_SatCamPipCommanderZoomIn;
+}, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
+
+["OKS_GOL_Misc", "OKS_SatCam_CommanderZoomOut", ["Commander Camera Zoom Out", "Commander/gunner PiP: zoom out (cycles through 4 levels)."], {
+    [] call OKS_fnc_SatCamPipCommanderZoomOut;
+}, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
