@@ -318,23 +318,45 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
 
 private _eye = if (_memPoint isNotEqualTo "") then {
     // Use bbox top as hull top, then add turret equipment height ABOVE it
-    // Gun barrel and memory points are internal - turret extends above hull
+    // Try to find actual turret structure selections first
     private _bbox = boundingBoxReal _vehicle;
     private _min = _bbox select 0;
     private _max = _bbox select 1;
     
-    // Get gun barrel to estimate turret size, but only if it's ABOVE hull top
-    private _gunBarrel = _vehicle selectionPosition "usti hlavne";
+    // Check for turret structure selections (physical turret, not player viewpoints)
+    private _turretSelections = ["otocvez", "vez", "turret"];
+    private _turretPos = [0,0,0];
+    private _foundTurret = false;
+    {
+        private _pos = _vehicle selectionPosition _x;
+        if (!(_pos isEqualTo [0,0,0])) then {
+            _turretPos = _pos;
+            _foundTurret = true;
+            break;
+        };
+    } forEach _turretSelections;
     
     // Calculate turret height ABOVE hull top
-    // If gun barrel is above hull, use that difference + optics offset
-    // Otherwise use standard turret height
-    private _turretHeightAboveHull = if (!(_gunBarrel isEqualTo [0,0,0]) && {(_gunBarrel#2) > (_max#2)}) then {
-        // Gun barrel extends above hull - measure that + optics
-        (_gunBarrel#2) - (_max#2) + 0.3
+    private _turretHeightAboveHull = if (_foundTurret && {(_turretPos#2) > (_max#2)}) then {
+        // Found turret structure above hull - use its position + optics offset
+        if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+            [format ["[Commander View]   Using turret structure at Z=%1, hull top=%2, height above hull=%3", _turretPos#2, _max#2, (_turretPos#2) - (_max#2)]] spawn OKS_fnc_LogDebug;
+        };
+        (_turretPos#2) - (_max#2) + 0.5
     } else {
-        // Standard turret height above hull (CROWS optics at top)
-        1.0
+        // Fallback: Check gun barrel, or use standard turret height
+        private _gunBarrel = _vehicle selectionPosition "usti hlavne";
+        if (!(_gunBarrel isEqualTo [0,0,0]) && {(_gunBarrel#2) > (_max#2)}) then {
+            if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+                [format ["[Commander View]   FALLBACK: Using gun barrel at Z=%1, hull top=%2, height above hull=%3", _gunBarrel#2, _max#2, (_gunBarrel#2) - (_max#2)]] spawn OKS_fnc_LogDebug;
+            };
+            (_gunBarrel#2) - (_max#2) + 0.3
+        } else {
+            if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+                [format ["[Commander View]   FALLBACK: Using standard 1.0m turret height (no turret structure or gun barrel above hull)"]] spawn OKS_fnc_LogDebug;
+            };
+            1.0
+        };
     };
     
     // Position at front center of vehicle, at hull top + turret height
@@ -346,11 +368,10 @@ private _eye = if (_memPoint isNotEqualTo "") then {
     
     if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
         [format ["[Commander View] STEP 1: Turret optics calculation"]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Gun barrel (model): %1", _gunBarrel]] spawn OKS_fnc_LogDebug;
+        [format ["[Commander View]   Turret selection found: %1", if (_foundTurret) then {format ["YES at %1", _turretPos]} else {"NO"}]] spawn OKS_fnc_LogDebug;
         [format ["[Commander View]   Bbox min: %1", _min]] spawn OKS_fnc_LogDebug;
         [format ["[Commander View]   Bbox max: %1", _max]] spawn OKS_fnc_LogDebug;
         [format ["[Commander View]   Hull top Z: %1m", _max#2]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Gun barrel above hull: %1", if ((_gunBarrel#2) > (_max#2)) then {format ["%1m", (_gunBarrel#2) - (_max#2)]} else {"NO (internal)"}]] spawn OKS_fnc_LogDebug;
         [format ["[Commander View]   Turret height above hull: %1m", _turretHeightAboveHull]] spawn OKS_fnc_LogDebug;
         [format ["[Commander View]   pModel (optics position): %1", _pModelOriginal]] spawn OKS_fnc_LogDebug;
         [format ["[Commander View]   Final turret optics Z: %1m", _pModelOriginal#2]] spawn OKS_fnc_LogDebug;
@@ -658,19 +679,36 @@ private _pfhId = [{
 
     private _eye = if (_memPoint isNotEqualTo "") then {
         // Use bbox top as hull top, then add turret equipment height ABOVE it
-        // Gun barrel and memory points are internal - turret extends above hull
+        // Try to find actual turret structure selections first
         private _bbox = boundingBoxReal _vehicle;
         private _min = _bbox select 0;
         private _max = _bbox select 1;
         
-        // Get gun barrel to estimate turret size, but only if it's ABOVE hull top
-        private _gunBarrel = _vehicle selectionPosition "usti hlavne";
+        // Check for turret structure selections (physical turret, not player viewpoints)
+        private _turretSelections = ["otocvez", "vez", "turret"];
+        private _turretPos = [0,0,0];
+        private _foundTurret = false;
+        {
+            private _pos = _vehicle selectionPosition _x;
+            if (!(_pos isEqualTo [0,0,0])) then {
+                _turretPos = _pos;
+                _foundTurret = true;
+                break;
+            };
+        } forEach _turretSelections;
         
         // Calculate turret height ABOVE hull top
-        private _turretHeightAboveHull = if (!(_gunBarrel isEqualTo [0,0,0]) && {(_gunBarrel#2) > (_max#2)}) then {
-            (_gunBarrel#2) - (_max#2) + 0.3
+        private _turretHeightAboveHull = if (_foundTurret && {(_turretPos#2) > (_max#2)}) then {
+            // Found turret structure above hull - use its position + optics offset
+            (_turretPos#2) - (_max#2) + 0.5
         } else {
-            1.0
+            // Fallback: Check gun barrel, or use standard turret height
+            private _gunBarrel = _vehicle selectionPosition "usti hlavne";
+            if (!(_gunBarrel isEqualTo [0,0,0]) && {(_gunBarrel#2) > (_max#2)}) then {
+                (_gunBarrel#2) - (_max#2) + 0.3
+            } else {
+                1.0
+            };
         };
         
         // Position at front center of vehicle, at hull top + turret height

@@ -286,7 +286,8 @@ class CfgVehicles {
 		scope = 2;
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
-		editorSubcategory = "GOL_Resupply";    
+		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		model = "\A3\Structures_F_Heli\Ind\Cargo\Cargo10_military_green_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
@@ -365,6 +366,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";    
+		maximumLoad = 20000;
 		model = "\A3\Structures_F_Heli\Ind\Cargo\Cargo10_military_green_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
@@ -450,6 +452,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";    
+		maximumLoad = 20000;
 		model = "\A3\Structures_F_Heli\Ind\Cargo\Cargo10_military_green_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
@@ -527,7 +530,8 @@ class CfgVehicles {
 		scope = 2;
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
-		editorSubcategory = "GOL_Resupply";    
+		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		model = "\a3\Props_F_Decade\Objectives\RuggedTerminal_02_communications_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
@@ -614,6 +618,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";    
+		maximumLoad = 20000;
 		model = "\a3\Props_F_Decade\Objectives\RuggedTerminal_02_communications_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
@@ -692,7 +697,8 @@ class CfgVehicles {
 		scope = 2;
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
-		editorSubcategory = "GOL_Resupply";    
+		editorSubcategory = "GOL_Resupply";  
+		maximumLoad = 20000;  
 		model = "\a3\Props_F_Decade\Objectives\RuggedTerminal_02_communications_F.p3d";
 		class TransportMagazines {};
 		class TransportWeapons {};
@@ -791,6 +797,8 @@ class CfgVehicles {
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
         ace_refuel_fuelCargo = 9999;
+		ace_rearm_defaultSupply = 9999;
+		maximumLoad = 20000;
 		model = "\A3\Structures_F_Heli\Civ\Constructions\WeldingTrolley_01_F.p3d";
 		class TransportMagazines {};
         class TransportWeapons {};
@@ -808,6 +816,7 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+        maximumLoad = 20000;
 		class TransportMagazines {};
         class TransportWeapons {};
         class TransportItems {};
@@ -824,7 +833,8 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
-		class TransportMagazines {};
+		maximumLoad = 20000;
+		class TransportMagazines {};	
         class TransportWeapons {};
         class TransportItems {};
         class TransportBackpacks {};
@@ -840,6 +850,7 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
         class TransportWeapons {};
         class TransportItems {};
@@ -856,6 +867,7 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
         class TransportWeapons {};
         class TransportItems {};
@@ -872,6 +884,7 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
         class TransportWeapons {};
         class TransportItems {};
@@ -888,6 +901,7 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
         class TransportWeapons {};
         class TransportItems {};
@@ -904,6 +918,7 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		model = "\z\ace\addons\medical_treatment\data\ace_medcrate.p3d";
 		class TransportMagazines {};
         class TransportWeapons {};
@@ -921,6 +936,7 @@ class CfgVehicles {
     	scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		model = "\z\ace\addons\medical_treatment\data\ace_medcrate.p3d";
 		class TransportMagazines {};
         class TransportWeapons {};
@@ -939,6 +955,7 @@ class CfgVehicles {
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
 		model = "\z\ace\addons\medical_treatment\data\ace_medcrate.p3d";
+		maximumLoad = 20000;
 		class TransportMagazines {};
         class TransportWeapons {};
         class TransportItems {};
@@ -956,6 +973,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -972,6 +990,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -988,6 +1007,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -1005,6 +1025,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -1021,6 +1042,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -1037,6 +1059,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -1054,6 +1077,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -1070,6 +1094,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};
@@ -1086,6 +1111,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		editorCategory = "GOL_GuerrillasOfLiberation";
 		editorSubcategory = "GOL_Resupply";
+		maximumLoad = 20000;
 		class TransportMagazines {};
 		class TransportWeapons {};
 		class TransportItems {};

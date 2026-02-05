@@ -116,7 +116,7 @@ private _getAnchorWorld = {
     _veh modelToWorldVisualWorld (_pModel vectorAdd _offset)
 };
 
-private _anchorSpec = _profile getOrDefault ["driverRear_anchor", ["bboxRearBottom", [], [0,0,0]]];
+private _anchorSpec = _profile getOrDefault ["driverRear_anchor", ["bboxRearLow", [], [0,0,0]]];
 
 [format ["[Rear Cam] Anchor type: %1, offset: %2", _anchorSpec#0, _anchorSpec#2]] spawn OKS_fnc_LogDebug;
 
@@ -164,10 +164,16 @@ switch (_anchorType) do {
         };
     };
     case "bboxRearLow": {
+        // Calculate 25% of vehicle HEIGHT, but position it relative to ground level
+        // The bbox bottom might be below ground, so we need to offset from vehicle ATL position
         private _h = (_max#2) - (_min#2);
-        _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_min#2) + (_h * 0.10)];
+        private _targetHeightAboveGround = _h * 0.25;  // 25% of total height
+        // Vehicle's getPosATL gives us the model center's height above ground
+        // We want camera at specific height above ground, so: targetHeight - vehicleATL
+        private _vehATL = getPosATL _vehicle;
+        _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), _targetHeightAboveGround - (_vehATL#2)];
         if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-            [format ["[Rear Cam] bbox min Z: %1, max Z: %2, height: %3, final Z: %4", _min#2, _max#2, _h, _pModel#2]] spawn OKS_fnc_LogDebug;
+            [format ["[Rear Cam] Using bboxRearLow - 25%% height (vehicle height=%1m, target height above ground=%2m, vehicle ATL Z=%3m, final model Z=%4m)", _h, _targetHeightAboveGround, _vehATL#2, _pModel#2]] spawn OKS_fnc_LogDebug;
         };
     };
     default {
@@ -338,16 +344,43 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
     private _terrainZ = getTerrainHeightASL [_camPos#0, _camPos#1];
     private _heightAboveTerrain = (_camPos#2) - _terrainZ;
     private _vehPos = getPosASL _vehicle;
-    [format ["[Rear Cam]   Vehicle ASL: %1 (Z: %2)", _vehPos, _vehPos#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Rear Cam]   Camera ASL: %1 (Z: %2)", _camPos, _camPos#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Rear Cam]   Terrain Z: %1", _terrainZ]] spawn OKS_fnc_LogDebug;
-    [format ["[Rear Cam]   Height above terrain: %1m", _heightAboveTerrain]] spawn OKS_fnc_LogDebug;
+    private _vehATL = getPosATL _vehicle;
+    [format ["[Rear Cam] VEHICLE:"]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   ASL: %1, Z: %2", _vehPos, _vehPos#2]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   ATL: %1, Z: %2", _vehATL, _vehATL#2]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Terrain at vehicle: %1", _terrainZ]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle above terrain: %1m", (_vehPos#2) - _terrainZ]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Is on water: %1", surfaceIsWater (getPosATL _vehicle)]] spawn OKS_fnc_LogDebug;
+    
+    [format ["[Rear Cam] CAMERA:"]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   ASL: %1, Z: %2", _camPos, _camPos#2]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   ATL: %1, Z: %2", ASLToATL _camPos, (ASLToATL _camPos)#2]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Camera above vehicle: %1m", (_camPos#2) - (_vehPos#2)]] spawn OKS_fnc_LogDebug;
 };
 
-private _camera = "camera" camCreate _camPos;
+// Convert to ATL because camCreate uses ATL coordinates
+private _camPosATL = ASLToATL _camPos;
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam] === CAMERA CREATION ==="]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Calculated ASL: %1", _camPos]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Converted to ATL: %1", _camPosATL]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Creating camera at ATL: %1", _camPosATL]] spawn OKS_fnc_LogDebug;
+};
+
+private _camera = "camera" camCreate _camPosATL;
 _camera camSetTarget (_pos vectorAdd (_dir vectorMultiply 2000));
 _camera camSetFov _fov;
 _camera camCommit 0;
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    // Verify actual camera position after creation
+    private _actualPosASL = getPosASL _camera;
+    private _actualPosATL = getPosATL _camera;
+    [format ["[Rear Cam]   Camera actual ASL: %1", _actualPosASL]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Camera actual ATL: %1", _actualPosATL]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Position match: %1", if (_actualPosATL distance _camPosATL < 0.1) then {"YES"} else {format ["NO - Off by %1m", _actualPosATL distance _camPosATL]}]] spawn OKS_fnc_LogDebug;
+};
 
 private _rtName = "OKS_SAT_PIP";
 _camera cameraEffect ["INTERNAL", "BACK", _rtName];
@@ -434,7 +467,9 @@ private _pfhId = [{
         };
         case "bboxRearLow": {
             private _h = (_max#2) - (_min#2);
-            _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_min#2) + (_h * 0.10)];
+            private _targetHeightAboveGround = _h * 0.25;
+            private _vehATL = getPosATL _vehicle;
+            _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), _targetHeightAboveGround - (_vehATL#2)];
         };
         default {
             // bboxRearMid
@@ -515,9 +550,12 @@ private _pfhId = [{
     };
 
     // Note: AGL height clamping removed - camera stays vehicle-relative
+    
+    // Convert to ATL because camSetPos uses ATL coordinates
+    private _camPosATL = ASLToATL _camPos;
 
     _camera camSetFov _fov;
-    _camera camSetPos _camPos;
+    _camera camSetPos _camPosATL;
     _camera camSetTarget (_pos vectorAdd (_dir vectorMultiply 2000));
     _camera camCommit 0;
 }, 0.05, [_camera, _vehicle, _anchorSpec, _fov, _durationSec, _startT, _camBackDistance, _camHeightAGL]] call CBA_fnc_addPerFrameHandler;
