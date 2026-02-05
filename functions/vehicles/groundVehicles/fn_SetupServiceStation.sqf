@@ -15,7 +15,7 @@ if(_ServiceStation) then {
 	};
 	
 	_Debug = missionNamespace getVariable ["MHQ_Debug",false];
-	if(_Debug) then {SystemChat "Adding Service Station Box"};
+	if(_Debug) then {"[ServiceStation] Adding Service Station Box" spawn OKS_fnc_LogDebug};
 	_ShouldGiveServiceStationToVehicle = ["ShouldGiveServiceStationToVehicle", 1] call BIS_fnc_getParamValue;
 	if(!(_Vehicle getVariable ["GOL_isMHQ",false]) && _ShouldGiveServiceStationToVehicle isEqualTo 1) then {
 		if(_GroundVehiclesDebug) then {

@@ -2,21 +2,23 @@
     OKS_fnc_SatCamPipStartFollowUnitView
 
     Starts a client-local PiP camera overlay that follows a unit's current view
-    (eyePos + eyeDirection). Useful for "commander view" sharing to cargo, or
-    user-selected UAV/gunner POV feeds.
+    (memory point position + turret/vehicle direction). Automatically matches
+    the unit's current zoom/FOV in real-time.
 
     Usage (client):
-      [_unit, [_fov,_durationSec,_vehicleToStopOnExit]] call OKS_fnc_SatCamPipStartFollowUnitView;
+      [_unit, [_fov,_durationSec,_vehicleToStopOnExit,_verticalOffset]] call OKS_fnc_SatCamPipStartFollowUnitView;
 
     Params:
       0: Unit (OBJECT)
       1: Options ARRAY (optional)
-         0 _fov (default 0.35)
+         0 _fov (default 0.35, used as fallback if dynamic FOV unavailable)
          1 _durationSec (default -1 = until exit)
          2 _vehicleToStopOnExit (OBJECT, default vehicle player)
+         3 _verticalOffset (NUMBER, meters to offset camera down from memory point, default 0)
 
         Note:
         - The global "OKS_SatCamPip_ForceOff" switch is reserved for the satellite PiP only.
+        - FOV automatically syncs with unit's current zoom level (no manual controls needed)
 
     Notes:
     - Overlay defined in configs/CfgSatCamHUD.cpp (RscTitles: OKS_SatCamHUD)
@@ -32,41 +34,103 @@ params [
 
 if (isNull _unit) exitWith { objNull };
 
+// Debug mode check: if player is commander/gunner and debug is off, don't show camera
+private _isDebugMode = missionNamespace getVariable ["GOL_VehicleCamera_Debug", false];
+private _vehCheck = vehicle player;
+if (!isNull _vehCheck && {_vehCheck != player}) then {
+    if (player == commander _vehCheck || {player == gunner _vehCheck}) then {
+        if (!_isDebugMode) exitWith {
+            ["[Unit Cam] Debug mode OFF - camera disabled for commander/gunner"] spawn OKS_fnc_LogDebug;
+            objNull
+        };
+        ["[Unit Cam] Debug mode ON - showing camera for commander/gunner"] spawn OKS_fnc_LogDebug;
+    };
+};
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Unit Cam] Starting camera following unit: %1", name _unit]] spawn OKS_fnc_LogDebug;
+};
+
 [] call OKS_fnc_SatCamPipStop;
 
 private _fov = _opts param [0, 0.35, [0]];
 private _durationSec = _opts param [1, -1, [0]];
 private _vehicleToStopOnExit = _opts param [2, objNull, [objNull]];
+private _verticalOffset = _opts param [3, 0, [0]];
 
 private _rtName = "OKS_SAT_PIP";
 
 private _camForwardOffset = 0.8;
 
-private _eye = eyePos _unit;
-private _dir = eyeDirection _unit;
-
-// If the unit is in a vehicle, try to anchor to the optics memory point to avoid clipping.
 private _veh = vehicle _unit;
-if (!isNull _veh && {_veh != _unit}) then {
-    private _role = assignedVehicleRole _unit;
-    private _roleType = if ((count _role) > 0) then { toLower (_role#0) } else { "" };
-    private _mem = "";
-    if (_roleType == "turret" && {(count _role) > 1}) then {
-        private _path = _role#1;
-        private _cfgTurret = [_veh, _path] call BIS_fnc_turretConfig;
-        if (!isNull _cfgTurret) then {
-            _mem = getText (_cfgTurret >> "memoryPointGunnerOptics");
-            if (_mem isEqualTo "") then { _mem = getText (_cfgTurret >> "memoryPointGun"); };
+
+// Only works for units in vehicles
+if (isNull _veh || {_veh == _unit}) exitWith { objNull };
+
+private _eye = [0,0,0];
+private _dir = [0,1,0];
+private _mem = "";
+private _turretPath = [];
+
+private _role = assignedVehicleRole _unit;
+private _roleType = if ((count _role) > 0) then { toLower (_role#0) } else { "" };
+
+if (_roleType == "turret" && {(count _role) > 1}) then {
+    _turretPath = _role#1;
+    private _cfgTurret = [_veh, _turretPath] call BIS_fnc_turretConfig;
+    if (!isNull _cfgTurret) then {
+        _mem = getText (_cfgTurret >> "memoryPointGunnerOptics");
+        if (_mem isEqualTo "") then { _mem = getText (_cfgTurret >> "memoryPointGun"); };
+    };
+} else {
+    if (_unit isEqualTo driver _veh) then {
+        _mem = getText (configFile >> "CfgVehicles" >> typeOf _veh >> "memoryPointDriverOptics");
+    };
+};
+
+if (_mem isNotEqualTo "") then {
+    private _modelPos = _veh selectionPosition _mem;
+    
+    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+        [format ["[Unit Cam] Memory point '%1' Z: %2, verticalOffset: %3", _mem, _modelPos#2, _verticalOffset]] spawn OKS_fnc_LogDebug;
+    };
+    
+    // Apply vertical offset (lower the camera from memory point)
+    if (_verticalOffset != 0) then {
+        _modelPos set [2, (_modelPos#2) - _verticalOffset];
+    };
+    _eye = _veh modelToWorldVisualWorld _modelPos;
+    
+    // Get direction from memory point or turret
+    if ((count _turretPath) > 0) then {
+        private _angles = [_veh, _turretPath] call CBA_fnc_turretDir;
+        if (_angles isEqualType [] && {(count _angles) >= 2}) then {
+            private _v = ([1] + _angles) call CBA_fnc_polar2vect;
+            if (_v isEqualType [] && {(count _v) == 3}) then {
+                _dir = vectorNormalized _v;
+            };
         };
     } else {
-        if (_unit isEqualTo driver _veh) then {
-            _mem = getText (configFile >> "CfgVehicles" >> typeOf _veh >> "memoryPointDriverOptics");
+        private _vdu = _veh selectionVectorDirAndUp [_mem, "Memory"];
+        private _dModel = _vdu param [0, [0,0,0], [[]]];
+        if (!(_dModel isEqualTo [0,0,0])) then {
+            _dir = vectorNormalized (_veh vectorModelToWorld _dModel);
+        } else {
+            _dir = vectorDirVisual _veh;
         };
     };
-    if (_mem isNotEqualTo "") then {
-        private _modelPos = _veh selectionPosition _mem;
-        _eye = _veh modelToWorldVisualWorld _modelPos;
-    };
+} else {
+    // Fallback: use lower mid (25% height) and vehicle direction
+    private _bb = boundingBoxReal _veh;
+    private _h = (_bb#1#2) - (_bb#0#2);
+    private _centerLowMid = [0, 0, (_bb#0#2) + (_h * 0.25)];
+    _eye = _veh modelToWorldVisualWorld _centerLowMid;
+    _dir = vectorDirVisual _veh;
+};
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    private _eyeATL = ASLToATL _eye;
+    [format ["[Unit Cam] Camera created. Eye Z (ATL): %1m, Vertical offset: %2m", _eyeATL#2, _verticalOffset]] spawn OKS_fnc_LogDebug;
 };
 
 private _camera = "camera" camCreate (_eye vectorAdd (_dir vectorMultiply _camForwardOffset));
@@ -113,7 +177,7 @@ missionNamespace setVariable ["OKS_SatCamPip_EHs", _ehIds];
 private _startT = diag_tickTime;
 private _pfhId = [{
     params ["_args", "_pfhId"];
-    _args params ["_camera", "_unit", "_fov", "_durationSec", "_startT", "_vehicleToStopOnExit"];
+    _args params ["_camera", "_unit", "_fov", "_durationSec", "_startT", "_vehicleToStopOnExit", "_verticalOffset"];
 
     if (isNull _camera) exitWith { [_pfhId] call CBA_fnc_removePerFrameHandler; };
 
@@ -128,42 +192,111 @@ private _pfhId = [{
         [_pfhId] call CBA_fnc_removePerFrameHandler;
     };
 
+    // Safety: exit camera if local player becomes gunner/commander (took over main crew position)
+    if (!isNull _vehicleToStopOnExit && {vehicle player == _vehicleToStopOnExit}) then {
+        if (player == gunner _vehicleToStopOnExit || {player == commander _vehicleToStopOnExit}) exitWith {
+            [] call OKS_fnc_SatCamPipStop;
+            [_pfhId] call CBA_fnc_removePerFrameHandler;
+        };
+    };
+
     if (_durationSec > 0 && {(diag_tickTime - _startT) > _durationSec}) exitWith {
         [] call OKS_fnc_SatCamPipStop;
         [_pfhId] call CBA_fnc_removePerFrameHandler;
     };
 
-    private _eye = eyePos _unit;
-    private _dir = eyeDirection _unit;
-
     private _veh = vehicle _unit;
-    if (!isNull _veh && {_veh != _unit}) then {
-        private _role = assignedVehicleRole _unit;
-        private _roleType = if ((count _role) > 0) then { toLower (_role#0) } else { "" };
-        private _mem = "";
-        if (_roleType == "turret" && {(count _role) > 1}) then {
-            private _path = _role#1;
-            private _cfgTurret = [_veh, _path] call BIS_fnc_turretConfig;
-            if (!isNull _cfgTurret) then {
-                _mem = getText (_cfgTurret >> "memoryPointGunnerOptics");
-                if (_mem isEqualTo "") then { _mem = getText (_cfgTurret >> "memoryPointGun"); };
+    
+    // Exit if unit left vehicle
+    if (isNull _veh || {_veh == _unit}) exitWith {
+        [] call OKS_fnc_SatCamPipStop;
+        [_pfhId] call CBA_fnc_removePerFrameHandler;
+    };
+
+    private _eye = [0,0,0];
+    private _dir = [0,1,0];
+    private _mem = "";
+    private _turretPath = [];
+
+    private _role = assignedVehicleRole _unit;
+    private _roleType = if ((count _role) > 0) then { toLower (_role#0) } else { "" };
+    
+    if (_roleType == "turret" && {(count _role) > 1}) then {
+        _turretPath = _role#1;
+        private _cfgTurret = [_veh, _turretPath] call BIS_fnc_turretConfig;
+        if (!isNull _cfgTurret) then {
+            _mem = getText (_cfgTurret >> "memoryPointGunnerOptics");
+            if (_mem isEqualTo "") then { _mem = getText (_cfgTurret >> "memoryPointGun"); };
+        };
+    } else {
+        if (_unit isEqualTo driver _veh) then {
+            _mem = getText (configFile >> "CfgVehicles" >> typeOf _veh >> "memoryPointDriverOptics");
+        };
+    };
+    
+    if (_mem isNotEqualTo "") then {
+        private _modelPos = _veh selectionPosition _mem;
+        // Apply vertical offset (lower the camera from memory point)
+        if (_verticalOffset != 0) then {
+            _modelPos set [2, (_modelPos#2) - _verticalOffset];
+        };
+        _eye = _veh modelToWorldVisualWorld _modelPos;
+        
+        // Get direction from memory point or turret
+        if ((count _turretPath) > 0) then {
+            private _angles = [_veh, _turretPath] call CBA_fnc_turretDir;
+            if (_angles isEqualType [] && {(count _angles) >= 2}) then {
+                private _v = ([1] + _angles) call CBA_fnc_polar2vect;
+                if (_v isEqualType [] && {(count _v) == 3}) then {
+                    _dir = vectorNormalized _v;
+                };
             };
         } else {
-            if (_unit isEqualTo driver _veh) then {
-                _mem = getText (configFile >> "CfgVehicles" >> typeOf _veh >> "memoryPointDriverOptics");
+            private _vdu = _veh selectionVectorDirAndUp [_mem, "Memory"];
+            private _dModel = _vdu param [0, [0,0,0], [[]]];
+            if (!(_dModel isEqualTo [0,0,0])) then {
+                _dir = vectorNormalized (_veh vectorModelToWorld _dModel);
+            } else {
+                _dir = vectorDirVisual _veh;
             };
         };
-        if (_mem isNotEqualTo "") then {
-            private _modelPos = _veh selectionPosition _mem;
-            _eye = _veh modelToWorldVisualWorld _modelPos;
+    } else {
+        // Fallback: use lower mid (25% height) and vehicle direction
+        private _bb = boundingBoxReal _veh;
+        private _h = (_bb#1#2) - (_bb#0#2);
+        private _centerLowMid = [0, 0, (_bb#0#2) + (_h * 0.25)];
+        _eye = _veh modelToWorldVisualWorld _centerLowMid;
+        _dir = vectorDirVisual _veh;
+    };
+
+    // Dynamic FOV: match unit's current optics zoom
+    private _currentFov = _fov;
+    
+    // If we're the unit being followed, broadcast our FOV to the vehicle
+    if (_unit == player && !isNull _veh && {_veh != _unit}) then {
+        private _unitFov = getObjectFOV _unit;
+        if (_unitFov > 0) then {
+            _veh setVariable ["OKS_CommanderFOV", _unitFov, true]; // Network synced
+            _currentFov = _unitFov;
+            if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+                [format ["[Unit Cam] Broadcasting FOV: %1", _unitFov]] spawn OKS_fnc_LogDebug;
+            };
+        };
+    } else {
+        // We're cargo viewing commander - read their stored FOV
+        if (!isNull _veh) then {
+            private _storedFov = _veh getVariable ["OKS_CommanderFOV", -1];
+            if (_storedFov > 0) then {
+                _currentFov = _storedFov;
+            };
         };
     };
 
-    _camera camSetFov _fov;
+    _camera camSetFov _currentFov;
     _camera camSetPos (_eye vectorAdd (_dir vectorMultiply 0.8));
     _camera camSetTarget (_eye vectorAdd (_dir vectorMultiply 2000));
     _camera camCommit 0;
-}, 0, [_camera, _unit, _fov, _durationSec, _startT, _vehicleToStopOnExit]] call CBA_fnc_addPerFrameHandler;
+}, 0, [_camera, _unit, _fov, _durationSec, _startT, _vehicleToStopOnExit, _verticalOffset]] call CBA_fnc_addPerFrameHandler;
 
 missionNamespace setVariable ["OKS_SatCamPip_PFH", _pfhId];
 

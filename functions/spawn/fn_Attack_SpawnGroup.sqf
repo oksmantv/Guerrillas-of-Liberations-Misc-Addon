@@ -1,5 +1,5 @@
 /*
-	OKS_Attack_SpawnGroup
+	OKS_fnc_Attack_SpawnGroup
 	[_this,player,4,east,true,500] spawn OKS_fnc_Attack_SpawnGroup;
 	[SpawnPosOrObject,ArrayOrObject,UnitOrClassname,Side,ShouldAddStepWaypoint,RangeOfFallbackHuntScript] spawn OKS_fnc_Attack_SpawnGroup;
 */

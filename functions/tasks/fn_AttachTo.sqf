@@ -37,7 +37,7 @@ Params
 
 
 // Error messages
-if (isNull _Object) exitWith {SystemChat "NEKY_AttachTo: Error, missing object"};
+if (isNull _Object) exitWith {"[Tasks] NEKY_AttachTo: Error, missing object" spawn OKS_fnc_LogDebug};
 if (isNull _Surface) exitWith {SystemChat "NEKY_AttachTo: Error, missing surface"};
 
 // Collect position and vectors and then attach the object

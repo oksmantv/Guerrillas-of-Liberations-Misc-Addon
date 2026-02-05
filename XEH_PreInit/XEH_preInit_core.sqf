@@ -49,6 +49,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_VehicleCamera_Debug",
+    "CHECKBOX",
+    ["Vehicle Camera Debug", "Allows commander/gunner to see their own PiP camera feed for debugging positioning and FOV."],
+    ["GOL DEBUG", "General"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_Server_Debug",
     "CHECKBOX",
     ["Enable Server DEBUG", "Allows for any debug messages to be broadcasted on the server. If disabled, no messages will show for the server (Local Host if editing)."],

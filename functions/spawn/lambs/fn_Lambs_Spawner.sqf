@@ -37,11 +37,11 @@
 			_Condition2 = (Call Compile Format ["%1 == true",_ActivatedToDisableSpawner]);
 		};
 		if(!((typeName _ActivatedToDisableSpawner) in ["OBJECT","STRING"])) exitWith {
-			SystemChat "ActivatedToDisableSpawner is not string or object. Check parameters for Lambs Spawner..";
+			"[LambsSpawner] ActivatedToDisableSpawner is not string or object. Check parameters for Lambs Spawner.." spawn OKS_fnc_LogDebug;
 		};
 
 		if(_Condition1) then {
-			SystemChat "Trigger inactive, spawning new hunter.";
+			"[LambsSpawner] Trigger inactive, spawning new hunter." spawn OKS_fnc_LogDebug;
 			_Group = CreateGroup _Side;
 			_Group setVariable ["acex_headless_blacklist",true,true];
 			for "_i" from 1 to round(_NumberInfantry * _forceMultiplier) do
@@ -79,12 +79,12 @@
 			[_Group,_Range,10,[],[],false] remoteExec ["lambs_wp_fnc_taskRush",0];
 
 			waitUntil { sleep 5; {Alive _X || [_X] call ace_common_fnc_isAwake} count units _Group < 1};
-			systemChat format["Group destroyed or unconscious. Passed WaitUntil. Sleep: %1",_RespawnDelay];
+			format["[LambsSpawner] Group destroyed or unconscious. Passed WaitUntil. Sleep: %1",_RespawnDelay] spawn OKS_fnc_LogDebug;
 			sleep (_RespawnDelay * _ResponseMultiplier);
 		};
 		
 		if(_Condition2) exitWith {
-			systemChat "Spawner Disabled.";
+			"[LambsSpawner] Spawner Disabled." spawn OKS_fnc_LogDebug;
 		};
 		sleep 10;
 	};

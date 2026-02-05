@@ -10,7 +10,7 @@ Params ["_Grp","_Player","_Zone","_UpdateFreq","_Distance","_Number","_Code","_F
 Private ["_WP1","_WP2","_WPs"];
 
 if(isNil "_Grp") exitWith {
-	systemChat "Exited Hunting. _Grp not defined.";
+	"[Hunt] Exited Hunting. _Grp not defined." spawn OKS_fnc_LogDebug;
 };
 
 if (_Grp getVariable ["NEKY_Hunt_GroupEnabled",false]) exitWith {}; // Exit if Group is already hunting

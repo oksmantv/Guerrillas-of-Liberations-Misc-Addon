@@ -49,9 +49,7 @@ clearWeaponCargoGlobal _Vehicle;
 clearMagazineCargoGlobal _Vehicle;
 clearBackpackCargoGlobal _Vehicle;
 _Vehicle setFuelConsumptionCoef 3;
-_Vehicle AddMagazineTurret ["rhs_mag_smokegen",[-1]];
 _Vehicle setVariable ["gw_gear_blackList",true,true];
-_Vehicle addWeaponTurret ["rhs_weap_smokegen",[-1]];
 
 if(_ShouldDisableThermal) then {
 	_Vehicle disableTIEquipment true;
@@ -78,9 +76,14 @@ if(_Debug) then {
 [_Vehicle] call OKS_fnc_Rearm3CBVehicle;
 [_Vehicle] call OKS_fnc_SetupCargoItems;
 [_Vehicle] call OKS_fnc_AdjustPlayerVehicleDamage;
-[_Vehicle] spawn OKS_fnc_VehicleEmpty;
+
+private _VehicleEmptyEnabled = missionNamespace getVariable ["GOL_VehicleEmpty_Enabled", false];
+if (_VehicleEmptyEnabled) then {
+	[_Vehicle] spawn OKS_fnc_VehicleEmpty;
+};
+
 sleep 5;
-if(_Debug_Variable) then {SystemChat "Remove dapsCanSmoke"};
+if(_Debug_Variable) then {"[Mechanized] Remove dapsCanSmoke" spawn OKS_fnc_LogDebug};
 _Vehicle setVariable["dapsCanSmoke",0,true];
 
 if(_Debug) then {

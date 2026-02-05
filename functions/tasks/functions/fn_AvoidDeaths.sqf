@@ -30,7 +30,7 @@ _Params Params
 	["_Code", {}, [{}]]
 ];
 
-if !(isNil {MissionNameSpace getVariable _Var}) exitWith {SystemChat "ERROR: NEKY_Tasks_AvoidDeaths already defined"}; // Exit if side already defined
+if !(isNil {MissionNameSpace getVariable _Var}) exitWith {"[TaskAvoidDeaths] ERROR: NEKY_Tasks_AvoidDeaths already defined" spawn OKS_fnc_LogDebug}; // Exit if side already defined
 
 // Check and define variable
 _Var = "NEKY_Tasks_AvoidDeaths";

@@ -87,7 +87,6 @@ For "_i" from 1 to _Count do {
 				"B_medic_F",
 				"B_Soldier_GL_F",
 				"B_HeavyGunner_F",
-				"B_soldier_M_F",
 				"B_Soldier_F",
 				"B_Soldier_F",
 				"B_Soldier_F",
@@ -106,7 +105,6 @@ For "_i" from 1 to _Count do {
 				"O_medic_F",
 				"O_Soldier_GL_F",
 				"O_HeavyGunner_F",
-				"O_soldier_M_F",
 				"O_Soldier_F",
 				"O_Soldier_F",
 				"O_Soldier_F",
@@ -125,7 +123,6 @@ For "_i" from 1 to _Count do {
 				"I_medic_F",
 				"I_Soldier_GL_F",
 				"I_support_MG_F",
-				"I_soldier_M_F",
 				"I_Soldier_F",
 				"I_Soldier_F",
 				"I_Soldier_F",
@@ -148,14 +145,14 @@ For "_i" from 1 to _Count do {
 	_startMarker setMarkerSIze [0.7,0.7];
 	_endMarker setMarkerSIze [0.7,0.7];
 
-	waitUntil {sleep 1; if(_Debug_Variable) then {systemChat "Waiting for clearance near _Spawn"}; (getPos _Spawn nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []};
-	if(_Debug_Variable) then {systemChat format ["Spawning Vehicle.."]};
+	waitUntil {sleep 1; if(_Debug_Variable) then {"[Convoy] Waiting for clearance near _Spawn" spawn OKS_fnc_LogDebug}; (getPos _Spawn nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []};
+	if(_Debug_Variable) then {"[Convoy] Spawning Vehicle.." spawn OKS_fnc_LogDebug};
 
 	if(_Vehicles isNotEqualTo []) then {
 		_Classname = _Vehicles select 0;
 		_Vehicles deleteAt 0;
 		if(_Debug_Variable) then{
-			systemChat str [_Classname,_Vehicles];
+			format ["[Convoy] %1", str [_Classname,_Vehicles]] spawn OKS_fnc_LogDebug;
 		}		
 	};
 	_Vehicle = CreateVehicle [_Classname,getPos _Spawn];
@@ -167,21 +164,21 @@ For "_i" from 1 to _Count do {
     _Group setVariable ["acex_headless_blacklist",true,true];
 	_Group setVariable ["lambs_danger_disableAI", true,true];
 
-    if(_Debug_Variable) then {systemChat format ["Group: %3 Side: %2 - %1 Class Selected",_crewClass,_Side,_Group]};
+    if(_Debug_Variable) then {format ["[Convoy] Group: %3 Side: %2 - %1 Class Selected",_crewClass,_Side,_Group] spawn OKS_fnc_LogDebug};
     if(_Vehicle emptyPositions "commander" > 0) then {
-        if(_Debug_Variable) then { systemChat "Creating Commander"};
+        if(_Debug_Variable) then { "[Convoy] Creating Commander" spawn OKS_fnc_LogDebug};
         _Commander = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
         _Commander setRank "SERGEANT";
         _Commander moveinCommander _Vehicle;
     };
     if(_Vehicle emptyPositions "gunner" > 0) then {
-        if(_Debug_Variable) then { systemChat "Creating Gunner"};
+        if(_Debug_Variable) then { "[Convoy] Creating Gunner" spawn OKS_fnc_LogDebug};
         _Gunner = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
         _Gunner setRank "CORPORAL";
         _Gunner moveinGunner _Vehicle;
     };
     if(_Vehicle emptyPositions "driver" > 0) then {
-        if(_Debug_Variable) then { systemChat "Creating Driver"};
+        if(_Debug_Variable) then { "[Convoy] Creating Driver" spawn OKS_fnc_LogDebug};
         _Driver = _Group CreateUnit [_crewClass, [0,0,0], [], 5, "NONE"];
         _Driver setRank "PRIVATE";
         _Driver moveinDriver _Vehicle;
@@ -240,7 +237,7 @@ waitUntil{
 		(leader _X) distance _End < 25;
 	} count _ConvoyArray > 0
 };
-if(_Debug_Variable) then {SystemChat "Reached Site, Deploying.."};
+if(_Debug_Variable) then {"[Convoy] Reached Site, Deploying.." spawn OKS_fnc_LogDebug};
 {_X setBehaviour "COMBAT"; _X setCombatMode "RED"; } foreach _ConvoyArray;
 sleep 10;
 Call Compile Format ["%1 = True; PublicVariable '%1'",_VariableSetToTrue];

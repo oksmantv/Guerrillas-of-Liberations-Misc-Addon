@@ -66,8 +66,8 @@ if (_shouldLogDebug) then {
 	private _detectorDebugEnabled = (missionNamespace getVariable ["GOL_Detector_Debug", false]);
 	[objNull, format ["Detector debug: %1 | Enable with: GOL_Detector_Debug=true", _detectorDebugEnabled]] call _logDebug;
 } else {
-	systemChat "DroneHuntZone: Debug disabled. Set GOL_Drones_MasterDebug=true + GOL_Drones_Debug=true for logs.";
-	systemChat "Detector logs: Also enable GOL_Detector_Debug in addition to master debug.";
+	"[DroneHunt] Debug disabled. Set GOL_Drones_MasterDebug=true + GOL_Drones_Debug=true for logs." spawn OKS_fnc_LogDebug;
+	"[DroneHunt] Detector logs: Also enable GOL_Detector_Debug in addition to master debug." spawn OKS_fnc_LogDebug;
 };
 
 // Normalize input parameters using helpers

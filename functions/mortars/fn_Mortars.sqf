@@ -74,7 +74,7 @@ _Inaccuracy = (_Position select 1);
 _EnableMarking = True;
 
 if (typeName _Mortar == "OBJECT") then {sleep 10};
-	SystemChat "NEKY_Mortars running.";
+	"[Mortar] NEKY_Mortars running." spawn OKS_fnc_LogDebug;
 
 // Check if AUTO or designated location
 if (typeName (_Position select 0) == "STRING") then 
@@ -159,10 +159,10 @@ if ( (isNil "_Mortar") or (TypeName _Mortar == "STRING") ) then
 				case blufor: {_Gunner = _BLUFORGunner};
 				case opfor:  {_Gunner = _OPFORGunner};
 				case independent: {_Gunner = _INDEPGunner};
-				default {SystemChat "Invalid side"};
+				default {"[Mortar] Invalid side" spawn OKS_fnc_LogDebug};
 			};
 			
-			systemChat "Spawning Gunner.";
+			"[Mortar] Spawning Gunner." spawn OKS_fnc_LogDebug;
 			_Group = CreateGroup _Side;
 			_Unit = _Group createUnit [(_Gunner call BIS_FNC_SelectRandom), [0,0,200], [], 0, "NONE"];
 			_Unit assignAsGunner _Mortar;
@@ -204,7 +204,7 @@ if ( (isNil "_Mortar") or (TypeName _Mortar == "STRING") ) then
 					if (Alive _Mortar) then
 					{
 						[[[_Mortar],{(_This select 0) SetVehicleLock "LOCKED"; (_This select 0) setVehicleAmmo 0;}], "BIS_FNC_SPAWN", true] call BIS_FNC_MP;
-						SystemChat "Mortar locked";
+						"[Mortar] Mortar locked" spawn OKS_fnc_LogDebug;
 					};
 					sleep 20;
 				};
@@ -220,30 +220,42 @@ if ( (isNil "_Mortar") or (TypeName _Mortar == "STRING") ) then
 					_Unit = (_This select 0);
 					_DangerClose = (_This select 1);
 					
-					// Scan nearby area
-					WaitUntil { sleep 5; !(Alive _Unit) or {!((side _x) == (side _Unit)) && ((side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x <= _DangerClose) && (((getposATL _x) select 2) < 5)} count allUnits > 0};
+					// Scan nearby area using nearEntities instead of allUnits
+					WaitUntil { 
+						sleep (4 + random 3); 
+						if (!alive _Unit) exitWith {true};
+						
+						private _nearbyUnits = (getPosATL _Unit) nearEntities ["CAManBase", _DangerClose];
+						private _enemyClose = _nearbyUnits findIf {
+							!((side _x) == (side _Unit)) && 
+							((side _Unit) getFriend (side _x) < 0.6) && 
+							(((getposATL _x) select 2) < 5)
+						} != -1;
+						
+						_enemyClose
+					};
 					[_Unit] Call OKS_fnc_MortarAIReset;					
 				};
 			};
 		} else {
 			_Unit = (Gunner _Mortar);
 			_OffMap = False;
-			SystemChat "Gunner position is taken";
+			"[Mortar] Gunner position is taken" spawn OKS_fnc_LogDebug;
 		};
 	} else {
-		systemChat "Mortar is destroyed or non-existant"
+		"[Mortar] Mortar is destroyed or non-existant" spawn OKS_fnc_LogDebug
 	};
 	_OffMap = False;
 };
 
-if ( !(_OffMap) && (isNil "_Unit") ) exitWith {SystemChat "Error while creating mortar gunner, script ends"};
+if ( !(_OffMap) && (isNil "_Unit") ) exitWith {"[Mortar] Error while creating mortar gunner, script ends" spawn OKS_fnc_LogDebug};
 
 
 While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 {
 	if (_Ammo < 1) ExitWith 
 	{
-		SystemChat "Mortar out of ammo, dismounting";
+		"[Mortar] Mortar out of ammo, dismounting" spawn OKS_fnc_LogDebug;
 		[_Unit] call OKS_fnc_MortarAIReset;
 	};	
 	
@@ -251,7 +263,7 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 	if (_FiringMode == "random") then {
 		_SelectedFiringMode = toLower (_RandomFiringMode call BIS_FNC_SelectRandom)
 	} else {_SelectedFiringMode = _FiringMode};
-	SystemChat Format ["Firing mode: %1",_SelectedFiringMode];
+	format ["[Mortar] Firing mode: %1",_SelectedFiringMode] spawn OKS_fnc_LogDebug;
 	
 	// Inaccuracy definer
 	Switch (_SelectedFiringMode) do
@@ -273,15 +285,15 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 		
 		sleep 1;
 		
-		SystemChat "Zone Scanning";	
+		"[Mortar] Zone Scanning" spawn OKS_fnc_LogDebug;	
 		if (_ScanVehicles) then 
 		{
-			WaitUntil {sleep 5; { (!(Alive _Unit) or !(Alive _Mortar) or !(_Unit in _Mortar)) or (( (side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x > _MinRange) && (_Unit distance _x < _MaxRange) && (((getposATL _x) select 2) < 5))} count (list _Zone) > 0};
+			WaitUntil {sleep (4 + random 3); { (!(Alive _Unit) or !(Alive _Mortar) or !(_Unit in _Mortar)) or (( (side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x > _MinRange) && (_Unit distance _x < _MaxRange) && (((getposATL _x) select 2) < 5))} count (list _Zone) > 0};
 		} else {
-			WaitUntil {sleep 5; {(!(Alive _Unit) or !(Alive _Mortar) or !(_Unit in _Mortar)) or (( (side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x > _MinRange) && (_Unit distance _x < _MaxRange) && (((getposATL _x) select 2) < 5) && (_x isKindOf "CAManBase"))} count (list _Zone) > 0};
+			WaitUntil {sleep (4 + random 3); {(!(Alive _Unit) or !(Alive _Mortar) or !(_Unit in _Mortar)) or (( (side _Unit) GetFriend (side _x) < 0.6) && (_Unit distance _x > _MinRange) && (_Unit distance _x < _MaxRange) && (((getposATL _x) select 2) < 5) && (_x isKindOf "CAManBase"))} count (list _Zone) > 0};
 		};
 	
-		SystemChat "Zone Activated";
+		"[Mortar] Zone Activated" spawn OKS_fnc_LogDebug;
 		_Units = [];
 		if (_ScanVehicles) then
 		{
@@ -516,16 +528,16 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 		};
 		
 	} else {
-		SystemChat "Friendly too close or no hostiles known to mortar faction, rescanning"; 
+		"Friendly too close or no hostiles known to mortar faction, rescanning" spawn OKS_fnc_LogDebug; 
 		sleep 10;
 	};
 	if ((_OffMap) or !(_Scanner)) exitWith 
 	{
-		systemChat "Off map mode or not in auto mode, exiting script";
+		"[Mortar] Off map mode or not in auto mode, exiting script" spawn OKS_fnc_LogDebug;
 		sleep (180 + (random 180));
 		missionNamespace setVariable ["Active_UAV_Mortar",false,true];
 	};
 	DeleteVehicle _Zone;
 };
 
-SystemChat "script ending.";
+"[Mortar] script ending." spawn OKS_fnc_LogDebug;

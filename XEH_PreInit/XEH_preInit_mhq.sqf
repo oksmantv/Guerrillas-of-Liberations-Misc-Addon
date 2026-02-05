@@ -24,7 +24,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "CHECKBOX",
     ["Enable Missile Warning", "If enabled vehicles will have a missile warning system that will alert the crew of incoming missiles."],
     ["GOL Vehicle", "General"],
-    true,
+    false,
     1
 ] call CBA_fnc_addSetting;
 
@@ -33,7 +33,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "CHECKBOX",
     ["Enable Missile Warning Sound", "If enabled vehicles will have a missile warning sound effects that will alert the crew of incoming missiles."],
     ["GOL Vehicle", "General"],
-    true,
+    false,
     1
 ] call CBA_fnc_addSetting;
 

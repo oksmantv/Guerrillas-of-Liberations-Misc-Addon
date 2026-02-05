@@ -1,5 +1,5 @@
 /*
-	OKS_Attack_SpawnGroup
+	OKS_fnc_Mechanized_Spawn
 	[this,Trigger_1,"O_APC_Wheeled_02_rcws_v2_F",5,east,500] spawn OKS_fnc_Mechanized_Spawn;
 */
 

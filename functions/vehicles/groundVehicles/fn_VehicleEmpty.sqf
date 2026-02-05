@@ -1,5 +1,11 @@
 if(!isServer) exitWith {};
 
+// Early exit if VehicleEmpty feature is disabled
+private _VehicleEmptyEnabled = missionNamespace getVariable ["GOL_VehicleEmpty_Enabled", false];
+if (!_VehicleEmptyEnabled) exitWith {
+	format["[VEHICLEMPTY] Feature disabled via CBA settings, exiting"] call OKS_fnc_LogDebug;
+};
+
 params [
 	["_Vehicle", objNull, [objNull]],
 	["_Side", missionNameSpace getVariable ["GOL_Friendly_Side", (side group player)], [sideUnknown]]
@@ -78,7 +84,8 @@ private _SetupTarget = {
 				_unit hideObjectGlobal true;
 				format["[VEHICLEMPTY] Re-hiding unit in vehicle: %1", _vehicle] call OKS_fnc_LogDebug;
 			};
-			sleep 2;
+			// Jittered interval reduces synchronized spikes when many vehicles are monitored
+			sleep (8 + random 4);
 		};
 	};
 	
@@ -137,8 +144,7 @@ format["[VEHICLEMPTY] Vehicle left starting area, monitoring begins: %1", _Vehic
 while {!isNull _Vehicle && alive _Vehicle} do {
 	// Check if vehicle is empty and no players nearby
 	private _crewCount = count crew _Vehicle;
-	private _playersNear = allPlayers select {_x distance _Vehicle < 50};
-	private _playerCount = count _playersNear;
+	private _playerCount = count ((_Vehicle nearEntities ["CAManBase", 50]) select {isPlayer _x});
 	private _isActive = _Vehicle getVariable ["GOL_VehicleEmpty_Active", false];
 	
 	// If empty and no players near, add invisible driver
@@ -147,9 +153,8 @@ while {!isNull _Vehicle && alive _Vehicle} do {
 		
 		// Wait until players approach or vehicle is destroyed
 		waitUntil {
-			sleep 5;
-			private _nearPlayers = allPlayers select {_x distance _Vehicle < 50};
-			count _nearPlayers > 0 || isNull _Vehicle || !alive _Vehicle
+			sleep (2 + random 3);
+			isNull _Vehicle || !alive _Vehicle || (count ((_Vehicle nearEntities ["CAManBase", 50]) select {isPlayer _x}) > 0)
 		};
 		
 		// Remove invisible driver when players are near
@@ -158,7 +163,8 @@ while {!isNull _Vehicle && alive _Vehicle} do {
 		};
 	};
 	
-	sleep 5;
+	// Jittered interval reduces synchronized spikes across many vehicles
+	sleep (4 + random 3);
 };
 
 // Final cleanup

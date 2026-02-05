@@ -43,11 +43,11 @@
 			private _ResponseMultiplier = missionNameSpace getVariable ["GOL_ResponseMultiplier",1];
 			sleep (_DelayPerWave * _ResponseMultiplier);
 		};	
-		SystemChat format ["Wavespawn Current Count: %1",count _AllSpawnedUnits];
+		format ["[LambsWave] Wavespawn Current Count: %1",count _AllSpawnedUnits] spawn OKS_fnc_LogDebug;
 	};
 
 	// Done when no spawned unit remains both alive AND awake.
 	waitUntil { sleep 5; {alive _x && ([_x] call ace_common_fnc_isAwake)} count _AllSpawnedUnits < 1};
 	missionNamespace setVariable [_Variable, true, true];
-	SystemChat "Rush Wavespawner Ended.";
+	"[LambsWave] Rush Wavespawner Ended." spawn OKS_fnc_LogDebug;
 

@@ -40,7 +40,7 @@
 
 	// Randomly Selected Player Target
 	_SelectedPlayerTarget = selectRandom (AllPlayers select {isTouchingGround (vehicle _X) && _Side knowsAbout _X > _KnowsAboutLimit && _X distance _SpawnPosition < _Range});
-	systemChat format ["[DEBUG] Infantry Pincer - Selected Target %1",_SelectedPlayerTarget];
+	format ["[InfantryPincer] Selected Target %1",_SelectedPlayerTarget] spawn OKS_fnc_LogDebug;
 
 	// Front Group 1
 	[[_SpawnPosition,_Units,_FrontNumbers,true] call OKS_fnc_SpawnInfantrySquad,_KnowsAboutLimit,_SelectedPlayerTarget,_SpawnPosition,(_BaseOfFireAngle * -1)] spawn OKS_fnc_SuppressiveFireMovement;

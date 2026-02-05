@@ -71,7 +71,7 @@ private _stamp = floor (diag_tickTime * 1000);
 private _taskId = format ["OKS_SCUDINT_%1_%2", netId _launcherVehicle, _stamp];
 
 // Global inbound warning (optional)
-if (!isNil "OKS_fnc_Chat") then {
+if (!isNil "OKS_fnc_Chat" && _createTask) then {
 	private _grid = mapGridPosition _targetPositionATL;
 	private _kind = _launcherVehicle getVariable ["OKS_ScudIntercept_kind", "missile"];
 	private _msg = format ["1st Platoon be advised, %1 inbound towards your position. Estimated impact near GRID %2.", _kind, _grid];

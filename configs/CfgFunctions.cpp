@@ -89,24 +89,6 @@ class CfgFunctions // Defines a function
 			class SetTaskState {};
 		};	
 
-		class NEKY_ServiceStation {
-			file = "\OKS_GOL_Misc\functions\serviceStation";
-			class MobileSS {};
-			class Service_Settings {};
-			class ServiceStation {};
-		};
-
-		class NEKY_ServiceStation_Functions {
-			file = "\OKS_GOL_Misc\functions\serviceStation\functions";
-			class Available {};
-			class Busy {};
-			class ExitLoop {};
-			class Hints {};
-			class Lights {};
-			class Repair {};
-			class ServiceAddActions {};
-		};
-
 		class OKS_Eden {
 			file = "\OKS_GOL_Misc\functions\eden";
 			class EdenPosFromArray {};
@@ -147,6 +129,7 @@ class CfgFunctions // Defines a function
 			class EdenVehicleOnRails {};
 			class EdenOpenDocs {};
 			class EdenExtractGearFromAI {};
+			class EdenSetTriggerIgnoreAAC {};
 			class next3DENName {};
 			class EdenMarkOrgStrength {};
 			class EdenMarkFrontlineDoubleRect {};

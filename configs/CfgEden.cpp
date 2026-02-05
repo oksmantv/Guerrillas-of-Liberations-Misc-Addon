@@ -37,6 +37,7 @@ class Display3DEN {
                 items[] = {
                     "GOL_SCRIPTS_TASK",
                     "GOL_SCRIPTS_GEAR",
+                    "GOL_SCRIPTS_TRIGGER",
                     "GOL_SCRIPTS_AMBIENCE"
                 };
             };
@@ -1001,6 +1002,20 @@ class Display3DEN {
                 action = "[] call OKS_fnc_EdenExtractGearFromAI;";
                 conditionShow = "1";
             };      
+
+            class GOL_SCRIPTS_TRIGGER {
+                text = "TRIGGER";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_TRIGGER_IGNORE_AAC"
+                };
+            };
+
+            class GOL_SCRIPTS_TRIGGER_IGNORE_AAC {
+                text = "Set Trigger Ignore AAC";
+                action = "[] call OKS_fnc_EdenSetTriggerIgnoreAAC;";
+                conditionShow = "selectedTrigger";
+            };
 
             class GOL_SCRIPTS_TASK {
                 text = "TASK";

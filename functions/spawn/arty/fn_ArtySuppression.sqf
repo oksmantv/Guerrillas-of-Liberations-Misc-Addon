@@ -105,7 +105,7 @@
 					};
 					waitUntil {!(_Artillery getVariable ["OKS_ArtyFiring",false])};
 				} else {
-					systemChat format ["%1 could not fire at target (Min-Max range): %2",_Artillery,_X];
+					format ["[ArtySuppression] %1 could not fire at target (Min-Max range): %2",_Artillery,_X] spawn OKS_fnc_LogDebug;
 				};
 			} forEach _TargetArray;	
 			sleep _LoopDelay;

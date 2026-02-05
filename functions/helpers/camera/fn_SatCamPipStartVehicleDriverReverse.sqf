@@ -27,6 +27,13 @@ if (isNull _vehicle) exitWith { objNull };
 // Land vehicles only (avoid aircraft/boats/pilots).
 if !(_vehicle isKindOf "LandVehicle") exitWith { objNull };
 
+// Disable reverse camera if vehicle is in water (use same check as amphibious boost)
+private _isInWater = surfaceIsWater (getPosATL _vehicle);
+if (!_isInWater) then {
+    _isInWater = surfaceIsWater (getPosWorld _vehicle);
+};
+if (_isInWater) exitWith { objNull };
+
 // Driver-only
 if (player isNotEqualTo driver _vehicle) exitWith { objNull };
 
@@ -59,7 +66,7 @@ private _bboxInset = (_profile getOrDefault ["driverRear_bboxInset", 0.30]) max 
 private _getAnchorWorld = {
     params ["_veh", "_anchorSpec"];
 
-    private _anchorType = _anchorSpec param [0, "bboxRearLow", [""]];
+    private _anchorType = _anchorSpec param [0, "bboxRearBottom", [""]];
     private _anchorData = _anchorSpec param [1, [], [[],""]];
     private _offset = _anchorSpec param [2, [0,0,0], [[]]];
 
@@ -109,7 +116,22 @@ private _getAnchorWorld = {
     _veh modelToWorldVisualWorld (_pModel vectorAdd _offset)
 };
 
-private _anchorSpec = _profile getOrDefault ["driverRear_anchor", ["bboxRearLow", [], [0,0,0]]];
+private _anchorSpec = _profile getOrDefault ["driverRear_anchor", ["bboxRearBottom", [], [0,0,0]]];
+
+[format ["[Rear Cam] Anchor type: %1, offset: %2", _anchorSpec#0, _anchorSpec#2]] spawn OKS_fnc_LogDebug;
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    private _vehASL = getPosASL _vehicle;
+    private _vehATL = getPosATL _vehicle;
+    private _vehWorld = getPosWorld _vehicle;
+    private _terrainASL = getTerrainHeightASL [_vehASL#0, _vehASL#1];
+    [format ["[Rear Cam] === INITIAL VEHICLE POSITION DATA ==="]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle ASL: %1", _vehASL]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle ATL: %1", _vehATL]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle World: %1", _vehWorld]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Terrain ASL at vehicle: %1", _terrainASL]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle height above terrain: %1m", (_vehASL#2) - _terrainASL]] spawn OKS_fnc_LogDebug;
+};
 
 // Get anchor MODEL position so we can do reliable model-space insets / raycasts.
 private _bb = boundingBoxReal _vehicle;
@@ -133,10 +155,20 @@ switch (_anchorType) do {
     };
     case "bboxRearTop": {
         _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_max#2)];
+        [format ["[Rear Cam] Using bboxRearTop - positioning at max Z: %1", _max#2]] spawn OKS_fnc_LogDebug;
+    };
+    case "bboxRearBottom": {
+        _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_min#2)];
+        if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+            [format ["[Rear Cam] Using bboxRearBottom - positioning at min Z: %1", _min#2]] spawn OKS_fnc_LogDebug;
+        };
     };
     case "bboxRearLow": {
         private _h = (_max#2) - (_min#2);
-        _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_min#2) + (_h * 0.25)];
+        _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_min#2) + (_h * 0.10)];
+        if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+            [format ["[Rear Cam] bbox min Z: %1, max Z: %2, height: %3, final Z: %4", _min#2, _max#2, _h, _pModel#2]] spawn OKS_fnc_LogDebug;
+        };
     };
     default {
         // bboxRearMid
@@ -153,11 +185,63 @@ if (_alignToDriverOptics) then {
     };
 };
 
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam] === MODEL SPACE CALCULATIONS ==="]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   pModel (initial): %1", _pModel]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Offset to apply: %1", _offset]] spawn OKS_fnc_LogDebug;
+};
+
 private _pAnchorModel = (_pModel vectorAdd _offset);
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam]   pAnchorModel (after offset): %1", _pAnchorModel]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Inset to apply: %1m", _bboxInset]] spawn OKS_fnc_LogDebug;
+};
+
 // creep forward from rear face
 _pAnchorModel = _pAnchorModel vectorAdd [0, _bboxInset, 0];
 
-private _pos = _vehicle modelToWorldVisualWorld _pAnchorModel;
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam]   pAnchorModel (final model space): %1", _pAnchorModel]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle ASL: %1", getPosASL _vehicle]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Expected world Z if simple add: %1", (getPosASL _vehicle)#2 + (_pAnchorModel#2)]] spawn OKS_fnc_LogDebug;
+};
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam] === BOUNDING BOX & ANCHOR DATA ==="]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   BBox min: %1", _min]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   BBox max: %1", _max]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Anchor model space: %1", _pAnchorModel]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   BBox inset applied: %1m", _bboxInset]] spawn OKS_fnc_LogDebug;
+};
+
+// Manual transformation: model space to world space
+// modelToWorldVisualWorld doesn't correctly apply negative Z offsets
+// We must manually transform using the vehicle's orientation vectors
+private _vehForward = vectorDir _vehicle;
+private _vehUp = vectorUp _vehicle;
+private _vehRight = _vehForward vectorCrossProduct _vehUp;
+
+// Transform model space coordinates to world offset
+private _worldOffset = ((_vehRight vectorMultiply (_pAnchorModel#0)) vectorAdd 
+                        (_vehForward vectorMultiply (_pAnchorModel#1)) vectorAdd 
+                        (_vehUp vectorMultiply (_pAnchorModel#2)));
+
+// Add to vehicle position to get actual world position
+private _pos = (getPosASL _vehicle) vectorAdd _worldOffset;
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam] === MANUAL WORLD SPACE TRANSFORMATION ==="]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle orientation - Right: %1", _vehRight]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle orientation - Forward: %1", _vehForward]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Vehicle orientation - Up: %1", _vehUp]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   World offset from model space: %1", _worldOffset]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Anchor world space (manual calc): %1", _pos]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Expected Z if level: %1", (getPosASL _vehicle)#2 + (_pAnchorModel#2)]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Actual Z: %1 (difference accounts for vehicle pitch/roll)", _pos#2]] spawn OKS_fnc_LogDebug;
+    private _terrainAtAnchor = getTerrainHeightASL [_pos#0, _pos#1];
+    [format ["[Rear Cam]   Anchor height above terrain: %1m", (_pos#2) - _terrainAtAnchor]] spawn OKS_fnc_LogDebug;
+};
 
 // Reverse direction: look backwards along vehicle direction.
 private _fwd = vectorDirVisual _vehicle;
@@ -175,8 +259,18 @@ if (_useGeomRear) then {
         private _creep = _i * _step;
         private _mInside = _pAnchorModel vectorAdd [0, 0.05 + _creep, 0];
         private _mOutside = _pAnchorModel vectorAdd [0, -5 + _creep, 0];
-        private _inside = _vehicle modelToWorldVisualWorld _mInside;
-        private _outside = _vehicle modelToWorldVisualWorld _mOutside;
+        
+        // Manual transformation for inside point
+        private _offsetInside = ((_vehRight vectorMultiply (_mInside#0)) vectorAdd 
+                                 (_vehForward vectorMultiply (_mInside#1)) vectorAdd 
+                                 (_vehUp vectorMultiply (_mInside#2)));
+        private _inside = (getPosASL _vehicle) vectorAdd _offsetInside;
+        
+        // Manual transformation for outside point
+        private _offsetOutside = ((_vehRight vectorMultiply (_mOutside#0)) vectorAdd 
+                                  (_vehForward vectorMultiply (_mOutside#1)) vectorAdd 
+                                  (_vehUp vectorMultiply (_mOutside#2)));
+        private _outside = (getPosASL _vehicle) vectorAdd _offsetOutside;
 
         private _hitsVeh = lineIntersectsSurfaces [_inside, _outside, objNull, objNull, true, 5, "GEOM", "NONE"];
         {
@@ -189,23 +283,65 @@ if (_useGeomRear) then {
     };
 };
 
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam] STEP 1: Calculating initial camera position"]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Rear surface pos: %1", _rearSurface]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Direction vector: %1", _dir]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Back distance: %1m", _camBackDistance]] spawn OKS_fnc_LogDebug;
+};
+
 private _camPos = _rearSurface vectorAdd (_dir vectorMultiply _camBackDistance);
 
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    private _terrainZ = getTerrainHeightASL [_camPos#0, _camPos#1];
+    private _heightAboveTerrain = (_camPos#2) - _terrainZ;
+    [format ["[Rear Cam] STEP 2: Initial camera position calculated"]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Camera ASL: %1", _camPos]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Height above terrain: %1m", _heightAboveTerrain]] spawn OKS_fnc_LogDebug;
+};
+
 // Avoid placing the camera behind walls/terrain: pull it forward if obstructed.
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam] STEP 3: Checking for obstructions between rear surface and camera"]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Ray from: %1", _rearSurface]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Ray to: %1", _camPos]] spawn OKS_fnc_LogDebug;
+};
+
 private _hits = lineIntersectsSurfaces [_rearSurface, _camPos, _vehicle, objNull, true, 1, "GEOM", "NONE"];
 if ((count _hits) > 0) then {
+    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+        [format ["[Rear Cam] STEP 4: Obstruction detected! Adjusting camera position"]] spawn OKS_fnc_LogDebug;
+        [format ["[Rear Cam]   Hit count: %1", count _hits]] spawn OKS_fnc_LogDebug;
+        [format ["[Rear Cam]   Hit position: %1", (_hits#0)#0]] spawn OKS_fnc_LogDebug;
+    };
+    
     private _hitPos = (_hits#0)#0;
     // Move slightly towards the vehicle from the hit point.
     _camPos = _hitPos vectorAdd ((_dir vectorMultiply -1) vectorMultiply 0.05);
+    
+    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+        private _terrainZ = getTerrainHeightASL [_camPos#0, _camPos#1];
+        private _heightAboveTerrain = (_camPos#2) - _terrainZ;
+        [format ["[Rear Cam]   Adjusted camera ASL: %1", _camPos]] spawn OKS_fnc_LogDebug;
+        [format ["[Rear Cam]   New height above terrain: %1m", _heightAboveTerrain]] spawn OKS_fnc_LogDebug;
+    };
+} else {
+    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+        [format ["[Rear Cam] STEP 4: No obstruction detected, camera position unchanged"]] spawn OKS_fnc_LogDebug;
+    };
 };
 
-if (_camHeightAGL > 0) then {
-    private _pAtl = ASLToATL _camPos;
-    // Only clamp on land. In water, clamping tends to put the camera inside/under the hull.
-    if !(surfaceIsWater _pAtl) then {
-        _pAtl set [2, _camHeightAGL];
-        _camPos = ATLToASL _pAtl;
-    };
+// Note: AGL height clamping removed - camera stays vehicle-relative
+
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+    [format ["[Rear Cam] STEP 5: FINAL camera position"]] spawn OKS_fnc_LogDebug;
+    private _terrainZ = getTerrainHeightASL [_camPos#0, _camPos#1];
+    private _heightAboveTerrain = (_camPos#2) - _terrainZ;
+    private _vehPos = getPosASL _vehicle;
+    [format ["[Rear Cam]   Vehicle ASL: %1 (Z: %2)", _vehPos, _vehPos#2]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Camera ASL: %1 (Z: %2)", _camPos, _camPos#2]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Terrain Z: %1", _terrainZ]] spawn OKS_fnc_LogDebug;
+    [format ["[Rear Cam]   Height above terrain: %1m", _heightAboveTerrain]] spawn OKS_fnc_LogDebug;
 };
 
 private _camera = "camera" camCreate _camPos;
@@ -293,9 +429,12 @@ private _pfhId = [{
         case "bboxRearTop": {
             _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_max#2)];
         };
+        case "bboxRearBottom": {
+            _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_min#2)];
+        };
         case "bboxRearLow": {
             private _h = (_max#2) - (_min#2);
-            _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_min#2) + (_h * 0.25)];
+            _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_min#2) + (_h * 0.10)];
         };
         default {
             // bboxRearMid
@@ -319,7 +458,16 @@ private _pfhId = [{
     private _useGeomRear = _profile getOrDefault ["driverRear_useGeomRear", true];
     private _bboxInset = (_profile getOrDefault ["driverRear_bboxInset", 0.30]) max 0 min 2;
     private _pAnchorModel = (_pModel vectorAdd _offset) vectorAdd [0, _bboxInset, 0];
-    private _pos = _vehicle modelToWorldVisualWorld _pAnchorModel;
+    
+    // Manual transformation: modelToWorldVisualWorld doesn't correctly apply negative Z offsets
+    private _vehForward = vectorDir _vehicle;
+    private _vehUp = vectorUp _vehicle;
+    private _vehRight = _vehForward vectorCrossProduct _vehUp;
+    private _worldOffset = ((_vehRight vectorMultiply (_pAnchorModel#0)) vectorAdd 
+                            (_vehForward vectorMultiply (_pAnchorModel#1)) vectorAdd 
+                            (_vehUp vectorMultiply (_pAnchorModel#2)));
+    private _pos = (getPosASL _vehicle) vectorAdd _worldOffset;
+    
     private _fwd = vectorDirVisual _vehicle;
     private _dir = _fwd vectorMultiply -1;
 
@@ -334,8 +482,18 @@ private _pfhId = [{
             private _creep = _i * _step;
             private _mInside = _pAnchorModel vectorAdd [0, 0.05 + _creep, 0];
             private _mOutside = _pAnchorModel vectorAdd [0, -5 + _creep, 0];
-            private _inside = _vehicle modelToWorldVisualWorld _mInside;
-            private _outside = _vehicle modelToWorldVisualWorld _mOutside;
+            
+            // Manual transformation for inside point
+            private _offsetInside = ((_vehRight vectorMultiply (_mInside#0)) vectorAdd 
+                                     (_vehForward vectorMultiply (_mInside#1)) vectorAdd 
+                                     (_vehUp vectorMultiply (_mInside#2)));
+            private _inside = (getPosASL _vehicle) vectorAdd _offsetInside;
+            
+            // Manual transformation for outside point
+            private _offsetOutside = ((_vehRight vectorMultiply (_mOutside#0)) vectorAdd 
+                                      (_vehForward vectorMultiply (_mOutside#1)) vectorAdd 
+                                      (_vehUp vectorMultiply (_mOutside#2)));
+            private _outside = (getPosASL _vehicle) vectorAdd _offsetOutside;
 
             private _hitsVeh = lineIntersectsSurfaces [_inside, _outside, objNull, objNull, true, 5, "GEOM", "NONE"];
             {
@@ -356,13 +514,7 @@ private _pfhId = [{
         _camPos = _hitPos vectorAdd ((_dir vectorMultiply -1) vectorMultiply 0.05);
     };
 
-    if (_camHeightAGL > 0) then {
-        private _pAtl = ASLToATL _camPos;
-        if !(surfaceIsWater _pAtl) then {
-            _pAtl set [2, _camHeightAGL];
-            _camPos = ATLToASL _pAtl;
-        };
-    };
+    // Note: AGL height clamping removed - camera stays vehicle-relative
 
     _camera camSetFov _fov;
     _camera camSetPos _camPos;

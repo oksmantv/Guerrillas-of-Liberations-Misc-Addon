@@ -1770,6 +1770,7 @@ class CfgVehicles
 					{
 						UIposition[] = {0.103,0.3};
 						mirroredMissilePos = 2;
+						ace_pylons_mirroredMissilePos = 2;
 						attachment = "rhs_mag_m134_pylon_3000";
 						turret[] = {};
 						hitpoint = "HitPylon3";
@@ -1779,6 +1780,7 @@ class CfgVehicles
 						hardpoints[] = {"RHS_HP_MELB","RHS_HP_MELB_R", "RHS_HP_FFAR_USMC"};
 						UIposition[] = {0.04,0.2};
 						mirroredMissilePos = 1;
+						ace_pylons_mirroredMissilePos = 1;
 						turret[] = {};
 						hitpoint = "HitPylon4";
 					};

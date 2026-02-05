@@ -28,6 +28,7 @@ params [
 ];
 
 if (isNull _launcherVehicle) exitWith {false};
+if (!alive _launcherVehicle) exitWith {false};
 
 private _targetPositionATL = [];
 if (_target isEqualType []) then {
@@ -211,9 +212,15 @@ if (_preparationTimeSeconds > 0) then {
 	sleep _preparationTimeSeconds;
 };
 
+// Critical check: vehicle could have been destroyed during preparation
+if (!alive _launcherVehicle) exitWith {
+	if (_dbg) then { ["Launch aborted - vehicle destroyed during preparation"] call _fnc_dbg; };
+	false
+};
+
 private _fnc_fireWeaponAtPos = {
 	params ["_launcherVehicle", "_weaponClassname", "_weaponTurretPath", "_targetPositionATL", "_targetObject", "_launcherSide"]; 
-	if (isNull _launcherVehicle || {_weaponClassname isEqualTo ""} || {_targetPositionATL isEqualTo []}) exitWith {false};
+	if (isNull _launcherVehicle || {!alive _launcherVehicle} || {_weaponClassname isEqualTo ""} || {_targetPositionATL isEqualTo []}) exitWith {false};
 
 	if (_dbg) then {
 		[format ["FireAtPos | veh=%1 weapon=%2 turret=%3 targetObj=%4 side=%5", _launcherVehicle, _weaponClassname, _weaponTurretPath, _targetObject, _launcherSide]] call _fnc_dbg;
@@ -308,6 +315,10 @@ switch (true) do {
 		private _since = diag_tickTime;
 		private _postPreparationDelaySeconds = 5;
 		if (_rhsPrepared) then { sleep _postPreparationDelaySeconds; };
+		if (!alive _launcherVehicle) exitWith {
+			if (_dbg) then { ["RHS launch aborted - vehicle destroyed after preparation delay"] call _fnc_dbg; };
+			false
+		};
 		if (_dbg) then { [format ["RHS launch | prepared=%1 prepDelay=%2", _rhsPrepared, _postPreparationDelaySeconds]] call _fnc_dbg; };
 		if (isNil "RHS_fnc_ss21_AI_launch") exitWith {false};
 		[_launcherVehicle, _targetPositionATL] call RHS_fnc_ss21_AI_launch;

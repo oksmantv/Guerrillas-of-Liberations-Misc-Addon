@@ -22,7 +22,7 @@ private _EnableAI = {
 	} foreach units _Group;
 };
 
-if(_Debug_Variable) then { systemChat format ["Finale set to %1 of %2",_Percentage,{Alive _X && !isPlayer _X && side _X != [player] call GW_Common_Fnc_getSide} count allUnits]};
+if(_Debug_Variable) then { format ["[DynamicFinale] Finale set to %1 of %2",_Percentage,{Alive _X && !isPlayer _X && side _X != [player] call GW_Common_Fnc_getSide} count allUnits] spawn OKS_fnc_LogDebug};
 
 waitUntil {Sleep 10; ({Alive _X && !isPlayer _X && side _X != [player] call GW_Common_Fnc_getSide} count allUnits) isNotEqualTo []};
 waitUntil {Sleep 30; (({Alive _X && !isPlayer _X && side _X != [player] call GW_Common_Fnc_getSide} count allUnits) / ({!isPlayer _X && side _X != [player] call GW_Common_Fnc_getSide} count allUnits)) <= _Percentage};
@@ -31,7 +31,7 @@ waitUntil {Sleep 30; (({Alive _X && !isPlayer _X && side _X != [player] call GW_
 	{
 		if(side _X isEqualTo _Side && {Alive _X} count units _X > 0) then {
 			if((leader _X) getVariable ["gw_common_disableAI_Path",false]) then {
-				if(_Debug_Variable) then { systemChat format ["%1 has disabled AI",_X]};
+				if(_Debug_Variable) then { format ["[DynamicFinale] %1 has disabled AI",_X] spawn OKS_fnc_LogDebug};
 
 				if(_StaticUnits isEqualTo true) then {
 					if(_Debug_Variable) then { systemChat format ["%1 has disabled AI - Static True, EnableAI",_X]};

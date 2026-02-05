@@ -29,16 +29,6 @@ if(GOL_Core_Enabled isEqualTo true) then {
         civilian setFriend [independent,1];
 
         /*
-            NEKY Service Station Values.
-        */
-        if(isNil "NEKY_ServiceStationActive" && isNil "NEKY_ServiceStations") then {
-            NEKY_ServiceStationActive = [];
-            NEKY_ServiceStations = [];
-            publicVariable "NEKY_ServiceStationActive";
-            publicVariable "NEKY_ServiceStations";
-        };
-
-        /*
             OKS Locations for Dynamic Setup
         */
         OKS_AllUnits = [];

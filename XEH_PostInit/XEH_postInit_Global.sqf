@@ -164,69 +164,46 @@ if(GOL_Core_Enabled isEqualTo true) then {
             if (!isPlayer _unit) then {
 
                 private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-                if(_FaceSwapEnabled) then {
-                    // Apply ethnicity and face swap
-                    _unit spawn {
-                        params ["_unit"];
-                        sleep 5;
-                        [_unit] spawn OKS_fnc_FaceSwap;
-                    };
-                };
-
-                // // Add Killed EventHandler for Scores.
-                // private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];     
-                // if (_unit isKindOf "CAManBase" && side group _unit != civilian) then 
-                // {
-                //     [_unit] call OKS_fnc_AddKilledScore;    
-                // };
-
-                // if (_unit isKindOf "CAManBase" && side group _unit == civilian) then 
-                // {
-                //     [_unit] call OKS_fnc_AddCivilianKilled;
-                // };        
-
                 private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-                if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
-                    _unit spawn {
-                        params ["_unit"];
-                        sleep 1;
-                        [_unit] spawn OKS_fnc_Suppressed;
-                    };
-                };
-
                 private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+                
+                // Consolidate all unit setup into single thread to reduce scheduler overhead
+                
+                // Apply ethnicity and face swap
+                if(_FaceSwapEnabled) then {
+                    [_unit] spawn OKS_fnc_FaceSwap;
+                };
+
+                // Add suppression event handler
+                if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
+                    [_unit] spawn OKS_fnc_Suppressed;
+                };
+
+                // Add surrender event handlers
                 if(_SurrenderEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
-                    _unit spawn {
-                        params ["_unit"];
-                        sleep 1;
-                        [_unit] spawn OKS_fnc_Surrender;
-                    };
+                    [_unit] spawn OKS_fnc_Surrender;
                 };
 
+                // Enable path for garrison units
                 if(side group _unit != civilian || vehicle _unit == _unit) then {
-                    _unit spawn {
-                        params ["_unit"];
-                        private ["_group"];
-                        sleep 5;
-                        _group = group _unit;
-        
-                        if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {                          
-                            [_group] spawn OKS_fnc_EnablePath;
-                        };
+                    private _group = group _unit;
+                    if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _unit != _unit) exitWith {
+                        // Exit if already enabled on Group level or if inside vehicle.
+                    };
+                    if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {
+                        _group setVariable ["OKS_EnablePath_Active",true,true];
+                        [_group] spawn OKS_fnc_EnablePath;
                     };
                 };
 
-                // Enable HC Transfer for AI unit.
+                // Enable HC Transfer after gear is applied
                 if(_AppliedHCBlacklist) then {
-                    _unit spawn {   
-                        params ["_unit"];
-                        waitUntil {sleep 2; _unit getVariable ["GW_Gear_appliedGear",false]};
-                        sleep 5;
-                        _unit setVariable ["acex_headless_blacklist", false, true];
-                        _Debug = missionNamespace getVariable ["GOL_HC_Debug", false];
-                        if(_Debug) then {
-                            format ["[HEADLESS] %1 unblacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
-                        };
+                    waitUntil {sleep 2; _unit getVariable ["GW_Gear_appliedGear",false]};
+                    sleep 5;
+                    _unit setVariable ["acex_headless_blacklist", false, true];
+                    _Debug = missionNamespace getVariable ["GOL_HC_Debug", false];
+                    if(_Debug) then {
+                        format ["[HEADLESS] %1 unblacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
                     };
                 };
             };

@@ -551,7 +551,7 @@ if ((_Units Select 0) > 0) then
 			WaitUntil {sleep 1; !((Alive _Heli) or (Alive _Pilot)) or (2 <= (CurrentWaypoint _HeliGroup))};
 		} else {
 			WaitUntil {Sleep 0.1; !((Alive _Heli) or (Alive _Pilot)) or ((_Heli distance2D _UnloadOrDropMarker) < 75)};
-			SystemChat "DEBUG: Dropping!";
+			"[AirDrop] Dropping!" spawn OKS_fnc_LogDebug;
 		};
 		_Index = 0;
 		for "_i" from 1 to (count _Groups) do

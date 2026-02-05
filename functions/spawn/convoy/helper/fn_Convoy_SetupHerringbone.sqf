@@ -110,7 +110,7 @@ if (_FillBothSides) then {
 		for "_roadHopIndex" from 1 to _maximumRoadHops do {
 			private _candidateRoad = [_currentRoad, _originDirection] call OKS_fnc_Convoy_NearestRoadTowardsOrigin;
 			if (isNull _candidateRoad) exitWith {
-				systemChat "No forward road found.";
+				"[ConvoyHerringbone] No forward road found." spawn OKS_fnc_LogDebug;
 			};
 
 			private _directionToCandidate = (getPosWorld _currentRoad) getDir (getPosWorld _candidateRoad);
@@ -139,7 +139,7 @@ if (_FillBothSides) then {
 
 				if (!_isCandidateOccupied && !_isCandidateTooClose && _roadHasSpace) exitWith {
 					_selectedRoad = _candidateRoad;
-					systemChat format ["[DEBUG] FOUND new road %1 (L-occ:%2 R-occ:%3)", _candidateRoad, _leftOccupied, _rightOccupied];
+					format ["[ConvoyHerringbone] FOUND new road %1 (L-occ:%2 R-occ:%3)", _candidateRoad, _leftOccupied, _rightOccupied] spawn OKS_fnc_LogDebug;
 				};
 				_currentRoad = _candidateRoad;
 			};
@@ -171,7 +171,7 @@ if (_FillBothSides) then {
 };
 
 if (isNull _selectedRoad) exitWith {
-	systemChat "No suitable road found after 30 hops.";
+	"[ConvoyHerringbone] No suitable road found after 30 hops." spawn OKS_fnc_LogDebug;
 	[[0, 0, 0], _PreferLeft]
 };
 

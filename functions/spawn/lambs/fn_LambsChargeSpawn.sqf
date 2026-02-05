@@ -45,8 +45,7 @@ switch (_side) do {
 			"B_medic_F",
 			"B_medic_F",
 			"B_Soldier_GL_F",
-			"B_HeavyGunner_F",
-			"B_soldier_M_F"
+			"B_HeavyGunner_F"
 		];
 	};
 	case OPFOR: {
@@ -58,8 +57,7 @@ switch (_side) do {
 			"O_medic_F",
 			"O_medic_F",
 			"O_Soldier_GL_F",
-			"O_HeavyGunner_F",
-			"O_soldier_M_F"
+			"O_HeavyGunner_F"
 		];
 	};
 	case INDEPENDENT: {
@@ -70,8 +68,7 @@ switch (_side) do {
 			"I_Soldier_AR_F",
 			"I_medic_F",
 			"I_medic_F",
-			"I_Soldier_GL_F",
-			"I_soldier_M_F"
+			"I_Soldier_GL_F"
 		];
 	};
 	default {
@@ -83,8 +80,7 @@ switch (_side) do {
 			"O_medic_F",
 			"O_medic_F",
 			"O_Soldier_GL_F",
-			"O_HeavyGunner_F",
-			"O_soldier_M_F"
+			"O_HeavyGunner_F"
 		];
 	};
 };

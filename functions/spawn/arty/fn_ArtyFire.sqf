@@ -23,7 +23,7 @@ if (!HasInterface || isServer) then
 
 		_Debug = 0;
 
-		if (_Debug == 1) then {SystemChat "Start"};
+		if (_Debug == 1) then {"[ArtyFire] Start" spawn OKS_fnc_LogDebug};
 		[_arty,true] remoteExec ["enableSimulation",0];
 		[_arty,true] remoteExec ["allowDamage",0];
 		_gunner = gunner _arty;

@@ -30,7 +30,7 @@ _Params Params
 	["_Code", {}, [{}]]
 ];
 
-if !(isNil {MissionNameSpace getVariable _Var}) exitWith {SystemChat "ERROR: OKS_fnc_AvoidCasualties. Side already defined"}; // Exit if side already defined
+if !(isNil {MissionNameSpace getVariable _Var}) exitWith {"[TaskAvoidCasualties] ERROR: OKS_fnc_AvoidCasualties. Side already defined" spawn OKS_fnc_LogDebug}; // Exit if side already defined
 
 // Check and define variable
 _Var = Format ["OKS_fnc_AvoidCasualties_%1",_Side];

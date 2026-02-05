@@ -92,8 +92,8 @@ if(_isSide) then {
 } else {
 	_FactionSide = side _Side;
 };
-if (_Number == 0 && _isSide) exitWith {SystemChat "NEKY_Hunt: ERROR, spawn 0 units"};
-if (isNull _Zone) exitWith {SystemChat "NEKY_Hunt: ERROR, No trigger zone."};
+if (_Number == 0 && _isSide) exitWith {"[Hunt] NEKY_Hunt: ERROR, spawn 0 units" spawn OKS_fnc_LogDebug};
+if (isNull _Zone) exitWith {"[Hunt] NEKY_Hunt: ERROR, No trigger zone." spawn OKS_fnc_LogDebug};
 if (_Zone getVariable ["NEKY_Hunt_Disabled",false]) exitWith {}; // Exit if Zone is disabled.
 
 _Settings = [_FactionSide] call OKS_fnc_Hunt_Settings;
@@ -115,8 +115,8 @@ _Temp Params ["_Count","_SpawnPos","_Player"];
 if (_Count != 0) exitWith {_This Spawn OKS_fnc_HuntRun};	// Exits and loops function.
 
 if ((typeName _Side) == "GROUP") then {_Grp = _Side};
-if(isNil "_Grp") exitWith { SystemChat "Run.sqf _Grp is null.. exiting" };
-if(_Grp getVariable ["Disable_Hunt",false]) exitWith  { SystemChat "Hunt disabled on _Grp.. exiting" };
+if(isNil "_Grp") exitWith { "[Hunt] Run.sqf _Grp is null.. exiting" spawn OKS_fnc_LogDebug };
+if(_Grp getVariable ["Disable_Hunt",false]) exitWith  { "[Hunt] Hunt disabled on _Grp.. exiting" spawn OKS_fnc_LogDebug };
 
 // Start hunting
 [_Grp,_Player,_Zone,_UpdateFreq,_Distance,_Number,_Code,_ForceRespawnMultiplier,_Repeat,_WaypointBehaviour] spawn OKS_fnc_Hunting;

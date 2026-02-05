@@ -4,7 +4,7 @@
 	Params["_Marker","_Side","_Type","_CountUnits","_Size"];
 	private _Debug_Variable = false;
 	if(isNil "_Marker") exitWith {
-		if(_Debug_Variable) then {systemChat "No Marker Exiting"};
+		if(_Debug_Variable) then {"[Dynamic] No Marker Exiting" spawn OKS_fnc_LogDebug};
 	};
 
 	private ["_marker","_sideMarker","_UnitType"];
@@ -41,9 +41,9 @@
 
 
 	switch (true) do {
-		case (_CountUnits > 0 && _CountUnits <= 5):{ if(_Debug_Variable) then {systemChat "FireTeam"}; _sizeMarker setMarkerType "group_0"};
-		case (_CountUnits > 5 && _CountUnits <= 12):{ if(_Debug_Variable) then {systemChat "Squad"}; _sizeMarker setMarkerType "group_1"};
-		case (_CountUnits > 12 && _CountUnits <= 25):{ if(_Debug_Variable) then {systemChat "Section"}; _sizeMarker setMarkerType "group_2"};
-		case (_CountUnits > 25 && _CountUnits <= 75):{ if(_Debug_Variable) then {systemChat "Platoon"}; _sizeMarker setMarkerType "group_3"};
-		case (_CountUnits > 75):{if(_Debug_Variable) then {systemChat "Company"}; _sizeMarker setMarkerType "group_4"};
+		case (_CountUnits > 0 && _CountUnits <= 5):{ if(_Debug_Variable) then {"[Dynamic] FireTeam" spawn OKS_fnc_LogDebug}; _sizeMarker setMarkerType "group_0"};
+		case (_CountUnits > 5 && _CountUnits <= 12):{ if(_Debug_Variable) then {"[Dynamic] Squad" spawn OKS_fnc_LogDebug}; _sizeMarker setMarkerType "group_1"};
+		case (_CountUnits > 12 && _CountUnits <= 25):{ if(_Debug_Variable) then {"[Dynamic] Section" spawn OKS_fnc_LogDebug}; _sizeMarker setMarkerType "group_2"};
+		case (_CountUnits > 25 && _CountUnits <= 75):{ if(_Debug_Variable) then {"[Dynamic] Platoon" spawn OKS_fnc_LogDebug}; _sizeMarker setMarkerType "group_3"};
+		case (_CountUnits > 75):{if(_Debug_Variable) then {"[Dynamic] Company" spawn OKS_fnc_LogDebug}; _sizeMarker setMarkerType "group_4"};
  	};

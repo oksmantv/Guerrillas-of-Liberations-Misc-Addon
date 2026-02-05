@@ -96,7 +96,7 @@ if(!isServer) exitWith {};
 		if(!isNil "_TargetObject") then {
 			_DoesTargetExistAndIsDestroyed = !alive _TargetObject
 		};		 
-		systemChat str [_TimeExpired,_TimeInSeconds];
+		str [_TimeExpired,_TimeInSeconds] spawn OKS_fnc_LogDebug;
 		_TimeExpired >= _TimeInSeconds || isNull _Explosive || _DoesTargetExistAndIsDestroyed
 	};
 	if(!isNull _Explosive) then {

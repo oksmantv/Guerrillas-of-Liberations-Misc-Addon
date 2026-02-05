@@ -24,7 +24,6 @@ Switch (_Side) do
 			"B_medic_F",
 			"B_Soldier_GL_F",
 			"B_HeavyGunner_F",
-			"B_soldier_M_F",
 			"B_Soldier_F",
 			"B_Soldier_LAT_F"
 		]; // Class names for infantry units.
@@ -40,7 +39,6 @@ Switch (_Side) do
 			"O_medic_F",
 			"O_Soldier_GL_F",
 			"O_HeavyGunner_F",
-			"O_soldier_M_F",
 			"O_Soldier_F",
 			"O_Soldier_F",
 			"O_Soldier_F",
@@ -57,7 +55,7 @@ Switch (_Side) do
 			"I_medic_F",
 			"I_medic_F",
 			"I_Soldier_GL_F",
-			"I_soldier_M_F",
+
 			"I_Soldier_F",
 			"I_Soldier_F",
 			"I_Soldier_F",

@@ -107,7 +107,7 @@ switch (toLower _faceType) do {
             "WhiteHead_16","WhiteHead_17","WhiteHead_18","WhiteHead_19","WhiteHead_20","WhiteHead_21","WhiteHead_22",
             "WhiteHead_23","WhiteHead_24","WhiteHead_25","WhiteHead_26"
         ];
-        _speakers = ["Male01ENG","Male02ENG","Male03ENG","Male04ENG","Male05ENG","Male06ENG","Male07ENG","Male08ENG","Male09ENG","Male010ENG","Male11ENG","Male12ENG"];
+        _speakers = ["Male01ENG","Male02ENG","Male03ENG","Male04ENG","Male05ENG","Male06ENG","Male07ENG","Male08ENG","Male09ENG"];
         _firstNames = [
             "James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles",
             "Christopher", "Daniel", "Matthew", "Anthony", "Mark"
@@ -167,7 +167,7 @@ switch (toLower _faceType) do {
     };
     case "russian": {
         _faces = ["RussianHead_1","RussianHead_2","RussianHead_3","RussianHead_4","RussianHead_5","RussianHead_4","RussianHead_1"];
-        _speakers = ["Male01RUS","Male02RUS","Male03RUS","RHS_Male01RUS","RHS_Male02RUS","RHS_Male03RUS","RHS_Male04RUS","RHS_Male052US"];
+        _speakers = ["Male01RUS","Male02RUS","Male03RUS","RHS_Male01RUS","RHS_Male02RUS","RHS_Male03RUS","RHS_Male04RUS","RHS_Male05RUS"];
         _firstNames = [
             "Ivan", "Dmitry", "Alexei", "Sergey", "Vladimir", "Nikolai", "Andrei", "Mikhail", "Yuri", "Pavel",
             "Viktor", "Oleg", "Igor", "Roman", "Maxim"

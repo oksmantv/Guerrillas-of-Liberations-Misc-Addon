@@ -45,7 +45,7 @@
 		private _nearestPlayer = _sortedPlayers select 0;
 		private _direction = _OriginPosition getDir _nearestPlayer;
 
-		systemChat str [_direction,_nearestPlayer];
+		format ["[LambsGroup] Direction: %1, NearestPlayer: %2", _direction, _nearestPlayer] spawn OKS_fnc_LogDebug;
 		[_direction,_nearestPlayer]
 	};
 

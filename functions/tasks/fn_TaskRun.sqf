@@ -107,7 +107,7 @@ Params
 // Select Function
 _Functions = ["NONE","AvoidCasualties","AvoidDeaths"];
 _Function = _Functions select _TaskType;
-if (isNil "_Function") exitWith {SystemChat "NEKY_Tasks_Run: ERROR, incorrect task type"};
+if (isNil "_Function") exitWith {"[Tasks] NEKY_Tasks_Run: ERROR, incorrect task type" spawn OKS_fnc_LogDebug};
 if (_Function == "NONE") exitWith {SystemChat "NEKY_Tasks_Run: ERROR, Incorrect task type"};
 
 // Call Function

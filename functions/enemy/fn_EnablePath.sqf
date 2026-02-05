@@ -24,14 +24,18 @@
 			_AIUnits = units _Group select {
 				!(isPlayer _x) && {alive _x || [_x] call ace_common_fnc_isAwake}
 			};
+			// Cache allPlayers result to avoid multiple calls
 			_Players = allPlayers - entities "HeadlessClient_F";
+			
+			if ((count _Players) == 0) then {
+				// No players online, sleep and skip this cycle
+				sleep (_Sleep + random (_Sleep * 0.3));
+				continue;
+			};
+			
 			_ClosestAI = [_AIUnits, [], {
 				private _ai = _x;
-				if ((count _Players) == 0) then {
-					1e39
-				} else {
-					_ai distance ([_Players, _ai] call BIS_fnc_nearestPosition)
-				}
+				_ai distance ([_Players, _ai] call BIS_fnc_nearestPosition)
 			}, "ASCEND"] call BIS_fnc_sortBy select 0;
 
 		if(!(isNull _ClosestAI)) then {
@@ -64,6 +68,7 @@
 				};
 			};
 		};
- 		sleep _Sleep;
+		// Add random jitter to prevent synchronized checks across multiple groups
+ 		sleep (_Sleep + random (_Sleep * 0.3));
 	};
 

@@ -43,7 +43,7 @@ private _debugLog = {
 
     diag_log _msg;
     if (_debugChat) then {
-        _msg remoteExec ["systemChat", 0];
+        _msg spawn OKS_fnc_LogDebug;
     };
 };
 
@@ -439,14 +439,14 @@ if (_boatCleanupEnabled && {!isNull _boatVehicle}) then {
             if (_dbg) then {
                 private _msg = format ["[GOL Amphibious][BeachLanding] BOAT_CLEANUP_DELETE | boat=%1", _boat];
                 diag_log _msg;
-                if (_dbgChatLocal) then { _msg remoteExec ["systemChat", 0]; };
+                if (_dbgChatLocal) then { _msg spawn OKS_fnc_LogDebug; };
             };
             deleteVehicle _boat;
         } else {
             if (_dbg) then {
                 private _msg = format ["[GOL Amphibious][BeachLanding] BOAT_CLEANUP_PARK | boat=%1", _boat];
                 diag_log _msg;
-                if (_dbgChatLocal) then { _msg remoteExec ["systemChat", 0]; };
+                if (_dbgChatLocal) then { _msg spawn OKS_fnc_LogDebug; };
             };
 
             // Park: stop sim and hide globally (removes the expensive physics update burden).

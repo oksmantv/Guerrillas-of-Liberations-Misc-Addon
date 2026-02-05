@@ -3,6 +3,16 @@ diag_log "OKS_GOL_Misc: XEH_preInit_vehicles.sqf executed";
 // Vehicle-related CBA settings.
 // This file is intended for settings that affect vehicle systems (ground/air/sea).
 
+// Vehicle Empty Monitoring
+[
+    "GOL_VehicleEmpty_Enabled",
+    "CHECKBOX",
+    ["Enable Vehicle Empty Monitoring", "When enabled, empty vehicles will receive invisible driver units so AI can target them. Disable this if you experience performance issues or stutters."],
+    ["GOL Ground Vehicles", "Vehicle Empty"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
 // Ground Vehicles: Rail Move settings (OKS_fnc_RailMove / OKS_fnc_RailVehicle_Spawn)
 [
     "GOL_RailMove_Debug",

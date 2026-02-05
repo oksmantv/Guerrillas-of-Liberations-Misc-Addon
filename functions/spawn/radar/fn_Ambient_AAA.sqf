@@ -24,7 +24,7 @@ params [
     ["_TimeBetweenShots",0,[0]]
 ];
 
-if ((count(fullCrew [_arty, "gunner", true]) isEqualTo 0)) exitWith {systemChat "Vehicle does not have a gunner seat"; false};
+if ((count(fullCrew [_arty, "gunner", true]) isEqualTo 0)) exitWith {"[AAA] Vehicle does not have a gunner seat" spawn OKS_fnc_LogDebug; false};
 private _weapon = "";
 private _Debug_Variable = false;
 private ["_unitClass","_arrow","_AddValue"];
@@ -77,7 +77,7 @@ if(isNil "_weapon") then {
 if(isNil "_weapon") then {
     _weapon = (_arty weaponsTurret [2]) select 0;
 };
-if(isNil "_weapon") exitWith { SystemChat "Unable to find TurretWeapon for AAA. Exiting.."};
+if(isNil "_weapon") exitWith { "[AAA] Unable to find TurretWeapon for AAA. Exiting.." spawn OKS_fnc_LogDebug};
 
 _target = (_arty getRelPos [(random [0, 40, 100]), (10 + (random [-25, 0, 25]))]);
 _target set [2, 500];

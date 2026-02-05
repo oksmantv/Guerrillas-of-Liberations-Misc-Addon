@@ -57,7 +57,7 @@ _Array Params [
 
 	{
 		Params ["_Type","_Position","_Dir","_Crew"];
-		systemChat str [_Type,_Position,_Dir,_Crew];
+		str [_Type,_Position,_Dir,_Crew] spawn OKS_fnc_LogDebug;
 		_Vehicle = CreateVehicle [_Type,_Position];
 		_Vehicle setPosATL _Position;
 		_Vehicle setDir _Dir;

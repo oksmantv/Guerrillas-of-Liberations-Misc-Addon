@@ -5,7 +5,7 @@
 params ["_vehicle"];
 
 if (isNull _vehicle) exitWith {
-    systemChat "No vehicle provided for damage debugging";
+    "[VehicleDamage] No vehicle provided for damage debugging" spawn OKS_fnc_LogDebug;
 };
 
 systemChat format["Setting up damage debugging for: %1", typeOf _vehicle];
@@ -142,17 +142,17 @@ _vehicle addEventHandler ["HandleDamage", {
     copyToClipboard _debugOutput;
     
     // Also display summary in chat
-    systemChat format["DAMAGE: %1->%2 (%3) | %4 | Critical:%5 | Reduction:%6", 
+    format["[VehicleDamage] DAMAGE: %1->%2 (%3) | %4 | Critical:%5 | Reduction:%6", 
         _hitPoint, 
         _newDamage, 
         _addedDamage, 
         _projectileType,
         _isCritical,
         _shouldHaveReduction
-    ];
+    ] spawn OKS_fnc_LogDebug;
     
     // Return the original damage value to not interfere
     _newDamage
 }];
 
-systemChat "Damage debugging enabled - comprehensive damage info will be copied to clipboard on each hit";
+"[VehicleDamage] Damage debugging enabled - comprehensive damage info will be copied to clipboard on each hit" spawn OKS_fnc_LogDebug;

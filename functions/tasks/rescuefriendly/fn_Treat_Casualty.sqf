@@ -20,7 +20,7 @@
 			_Dir = getDir _ManOrPosition;
 	} else {
 		if(!(_ManOrPosition isKindOf "Man")) exitWith {
-			systemChat "Treat Task: Given object is not human.";
+			"[TaskTreat] Treat Task: Given object is not human." spawn OKS_fnc_LogDebug;
 		};
 		if((_ManOrPosition isKindOf "Man")) then
 		{

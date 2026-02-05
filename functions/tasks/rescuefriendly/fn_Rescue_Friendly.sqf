@@ -82,7 +82,7 @@
 				_Unit = _Group CreateUnit [(_Units call BIS_FNC_selectRandom), _Position getPos [(random 8),(random 360)], [], 0, "NONE"];
 				_Unit setRank "PRIVATE";
 			};
-			if(_Debug_Variable) then {SystemChat format ["%1 Pos %2",group _unit,getPos _Unit]};
+			if(_Debug_Variable) then {format ["[TaskRescue] %1 Pos %2",group _unit,getPos _Unit] spawn OKS_fnc_LogDebug};
 			_Unit disableAI "PATH";
 			_Unit setCaptive true;
 			_Unit setCombatMode "BLUE";
@@ -107,7 +107,7 @@
 		_Building setVariable ["OKS_isGarrisoned",true];
 
 		if(_Debug_Variable) then {
-			SystemChat format ["Compound at %1 Units: %2 Range: %3",_Position,count units _Group,_Range];
+			format ["[TaskRescue] Compound at %1 Units: %2 Range: %3",_Position,count units _Group,_Range] spawn OKS_fnc_LogDebug;
 			//SystemChat format ["Houses to setVariable: %1",_Houses];
 		};
 
@@ -170,7 +170,7 @@
 			};
 			_Count = _Count - 1;
 			_SubTaskID = _Task + "_" + (str _Count);
-			SystemChat str _SubTaskID;
+			str _SubTaskID spawn OKS_fnc_LogDebug;
 			_SubTasks pushBackUnique _SubTaskID;
 			[true, [_SubTaskID,_Task], [format["You have a casualty to stabilize. %1",_TextStatus], "Stabilize Casualty", "Casualty"], objNull,"CREATED",-1, false,"heal", false] call BIS_fnc_taskCreate;
 			[_X,_SubTaskID] spawn OKS_fnc_MedicalCheck;
