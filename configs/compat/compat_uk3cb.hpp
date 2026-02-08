@@ -13,7 +13,7 @@
 //   automatically — do NOT patch both parent and child (stacking).
 
 // Forward declarations for parent classes
-class arifle_Mk20_plain_F;
+// arifle_Mk20_plain_F — already defined in compat_vanilla.hpp
 class UK3CB_BAF_L85A2;
 class UK3CB_BAF_L119_Base;
 class UK3CB_BAF_L110_556_Base;
