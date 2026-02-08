@@ -78,16 +78,12 @@ class arifle_SPAR_01_GL_snd_F: arifle_SPAR_01_GL_base_F {
 
 // ============================================================
 // Mk20 (FN F2000) rifles (5.56mm)
+// NOTE: arifle_Mk20_plain_F intentionally NOT patched here.
+// It is a vanilla leaf class whose only mod child is
+// UK3CB_BAF_L85A2 (patched in compat_uk3cb.hpp).
+// Fully re-opening it here would cause L85A2's re-open to
+// rebuild from our modified parent, losing 3CB's magazines.
 // ============================================================
-class arifle_Mk20_plain_F: arifle_Mk20_F {
-    magazines[] += {
-        "GOL_30Rnd_556x45_AP45",
-        "GOL_30Rnd_556x45_AP45_Tracer_Red",
-        "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
-    };
-};
-
 class arifle_Mk20_GL_plain_F: arifle_Mk20_GL_F {
     magazines[] += {
         "GOL_30Rnd_556x45_AP45",

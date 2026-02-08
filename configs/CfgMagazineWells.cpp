@@ -44,17 +44,6 @@ class CfgMagazineWells {
         };
     };
 
-    // GOL custom well for L85A3 — L85A3's original config clears
-    // magazineWell[] = {}, so we restore a well via += to deliver AP45.
-    class GOL_556x45_L85A3 {
-        GOL_AP45_mags[] = {
-            "GOL_30Rnd_556x45_AP45",
-            "GOL_30Rnd_556x45_AP45_Tracer_Red",
-            "GOL_30Rnd_556x45_AP45_Tracer_Green",
-            "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
-        };
-    };
-
     // JCA custom STANAG well — used by JCA rifles (M4A1, M16A4, HK433, M4A4)
     // All JCA variants (black, sand, olive) inherit from bases that use this well,
     // so all color variants get our mags automatically — including sand!
