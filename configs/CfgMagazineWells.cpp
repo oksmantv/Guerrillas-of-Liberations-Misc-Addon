@@ -24,12 +24,13 @@ class CfgMagazineWells {
     };
 
     // CBA G36-type well — used by UK3CB Factions G36 family
+    // Uses G36-specific AP45 mags (correct model, mass, initspeed for G36 magazines)
     class CBA_556x45_G36 {
         GOL_AP45_mags[] = {
-            "GOL_30Rnd_556x45_AP45",
-            "GOL_30Rnd_556x45_AP45_Tracer_Red",
-            "GOL_30Rnd_556x45_AP45_Tracer_Green",
-            "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+            "GOL_G36_30Rnd_556x45_AP45",
+            "GOL_G36_30Rnd_556x45_AP45_Tracer_Red",
+            "GOL_G36_30Rnd_556x45_AP45_Tracer_Green",
+            "GOL_G36_30Rnd_556x45_AP45_Tracer_Yellow"
         };
     };
 

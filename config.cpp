@@ -24,6 +24,7 @@ class CfgPatches
             "UK3CB_BAF_Weapons_L85A3",
             "UK3CB_BAF_Weapons_L119",
             "UK3CB_BAF_Weapons_L110",
+            "UK3CB_Factions_Weapons_G36",
             "FPV_UA"
         };
         requiredVersion = 2.14;
@@ -118,6 +119,10 @@ class CfgPatches
 			"GOL_30Rnd_556x45_AP45_Tracer_Red",
 			"GOL_30Rnd_556x45_AP45_Tracer_Green",
 			"GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+			"GOL_G36_30Rnd_556x45_AP45",
+			"GOL_G36_30Rnd_556x45_AP45_Tracer_Red",
+			"GOL_G36_30Rnd_556x45_AP45_Tracer_Green",
+			"GOL_G36_30Rnd_556x45_AP45_Tracer_Yellow",
 			"GOL_200Rnd_556x45_AP45_Box",
 			"GOL_200Rnd_556x45_AP45_Box_Tracer_Red",
 			"GOL_200Rnd_556x45_AP45_Box_Tracer_Green",

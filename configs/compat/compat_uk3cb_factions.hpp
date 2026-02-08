@@ -240,33 +240,11 @@ class uk3cb_weap_m4a1_m203s_wd_eotech_552_wd_anpeq15_sup: rhs_weap_m4a1_m203s_wd
 
 // ============================================================
 // M249 variants (5.56mm belt-fed)
+// NOTE: uk3cb_weap_m249_pip_L_sup and _eot552_anpeq15_sup inherit
+//       from rhs_weap_m249_pip_L which is already patched in
+//       compat_rhs.hpp — they get AP45 mags automatically.
+//       Only vfg3 variant needs patching (different parent chain).
 // ============================================================
-class uk3cb_weap_m249_pip_L_sup: rhs_weap_m249_pip_L {
-    magazines[] += {
-        "GOL_30Rnd_556x45_AP45",
-        "GOL_30Rnd_556x45_AP45_Tracer_Red",
-        "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
-        "GOL_rhsusf_200rnd_556x45_AP45",
-        "GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
-        "GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
-        "GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow"
-    };
-};
-
-class uk3cb_weap_m249_pip_L_eot552_anpeq15_sup: rhs_weap_m249_pip_L {
-    magazines[] += {
-        "GOL_30Rnd_556x45_AP45",
-        "GOL_30Rnd_556x45_AP45_Tracer_Red",
-        "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
-        "GOL_rhsusf_200rnd_556x45_AP45",
-        "GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
-        "GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
-        "GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow"
-    };
-};
-
 class uk3cb_weap_m249_pip_L_vfg3_acog_bip_sup: rhs_weap_m249_pip_L_vfg3 {
     magazines[] += {
         "GOL_30Rnd_556x45_AP45",

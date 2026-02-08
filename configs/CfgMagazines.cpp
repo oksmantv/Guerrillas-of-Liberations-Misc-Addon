@@ -223,6 +223,46 @@ class CfgMagazines {
         lastRoundsTracer = 30;
     };
 
+    // 5.56mm AP45 magazines (G36-type, inherits G36 model/mass/initspeed)
+    class UK3CB_G36_30rnd_556x45;
+
+    class GOL_G36_30Rnd_556x45_AP45: UK3CB_G36_30rnd_556x45 {
+        scope = 2;
+        displayName = "30rnd HK G36 AP45";
+        displayNameShort = "AP45";
+        descriptionShort = "5.56x45mm 30-round G36 magazine, Nammo AP45 armor-piercing, last 5 red tracers";
+        ammo = "GOL_B_556x45_Ball_AP45";
+        tracersEvery = 0;
+        lastRoundsTracer = 5;
+    };
+
+    class GOL_G36_30Rnd_556x45_AP45_Tracer_Red: GOL_G36_30Rnd_556x45_AP45 {
+        displayName = "30rnd HK G36 AP45 Tracer (Red)";
+        displayNameShort = "AP45 Tracer";
+        descriptionShort = "5.56x45mm 30-round G36 magazine, Nammo AP45, all red tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 30;
+    };
+
+    class GOL_G36_30Rnd_556x45_AP45_Tracer_Green: GOL_G36_30Rnd_556x45_AP45 {
+        displayName = "30rnd HK G36 AP45 Tracer (Green)";
+        displayNameShort = "AP45 Tracer (Green)";
+        descriptionShort = "5.56x45mm 30-round G36 magazine, Nammo AP45, all green tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 30;
+    };
+
+    class GOL_G36_30Rnd_556x45_AP45_Tracer_Yellow: GOL_G36_30Rnd_556x45_AP45 {
+        displayName = "30rnd HK G36 AP45 Tracer (Yellow)";
+        displayNameShort = "AP45 Tracer (Yellow)";
+        descriptionShort = "5.56x45mm 30-round G36 magazine, Nammo AP45, all yellow tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
+        tracersEvery = 1;
+        lastRoundsTracer = 30;
+    };
+
     // 200-round belt variants (vanilla base)
     class 200Rnd_556x45_Box_Tracer_Red_F;
     
