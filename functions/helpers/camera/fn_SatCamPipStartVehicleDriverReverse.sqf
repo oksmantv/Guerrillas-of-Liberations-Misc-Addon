@@ -415,6 +415,43 @@ if (!isNull _d46) then {
     }];
     _ehIds pushBack ["display46", "KeyDown", _idKey];
 };
+
+// Fail safe: stop camera when player dies
+private _idKilled = player addEventHandler ["Killed", {
+    [] call OKS_fnc_SatCamPipStop;
+}];
+_ehIds pushBack ["player", "Killed", _idKilled];
+
+// Fail safe: stop camera when player becomes unconscious (ACE)
+if (isClass (configFile >> "CfgPatches" >> "ace_medical")) then {
+    private _idUnconscious = player addEventHandler ["HandleDamage", {
+        if (player getVariable ["ACE_isUnconscious", false]) then {
+            [] call OKS_fnc_SatCamPipStop;
+        };
+    }];
+    _ehIds pushBack ["player", "HandleDamage", _idUnconscious];
+};
+
+// Fail safe: stop camera when player dismounts or switches seat
+private _idGetOut = player addEventHandler ["GetOutMan", {
+    params ["_unit", "_role", "_veh"];
+    if (_veh isEqualTo _vehicle) then {
+        [] call OKS_fnc_SatCamPipStop;
+    };
+}];
+_ehIds pushBack ["player", "GetOutMan", _idGetOut];
+
+private _idSeatSwitch = player addEventHandler ["SeatSwitchedMan", {
+    params ["_unit", "_oldVeh", "_newVeh"];
+    if (_newVeh isEqualTo _vehicle) then {
+        // Driver-only camera: stop if switched to any other seat
+        if (_unit isNotEqualTo driver _vehicle) then {
+            [] call OKS_fnc_SatCamPipStop;
+        };
+    };
+}];
+_ehIds pushBack ["player", "SeatSwitchedMan", _idSeatSwitch];
+
 missionNamespace setVariable ["OKS_SatCamPip_EHs", _ehIds];
 
 private _startT = diag_tickTime;
@@ -423,6 +460,16 @@ private _pfhId = [{
     _args params ["_camera", "_vehicle", "_anchorSpec", "_fov", "_durationSec", "_startT", "_camBackDistance", "_camHeightAGL"];
 
     if (isNull _camera) exitWith { [_pfhId] call CBA_fnc_removePerFrameHandler; };
+
+    // Fail safe: stop if player died or unconscious
+    if (!alive player) exitWith {
+        [] call OKS_fnc_SatCamPipStop;
+        [_pfhId] call CBA_fnc_removePerFrameHandler;
+    };
+    if (isClass (configFile >> "CfgPatches" >> "ace_medical") && {player getVariable ["ACE_isUnconscious", false]}) exitWith {
+        [] call OKS_fnc_SatCamPipStop;
+        [_pfhId] call CBA_fnc_removePerFrameHandler;
+    };
 
     if (isNull _vehicle) exitWith {
         [] call OKS_fnc_SatCamPipStop;

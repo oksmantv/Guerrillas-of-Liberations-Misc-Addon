@@ -20,6 +20,10 @@ class CfgPatches
             "rhsusf_c_airweapons",
             "rhsusf_c_heavyweapons",
             "UK3CB_BAF_Weapons_Static",
+            "UK3CB_BAF_Weapons_SmallArms",
+            "UK3CB_BAF_Weapons_L85A3",
+            "UK3CB_BAF_Weapons_L119",
+            "UK3CB_BAF_Weapons_L110",
             "FPV_UA"
         };
         requiredVersion = 2.14;
@@ -86,8 +90,47 @@ class CfgPatches
             "rhs_beret_vdv1_GOL",
             "rhs_beret_vdv2_GOL",
             "rhs_beret_vdv3_GOL",
-            "OKS_DroneDisruptor_Pistol"
+            "OKS_DroneDisruptor_Pistol",
+            "GOL_MMG_01_tan_F",
+            "GOL_MMG_01_hex_F",
+            "GOL_weap_pkm",
+            "GOL_weap_pkp",
+            "GOL_MMG_02_black_F",
+            "GOL_MMG_02_camo_F",
+            "GOL_MMG_02_sand_F",
+            "GOL_LMG_Zafir_F",
+            "GOL_weap_fnmag",
+            "GOL_MG3_KWS_B"
         };
+		magazines[] = {
+			"GOL_150Rnd_93x64_Mag",
+			"GOL_150Rnd_93x64_Mag_Tracer",
+			"GOL_150Rnd_93x64_Mag_Tracer_Red",
+			"GOL_150Rnd_93x64_Mag_Tracer_Green",
+			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
+			"GOL_100Rnd_762x54mmR",
+			"GOL_100Rnd_762x54mmR_red",
+			"GOL_100Rnd_762x54mmR_green",
+			"GOL_130Rnd_338_Mag",
+			"GOL_130Rnd_338_Mag_red",
+			"GOL_130Rnd_338_Mag_green",
+			"GOL_30Rnd_556x45_AP45",
+			"GOL_30Rnd_556x45_AP45_Tracer_Red",
+			"GOL_30Rnd_556x45_AP45_Tracer_Green",
+			"GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+			"GOL_200Rnd_556x45_AP45_Box",
+			"GOL_200Rnd_556x45_AP45_Box_Tracer_Red",
+			"GOL_200Rnd_556x45_AP45_Box_Tracer_Green",
+			"GOL_200Rnd_556x45_AP45_Box_Tracer_Yellow",
+			"GOL_UK3CB_BAF_556_200Rnd_AP45",
+			"GOL_UK3CB_BAF_556_200Rnd_AP45_T_Red",
+			"GOL_UK3CB_BAF_556_200Rnd_AP45_T_Green",
+			"GOL_UK3CB_BAF_556_200Rnd_AP45_T_Yellow",
+			"GOL_rhsusf_200rnd_556x45_AP45",
+			"GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
+			"GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
+			"GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow"
+		};
 	};
 };
 
@@ -96,6 +139,7 @@ class CfgPatches
 #include "configs\CfgAmmo.cpp"
 #include "configs\CfgEden.cpp"
 #include "configs\CfgMagazines.cpp"
+#include "configs\CfgMagazineWells.cpp"
 #include "configs\CfgWeapons.cpp"
 #include "configs\CfgVehicles.cpp"
 #include "configs\CfgFunctions.cpp"

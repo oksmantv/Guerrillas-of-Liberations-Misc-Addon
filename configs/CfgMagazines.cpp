@@ -83,4 +83,260 @@ class CfgMagazines {
         initSpeed = 0;
         picture = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
     };
+
+    // Custom MMG magazines with tracer variants
+    class 150Rnd_93x64_Mag;
+    
+    class GOL_150Rnd_93x64_Mag: 150Rnd_93x64_Mag {
+        scope = 2;
+        displayName = "9.3 mm 150Rnd Belt";
+        displayNameShort = "9.3mm";
+        descriptionShort = "9.3x64mm 150-round belt, ball ammunition";
+        ammo = "B_93x64_Ball";
+        tracersEvery = 0;
+        mass = 70;
+    };
+
+    class GOL_150Rnd_93x64_Mag_Tracer: GOL_150Rnd_93x64_Mag {
+        displayName = "9.3 mm 150Rnd Tracer (Red)";
+        displayNameShort = "Tracer";
+        descriptionShort = "9.3x64mm 150-round belt, all red tracers";
+        ammo = "GOL_B_93x64_Ball_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 150;
+    };
+
+    class GOL_150Rnd_93x64_Mag_Tracer_Red: GOL_150Rnd_93x64_Mag_Tracer {
+        displayName = "9.3 mm 150Rnd Tracer (Red)";
+        ammo = "GOL_B_93x64_Ball_Tracer_Red";
+    };
+
+    class GOL_150Rnd_93x64_Mag_Tracer_Green: GOL_150Rnd_93x64_Mag_Tracer {
+        displayName = "9.3 mm 150Rnd Tracer (Green)";
+        displayNameShort = "Tracer (Green)";
+        descriptionShort = "9.3x64mm 150-round belt, all green tracers";
+        ammo = "GOL_B_93x64_Ball_Tracer_Green";
+    };
+
+    class GOL_150Rnd_93x64_Mag_Tracer_Yellow: GOL_150Rnd_93x64_Mag_Tracer {
+        displayName = "9.3 mm 150Rnd Tracer (Yellow)";
+        displayNameShort = "Tracer (Yellow)";
+        descriptionShort = "9.3x64mm 150-round belt, all yellow tracers";
+        ammo = "GOL_B_93x64_Ball_Tracer_Yellow";
+    };
+
+    // RHS PKM/PKP 7.62x54mmR magazines with red tracers
+    class rhs_100Rnd_762x54mmR;
+    
+    class GOL_100Rnd_762x54mmR: rhs_100Rnd_762x54mmR {
+        scope = 2;
+        displayName = "7.62mm 100Rnd Box";
+        displayNameShort = "7.62mm";
+        descriptionShort = "7.62x54mmR 100-round box, ball ammunition";
+        tracersEvery = 0;
+    };
+
+    class GOL_100Rnd_762x54mmR_red: GOL_100Rnd_762x54mmR {
+        displayName = "7.62mm 100Rnd Tracer (Red)";
+        displayNameShort = "Tracer (Red)";
+        descriptionShort = "7.62x54mmR 100-round box, all red tracers";
+        ammo = "GOL_B_762x54_Ball_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    class GOL_100Rnd_762x54mmR_green: GOL_100Rnd_762x54mmR {
+        displayName = "7.62mm 100Rnd Tracer (Green)";
+        displayNameShort = "Tracer (Green)";
+        descriptionShort = "7.62x54mmR 100-round box, all green tracers";
+        ammo = "GOL_B_762x54_Ball_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    // MMG_02 SPMG .338 magazines with red tracers
+    class 130Rnd_338_Mag;
+    
+    class GOL_130Rnd_338_Mag: 130Rnd_338_Mag {
+        scope = 2;
+        displayName = ".338 130Rnd Belt";
+        displayNameShort = ".338";
+        descriptionShort = ".338 Norma Magnum 130-round belt, ball ammunition";
+        tracersEvery = 0;
+    };
+
+    class GOL_130Rnd_338_Mag_red: GOL_130Rnd_338_Mag {
+        displayName = ".338 130Rnd Tracer (Red)";
+        displayNameShort = "Tracer (Red)";
+        descriptionShort = ".338 Norma Magnum 130-round belt, all red tracers";
+        ammo = "GOL_B_338_Ball_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 130;
+    };
+
+    class GOL_130Rnd_338_Mag_green: GOL_130Rnd_338_Mag {
+        displayName = ".338 130Rnd Tracer (Green)";
+        displayNameShort = "Tracer (Green)";
+        descriptionShort = ".338 Norma Magnum 130-round belt, all green tracers";
+        ammo = "GOL_B_338_Ball_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 130;
+    };
+
+    // 5.56mm AP45 magazines (vanilla STANAG base)
+    class 30Rnd_556x45_Stanag;
+    
+    class GOL_30Rnd_556x45_AP45: 30Rnd_556x45_Stanag {
+        scope = 2;
+        displayName = "5.56mm 30Rnd AP45";
+        displayNameShort = "AP45";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45 armor-piercing, last 5 red tracers";
+        ammo = "GOL_B_556x45_Ball_AP45";
+        tracersEvery = 0;
+        lastRoundsTracer = 5;
+    };
+
+    class GOL_30Rnd_556x45_AP45_Tracer_Red: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Tracer (Red)";
+        displayNameShort = "AP45 Tracer";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, all red tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 30;
+    };
+
+    class GOL_30Rnd_556x45_AP45_Tracer_Green: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Tracer (Green)";
+        displayNameShort = "AP45 Tracer (Green)";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, all green tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 30;
+    };
+
+    class GOL_30Rnd_556x45_AP45_Tracer_Yellow: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Tracer (Yellow)";
+        displayNameShort = "AP45 Tracer (Yellow)";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, all yellow tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
+        tracersEvery = 1;
+        lastRoundsTracer = 30;
+    };
+
+    // 200-round belt variants (vanilla base)
+    class 200Rnd_556x45_Box_Tracer_Red_F;
+    
+    class GOL_200Rnd_556x45_AP45_Box: 200Rnd_556x45_Box_Tracer_Red_F {
+        scope = 2;
+        displayName = "5.56mm 200Rnd AP45 Box";
+        displayNameShort = "AP45";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45 armor-piercing";
+        ammo = "GOL_B_556x45_Ball_AP45";
+        tracersEvery = 0;
+    };
+
+    class GOL_200Rnd_556x45_AP45_Box_Tracer_Red: GOL_200Rnd_556x45_AP45_Box {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Red)";
+        displayNameShort = "AP45 Tracer";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all red tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_556x45_AP45_Box_Tracer_Green: GOL_200Rnd_556x45_AP45_Box {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Green)";
+        displayNameShort = "AP45 Tracer (Green)";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all green tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_556x45_AP45_Box_Tracer_Yellow: GOL_200Rnd_556x45_AP45_Box {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Yellow)";
+        displayNameShort = "AP45 Tracer (Yellow)";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all yellow tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    // UK3CB 200-round belt variant
+    class UK3CB_BAF_556_200Rnd_T;
+    
+    class GOL_UK3CB_BAF_556_200Rnd_AP45: UK3CB_BAF_556_200Rnd_T {
+        scope = 2;
+        displayName = "5.56mm 200Rnd AP45 Box (UK3CB)";
+        displayNameShort = "AP45";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45 armor-piercing";
+        ammo = "GOL_B_556x45_Ball_AP45";
+        tracersEvery = 0;
+    };
+
+    class GOL_UK3CB_BAF_556_200Rnd_AP45_T_Red: GOL_UK3CB_BAF_556_200Rnd_AP45 {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Red, UK3CB)";
+        displayNameShort = "AP45 Tracer";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all red tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_UK3CB_BAF_556_200Rnd_AP45_T_Green: GOL_UK3CB_BAF_556_200Rnd_AP45 {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Green, UK3CB)";
+        displayNameShort = "AP45 Tracer (Green)";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all green tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_UK3CB_BAF_556_200Rnd_AP45_T_Yellow: GOL_UK3CB_BAF_556_200Rnd_AP45 {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Yellow, UK3CB)";
+        displayNameShort = "AP45 Tracer (Yellow)";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all yellow tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    // RHS 200-round box variant
+    class rhsusf_200rnd_556x45_mixed_box;
+    
+    class GOL_rhsusf_200rnd_556x45_AP45: rhsusf_200rnd_556x45_mixed_box {
+        scope = 2;
+        displayName = "5.56mm 200Rnd AP45 Box (RHS)";
+        displayNameShort = "AP45";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45 armor-piercing";
+        ammo = "GOL_B_556x45_Ball_AP45";
+        tracersEvery = 0;
+    };
+
+    class GOL_rhsusf_200rnd_556x45_AP45_tracer_red: GOL_rhsusf_200rnd_556x45_AP45 {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Red, RHS)";
+        displayNameShort = "AP45 Tracer";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all red tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_rhsusf_200rnd_556x45_AP45_tracer_green: GOL_rhsusf_200rnd_556x45_AP45 {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Green, RHS)";
+        displayNameShort = "AP45 Tracer (Green)";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all green tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow: GOL_rhsusf_200rnd_556x45_AP45 {
+        displayName = "5.56mm 200Rnd AP45 Tracer (Yellow, RHS)";
+        displayNameShort = "AP45 Tracer (Yellow)";
+        descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45, all yellow tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
 };

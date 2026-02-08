@@ -153,4 +153,118 @@ class CfgAmmo {
 		soundHit11[] = {"", 1, 1};
 		soundHit12[] = {"", 1, 1};
 	};
+
+	// Custom 9.3mm tracer ammunition with different colors
+	class B_93x64_Ball;
+	
+	class GOL_B_93x64_Ball_Tracer_Red: B_93x64_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_93x64_Ball_Tracer_Green: B_93x64_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_93x64_Ball_Tracer_Yellow: B_93x64_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	// Custom 7.62x54mmR tracer ammunition (RHS PKM/PKP)
+	class rhs_B_762x54_Ball;
+	
+	class GOL_B_762x54_Ball_Tracer_Red: rhs_B_762x54_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_762x54_Ball_Tracer_Green: rhs_B_762x54_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	// Custom .338 Norma Magnum tracer ammunition (MMG_02 SPMG)
+	class B_338_Ball;
+	
+	class GOL_B_338_Ball_Tracer_Red: B_338_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_338_Ball_Tracer_Green: B_338_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	// Custom 5.56mm AP45 ammunition (Nammo AP45 +25% ballistics)
+	class B_556x45_Ball;
+	
+	class GOL_B_556x45_Ball_AP45: B_556x45_Ball {
+		hit = 11;               // Superior stopping power (Mk262 is 10.3)
+		indirectHit = 0;
+		indirectHitRange = 0;
+		caliber = 2.0;          // Superior armor penetration - AP45 armor-piercing core
+		typicalSpeed = 1162.5;  // 930 m/s base + 25% = 1162.5 m/s
+		airFriction = -0.00096; // Superior ballistic coefficient
+		
+		// ACE Advanced Ballistics
+		ACE_caliber = 5.69;     // 5.56mm diameter
+		ACE_bulletLength = 23.012; // AP45 bullet length in mm
+		ACE_bulletMass = 5.2;   // 80gr - heavier than Mk262 (77gr) for more impact
+		ACE_muzzleVelocityVariationSD = 0.4;
+		ACE_ammoTempMuzzleVelocityShifts[] = {-26.55, -25.47, -22.85, -20.12, -16.98, -12.80, -7.64, -1.53, 5.96, 15.17, 26.19};
+		ACE_ballisticCoefficients[] = {0.151}; // G7 BC from real AP45 data
+		ACE_velocityBoundaries[] = {};
+		ACE_standardAtmosphere = "ICAO";
+		ACE_dragModel = 7;      // G7 drag model
+		ACE_muzzleVelocities[] = {880, 915, 950, 1000, 1050, 1100, 1162.5};
+		ACE_barrelLengths[] = {254, 292.1, 355.6, 406.4, 457.2, 508, 558.8}; // 10" to 22" barrels in mm
+	};
+
+	class GOL_B_556x45_Ball_AP45_Tracer_Red: GOL_B_556x45_Ball_AP45 {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_556x45_Ball_AP45_Tracer_Green: GOL_B_556x45_Ball_AP45 {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_556x45_Ball_AP45_Tracer_Yellow: GOL_B_556x45_Ball_AP45 {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
 };

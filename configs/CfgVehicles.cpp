@@ -42,7 +42,7 @@ class CfgVehicles {
 	};
 
     class Air;
-    class Helicopter {
+    class Helicopter: Air {
 		class ACE_SelfActions {
 			class GOL_StaticLine {
 				displayName = "Static Line";
@@ -262,7 +262,8 @@ class CfgVehicles {
 	class Land_HelipadSquare_F;
 	class Land_RepairDepot_01_green_F;
 	class FlagPole_F;
-	class ReammoBox_F {
+	class ThingX;
+	class ReammoBox_F: ThingX {
 		class ACE_Actions
 		{
 			class ACE_MainActions {};
@@ -278,6 +279,18 @@ class CfgVehicles {
 
 		class EventHandlers {
 			init = "(_this select 0) setFlagTexture '\OKS_GOL_Misc\data\images\hellfishflag.paa'";
+		};
+	};
+	
+	class GOL_Flag_PZG371: FlagPole_F {
+		displayName = "Flag (Panzergrenadierbataillon 371)";
+		scope = 2;
+		scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Objects";
+
+		class EventHandlers {
+			init = "(_this select 0) setFlagTexture '\OKS_GOL_Misc\data\images\pzg371flag.paa'";
 		};
 	};
 
@@ -1197,7 +1210,7 @@ class CfgVehicles {
 		editorSubcategory = "GOL_Objects";
 	};
 
-	class Plane {
+	class Plane: Air {
 		class ACE_SelfActions {
 			class GOL_StaticLine {
 				displayName = "Static Line";

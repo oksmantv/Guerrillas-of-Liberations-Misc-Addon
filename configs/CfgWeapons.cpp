@@ -1004,6 +1004,201 @@ class CfgWeapons {
 		};
 	};
 
+// Custom MMG variants with reduced recoil and custom magazines
+	class MMG_01_tan_F;
+	class MMG_01_hex_F;
+
+	class GOL_MMG_01_tan_F: MMG_01_tan_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "HK121 9.3 mm (Tan/GOL)";
+		baseWeapon = "GOL_MMG_01_tan_F";
+		
+		// Custom recoil presets
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+		
+		// Clear linkedItems to show in arsenal
+		linkedItems[] = {};
+		
+		// Custom magazines with tracer variety
+		magazines[] = {
+			"GOL_150Rnd_93x64_Mag",
+			"GOL_150Rnd_93x64_Mag_Tracer",
+			"GOL_150Rnd_93x64_Mag_Tracer_Red",
+			"GOL_150Rnd_93x64_Mag_Tracer_Green",
+			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
+			// Vanilla compatibility
+			"150Rnd_93x64_Mag"
+		};
+	};
+
+	class GOL_MMG_01_hex_F: MMG_01_hex_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "HK121 9.3 mm (Hex/GOL)";
+		baseWeapon = "GOL_MMG_01_hex_F";
+		
+		// Custom recoil presets
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+		
+		// Clear linkedItems to show in arsenal
+		linkedItems[] = {};
+		
+		magazines[] = {
+			"GOL_150Rnd_93x64_Mag",
+			"GOL_150Rnd_93x64_Mag_Tracer",
+			"GOL_150Rnd_93x64_Mag_Tracer_Red",
+			"GOL_150Rnd_93x64_Mag_Tracer_Green",
+			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
+			"150Rnd_93x64_Mag"
+		};
+	};
+
+	// RHS PKM/PKP variants with red tracers
+	class rhs_weap_pkm;
+	class rhs_weap_pkp;
+
+	class GOL_weap_pkm: rhs_weap_pkm {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "PKM (GOL)";
+		baseWeapon = "GOL_weap_pkm";
+		
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+		
+		magazines[] = {
+			"GOL_100Rnd_762x54mmR",
+			"GOL_100Rnd_762x54mmR_red",
+			"GOL_100Rnd_762x54mmR_green",
+			// Vanilla compatibility
+			"rhs_100Rnd_762x54mmR",
+			"rhs_100Rnd_762x54mmR_green"
+		};
+	};
+
+	class GOL_weap_pkp: rhs_weap_pkp {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "PKP (GOL)";
+		baseWeapon = "GOL_weap_pkp";
+		
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+		
+		magazines[] = {
+			"GOL_100Rnd_762x54mmR",
+			"GOL_100Rnd_762x54mmR_red",
+			"GOL_100Rnd_762x54mmR_green",
+			"rhs_100Rnd_762x54mmR",
+			"rhs_100Rnd_762x54mmR_green"
+		};
+	};
+
+	// MMG_02 SPMG variants (.338)
+	class MMG_02_black_F;
+	class MMG_02_camo_F;
+	class MMG_02_sand_F;
+
+	class GOL_MMG_02_black_F: MMG_02_black_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "LWMMG .338 (Black/GOL)";
+		baseWeapon = "GOL_MMG_02_black_F";
+		
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+		
+		magazines[] = {
+			"GOL_130Rnd_338_Mag",
+			"GOL_130Rnd_338_Mag_red",
+			"GOL_130Rnd_338_Mag_green",
+			// Vanilla compatibility
+			"130Rnd_338_Mag"
+		};
+	};
+
+	class GOL_MMG_02_camo_F: MMG_02_camo_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "LWMMG .338 (Camo/GOL)";
+		baseWeapon = "GOL_MMG_02_camo_F";
+		
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+		
+		magazines[] = {
+			"GOL_130Rnd_338_Mag",
+			"GOL_130Rnd_338_Mag_red",
+			"GOL_130Rnd_338_Mag_green",
+			"130Rnd_338_Mag"
+		};
+	};
+
+	class GOL_MMG_02_sand_F: MMG_02_sand_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "LWMMG .338 (Sand/GOL)";
+		baseWeapon = "GOL_MMG_02_sand_F";
+		
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+		
+		magazines[] = {
+			"GOL_130Rnd_338_Mag",
+			"GOL_130Rnd_338_Mag_red",
+			"GOL_130Rnd_338_Mag_green",
+			"130Rnd_338_Mag"
+		};
+	};
+
+	// LMG_Zafir_F and other weapons that don't need new mags
+	class LMG_Zafir_F;
+	class rhs_weap_fnmag;
+	class UK3CB_MG3_KWS_B;
+
+	class GOL_LMG_Zafir_F: LMG_Zafir_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "Zafir 7.62mm (GOL)";
+		baseWeapon = "GOL_LMG_Zafir_F";
+		
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+	};
+
+	class GOL_weap_fnmag: rhs_weap_fnmag {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "FN MAG (GOL)";
+		baseWeapon = "GOL_weap_fnmag";
+		
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+	};
+
+	class GOL_MG3_KWS_B: UK3CB_MG3_KWS_B {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "MG3 KWS (GOL)";
+		baseWeapon = "GOL_MG3_KWS_B";
+		
+		recoil = "UK3CB_BAF_recoil_saw_762";
+		recoilProne = "assaultRifleBase";
+	};
+
 // FPV throwables (soft dependency on BOT_FPV_Enhanced)
 class GrenadeLauncher;
 class Throw: GrenadeLauncher {
@@ -1024,4 +1219,12 @@ class Throw: GrenadeLauncher {
 			magazines[] = {"GOL_Mag_FPV_AP_IED_Throw"};
 		};
 	};
+
+	// AP45 Compatibility patches
+	// NOTE: UK3CB Factions (ACR/M16/G36/AUG) and JCA rifles are handled
+	// via CfgMagazineWells — no per-weapon patching needed for those.
+	#include "compat\compat_vanilla.hpp"
+	#include "compat\compat_rhs.hpp"
+	#include "compat\compat_uk3cb.hpp"
+	#include "compat\compat_uk3cb_factions.hpp"
 };

@@ -16,7 +16,7 @@ private _responseMultiplier = missionNamespace getVariable ["GOL_ResponseMultipl
 _forceMultiplier = _forceMultiplier * (1 - _percent);
 _responseMultiplier = _responseMultiplier * (1 + _percent);
 
-// Clamp values
+// Clamp values - force stays at or above baseline 1.0
 _forceMultiplier = (_forceMultiplier max 1) min 2;
 _responseMultiplier = (_responseMultiplier max 0.5) min 3;
 
