@@ -14,7 +14,7 @@
 
 // Forward declarations for parent classes
 // arifle_Mk20_plain_F — already defined in compat_vanilla.hpp
-class UK3CB_BAF_L85A2;
+// UK3CB_BAF_L85A2 — fully defined below (before L85A3 uses it as parent)
 class UK3CB_BAF_L119_Base;
 class UK3CB_BAF_L110_556_Base;
 
