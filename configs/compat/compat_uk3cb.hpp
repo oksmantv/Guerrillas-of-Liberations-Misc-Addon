@@ -14,17 +14,15 @@
 
 // Forward declarations for parent classes
 // arifle_Mk20_plain_F — already defined in compat_vanilla.hpp
-// UK3CB_BAF_L85A2 — re-opened below (no parent re-specification to avoid inheritance rebuild)
 class UK3CB_BAF_L119_Base;
 class UK3CB_BAF_L110_556_Base;
 
 // ============================================================
 // L85A2 (5.56mm) — root of SmallArms PBO chain
-// Re-open WITHOUT parent to preserve original 3CB definition.
-// All L85A2 variants, L86, and L22 inherit from this within
-// the same PBO and get AP45 mags automatically.
+// Re-open with correct parent to append AP45 mags.
+// All L85A2 variants, L86, and L22 in the same PBO inherit.
 // ============================================================
-class UK3CB_BAF_L85A2 {
+class UK3CB_BAF_L85A2: arifle_Mk20_plain_F {
     magazines[] += {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
@@ -35,11 +33,13 @@ class UK3CB_BAF_L85A2 {
 
 // ============================================================
 // L85A3 (5.56mm) — root of L85A3 PBO chain
-// Re-open WITHOUT parent to preserve original 3CB definition.
-// All AFG, Grippod, and UGL variants inherit from this within
-// the same PBO and get AP45 mags automatically.
+// L85A3's original config clears magazineWell[] = {}, blocking
+// CBA well delivery. We add AP45 via magazineWell[] += to a
+// custom well, AND via magazines[] += as direct fallback.
+// The well GOL_556x45_L85A3 is defined in CfgMagazineWells.
 // ============================================================
-class UK3CB_BAF_L85A3 {
+class UK3CB_BAF_L85A3: UK3CB_BAF_L85A2 {
+    magazineWell[] += {"GOL_556x45_L85A3"};
     magazines[] += {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
