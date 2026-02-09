@@ -750,7 +750,7 @@ class CfgVehicles
 					maxFov = 1.2;
 					visionMode[] = {"Normal","NVG","Ti"};
 					thermalMode[] = {0,1};
-					gunnerOpticsModel = "rhsusf\addons\rhsusf_melb\data\optics\melb_flir_wf.p3d";
+					gunnerOpticsModel = "\A3\Weapons_F_Beta\Reticle\Heli_Attack_01_Optics_Gunner_wide_F.p3d";
 				};
 				showMiniMapInOptics = 0;
 				showUAVViewpInOptics = 0;
@@ -763,8 +763,8 @@ class CfgVehicles
 			discretedistanceinitindex = 3;
 			weapons[] = {"rhs_weap_laserDesignator_AI","rhs_weap_fcs_ah64"};
 			magazines[] = {"rhs_laserfcsmag","rhs_LaserMag_ai"};
-			minTurn = -1080;
-			maxTurn = 1080;
+			minTurn = -90;
+			maxTurn = 90;
 			initTurn = 0;
 			minElev = -35;
 			maxElev = 90;
@@ -1479,6 +1479,8 @@ class CfgVehicles
 				turretInfoType = "Rsc_MELB_Turret_UnitInfo";
 				stabilizedInAxes = 3;
 				memoryPointGunnerOptics = "commanderview";
+				maxXRotSpeed = 0.5;
+				maxYRotSpeed = 0.5;
 				minElev = -180;
 				maxElev = 180;
 				initElev = 0;
@@ -1533,21 +1535,20 @@ class CfgVehicles
 				{
 					class Wide
 					{
-						opticsDisplayName = "TRK COR";
+						opticsDisplayName = "W";
 						initAngleX = 0;
-						minAngleX = -360;
-						maxAngleX = 360;
+						minAngleX = 0;
+						maxAngleX = 0;
 						initAngleY = 0;
-						minAngleY = -15;
-						maxAngleY = 85;
-						initFov = 0.3;
-						minFov = 0.3;
-						maxFov = 0.3;
+						minAngleY = 0;
+						maxAngleY = 0;
+						initFov = 0.7;
+						minFov = 0.03;
+						maxFov = 1.2;
 						visionMode[] = {"Normal","NVG","Ti"};
 						thermalMode[] = {0,1};
 						directionStabilized = 1;
-						horizontallyStabilized = 1;
-						gunnerOpticsModel = "rhsusf\addons\rhsusf_melb\data\optics\melb_flir_wf.p3d";
+						gunnerOpticsModel = "\A3\Weapons_F_Beta\Reticle\Heli_Attack_01_Optics_Gunner_wide_F.p3d";
 						opticsPPEffects[] = {"OpticsCHAbera3","OpticsBlur3"};
 						gunnerOpticsEffect[] = {"TankCommanderOptics2"};
 					};
