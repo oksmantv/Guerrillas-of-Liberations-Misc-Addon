@@ -60,6 +60,7 @@ missionNamespace setVariable ["OKS_SatCamPip_Mode", "commander"];
 missionNamespace setVariable ["OKS_SatCamPip_CommanderZoomLevels", _zoomLevels];
 missionNamespace setVariable ["OKS_SatCamPip_CommanderZoomIndex", 0];
 missionNamespace setVariable ["OKS_SatCamPip_CommanderFov", _zoomLevels#0];
+missionNamespace setVariable ["OKS_SatCamPip_VisionMode", 0]; // 0=normal, 1=NV, 2=thermal
 
 private _getAnchorWorld = {
     params ["_veh", "_anchorSpec"];
@@ -264,7 +265,7 @@ missionNamespace setVariable ["OKS_SatCamPip_Commander_MemPoint", _memPoint];
 missionNamespace setVariable ["OKS_SatCamPip_Commander_TurretPath", _trackTurretPath];
 missionNamespace setVariable ["OKS_SatCamPip_Commander_Label", _uiLabel];
 
-if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
     [format ["[Commander View] === TURRET ANALYSIS ==="]] spawn OKS_fnc_LogDebug;
     [format ["[Commander View]   Turret path: %1", _trackTurretPath]] spawn OKS_fnc_LogDebug;
     [format ["[Commander View]   Memory point: %1", _memPoint]] spawn OKS_fnc_LogDebug;
@@ -316,122 +317,48 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
     [format ["[Commander View]   Vertical offset config: %1m", _commanderVerticalOffset]] spawn OKS_fnc_LogDebug;
 };
 
-private _eye = if (_memPoint isNotEqualTo "") then {
-    // Use bbox top as hull top, then add turret equipment height ABOVE it
-    // Try to find actual turret structure selections first
-    private _bbox = boundingBoxReal _vehicle;
-    private _min = _bbox select 0;
-    private _max = _bbox select 1;
-    
-    // Check for turret structure selections (physical turret, not player viewpoints)
-    private _turretSelections = ["otocvez", "vez", "turret"];
-    private _turretPos = [0,0,0];
-    private _foundTurret = false;
-    {
-        private _pos = _vehicle selectionPosition _x;
-        if (!(_pos isEqualTo [0,0,0])) then {
-            _turretPos = _pos;
-            _foundTurret = true;
-            break;
-        };
-    } forEach _turretSelections;
-    
-    // Calculate turret height ABOVE hull top
-    private _turretHeightAboveHull = if (_foundTurret && {(_turretPos#2) > (_max#2)}) then {
-        // Found turret structure above hull - use its position + optics offset
-        if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-            [format ["[Commander View]   Using turret structure at Z=%1, hull top=%2, height above hull=%3", _turretPos#2, _max#2, (_turretPos#2) - (_max#2)]] spawn OKS_fnc_LogDebug;
-        };
-        (_turretPos#2) - (_max#2) + 0.5
-    } else {
-        // Fallback: Check gun barrel, or use standard turret height
-        private _gunBarrel = _vehicle selectionPosition "usti hlavne";
-        if (!(_gunBarrel isEqualTo [0,0,0]) && {(_gunBarrel#2) > (_max#2)}) then {
-            if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-                [format ["[Commander View]   FALLBACK: Using gun barrel at Z=%1, hull top=%2, height above hull=%3", _gunBarrel#2, _max#2, (_gunBarrel#2) - (_max#2)]] spawn OKS_fnc_LogDebug;
-            };
-            (_gunBarrel#2) - (_max#2) + 0.3
-        } else {
-            if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-                [format ["[Commander View]   FALLBACK: Using standard 1.0m turret height (no turret structure or gun barrel above hull)"]] spawn OKS_fnc_LogDebug;
-            };
-            1.0
-        };
-    };
-    
-    // Position at front center of vehicle, at hull top + turret height
-    private _pModelOriginal = [
-        0,                                    // X: center (no left/right offset)
-        (_max#1) * 0.7,                      // Y: 70% towards front
-        (_max#2) + _turretHeightAboveHull    // Z: hull top + turret equipment height
+private _cameraAttachOffset = if (_memPoint isNotEqualTo "") then {
+    // Use the optics/commanderview memory point position directly.
+    // It already represents the correct model-space camera position.
+    private _opticsModel = _vehicle selectionPosition _memPoint;
+    [
+        _opticsModel#0,
+        _opticsModel#1,
+        (_opticsModel#2) + _commanderVerticalOffset
     ];
-    
-    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-        [format ["[Commander View] STEP 1: Turret optics calculation"]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Turret selection found: %1", if (_foundTurret) then {format ["YES at %1", _turretPos]} else {"NO"}]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Bbox min: %1", _min]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Bbox max: %1", _max]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Hull top Z: %1m", _max#2]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Turret height above hull: %1m", _turretHeightAboveHull]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   pModel (optics position): %1", _pModelOriginal]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Final turret optics Z: %1m", _pModelOriginal#2]] spawn OKS_fnc_LogDebug;
-    };
-    
-    // Apply vertical offset to model space Z before transformation
-    private _pModel = +_pModelOriginal;
-    _pModel set [2, (_pModel#2) + _commanderVerticalOffset];
-    
-    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-        [format ["[Commander View] STEP 2: After vertical offset applied"]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   pModel adjusted: %1", _pModel]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Z change: %1m -> %2m (diff: %3m)", _pModelOriginal#2, _pModel#2, (_pModel#2) - (_pModelOriginal#2)]] spawn OKS_fnc_LogDebug;
-    };
-    
-    private _vehForward = vectorDir _vehicle;
-    private _vehUp = vectorUp _vehicle;
-    private _vehRight = _vehForward vectorCrossProduct _vehUp;
-    
-    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-        [format ["[Commander View] STEP 3: Vehicle orientation vectors"]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Forward: %1", _vehForward]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Up: %1", _vehUp]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Right: %1", _vehRight]] spawn OKS_fnc_LogDebug;
-    };
-    
-    private _worldOffset = ((_vehRight vectorMultiply (_pModel#0)) vectorAdd 
-                            (_vehForward vectorMultiply (_pModel#1)) vectorAdd 
-                            (_vehUp vectorMultiply (_pModel#2)));
-    
-    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-        [format ["[Commander View] STEP 4: World offset calculation"]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Right contribution: %1", _vehRight vectorMultiply (_pModel#0)]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Forward contribution: %1", _vehForward vectorMultiply (_pModel#1)]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Up contribution: %1", _vehUp vectorMultiply (_pModel#2)]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Total world offset: %1", _worldOffset]] spawn OKS_fnc_LogDebug;
-    };
-    
-    private _vehASL = getPosASL _vehicle;
-    private _eyePos = _vehASL vectorAdd _worldOffset;
-    
-    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-        private _eyeATL = ASLToATL _eyePos;
-        private _eyeAGL = ASLToAGL _eyePos;
-        [format ["[Commander View] STEP 5: Eye position (memory point in world space)"]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Vehicle ASL: %1", _vehASL]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Eye ASL: %1", _eyePos]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Eye ATL: %1", _eyeATL]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Eye AGL: %1", _eyeAGL]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Eye height above vehicle: %1m", (_eyePos#2) - (_vehASL#2)]] spawn OKS_fnc_LogDebug;
-        private _terrainZ = getTerrainHeightASL [_eyePos#0, _eyePos#1];
-        [format ["[Commander View]   Terrain ASL at eye: %1", _terrainZ]] spawn OKS_fnc_LogDebug;
-        [format ["[Commander View]   Eye height above terrain: %1m", (_eyePos#2) - _terrainZ]] spawn OKS_fnc_LogDebug;
-    };
-    
-    _eyePos
 } else {
-    [_vehicle, _anchorSpec] call _getAnchorWorld
+    private _anchorType = _anchorSpec param [0, "bboxTop", [""]];
+    private _anchorData = _anchorSpec param [1, [], [[],""]];
+    private _offset = _anchorSpec param [2, [0,0,0], [[]]];
+
+    private _pModel = [0,0,0];
+    private _bb = boundingBoxReal _vehicle;
+    private _min = _bb#0;
+    private _max = _bb#1;
+
+    switch (_anchorType) do {
+        case "mem": {
+            if (_anchorData isEqualType "") then { _pModel = _vehicle selectionPosition _anchorData; };
+        };
+        case "model": {
+            if (_anchorData isEqualType []) then { _pModel = _anchorData; };
+        };
+        case "bboxRearTop": {
+            _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_max#2)];
+        };
+        default {
+            _pModel = [(_min#0 + _max#0) * 0.5, (_min#1 + _max#1) * 0.5, (_max#2)];
+        };
+    };
+    
+    _pModel vectorAdd _offset
 };
 
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
+    [format ["[Commander View] Camera attach offset (model space): %1", _cameraAttachOffset]] spawn OKS_fnc_LogDebug;
+};
+
+// Calculate initial direction
 private _dirFallback = if (!isNull _viewer) then { eyeDirection _viewer } else { vectorDirVisual _vehicle };
 private _dirWorld = _dirFallback;
 private _hasDir = false;
@@ -440,7 +367,6 @@ private _hasDir = false;
 if ((count _trackTurretPath) > 0) then {
     private _cfgTurret = [_vehicle, _trackTurretPath] call BIS_fnc_turretConfig;
     if (!isNull _cfgTurret && {getNumber (_cfgTurret >> "primaryObserver") == 1}) then {
-        // ACE-style fallback for commander observer turrets
         _dirWorld = eyeDirection _vehicle;
         _hasDir = true;
     } else {
@@ -455,7 +381,7 @@ if ((count _trackTurretPath) > 0) then {
     };
 };
 
-// 2) Fallback: memory-point orientation vectors (some vehicles don't behave with turretDir)
+// 2) Fallback: memory-point orientation vectors
 if (!_hasDir && {_memPoint isNotEqualTo ""}) then {
     private _vdu = _vehicle selectionVectorDirAndUp [_memPoint, "Memory"];
     private _dModel = _vdu param [0, [0,0,0], [[]]];
@@ -465,76 +391,27 @@ if (!_hasDir && {_memPoint isNotEqualTo ""}) then {
     };
 };
 
-if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-    [format ["[Commander View] STEP 6: Direction calculation"]] spawn OKS_fnc_LogDebug;
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
+    [format ["[Commander View] Direction calculation"]] spawn OKS_fnc_LogDebug;
     [format ["[Commander View]   Direction world: %1", _dirWorld]] spawn OKS_fnc_LogDebug;
     [format ["[Commander View]   Direction method: %1", if (_hasDir) then {"Turret/MemPoint"} else {"Fallback"}]] spawn OKS_fnc_LogDebug;
 };
 
-private _camPos = _eye vectorAdd (_dirWorld vectorMultiply _camForwardOffset);
-private _camTarget = _eye vectorAdd (_dirWorld vectorMultiply 2000);
+// Calculate target position for camera to look at (forward from attach point)
+private _targetOffset = _cameraAttachOffset vectorAdd (_dirWorld vectorMultiply 2000);
 
-if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-    private _camATL = ASLToATL _camPos;
-    private _camAGL = ASLToAGL _camPos;
-    [format ["[Commander View] STEP 7: Camera position after forward offset"]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Forward offset: %1m", _camForwardOffset]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Offset vector: %1", _dirWorld vectorMultiply _camForwardOffset]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Camera ASL: %1", _camPos]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Camera ATL: %1", _camATL]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Camera AGL: %1", _camAGL]] spawn OKS_fnc_LogDebug;
-};
-
-// Debug logging for commander view initial setup
-if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-    private _vehASL = getPosASL _vehicle;
-    private _vehATL = getPosATL _vehicle;
-    private _vehWorld = getPosWorld _vehicle;
-    private _vehAGL = ASLToAGL _vehASL;
-    private _terrainASL = getTerrainHeightASL [_vehASL#0, _vehASL#1];
-    private _camTerrainASL = getTerrainHeightASL [_camPos#0, _camPos#1];
-    private _camHeightAboveTerrain = (_camPos#2) - _camTerrainASL;
-    
-    [format ["[Commander View] === FINAL SUMMARY ==="]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View] VEHICLE:"]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   ASL: %1 (Z: %2)", _vehASL, _vehASL#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   ATL: %1 (Z: %2)", _vehATL, _vehATL#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   AGL: %1 (Z: %2)", _vehAGL, _vehAGL#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   World: %1 (Z: %2)", _vehWorld, _vehWorld#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Terrain at vehicle: %1", _terrainASL]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Vehicle above terrain: %1m", (_vehASL#2) - _terrainASL]] spawn OKS_fnc_LogDebug;
-    
-    [format ["[Commander View] CAMERA:"]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   ASL: %1 (Z: %2)", _camPos, _camPos#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   ATL: %1 (Z: %2)", ASLToATL _camPos, (ASLToATL _camPos)#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   AGL: %1 (Z: %2)", ASLToAGL _camPos, (ASLToAGL _camPos)#2]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Terrain at camera: %1", _camTerrainASL]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Camera above terrain: %1m", _camHeightAboveTerrain]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Camera above vehicle: %1m", (_camPos#2) - (_vehASL#2)]] spawn OKS_fnc_LogDebug;
-    
-    [format ["[Commander View] METADATA:"]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Memory point: %1", _memPoint]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Turret path: %1", _trackTurretPath]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Label: %1", _uiLabel]] spawn OKS_fnc_LogDebug;
-};
-
-// Camera commands use ATL coordinates, not ASL - convert before creating
-private _camPosATL = ASLToATL _camPos;
-private _camTargetATL = ASLToATL _camTarget;
-
-if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
     [format ["[Commander View] === CAMERA CREATION ==="]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Calculated ASL: %1", _camPos]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Converted to ATL: %1", _camPosATL]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Creating camera at ATL: %1", _camPosATL]] spawn OKS_fnc_LogDebug;
+    [format ["[Commander View]   Using attachTo with offset: %1", _cameraAttachOffset]] spawn OKS_fnc_LogDebug;
 };
 
-private _camera = "camera" camCreate _camPosATL;
-_camera camSetTarget _camTargetATL;
+private _camera = "camera" camCreate [0,0,0];
+_camera attachTo [_vehicle, _cameraAttachOffset];
+_camera camSetTarget (_vehicle modelToWorld _targetOffset);
 _camera camSetFov (missionNamespace getVariable ["OKS_SatCamPip_CommanderFov", _fov]);
 _camera camCommit 0;
 
-if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
+if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
     // Verify actual camera position after creation
     private _actualPosASL = getPosASL _camera;
     private _actualPosATL = getPosATL _camera;
@@ -555,55 +432,78 @@ cutRsc ["OKS_SatCamHUD", "PLAIN", 0, false];
     if (isNull _feed) exitWith {};
     _feed ctrlSetText format ["#(argb,512,512,1)r2t(%1,1.0)", "OKS_SAT_PIP"];
 
-    // Center + enlarge the PiP panel for commander/gunner/turret view.
-    if (!isNull _bg) then {
-        private _scale = 2;
+    // cTab tablet frame dimensions (from cTab config.cpp, 2048px reference)
+    // Background: w = safezoneH * 1.2 * 3/4, h = safezoneH * 1.2
+    // Background has a 96.5px X offset within the texture
+    // Full screen area within texture: origin (257, 491), size (1341, 993) in 2048-space
+    private _frameH = safezoneH * 1.2;
+    private _frameW = _frameH * 3/4;
+    private _frameX = safezoneX + (safezoneW - _frameW) / 2 + (96.5 / 2048) * _frameW;
+    private _frameY = safezoneY + (safezoneH - _frameH) / 2;
 
-        private _bgPos0 = ctrlPosition _bg;
-        private _feedPos0 = if (!isNull _feed) then { ctrlPosition _feed } else { _bgPos0 };
+    // Full screen area within the tablet frame (pixel ratios from 2048-space)
+    private _screenX = _frameX + (257 / 2048) * _frameW;
+    private _screenY = _frameY + (491 / 2048) * _frameH;
+    private _screenW = (1341 / 2048) * _frameW;
+    private _screenH = (993 / 2048) * _frameH;
 
-        // Inset of feed within bg (so we can scale the margins cleanly).
-        private _insetL = (_feedPos0#0) - (_bgPos0#0);
-        private _insetT = (_feedPos0#1) - (_bgPos0#1);
-        private _insetR = ((_bgPos0#0) + (_bgPos0#2)) - ((_feedPos0#0) + (_feedPos0#2));
-        private _insetB = ((_bgPos0#1) + (_bgPos0#3)) - ((_feedPos0#1) + (_feedPos0#3));
+    // Oversize the feed slightly so the frame bezel masks the edges cleanly
+    private _bleed = 0.005;
+    _feed ctrlSetPosition [_screenX - _bleed, _screenY - _bleed, _screenW + 2 * _bleed, _screenH + 2 * _bleed];
+    _feed ctrlCommit 0;
 
-        private _newW = (_bgPos0#2) * _scale;
-        private _newH = (_bgPos0#3) * _scale;
-        private _newX = safezoneX + (safezoneW - _newW) * 0.5;
-        private _newY = safezoneY + (safezoneH - _newH) * 0.5;
+    // Hide the old BG border (tablet frame replaces it)
+    _bg ctrlSetPosition [0, 0, 0, 0];
+    _bg ctrlCommit 0;
 
-        // BG resized and centered
-        _bg ctrlSetPosition [_newX, _newY, _newW, _newH];
-        _bg ctrlCommit 0;
+    // Show cTab tablet frame overlay on top
+    private _deviceFrame = _display displayCtrl 9518;
+    if (!isNull _deviceFrame) then {
+        _deviceFrame ctrlSetText "\cTab\img\tablet_background_ca.paa";
+        _deviceFrame ctrlSetPosition [_frameX, _frameY, _frameW, _frameH];
+        _deviceFrame ctrlCommit 0;
+    };
 
-        // Feed resized with the panel (preserving insets)
-        if (!isNull _feed) then {
-            private _fx = _newX + (_insetL * _scale);
-            private _fy = _newY + (_insetT * _scale);
-            private _fw = _newW - ((_insetL + _insetR) * _scale);
-            private _fh = _newH - ((_insetT + _insetB) * _scale);
-            _feed ctrlSetPosition [_fx, _fy, _fw, _fh];
-            _feed ctrlCommit 0;
-        };
+    // Hide UAV optics overlay (tablet frame is the visual wrapper now)
+    private _overlay = _display displayCtrl 9515;
+    if (!isNull _overlay) then {
+        _overlay ctrlSetPosition [0, 0, 0, 0];
+        _overlay ctrlCommit 0;
+    };
 
-        // Label: top-left of the panel, larger and readable
-        private _labelCtrl = _display displayCtrl 9513;
-        if (!isNull _labelCtrl) then {
-            private _lh = 0.03 * _scale;
-            _labelCtrl ctrlSetPosition [_newX + 0.01, _newY - (_lh + 0.005), _newW, _lh];
-            _labelCtrl ctrlSetFontHeight (0.03 * _scale);
-            _labelCtrl ctrlCommit 0;
-        };
+    // Hide vignette (tablet frame already provides edge styling)
+    private _vignette = _display displayCtrl 9516;
+    if (!isNull _vignette) then {
+        _vignette ctrlSetPosition [0, 0, 0, 0];
+        _vignette ctrlCommit 0;
+    };
 
-        // Hint: bottom-left inside the panel
-        private _hintCtrl = _display displayCtrl 9514;
-        if (!isNull _hintCtrl) then {
-            private _hh = 0.025 * _scale;
-            _hintCtrl ctrlSetPosition [_newX + 0.01, _newY + _newH - (_hh + 0.01), _newW - 0.02, _hh];
-            _hintCtrl ctrlSetFontHeight (0.025 * _scale);
-            _hintCtrl ctrlCommit 0;
-        };
+    // Position center crosshair within screen area
+    private _crosshair = _display displayCtrl 9517;
+    if (!isNull _crosshair) then {
+        private _chSize = 0.03;
+        private _chX = _screenX + (_screenW * 0.5) - (_chSize * 0.5);
+        private _chY = _screenY + (_screenH * 0.5) - (_chSize * 0.5);
+        _crosshair ctrlSetPosition [_chX, _chY, _chSize, _chSize];
+        _crosshair ctrlCommit 0;
+    };
+
+    // Label: top-left inside the tablet screen
+    private _labelCtrl = _display displayCtrl 9513;
+    if (!isNull _labelCtrl) then {
+        private _lh = 0.035;
+        _labelCtrl ctrlSetPosition [_screenX + 0.01, _screenY + 0.005, _screenW - 0.02, _lh];
+        _labelCtrl ctrlSetFontHeight 0.035;
+        _labelCtrl ctrlCommit 0;
+    };
+
+    // Hint: bottom-left inside the tablet screen
+    private _hintCtrl = _display displayCtrl 9514;
+    if (!isNull _hintCtrl) then {
+        private _hh = 0.028;
+        _hintCtrl ctrlSetPosition [_screenX + 0.01, _screenY + _screenH - (_hh + 0.01), _screenW - 0.02, _hh];
+        _hintCtrl ctrlSetFontHeight 0.028;
+        _hintCtrl ctrlCommit 0;
     };
 
     private _label = _display displayCtrl 9513;
@@ -679,9 +579,11 @@ missionNamespace setVariable ["OKS_SatCamPip_EHs", _ehIds];
 private _startT = diag_tickTime;
 private _pfhId = [{
     params ["_args", "_pfhId"];
-    _args params ["_camera", "_vehicle", "_viewer", "_fov", "_durationSec", "_startT", "_anchorSpec", "_camForwardOffset", "_commanderVerticalOffset", "_memPoint", "_uiLabel", "_trackTurretPath"]; 
+    _args params ["_camera", "_vehicle", "_viewer", "_fov", "_durationSec", "_startT", "_anchorSpec", "_commanderVerticalOffset", "_memPoint", "_uiLabel", "_trackTurretPath"]; 
 
-    if (isNull _camera) exitWith { [_pfhId] call CBA_fnc_removePerFrameHandler; };
+    if (isNull _camera) exitWith { 
+        [_pfhId] call CBA_fnc_removePerFrameHandler; 
+    };
 
     // Fail safe: stop if player died or unconscious
     if (!alive player) exitWith {
@@ -722,98 +624,21 @@ private _pfhId = [{
     };
 
     // Pull latest mempoint/label from args (in case they were updated).
-    _memPoint = _args#9;
-    _uiLabel = _args#10;
-    _trackTurretPath = _args#11;
+    _memPoint = _args#8;
+    _uiLabel = _args#9;
+    _trackTurretPath = _args#10;
 
-    private _eye = if (_memPoint isNotEqualTo "") then {
-        // Use bbox top as hull top, then add turret equipment height ABOVE it
-        // Try to find actual turret structure selections first
-        private _bbox = boundingBoxReal _vehicle;
-        private _min = _bbox select 0;
-        private _max = _bbox select 1;
-        
-        // Check for turret structure selections (physical turret, not player viewpoints)
-        private _turretSelections = ["otocvez", "vez", "turret"];
-        private _turretPos = [0,0,0];
-        private _foundTurret = false;
-        {
-            private _pos = _vehicle selectionPosition _x;
-            if (!(_pos isEqualTo [0,0,0])) then {
-                _turretPos = _pos;
-                _foundTurret = true;
-                break;
-            };
-        } forEach _turretSelections;
-        
-        // Calculate turret height ABOVE hull top
-        private _turretHeightAboveHull = if (_foundTurret && {(_turretPos#2) > (_max#2)}) then {
-            // Found turret structure above hull - use its position + optics offset
-            (_turretPos#2) - (_max#2) + 0.5
-        } else {
-            // Fallback: Check gun barrel, or use standard turret height
-            private _gunBarrel = _vehicle selectionPosition "usti hlavne";
-            if (!(_gunBarrel isEqualTo [0,0,0]) && {(_gunBarrel#2) > (_max#2)}) then {
-                (_gunBarrel#2) - (_max#2) + 0.3
-            } else {
-                1.0
-            };
-        };
-        
-        // Position at front center of vehicle, at hull top + turret height
-        private _pModel = [
-            0,                                    // X: center (no left/right offset)
-            (_max#1) * 0.7,                      // Y: 70% towards front
-            (_max#2) + _turretHeightAboveHull    // Z: hull top + turret equipment height
-        ];
-        
-        // Apply vertical offset (should be 0, but kept for consistency)
-        _pModel set [2, (_pModel#2) + _commanderVerticalOffset];
-        
-        // Manual transformation to world space
-        private _vehForward = vectorDir _vehicle;
-        private _vehUp = vectorUp _vehicle;
-        private _vehRight = _vehForward vectorCrossProduct _vehUp;
-        private _worldOffset = ((_vehRight vectorMultiply (_pModel#0)) vectorAdd 
-                                (_vehForward vectorMultiply (_pModel#1)) vectorAdd 
-                                (_vehUp vectorMultiply (_pModel#2)));
-        (getPosASL _vehicle) vectorAdd _worldOffset
+    // Calculate camera attach offset (for detach/reattach update)
+    private _attachOffset = if (_memPoint isNotEqualTo "") then {
+        private _om = _vehicle selectionPosition _memPoint;
+        [_om#0, _om#1, (_om#2) + _commanderVerticalOffset]
     } else {
-        private _anchorType = _anchorSpec param [0, "bboxTop", [""]];
-        private _anchorData = _anchorSpec param [1, [], [[] ,""]];
-        private _offset = _anchorSpec param [2, [0,0,0], [[]]];
-
-        private _pModel = [0,0,0];
-        private _bb = boundingBoxReal _vehicle;
-        private _min = _bb#0;
-        private _max = _bb#1;
-
-        switch (_anchorType) do {
-            case "mem": {
-                if (_anchorData isEqualType "") then { _pModel = _vehicle selectionPosition _anchorData; };
-            };
-            case "model": {
-                if (_anchorData isEqualType []) then { _pModel = _anchorData; };
-            };
-            case "bboxRearTop": {
-                _pModel = [(_min#0 + _max#0) * 0.5, (_min#1), (_max#2)];
-            };
-            default {
-                // bboxTop
-                _pModel = [(_min#0 + _max#0) * 0.5, (_min#1 + _max#1) * 0.5, (_max#2)];
-            };
-        };
-
-        // Manual transformation instead of modelToWorldVisualWorld
-        private _pFinal = _pModel vectorAdd _offset;
-        private _vehForward = vectorDir _vehicle;
-        private _vehUp = vectorUp _vehicle;
-        private _vehRight = _vehForward vectorCrossProduct _vehUp;
-        private _worldOffset = ((_vehRight vectorMultiply (_pFinal#0)) vectorAdd 
-                                (_vehForward vectorMultiply (_pFinal#1)) vectorAdd 
-                                (_vehUp vectorMultiply (_pFinal#2)));
-        (getPosASL _vehicle) vectorAdd _worldOffset
+        [0,0,2]  // fallback
     };
+    
+    // Update attachment
+    detach _camera;
+    _camera attachTo [_vehicle, _attachOffset];
 
     private _dirFallback = if (!isNull _viewer) then { eyeDirection _viewer } else { vectorDirVisual _vehicle };
     private _dirWorld = _dirFallback;
@@ -844,28 +669,12 @@ private _pfhId = [{
         };
     };
 
-    private _camPos = _eye vectorAdd (_dirWorld vectorMultiply _camForwardOffset);
-    private _camTarget = _eye vectorAdd (_dirWorld vectorMultiply 2000);
-
-    // Camera commands use ATL coordinates, not ASL
-    private _camPosATL = ASLToATL _camPos;
-    private _camTargetATL = ASLToATL _camTarget;
-
+    // Update camera target (camera is attached, just update where it's looking)
+    private _targetOffset = _attachOffset vectorAdd (_dirWorld vectorMultiply 2000);
     _camera camSetFov (missionNamespace getVariable ["OKS_SatCamPip_CommanderFov", _fov]);
-    _camera camSetPos _camPosATL;
-    _camera camSetTarget _camTargetATL;
+    _camera camSetTarget (_vehicle modelToWorld _targetOffset);
     _camera camCommit 0;
-    
-    // Verify actual camera position after setting
-    if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
-        private _actualCamPos = getPosASL _camera;
-        if (!(_actualCamPos isEqualTo _camPos)) then {
-            [format ["[Commander View PFH] WARNING: Camera position mismatch!"]] spawn OKS_fnc_LogDebug;
-            [format ["[Commander View PFH]   Intended: %1", _camPos]] spawn OKS_fnc_LogDebug;
-            [format ["[Commander View PFH]   Actual: %1", _actualCamPos]] spawn OKS_fnc_LogDebug;
-        };
-    };
-}, 0, [_camera, _vehicle, _viewer, _fov, _durationSec, _startT, _anchorSpec, _camForwardOffset, _commanderVerticalOffset, _memPoint, _uiLabel, _trackTurretPath]] call CBA_fnc_addPerFrameHandler;
+}, 0, [_camera, _vehicle, _viewer, _fov, _durationSec, _startT, _anchorSpec, _commanderVerticalOffset, _memPoint, _uiLabel, _trackTurretPath]] call CBA_fnc_addPerFrameHandler;
 
 missionNamespace setVariable ["OKS_SatCamPip_PFH", _pfhId];
 

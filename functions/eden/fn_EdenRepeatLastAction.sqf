@@ -16,6 +16,9 @@ if (!is3DEN) exitWith { false };
 // Silent marker to help verify which version is loaded in-game.
 uiNamespace setVariable ["OKS_3DEN_REPEAT_LASTACTION_VERSION", 3];
 
+// Clear name reservations from any previous action so this repeat starts fresh.
+uiNamespace setVariable ["OKS_3DEN_RESERVED_NAMES", []];
+
 private _notifyFail = {
     params ["_msg"];
     [_msg, 1, 6, true] call BIS_fnc_3DENNotification;

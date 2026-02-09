@@ -16,6 +16,9 @@
 
 if (!is3DEN) exitWith {false};
 
+// Clear name reservations so paste-renumber picks truly free names.
+uiNamespace setVariable ["OKS_3DEN_RESERVED_NAMES", []];
+
 private _dbg = uiNamespace getVariable ["OKS_3DEN_DEBUG_FRONTLINE", true];
 if (_dbg) then { diag_log format ["[OKS][3DEN][FrontlineNodes][OnPasteRenumber] start | rawThis=%1", _this]; };
 

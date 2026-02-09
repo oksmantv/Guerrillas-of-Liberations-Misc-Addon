@@ -7,7 +7,7 @@ class OKS_SatCamHUD {
 	onLoad = "uiNamespace setVariable ['OKS_SatCamHUD_Display', _this select 0];";
 
 	class controls {
-		// Background panel
+		// Background panel (hidden when device frame is active)
 		class BG: RscText {
 			idc = 9510;
 			x = "safezoneX + safezoneW - 0.62";
@@ -27,6 +27,42 @@ class OKS_SatCamHUD {
 			w = 0.57;
 			h = 0.42;
 			colorText[] = {1,1,1,1};
+		};
+
+		// Optics overlay (crosshair/reticle)
+		class OpticsOverlay: RscPicture {
+			idc = 9515;
+			text = "";
+			x = "safezoneX + safezoneW - 0.60";
+			y = "safezoneY + safezoneH - 0.45";
+			w = 0.57;
+			h = 0.42;
+			colorText[] = {0,1,0,0.8};
+		};
+
+		// Vignette overlay
+		class Vignette: RscPicture {
+			idc = 9516;
+			text = "#(argb,8,8,3)color(0,0,0,0.2)";
+			x = "safezoneX + safezoneW - 0.60";
+			y = "safezoneY + safezoneH - 0.45";
+			w = 0.57;
+			h = 0.42;
+			colorText[] = {0,0,0,0.4};
+		};
+
+		// Center crosshair
+		class Crosshair: RscText {
+			idc = 9517;
+			x = "safezoneX + safezoneW - 0.315";
+			y = "safezoneY + safezoneH - 0.235";
+			w = 0.03;
+			h = 0.03;
+			text = "+";
+			sizeEx = 0.05;
+			colorText[] = {0,1,0,0.7};
+			colorBackground[] = {0,0,0,0};
+			shadow = 2;
 		};
 
 		class Label: RscText {
@@ -53,6 +89,17 @@ class OKS_SatCamHUD {
 			colorText[] = {1,1,1,0.75};
 			colorBackground[] = {0,0,0,0};
 			shadow = 1;
+		};
+
+		// cTab device frame overlay — drawn LAST so it renders on top of feed & UI
+		class DeviceFrame: RscPicture {
+			idc = 9518;
+			text = "";
+			x = 0;
+			y = 0;
+			w = 0;
+			h = 0;
+			colorText[] = {1,1,1,1};
 		};
 	};
 };

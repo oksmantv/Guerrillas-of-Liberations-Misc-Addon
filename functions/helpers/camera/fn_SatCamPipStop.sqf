@@ -43,6 +43,7 @@ cutText ["", "PLAIN"];
 uiNamespace setVariable ["OKS_SatCamHUD_Display", displayNull];
 
 if (!isNull _camera) then {
+    "OKS_SAT_PIP" setPiPEffect [0];
     _camera cameraEffect ["terminate", "back"];
     camDestroy _camera;
 };

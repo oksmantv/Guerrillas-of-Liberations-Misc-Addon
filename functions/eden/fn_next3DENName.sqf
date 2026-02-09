@@ -24,9 +24,27 @@ if ((count all3DENEntities) > 2) then {
     } forEach (all3DENEntities select 2);
 };
 
+// Reservation list prevents name collisions when multiple entities are created
+// in the same action chain (e.g., rapid-fire repeat or OnPaste renumber).
+private _reserved = uiNamespace getVariable ["OKS_3DEN_RESERVED_NAMES", []];
+
 while {
     _name = format ["%1_%2", _prefix, _i];
-    _allObjects findIf { ((_x get3DENAttribute "name") select 0) isEqualTo _name } != -1
+    (_name in _reserved)
+    || {_allObjects findIf { ((_x get3DENAttribute "name") select 0) isEqualTo _name } != -1}
 } do { _i = _i + 1; };
+
+// Reserve this name so subsequent calls in the same frame won't reuse it.
+_reserved pushBack _name;
+uiNamespace setVariable ["OKS_3DEN_RESERVED_NAMES", _reserved];
+
+// Schedule cleanup for next frame so reservations don't persist indefinitely.
+if (isNil {uiNamespace getVariable "OKS_3DEN_RESERVED_NAMES_CLEANUP"}) then {
+    uiNamespace setVariable ["OKS_3DEN_RESERVED_NAMES_CLEANUP", true];
+    [{
+        uiNamespace setVariable ["OKS_3DEN_RESERVED_NAMES", []];
+        uiNamespace setVariable ["OKS_3DEN_RESERVED_NAMES_CLEANUP", nil];
+    }, [], 0] call CBA_fnc_waitAndExecute;
+};
 
 _name

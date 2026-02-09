@@ -1004,7 +1004,7 @@ class CfgWeapons {
 		};
 	};
 
-// Custom MMG variants with reduced recoil and custom magazines
+	// Custom MMG variants with reduced recoil and custom magazines
 	class MMG_01_tan_F;
 	class MMG_01_hex_F;
 

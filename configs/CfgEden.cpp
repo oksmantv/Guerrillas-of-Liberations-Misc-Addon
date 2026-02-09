@@ -8,8 +8,10 @@ Eden Editor Context Menu Entry: Hunt Base (Right-click Terrain)
 ================================================================================
 */
 
+class ctrlMenu;
+
 class Display3DEN {
-    class ContextMenu {
+    class ContextMenu: ctrlMenu {
         class Items {
             items[] += {"GOL_SPAWNS","GOL_TOOLS"};
 

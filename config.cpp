@@ -3,6 +3,7 @@ class CfgPatches
 {
 	class GOL_MISC_ADDON {
         requiredAddons[] = { 
+            "A3_3DEN",
             "A3_UI_F", 
             "A3_Soft_F",
             "A3_Soft_F_Beta",

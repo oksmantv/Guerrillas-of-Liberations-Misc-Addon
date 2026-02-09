@@ -199,6 +199,7 @@ class CfgFunctions // Defines a function
 			class SatCamPipToggleCommanderView {};
 			class SatCamPipCommanderZoomIn {};
 			class SatCamPipCommanderZoomOut {};
+			class SatCamPipCycleVisionMode {};
 		};
 
 		class OKS_Vehicles {

@@ -46,8 +46,8 @@ private _profiles = missionNamespace getVariable ["OKS_SatCamPip_VehicleProfiles
 private _profile = _profiles getOrDefault [toLower typeOf _vehicle, createHashMap];
 
 // How far behind the vehicle rear-most bbox face the camera should sit.
-// 0.05m = ~5cm.
-private _camBackDistance = (_profile getOrDefault ["driverRear_distance", 0.05]) max 0.05 min 5;
+// 0.15m = ~15cm.
+private _camBackDistance = (_profile getOrDefault ["driverRear_distance", 0.15]) max 0.05 min 5;
 
 // Optional clamp camera height above terrain (AGL).
 // Default is 0 (disabled) so the camera remains purely vehicle-relative.
@@ -383,20 +383,102 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", false]) then {
 };
 
 private _rtName = "OKS_SAT_PIP";
+missionNamespace setVariable ["OKS_SatCamPip_VisionMode", 0]; // 0=normal, 1=NV, 2=thermal
 _camera cameraEffect ["INTERNAL", "BACK", _rtName];
 cutRsc ["OKS_SatCamHUD", "PLAIN", 0, false];
 
 [{ 
     private _display = uiNamespace getVariable ["OKS_SatCamHUD_Display", displayNull];
     if (isNull _display) exitWith {};
+    private _bg = _display displayCtrl 9510;
     private _feed = _display displayCtrl 9511;
-    if (!isNull _feed) then {
-        _feed ctrlSetText format ["#(argb,512,512,1)r2t(%1,1.0)", "OKS_SAT_PIP"];
+    if (isNull _feed) exitWith {};
+    _feed ctrlSetText format ["#(argb,512,512,1)r2t(%1,1.0)", "OKS_SAT_PIP"];
+
+    // cTab android frame dimensions (from cTab config.cpp, 2048px reference)
+    // Background: centered, w = safezoneW * 0.8, h = safezoneW * 0.8 * 4/3
+    // Full screen area within texture: origin (452, 713), size (1098, 626) in 2048-space
+    //
+    // Strategy: anchor the screen area's bottom-right to the viewport edge (with margin),
+    // then compute frame position from that. The frame extends off-screen — we only care
+    // about the visible camera screen area.
+    private _scaleFactor = 0.4;
+    private _frameW = safezoneW * _scaleFactor;
+    private _frameH = _frameW * 4/3;
+
+    // Full screen area size within the android frame (pixel ratios from 2048-space)
+    private _screenW = (1098 / 2048) * _frameW;
+    private _screenH = (626 / 2048) * _frameH;
+
+    // Desired screen area bottom-right: flush with viewport edge + small margin
+    private _margin = 0.01;
+    private _screenX = safezoneX + safezoneW - _screenW - _margin;
+    private _screenY = safezoneY + safezoneH - _screenH - _margin;
+
+    // Derive frame position from the screen area (frame origin is above-left of screen area)
+    private _frameX = _screenX - (452 / 2048) * _frameW;
+    private _frameY = _screenY - (713 / 2048) * _frameH;
+
+    // Oversize the feed slightly so the frame bezel masks the edges cleanly
+    private _bleed = 0.003;
+    _feed ctrlSetPosition [_screenX - _bleed, _screenY - _bleed, _screenW + 2 * _bleed, _screenH + 2 * _bleed];
+    _feed ctrlCommit 0;
+
+    // Hide the old BG border (android frame replaces it)
+    _bg ctrlSetPosition [0, 0, 0, 0];
+    _bg ctrlCommit 0;
+
+    // Show cTab android frame overlay on top
+    private _deviceFrame = _display displayCtrl 9518;
+    if (!isNull _deviceFrame) then {
+        _deviceFrame ctrlSetText "\cTab\img\android_background_ca.paa";
+        _deviceFrame ctrlSetPosition [_frameX, _frameY, _frameW, _frameH];
+        _deviceFrame ctrlCommit 0;
     };
-    private _label = _display displayCtrl 9513;
-    if (!isNull _label) then { _label ctrlSetText "REAR CAM"; };
-    private _hint = _display displayCtrl 9514;
-    if (!isNull _hint) then { _hint ctrlSetText "ESC to exit"; };
+
+    // Hide UAV optics overlay (android frame is the visual wrapper now)
+    private _overlay = _display displayCtrl 9515;
+    if (!isNull _overlay) then {
+        _overlay ctrlSetPosition [0, 0, 0, 0];
+        _overlay ctrlCommit 0;
+    };
+
+    // Hide vignette
+    private _vignette = _display displayCtrl 9516;
+    if (!isNull _vignette) then {
+        _vignette ctrlSetPosition [0, 0, 0, 0];
+        _vignette ctrlCommit 0;
+    };
+
+    // Position center crosshair within screen area
+    private _crosshair = _display displayCtrl 9517;
+    if (!isNull _crosshair) then {
+        private _chSize = 0.02;
+        private _chX = _screenX + (_screenW * 0.5) - (_chSize * 0.5);
+        private _chY = _screenY + (_screenH * 0.5) - (_chSize * 0.5);
+        _crosshair ctrlSetPosition [_chX, _chY, _chSize, _chSize];
+        _crosshair ctrlCommit 0;
+    };
+
+    // Label: top-left inside the android screen
+    private _labelCtrl = _display displayCtrl 9513;
+    if (!isNull _labelCtrl) then {
+        private _lh = 0.025;
+        _labelCtrl ctrlSetPosition [_screenX + 0.005, _screenY + 0.003, _screenW - 0.01, _lh];
+        _labelCtrl ctrlSetFontHeight 0.025;
+        _labelCtrl ctrlSetText "REAR CAM";
+        _labelCtrl ctrlCommit 0;
+    };
+
+    // Hint: bottom-left inside the android screen
+    private _hintCtrl = _display displayCtrl 9514;
+    if (!isNull _hintCtrl) then {
+        private _hh = 0.02;
+        _hintCtrl ctrlSetPosition [_screenX + 0.005, _screenY + _screenH - (_hh + 0.005), _screenW - 0.01, _hh];
+        _hintCtrl ctrlSetFontHeight 0.02;
+        _hintCtrl ctrlSetText "ESC to exit";
+        _hintCtrl ctrlCommit 0;
+    };
 }] call CBA_fnc_execNextFrame;
 
 missionNamespace setVariable ["OKS_SatCamPip_Camera", _camera];

@@ -102,6 +102,16 @@ missionNamespace setVariable [
     1
 ] call CBA_fnc_addSetting;
 
+// PiP Camera settings
+[
+    "OKS_SatCamPip_ThermalEnabled",
+    "CHECKBOX",
+    ["PiP Camera Thermal", "When enabled, vision mode cycling includes Thermal in addition to Normal and Night Vision."],
+    ["OKS Vehicles", "PiP Camera"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
 // Camera: keybinds
 // Note: CBA keybinds are configured by users in Controls -> Addon Options -> CBA.
 ["OKS_GOL_Misc", "OKS_SatCam_CommanderView", ["Commander Camera", "Toggle PiP camera. Driver: rear camera. Cargo/other turrets: commander view. (ESC closes)."], {
@@ -114,4 +124,8 @@ missionNamespace setVariable [
 
 ["OKS_GOL_Misc", "OKS_SatCam_CommanderZoomOut", ["Commander Camera Zoom Out", "Commander/gunner PiP: zoom out (cycles through 4 levels)."], {
     [] call OKS_fnc_SatCamPipCommanderZoomOut;
+}, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
+
+["OKS_GOL_Misc", "OKS_SatCam_VisionMode", ["Camera Vision Mode", "Cycle camera vision mode: Normal -> Night Vision -> Thermal."], {
+    [] call OKS_fnc_SatCamPipCycleVisionMode;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
