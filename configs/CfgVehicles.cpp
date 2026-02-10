@@ -1234,7 +1234,36 @@ class CfgVehicles {
 		};
 	};
 
-	class MRAP_03_base_F;
+	class Car;
+	class Car_F : Car {
+		class ACE_SelfActions;
+	};
+	class MRAP_03_base_F : Car_F {
+		TFAR_hasIntercom = 1;
+		class ACE_SelfActions : ACE_SelfActions {
+			class TFAR_IntercomChannel {
+				displayName = "Intercom Channel";
+				condition = "true";
+				statement = "";
+				icon = "";
+				class TFAR_IntercomChannel_disabled {
+					displayName = "Disabled";
+					condition = "[_target, _player, -1] call TFAR_fnc_canSetIntercomChannel";
+					statement = "[_target, _player, -1] call TFAR_fnc_setIntercomChannel";
+				};
+				class TFAR_IntercomChannel_1 {
+					displayName = "Channel 1";
+					condition = "[_target, _player, 0] call TFAR_fnc_canSetIntercomChannel";
+					statement = "[_target, _player, 0] call TFAR_fnc_setIntercomChannel";
+				};
+				class TFAR_IntercomChannel_2 {
+					displayName = "Channel 2";
+					condition = "[_target, _player, 1] call TFAR_fnc_canSetIntercomChannel";
+					statement = "[_target, _player, 1] call TFAR_fnc_setIntercomChannel";
+				};
+			};
+		};
+	};
 	class I_MRAP_03_F;
 	class Fennek_wd: I_MRAP_03_F
 	{
@@ -2120,5 +2149,8 @@ class CfgVehicles {
 				count = 2;
 			};
 		};
-	};	
+	};
+
+	// TFAR Intercom patch (enables intercom on MRAPs)
+	#include "compat\compat_tfar_intercom.hpp"
 };
