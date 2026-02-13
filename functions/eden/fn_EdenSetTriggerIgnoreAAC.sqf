@@ -62,7 +62,6 @@ private _fnc_classifyCondition = {
 
 // --- Main logic ---
 private _triggers = get3DENSelected "trigger";
-
 if (count _triggers == 0) exitWith {
     ["Set Trigger Ignore AAC: No trigger selected.", 1, 5, true] call BIS_fnc_3DENNotification;
     systemChat "Set Trigger Ignore AAC: No trigger selected.";
