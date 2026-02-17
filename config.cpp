@@ -308,7 +308,10 @@ class Extended_PostInit_EventHandlers {
     };
     class OKS_PostInit_Server {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_PostInit_Server.sqf'";
-    };     
+    };
+    class OKS_PostInit_Intercom {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_postInit_Intercom.sqf'";
+    };
 };
 
 class CfgSettings {

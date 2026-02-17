@@ -554,6 +554,11 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\playersetup";
 			preInit = 1;
 			class BLU_SetChannel {};
-		};	
+		};
+
+		class OKS_Intercom {
+			file = "\OKS_GOL_Misc\functions\playersetup";
+			class CollectIntercomHeadgear {};
+		};
 	};
 };

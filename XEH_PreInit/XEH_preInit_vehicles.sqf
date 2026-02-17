@@ -114,18 +114,18 @@ missionNamespace setVariable [
 
 // Camera: keybinds
 // Note: CBA keybinds are configured by users in Controls -> Addon Options -> CBA.
-["OKS_GOL_Misc", "OKS_SatCam_CommanderView", ["Commander Camera", "Toggle PiP camera. Driver: rear camera. Cargo/other turrets: commander view. (ESC closes)."], {
+["GOL Custom Controls", "OKS_SatCam_CommanderView", ["Commander Camera", "Toggle PiP camera. Driver: rear camera. Cargo/other turrets: commander view. (ESC closes)."], {
     [] call OKS_fnc_SatCamPipToggleCommanderView;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
 
-["OKS_GOL_Misc", "OKS_SatCam_CommanderZoomIn", ["Commander Camera Zoom In", "Commander/gunner PiP: zoom in (cycles through 4 levels)."], {
+["GOL Custom Controls", "OKS_SatCam_CommanderZoomIn", ["Commander Camera Zoom In", "Commander/gunner PiP: zoom in (cycles through 4 levels)."], {
     [] call OKS_fnc_SatCamPipCommanderZoomIn;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
 
-["OKS_GOL_Misc", "OKS_SatCam_CommanderZoomOut", ["Commander Camera Zoom Out", "Commander/gunner PiP: zoom out (cycles through 4 levels)."], {
+["GOL Custom Controls", "OKS_SatCam_CommanderZoomOut", ["Commander Camera Zoom Out", "Commander/gunner PiP: zoom out (cycles through 4 levels)."], {
     [] call OKS_fnc_SatCamPipCommanderZoomOut;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
 
-["OKS_GOL_Misc", "OKS_SatCam_VisionMode", ["Camera Vision Mode", "Cycle camera vision mode: Normal -> Night Vision -> Thermal."], {
+["GOL Custom Controls", "OKS_SatCam_VisionMode", ["Camera Vision Mode", "Cycle camera vision mode: Normal -> Night Vision -> Thermal."], {
     [] call OKS_fnc_SatCamPipCycleVisionMode;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
