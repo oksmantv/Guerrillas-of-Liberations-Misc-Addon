@@ -47,13 +47,16 @@ private _profiles = missionNamespace getVariable ["OKS_SatCamPip_VehicleProfiles
 private _profile = _profiles getOrDefault [toLower typeOf _vehicle, createHashMap];
 private _commanderVerticalOffset = _profile getOrDefault ["commander_verticalOffset", 0]; // No fake offset - fix the transformation properly
 
-// Commander/gunner PiP zoom (4 levels: base + 3 closer)
+// Commander/gunner PiP zoom (7 levels: base + 6 closer)
 private _baseFov = (_fov max 0.05) min 1.2;
 private _zoomLevels = [
-    _baseFov,
-    (_baseFov * 0.70) max 0.05,
-    (_baseFov * 0.50) max 0.05,
-    (_baseFov * 0.35) max 0.05
+    (_baseFov * 1.15),
+    (_baseFov * 1.00),
+    (_baseFov * 0.75) max 0.05,
+    (_baseFov * 0.60) max 0.05,
+    (_baseFov * 0.45) max 0.05,
+    (_baseFov * 0.35) max 0.05,
+    (_baseFov * 0.25) max 0.05
 ];
 
 missionNamespace setVariable ["OKS_SatCamPip_Mode", "commander"];
@@ -464,12 +467,18 @@ cutRsc ["OKS_SatCamHUD", "PLAIN", 0, false];
         _deviceFrame ctrlCommit 0;
     };
 
-    // Hide UAV optics overlay (tablet frame is the visual wrapper now)
+    // Hide overlays (tablet frame is the visual wrapper)
     private _overlay = _display displayCtrl 9515;
     if (!isNull _overlay) then {
         _overlay ctrlSetPosition [0, 0, 0, 0];
         _overlay ctrlCommit 0;
     };
+
+    // Hide targeting overlay controls
+    {
+        private _ctrl = _display displayCtrl _x;
+        if (!isNull _ctrl) then { _ctrl ctrlSetPosition [0,0,0,0]; _ctrl ctrlCommit 0; };
+    } forEach [9520,9521,9522,9523,9524,9525,9526,9527,9528,9529];
 
     // Hide vignette (tablet frame already provides edge styling)
     private _vignette = _display displayCtrl 9516;
@@ -478,13 +487,10 @@ cutRsc ["OKS_SatCamHUD", "PLAIN", 0, false];
         _vignette ctrlCommit 0;
     };
 
-    // Position center crosshair within screen area
+    // Hide center crosshair (not needed for commander view)
     private _crosshair = _display displayCtrl 9517;
     if (!isNull _crosshair) then {
-        private _chSize = 0.03;
-        private _chX = _screenX + (_screenW * 0.5) - (_chSize * 0.5);
-        private _chY = _screenY + (_screenH * 0.5) - (_chSize * 0.5);
-        _crosshair ctrlSetPosition [_chX, _chY, _chSize, _chSize];
+        _crosshair ctrlSetPosition [0, 0, 0, 0];
         _crosshair ctrlCommit 0;
     };
 
@@ -595,13 +601,16 @@ private _pfhId = [{
         [_pfhId] call CBA_fnc_removePerFrameHandler;
     };
 
-    // Commander camera should exit if the local player switches into a main crew seat.
+    // Commander camera should exit if the local player leaves the vehicle or switches into a main crew seat.
     private _pVeh = vehicle player;
-    if (!isNull _pVeh && {_pVeh != player}) then {
-        if (player isEqualTo driver _pVeh || {player isEqualTo gunner _pVeh} || {player isEqualTo commander _pVeh}) exitWith {
-            [] call OKS_fnc_SatCamPipStop;
-            [_pfhId] call CBA_fnc_removePerFrameHandler;
-        };
+    if (_pVeh isEqualTo player) exitWith {
+        // Player is on foot — no longer inside any vehicle.
+        [] call OKS_fnc_SatCamPipStop;
+        [_pfhId] call CBA_fnc_removePerFrameHandler;
+    };
+    if (player isEqualTo driver _pVeh || {player isEqualTo gunner _pVeh} || {player isEqualTo commander _pVeh}) exitWith {
+        [] call OKS_fnc_SatCamPipStop;
+        [_pfhId] call CBA_fnc_removePerFrameHandler;
     };
 
     if (isNull _vehicle) exitWith {

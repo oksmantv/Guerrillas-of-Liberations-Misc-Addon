@@ -101,5 +101,77 @@ class OKS_SatCamHUD {
 			h = 0;
 			colorText[] = {1,1,1,1};
 		};
+
+		// Targeting camera overlay elements (positioned by script)
+		// Center crosshair — horizontal line
+		class TgtCrossH: RscText {
+			idc = 9520;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.6};
+		};
+		// Center crosshair — vertical line
+		class TgtCrossV: RscText {
+			idc = 9521;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.6};
+		};
+		// Corner bracket — top-left horizontal
+		class TgtCornerTLH: RscText {
+			idc = 9522;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.5};
+		};
+		// Corner bracket — top-left vertical
+		class TgtCornerTLV: RscText {
+			idc = 9523;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.5};
+		};
+		// Corner bracket — top-right horizontal
+		class TgtCornerTRH: RscText {
+			idc = 9524;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.5};
+		};
+		// Corner bracket — top-right vertical
+		class TgtCornerTRV: RscText {
+			idc = 9525;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.5};
+		};
+		// Corner bracket — bottom-left horizontal
+		class TgtCornerBLH: RscText {
+			idc = 9526;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.5};
+		};
+		// Corner bracket — bottom-left vertical
+		class TgtCornerBLV: RscText {
+			idc = 9527;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.5};
+		};
+		// Corner bracket — bottom-right horizontal
+		class TgtCornerBRH: RscText {
+			idc = 9528;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.5};
+		};
+		// Corner bracket — bottom-right vertical
+		class TgtCornerBRV: RscText {
+			idc = 9529;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.5};
+		};
 	};
 };
