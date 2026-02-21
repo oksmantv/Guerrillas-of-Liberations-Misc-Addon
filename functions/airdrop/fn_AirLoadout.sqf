@@ -41,7 +41,7 @@ switch (_aircraftTypeClass) do {
     default { };
 };
 
-if(!isNil "_Aircraft") then {
+if(!isNil "_Aircraft" && _loadout isEqualType []) then {
 	{ 
 		_X Params ["_PylonIndex","_MagazineClass","_AmmoCount"];
 		_Aircraft setPylonLoadout [_PylonIndex, _MagazineClass, true];

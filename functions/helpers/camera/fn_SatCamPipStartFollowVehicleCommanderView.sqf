@@ -47,17 +47,8 @@ private _profiles = missionNamespace getVariable ["OKS_SatCamPip_VehicleProfiles
 private _profile = _profiles getOrDefault [toLower typeOf _vehicle, createHashMap];
 private _commanderVerticalOffset = _profile getOrDefault ["commander_verticalOffset", 0]; // No fake offset - fix the transformation properly
 
-// Commander/gunner PiP zoom (7 levels: base + 6 closer)
-private _baseFov = (_fov max 0.05) min 1.2;
-private _zoomLevels = [
-    (_baseFov * 1.15),
-    (_baseFov * 1.00),
-    (_baseFov * 0.75) max 0.05,
-    (_baseFov * 0.60) max 0.05,
-    (_baseFov * 0.45) max 0.05,
-    (_baseFov * 0.35) max 0.05,
-    (_baseFov * 0.25) max 0.05
-];
+// Commander/gunner PiP zoom (5 fixed levels)
+private _zoomLevels = [0.7, 0.175, 0.0583333, 0.0291667, 0.0145833];
 
 missionNamespace setVariable ["OKS_SatCamPip_Mode", "commander"];
 missionNamespace setVariable ["OKS_SatCamPip_CommanderZoomLevels", _zoomLevels];
@@ -320,15 +311,42 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
     [format ["[Commander View]   Vertical offset config: %1m", _commanderVerticalOffset]] spawn OKS_fnc_LogDebug;
 };
 
+// Compute turret forward direction in model space (for 0.15m forward offset to avoid turret clipping).
+// NOTE: CBA_fnc_turretDir (default) returns WORLD-space compass bearings.
+//       polar2vect produces a WORLD direction → must convert to model space.
+private _turretFwdModel = [0,1,0];
+if ((count _trackTurretPath) > 0) then {
+    private _cfgT = [_vehicle, _trackTurretPath] call BIS_fnc_turretConfig;
+    if (!isNull _cfgT && {getNumber (_cfgT >> "primaryObserver") == 1}) then {
+        _turretFwdModel = _vehicle vectorWorldToModel (eyeDirection _vehicle);
+    } else {
+        private _a = [_vehicle, _trackTurretPath] call CBA_fnc_turretDir;
+        if (_a isEqualType [] && {(count _a) >= 2}) then {
+            private _v = ([1] + _a) call CBA_fnc_polar2vect;
+            if (_v isEqualType [] && {(count _v) == 3}) then {
+                // polar2vect of world bearings → world direction → convert to model
+                _turretFwdModel = vectorNormalized (_vehicle vectorWorldToModel _v);
+            };
+        };
+    };
+} else {
+    if (_memPoint isNotEqualTo "") then {
+        private _vdu = _vehicle selectionVectorDirAndUp [_memPoint, "Memory"];
+        private _d = _vdu param [0, [0,0,0], [[]]];
+        if (!(_d isEqualTo [0,0,0])) then { _turretFwdModel = vectorNormalized _d; };
+    };
+};
+
 private _cameraAttachOffset = if (_memPoint isNotEqualTo "") then {
     // Use the optics/commanderview memory point position directly.
-    // It already represents the correct model-space camera position.
+    // Offset 0.15m along turret forward direction to avoid clipping.
     private _opticsModel = _vehicle selectionPosition _memPoint;
-    [
+    private _baseOffset = [
         _opticsModel#0,
         _opticsModel#1,
         (_opticsModel#2) + _commanderVerticalOffset
     ];
+    _baseOffset vectorAdd ((vectorNormalized _turretFwdModel) vectorMultiply 0.15);
 } else {
     private _anchorType = _anchorSpec param [0, "bboxTop", [""]];
     private _anchorData = _anchorSpec param [1, [], [[],""]];
@@ -400,8 +418,10 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
     [format ["[Commander View]   Direction method: %1", if (_hasDir) then {"Turret/MemPoint"} else {"Fallback"}]] spawn OKS_fnc_LogDebug;
 };
 
-// Calculate target position for camera to look at (forward from attach point)
-private _targetOffset = _cameraAttachOffset vectorAdd (_dirWorld vectorMultiply 2000);
+// Calculate target position for camera to look at.
+// _dirWorld is in WORLD space (from turretDir/eyeDirection), so compute target in world space.
+private _camWorldPos = _vehicle modelToWorld _cameraAttachOffset;
+private _targetWorld = _camWorldPos vectorAdd (_dirWorld vectorMultiply 2000);
 
 if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
     [format ["[Commander View] === CAMERA CREATION ==="]] spawn OKS_fnc_LogDebug;
@@ -410,7 +430,7 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
 
 private _camera = "camera" camCreate [0,0,0];
 _camera attachTo [_vehicle, _cameraAttachOffset];
-_camera camSetTarget (_vehicle modelToWorld _targetOffset);
+_camera camSetTarget _targetWorld;
 _camera camSetFov (missionNamespace getVariable ["OKS_SatCamPip_CommanderFov", _fov]);
 _camera camCommit 0;
 
@@ -637,33 +657,26 @@ private _pfhId = [{
     _uiLabel = _args#9;
     _trackTurretPath = _args#10;
 
-    // Calculate camera attach offset (for detach/reattach update)
-    private _attachOffset = if (_memPoint isNotEqualTo "") then {
-        private _om = _vehicle selectionPosition _memPoint;
-        [_om#0, _om#1, (_om#2) + _commanderVerticalOffset]
-    } else {
-        [0,0,2]  // fallback
-    };
-    
-    // Update attachment
-    detach _camera;
-    _camera attachTo [_vehicle, _attachOffset];
-
+    // Compute direction first (needed for both forward offset and camera target).
     private _dirFallback = if (!isNull _viewer) then { eyeDirection _viewer } else { vectorDirVisual _vehicle };
     private _dirWorld = _dirFallback;
+    private _dirModelFwd = [0,1,0]; // default: vehicle forward
     private _hasDir = false;
 
     if ((count _trackTurretPath) > 0) then {
         private _cfgTurret = [_vehicle, _trackTurretPath] call BIS_fnc_turretConfig;
         if (!isNull _cfgTurret && {getNumber (_cfgTurret >> "primaryObserver") == 1}) then {
             _dirWorld = eyeDirection _vehicle;
+            _dirModelFwd = _vehicle vectorWorldToModel (eyeDirection _vehicle);
             _hasDir = true;
         } else {
             private _angles = [_vehicle, _trackTurretPath] call CBA_fnc_turretDir;
             if (_angles isEqualType [] && {(count _angles) >= 2}) then {
                 private _v = ([1] + _angles) call CBA_fnc_polar2vect;
                 if (_v isEqualType [] && {(count _v) == 3}) then {
+                    // turretDir (default) returns world bearings → polar2vect gives world direction
                     _dirWorld = vectorNormalized _v;
+                    _dirModelFwd = vectorNormalized (_vehicle vectorWorldToModel _v);
                     _hasDir = true;
                 };
             };
@@ -675,13 +688,28 @@ private _pfhId = [{
         private _dModel = _vdu param [0, [0,0,0], [[]]];
         if (!(_dModel isEqualTo [0,0,0])) then {
             _dirWorld = vectorNormalized (_vehicle vectorModelToWorld _dModel);
+            _dirModelFwd = vectorNormalized _dModel;
         };
     };
 
-    // Update camera target (camera is attached, just update where it's looking)
-    private _targetOffset = _attachOffset vectorAdd (_dirWorld vectorMultiply 2000);
+    // Calculate camera attach offset with 0.15m forward push along turret direction
+    private _baseOffset = if (_memPoint isNotEqualTo "") then {
+        private _om = _vehicle selectionPosition _memPoint;
+        [_om#0, _om#1, (_om#2) + _commanderVerticalOffset]
+    } else {
+        [0,0,2]  // fallback
+    };
+    private _attachOffset = _baseOffset vectorAdd ((vectorNormalized _dirModelFwd) vectorMultiply 0.15);
+
+    // Update attachment
+    detach _camera;
+    _camera attachTo [_vehicle, _attachOffset];
+
+    // Update camera target — _dirWorld is in world space, so compute target in world space.
+    private _camWorldPos = _vehicle modelToWorld _attachOffset;
+    private _targetWorld = _camWorldPos vectorAdd (_dirWorld vectorMultiply 2000);
     _camera camSetFov (missionNamespace getVariable ["OKS_SatCamPip_CommanderFov", _fov]);
-    _camera camSetTarget (_vehicle modelToWorld _targetOffset);
+    _camera camSetTarget _targetWorld;
     _camera camCommit 0;
 }, 0, [_camera, _vehicle, _viewer, _fov, _durationSec, _startT, _anchorSpec, _commanderVerticalOffset, _memPoint, _uiLabel, _trackTurretPath]] call CBA_fnc_addPerFrameHandler;
 

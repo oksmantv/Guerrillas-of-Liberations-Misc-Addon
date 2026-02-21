@@ -118,11 +118,11 @@ missionNamespace setVariable [
     [] call OKS_fnc_SatCamPipToggleCommanderView;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
 
-["GOL Custom Controls", "OKS_SatCam_CommanderZoomIn", ["Commander Camera Zoom In", "Commander/gunner PiP: zoom in (cycles through 7 levels)."], {
+["GOL Custom Controls", "OKS_SatCam_CommanderZoomIn", ["Commander Camera Zoom In", "Commander/gunner PiP: zoom in (cycles through 5 levels)."], {
     [] call OKS_fnc_SatCamPipCommanderZoomIn;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
 
-["GOL Custom Controls", "OKS_SatCam_CommanderZoomOut", ["Commander Camera Zoom Out", "Commander/gunner PiP: zoom out (cycles through 7 levels)."], {
+["GOL Custom Controls", "OKS_SatCam_CommanderZoomOut", ["Commander Camera Zoom Out", "Commander/gunner PiP: zoom out (cycles through 5 levels)."], {
     [] call OKS_fnc_SatCamPipCommanderZoomOut;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
 

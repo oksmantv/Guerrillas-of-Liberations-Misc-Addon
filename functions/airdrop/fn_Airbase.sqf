@@ -48,11 +48,11 @@
 if (!isServer) exitWith {false};		// Ensures only server
 
 params [
-    "_Object",                    // 0: Base Object that can be destroyed to stop reinforcements
-    "_SpawnPos",                  // 1: Helipad at Airbase that spawns helicopters
-    "_ReinforcementZone",         // 2: Zone that AI will reinforce if contested by players
-    "_Side",                      // 3: Side of Helicopter Reinforcements
-    "_Classname",                 // 4: Helicopter Classname
+    "_Object",                    		  // 0: Base Object that can be destroyed to stop reinforcements
+    "_SpawnPos",                  		  // 1: Helipad at Airbase that spawns helicopters
+    "_ReinforcementZone",         		  // 2: Zone that AI will reinforce if contested by players
+    "_Side",                      		  // 3: Side of Helicopter Reinforcements
+    "_Classname",                 		  // 4: Helicopter Classname
     ["_Type","unload"],                   // 5: "unload" or "drop" or "unloadthenpatrol"
     ["_Troops",[2,0.5]],                  // 6: [ProcentageofCargoSpace, NumberOfTeamsToSplitInto]
     ["_AirbaseRespawnTimer", 900],        // 7: Timer until allowed to respawn another wave
@@ -79,21 +79,26 @@ While {Alive _Object && _AirbaseRespawnCount > 0} do {
 		_SelectedClassname = _Classname;
 	};
 
-	_Heli = CreateVehicle [_SelectedClassname, [0,0,100], [], 0, "CAN_COLLIDE"];
-	_Heli enableSimulation false;
-	_Heli allowDamage false;
-	_EmptyCargoSeats = (_Heli emptyPositions "Cargo");
+	// Cache cargo seats per classname - avoid creating a vehicle every loop cycle
+	_EmptyCargoSeats = missionNamespace getVariable ["OKS_CargoCache_" + _SelectedClassname, -1];
+	if (_EmptyCargoSeats < 0) then {
+		private _tempHeli = createVehicle [_SelectedClassname, [0,0,10000], [], 0, "CAN_COLLIDE"];
+		_tempHeli enableSimulation false;
+		_tempHeli allowDamage false;
+		_EmptyCargoSeats = _tempHeli emptyPositions "Cargo";
+		missionNamespace setVariable ["OKS_CargoCache_" + _SelectedClassname, _EmptyCargoSeats];
+		deleteVehicle _tempHeli;
+	};
 	_UnitsPerGroup = round ( (round (_EmptyCargoSeats * (_Troops select 1))) / (_Troops select 0) );	// # OF GROUPS = (_Units select 0)  ||  % OF CARGO = (_Units select 1)
 	_SpareIndex = ( (round (_EmptyCargoSeats * (_Troops select 1))) - (_UnitsPerGroup * (_Troops select 0)) );
-	deleteVehicle _Heli;
 
 	_ThirdSide = independent;
 	if(_Side == independent) then {
 		_ThirdSide = east;
 	};
 
+	_PlayerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];
 	{
-		_PlayerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];
 		_KnownPlayerToOriginalSide = ((_Side knowsAbout _X > 3.5 || _Side knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)));
 		_KnownPlayerToThirdSideAndIsEnemy = ((_ThirdSide getFriend _PlayerSide) < 0.6 && (_ThirdSide knowsAbout _X > 3.5 || _ThirdSide knowsAbout vehicle _X > 3.5) && (isTouchingGround (vehicle _X)));
 		if (_KnownPlayerToOriginalSide || _KnownPlayerToThirdSideAndIsEnemy) then

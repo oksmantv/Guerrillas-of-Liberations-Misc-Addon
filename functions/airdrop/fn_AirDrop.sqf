@@ -390,8 +390,7 @@ if ((_Units Select 0) > 0) then
 
 				if(!isNil "NEKY_Hunt_CurrentCount") then {
 					NEKY_Hunt_CurrentCount pushBackUnique _Unit;
-					publicVariable "NEKY_Hunt_CurrentCount";
-				};
+					};
 			} else {
 				_Unit = _Group CreateUnit [(_AirDropUnits call BIS_FNC_selectRandom), [0,0,200], [], 0, "NONE"];
 				_Unit setRank "PRIVATE";
@@ -399,7 +398,6 @@ if ((_Units Select 0) > 0) then
 
 				if(!isNil "NEKY_Hunt_CurrentCount") then {
 					NEKY_Hunt_CurrentCount pushBackUnique _Unit;
-					publicVariable "NEKY_Hunt_CurrentCount";
 				};
 			};
 			_Unit assignAsCargo _Heli;
@@ -418,12 +416,12 @@ if ((_Units Select 0) > 0) then
 					WaitUntil {Sleep 3; !(_Unit in _Heli)}; // Wait for unit to dismount
 
 					// To prevent AI to faceplant and die
-					WaitUntil {Sleep 0.1; ( (!Alive _Unit) or ((getPosATL _Unit select 2) < 2) )};
+					WaitUntil {Sleep 0.5; ( (!Alive _Unit) or ((getPosATL _Unit select 2) < 2) )};
 					if !(Alive _Unit) exitWith {False};
-					[[[_Unit], {(_This select 0) allowdamage false}], "BIS_FNC_SPAWN", (Owner _Unit)] call BIS_FNC_MP;
+					[_Unit, false] remoteExec ["allowDamage", owner _Unit];
 					_Time = Time + 10;
-					WaitUntil {Sleep 0.1; (isTouchingGround _Unit) or (_Time < Time)};
-					[[[_Unit], {(_This select 0) allowdamage true}], "BIS_FNC_SPAWN", (Owner _Unit)] call BIS_FNC_MP;
+					WaitUntil {Sleep 0.5; (isTouchingGround _Unit) or (_Time < Time)};
+					[_Unit, true] remoteExec ["allowDamage", owner _Unit];
 
 					RemoveBackpack _Unit;
 					sleep 1;
@@ -444,7 +442,7 @@ if ((_Units Select 0) > 0) then
 
 					if !(Alive _Unit) exitWith {False};
 					removeBackPack _Unit;
-					WaitUntil {sleep 0.1; ((getPosATL _Unit select 2) < _ChuteHeight) or !(Alive _Unit)};
+					WaitUntil {sleep 0.5; ((getPosATL _Unit select 2) < _ChuteHeight) or !(Alive _Unit)};
 
 					if !(Alive _Unit) exitWith {False};
 					_Unit addBackPack "B_Parachute";
@@ -454,7 +452,7 @@ if ((_Units Select 0) > 0) then
 			if (_SpareIndex < 0) then {_SpareIndex = _SpareIndex +1};
 			sleep 0.5;
 		};
-		{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _Group;
+		[units _Group] remoteExec [{ { [_x] call GW_SetDifficulty_fnc_setSkill } forEach _this }, 0];
 		_Groups PushBack _Group;
 		{_x disableCollisionWith _Heli} forEach (units _Group);
 
@@ -509,6 +507,9 @@ if ((_Units Select 0) > 0) then
 		sleep 1;
 	};
 
+	// Single broadcast for hunt count after all groups are built
+	if(!isNil "NEKY_Hunt_CurrentCount") then { publicVariable "NEKY_Hunt_CurrentCount"; };
+
 	//	One group setting up sectors on LZ
 	if (_UnloadOrDrop isEqualTo "unload") then
 	{
@@ -550,7 +551,7 @@ if ((_Units Select 0) > 0) then
 		{
 			WaitUntil {sleep 1; !((Alive _Heli) or (Alive _Pilot)) or (2 <= (CurrentWaypoint _HeliGroup))};
 		} else {
-			WaitUntil {Sleep 0.1; !((Alive _Heli) or (Alive _Pilot)) or ((_Heli distance2D _UnloadOrDropMarker) < 75)};
+			WaitUntil {Sleep 0.5; !((Alive _Heli) or (Alive _Pilot)) or ((_Heli distance2D _UnloadOrDropMarker) < 75)};
 			"[AirDrop] Dropping!" spawn OKS_fnc_LogDebug;
 		};
 		_Index = 0;

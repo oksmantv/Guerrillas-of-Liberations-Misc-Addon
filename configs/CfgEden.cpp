@@ -28,7 +28,8 @@ class Display3DEN {
                     "GOL_SCRIPTS_VEHICLE_ON_RAILS",
                     "GOL_SCRIPTS_CONVOY",
                     "GOL_SCRIPTS_ATTACK_SPAWNGROUP",
-                    "GOL_SCRIPTS_AI_BATTLE"
+                    "GOL_SCRIPTS_AI_BATTLE",
+                    "GOL_SCRIPTS_ADD_VEHICLE_CREW"
                 };
             };
 
@@ -1557,6 +1558,43 @@ class Display3DEN {
                 text = "Army Group";
                 action = "[""group_11"", false] call OKS_fnc_EdenMarkOrgStrength;";
                 conditionShow = "1";
+            };
+
+            // ── Add Vehicle Crew (selected vehicle) ──────────────────────────
+            class GOL_SCRIPTS_ADD_VEHICLE_CREW {
+                text = "Add Vehicle Crew";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\b_motor_inf.paa";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_ADD_VEHICLE_CREW_FULL",
+                    "GOL_SCRIPTS_ADD_VEHICLE_CREW_DRIVER",
+                    "GOL_SCRIPTS_ADD_VEHICLE_CREW_GUNNER",
+                    "GOL_SCRIPTS_ADD_VEHICLE_CREW_COMMANDER"
+                };
+            };
+            class GOL_SCRIPTS_ADD_VEHICLE_CREW_FULL {
+                text = "Full Crew";
+                picture = "\a3\ui_f\data\Map\Markers\NATO\b_mech_inf.paa";
+                action = "[0] call OKS_fnc_EdenAddVehicleCrew;";
+                conditionShow = "selectedObject";
+            };
+            class GOL_SCRIPTS_ADD_VEHICLE_CREW_DRIVER {
+                text = "Driver Only";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+                action = "[1] call OKS_fnc_EdenAddVehicleCrew;";
+                conditionShow = "selectedObject";
+            };
+            class GOL_SCRIPTS_ADD_VEHICLE_CREW_GUNNER {
+                text = "Gunner Only";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\corporal_gs.paa";
+                action = "[2] call OKS_fnc_EdenAddVehicleCrew;";
+                conditionShow = "selectedObject";
+            };
+            class GOL_SCRIPTS_ADD_VEHICLE_CREW_COMMANDER {
+                text = "Commander Only";
+                picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
+                action = "[3] call OKS_fnc_EdenAddVehicleCrew;";
+                conditionShow = "selectedObject";
             };
 
         };

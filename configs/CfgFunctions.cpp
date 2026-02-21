@@ -138,6 +138,7 @@ class CfgFunctions // Defines a function
 			class EdenFrontlineNodeOnPasteRenumber {};
 			class CopyAndElevateObjects {};
 			class CopyAndElevateObjectsMenu {};
+			class EdenAddVehicleCrew {};
 		};
 
 		class OKS_Zeus {
