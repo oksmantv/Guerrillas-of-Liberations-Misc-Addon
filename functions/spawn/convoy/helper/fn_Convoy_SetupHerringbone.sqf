@@ -3,19 +3,113 @@
 	[convoy_3] call OKS_fnc_Convoy_SetupHerringbone;
 	[convoy_3] execVM "fn_Convoy_SetupHerringbone.sqf";
 	
-	New Parameters:
-	- _FillBothSides: When true, fills both sides of the road before moving to next road segment
+	Parameters:
+	- _ParkingMode: String enum controlling how vehicles park at the end waypoint
+		"alternate"   - Vehicles alternate left/right sides of the road (herringbone)
+		"successive"  - Both sides of each road segment are filled before moving to the next
+		"convoystop"  - Vehicles stop on the road in convoy order (no lateral offset)
+		"offroad"     - Vehicles form a single-file line from the end object using its direction, spaced by _Spacing
+		Backwards compatible: false = "alternate", true = "successive" (deprecated)
+	- _Spacing: Number - distance between vehicles in offroad mode (default: 35)
 	
 	Examples:
-	[convoy_3, false, true, false, true] call OKS_fnc_Convoy_SetupHerringbone; // Fill both sides
-	[convoy_3, false, true, false, false] call OKS_fnc_Convoy_SetupHerringbone; // Alternate sides (default)
+	[convoy_3, false, true, false, "alternate"] call OKS_fnc_Convoy_SetupHerringbone;
+	[convoy_3, false, true, false, "successive"] call OKS_fnc_Convoy_SetupHerringbone;
+	[convoy_3, false, true, false, "convoystop"] call OKS_fnc_Convoy_SetupHerringbone;
+	[convoy_3, false, true, false, "offroad", 40] call OKS_fnc_Convoy_SetupHerringbone;
 */
 
-params ["_EndWP", "_FirstWaypoint", ["_PreferLeft", true], ["_IsReserveSlot", false, [false]], ["_FillBothSides", false, [false]]];
+params ["_EndWP", "_FirstWaypoint", ["_PreferLeft", true], ["_IsReserveSlot", false, [false]], ["_ParkingMode", "alternate", [false, ""]], ["_Spacing", 35, [0]]];
+
+// --- Normalise legacy bool values to enum strings ---
+if (_ParkingMode isEqualType false) then {
+	private _legacyVal = _ParkingMode;
+	_ParkingMode = if (_legacyVal) then { "successive" } else { "alternate" };
+	private _warnMsg = format [
+		"[CONVOY-HERRINGBONE WARNING] Boolean parking parameter (last parameter) is DEPRECATED. Change to string enum: '%1'. (false='alternate', true='successive', or use 'convoystop')",
+		_ParkingMode
+	];
+	diag_log _warnMsg;
+	systemChat _warnMsg;
+};
+_ParkingMode = toLower _ParkingMode;
+if !(_ParkingMode in ["alternate", "successive", "convoystop", "offroad"]) then {
+	_ParkingMode = "alternate";
+};
+
 private _cutterClass = "Land_ClutterCutter_large_F";
 
 private _travelDirection = getDir _EndWP;
 private _originDirection = _travelDirection - 180;
+
+// --- Offroad: single-file line from end object using its direction, no road logic ---
+if (_ParkingMode == "offroad") exitWith {
+	private _endPos = getPosATL _EndWP;
+	private _facingDir = _travelDirection;
+	private _backDir = _facingDir - 180; // direction extending behind the end object
+
+	// Track how many vehicles have been placed using a counter on the end object
+	private _slotIndex = _EndWP getVariable ["OKS_Convoy_OffroadIndex", 0];
+
+	// Lead vehicle parks at the end position itself
+	private _slotPosition = if (_slotIndex == 0) then {
+		[_endPos select 0, _endPos select 1, 0]
+	} else {
+		[
+			(_endPos select 0) + (_slotIndex * _Spacing) * (sin _backDir),
+			(_endPos select 1) + (_slotIndex * _Spacing) * (cos _backDir),
+			0
+		]
+	};
+
+	// Obstacle nudge: if blocked, try lateral offsets (left then right, up to 15m)
+	if ([_slotPosition, 7] call OKS_fnc_Convoy_IsBlocked) then {
+		private _leftDir = _facingDir - 90;
+		private _rightDir = _facingDir + 90;
+		private _nudged = false;
+		{
+			private _dist = _x;
+			{
+				private _nudgeDir = _x;
+				private _candidate = [
+					(_slotPosition select 0) + _dist * (sin _nudgeDir),
+					(_slotPosition select 1) + _dist * (cos _nudgeDir),
+					0
+				];
+				if (!([_candidate, 7] call OKS_fnc_Convoy_IsBlocked)) exitWith {
+					_slotPosition = _candidate;
+					_nudged = true;
+				};
+			} forEach [_leftDir, _rightDir];
+			if (_nudged) exitWith {};
+		} forEach [5, 10, 15];
+
+		if (!_nudged && missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
+			format ["[CONVOY-HERRINGBONE] %1: could not nudge slot %2 clear of obstacles", _ParkingMode, _slotIndex] spawn OKS_fnc_LogDebug;
+		};
+	};
+
+	_EndWP setVariable ["OKS_Convoy_OffroadIndex", _slotIndex + 1, false];
+
+	// Place visual indicators
+	private _DebugObjects = missionNamespace getVariable ["GOL_Convoy_Markers_Debug", false];
+	if (_DebugObjects) then {
+		private _arrow = createVehicle ["Sign_Arrow_Direction_Yellow_F", _slotPosition, [], 0, "CAN_COLLIDE"];
+		_arrow setPosATL _slotPosition;
+		_arrow setDir _facingDir;
+	};
+
+	private _cutter = createVehicle [_cutterClass, _slotPosition, [], 0, "CAN_COLLIDE"];
+	_cutter setPosATL _slotPosition;
+	_cutter setVariable ["GOL_Convoy_Cutter", true, false];
+
+	if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
+		format ["[CONVOY-HERRINGBONE] offroad: slot %1 at %2 (spacing: %3m)", _slotIndex, _slotPosition, _Spacing] spawn OKS_fnc_LogDebug;
+	};
+
+	[_slotPosition, _PreferLeft]
+};
+
 private _nearestRoad = [getPosATL _EndWP, 100] call BIS_fnc_nearestRoad;
 
 // If the end waypoint isn't near a road, avoid road commands (engine will spam "Road not found").
@@ -57,7 +151,7 @@ if (_FirstWaypoint) exitWith {
 	_EndWP setVariable ["OKS_Convoy_LastRoad", _nearestRoad, false];
 	
 	// Store the lead vehicle's road for dual-side filling
-	if (_FillBothSides) then {
+	if (_ParkingMode == "successive") then {
 		_EndWP setVariable ["OKS_Convoy_LeadRoad", _nearestRoad, false];
 	};
 
@@ -71,8 +165,8 @@ private _lastUsedRoad = _EndWP getVariable ["OKS_Convoy_LastRoad", objNull];
 private _currentRoad = if (!isNull _lastUsedRoad) then { _lastUsedRoad } else { _nearestRoad };
 private _selectedRoad = objNull;
 
-// Road selection logic differs for dual-side vs alternating mode
-if (_FillBothSides) then {
+// Road selection logic differs by parking mode
+if (_ParkingMode == "successive") then {
 	diag_log format ["[DEBUG] DUAL-SIDE MODE: lastRoad=%1", _lastUsedRoad];
 	// DUAL-SIDE FILLING: Check if last used road still has available sides first
 	private _leadVehicleRoad = _EndWP getVariable ["OKS_Convoy_LeadRoad", objNull];
@@ -166,7 +260,7 @@ if (_FillBothSides) then {
 		if (!_isCandidateOccupied && !_isCandidateTooClose) exitWith {
 			_selectedRoad = _candidateRoad;
 		};
-		_currentRoad = _candidateRoad;
+	_currentRoad = _candidateRoad;
 	};
 };
 
@@ -187,9 +281,32 @@ if ((count _roadInformation) > 4) then {
 
 [_selectedRoad, false] call OKS_fnc_Convoy_PlaceDebugObject;
 
+// --- Convoystop: park on road center, no lateral offset ---
+if (_ParkingMode == "convoystop") exitWith {
+	private _slotPosition = getPosATL _selectedRoad;
+	_slotPosition set [2, 0];
+
+	private _DebugObjects = missionNamespace getVariable ["GOL_Convoy_Markers_Debug", false];
+	if (_DebugObjects) then {
+		private _arrow = createVehicle ["Sign_Arrow_Direction_Green_F", _slotPosition, [], 0, "CAN_COLLIDE"];
+		_arrow setPosATL _slotPosition;
+		_arrow setDir _roadDirection;
+	};
+
+	private _cutter = createVehicle [_cutterClass, _slotPosition, [], 0, "CAN_COLLIDE"];
+	_cutter setPosATL _slotPosition;
+	_cutter setVariable ["GOL_Convoy_Cutter", true, false];
+
+	if (missionNamespace getVariable ["GOL_Convoy_Debug", false]) then {
+		format ["[CONVOY-HERRINGBONE] convoystop: road %1 at %2", _selectedRoad, _slotPosition] spawn OKS_fnc_LogDebug;
+	};
+
+	[_slotPosition, _PreferLeft]
+};
+
 // Determine which side to use for dual-side filling
 private _actualSidePreference = _PreferLeft;
-if (_FillBothSides) then {
+if (_ParkingMode == "successive") then {
 	// For dual-side filling, track which sides have been used on this specific road
 	private _roadSideInfo = _EndWP getVariable [format ["OKS_Road_Side_%1", _selectedRoad], []];
 	
@@ -227,7 +344,7 @@ if (_FillBothSides) then {
 	private _rightOccupied = _rightUsed || _rightBlocked;
 	
 	// Decide which side to place this vehicle - prioritize filling both sides
-	diag_log format ["[DEBUG] Side logic: L-occ:%1 R-occ:%2 FillBoth:%3", _leftOccupied, _rightOccupied, _FillBothSides];
+	diag_log format ["[DEBUG] Side logic: L-occ:%1 R-occ:%2 ParkingMode:%3", _leftOccupied, _rightOccupied, _ParkingMode];
 	if (!_leftOccupied && !_rightOccupied) then {
 		// Neither side occupied - start with left (true)
 		_actualSidePreference = true;
@@ -270,8 +387,8 @@ if (_FillBothSides) then {
 private _slotPositionArray = [getPos _selectedRoad, _roadDirection, _actualSidePreference] call OKS_fnc_Convoy_MakeSlot;
 private _slotPosition = _slotPositionArray select 0;
 
-// Add extra dispersion for dual-side filling to prevent stacking
-if (_FillBothSides) then {
+// Add extra dispersion for successive filling to prevent stacking
+if (_ParkingMode == "successive") then {
 	private _extraDispersion = 10; // Additional 10 meters dispersion
 	private _sideMultiplier = if (_actualSidePreference) then { -1 } else { 1 }; // Left = -1, Right = +1
 	private _sideDirection = _roadDirection + (_sideMultiplier * 90); // Perpendicular to road

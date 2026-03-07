@@ -2,15 +2,19 @@
 	Function: OKS_fnc_Evacuate_HVT
 
 	Description:
-	Handles the evacuation of a High-Value Target (HVT) by a specified group to a designated exfiltration site.
+	Handles the evacuation of a High-Value Target (HVT) or Most Valuable Person (MVP) by a specified group
+	to a designated exfiltration site. The task title and description automatically adapt based on the
+	relationship between the units' side and the evacuating side (_Side):
+	  - Friendly units (getFriend >= 0.6) → "Evacuate MVP"
+	  - Enemy units   (getFriend <  0.6) → "Extract HVT"
 
 	Parameters:
-	0: Group | Array | Unit - The units that will be set to HVTs.
-	1: Array - The position of the exfiltration site where the HVT will be evacuated. If _HelicopterEvac is set to true, it will mark the landing site, if off it will land the task completion site. (Type: Array or Trigger or Object)
-	2: Side - The side (faction) of the evacuating helicopter. (Type: Side)
+	0: Group | Array | Unit - The units that will be set to HVTs/MVPs.
+	1: Array - The position of the exfiltration site where the unit(s) will be evacuated. If _HelicopterEvac is set to true, it will mark the landing site, if off it will land the task completion site. (Type: Array or Trigger or Object)
+	2: Side - The side (faction) of the evacuating helicopter / players. Used to determine friendly vs enemy. (Type: Side)
 	3: Boolean - Whether the evacuation should be done by AI Helicopter. (Type: Boolean)
 	4: String - The parent task ID to which this task will be linked. (Type: String)
-	5: Boolean - Whether the HVTs should be set as captive. If true, they will be set to captive and will not fight back. (Type: Boolean)
+	5: Boolean - Whether the HVTs/MVPs should be set as captive. If true, they will be set to captive and will not fight back. (Type: Boolean)
 	6: Boolean - Whether the task should be created in the "ASSIGNED" state immediately. If true, the task will be created and set to "ASSIGNED" state. (Type: Boolean)
 
 	Example Usage:
@@ -124,6 +128,15 @@ if(_HVTDebug) then {
 	format["[HVT TASK] Finished processing %1 HVT units. IsCaptive=%2", count _Units, _IsCaptive] call OKS_fnc_LogDebug;
 };
 
+// Determine task type: captive units are friendly MVPs, non-captive are enemy HVTs
+private _typeLabel = if (_IsCaptive) then {"MVP"} else {"HVT"};
+private _typeVerb = if (_IsCaptive) then {"Evacuate"} else {"Extract"};
+private _typeVerbLower = if (_IsCaptive) then {"evacuate"} else {"extract"};
+
+if(_HVTDebug) then {
+	format["[HVT TASK] IsCaptive: %1, Type: %2", _IsCaptive, _typeLabel] call OKS_fnc_LogDebug;
+};
+
 Private _TaskId = format["RescueHVTTask_%1",(random 9999)];
 
 waitUntil {sleep 1; {_X getVariable ["ace_captives_isHandcuffed", false]} count _Units > 0 || {!Alive _X} count _Units == count _Units || _TaskOnStart};
@@ -142,13 +155,13 @@ if({!Alive _X} count _Units == count _Units) then {
 
 private _markerName = format ["OKS_ExfilSite_%1", round (random 99999)];
 private _exfilMarker = createMarker [_markerName, _ExfilPosition];
-private _descriptionText = "You have found HVTs to extract";
+private _descriptionText = format ["You have found %1s to %2", _typeLabel, _typeVerbLower];
 if(_TaskOnStart) then {
-	_descriptionText = "You have been tasked with finding and extracting HVTs";
+	_descriptionText = format ["You have been tasked with finding and %1ing %2s", _typeVerbLower, _typeLabel];
 };
 
 if(_HelicopterEvac) then {
-	_TaskDescription = format["%2, there are %1 in total. Transport them to the <marker name='%3'>exfil site</marker> and await the helicopter that will extract them.",count _Units,_descriptionText,_exfilMarker];
+	_TaskDescription = format["%2, there are %1 in total. Transport them to the <marker name='%3'>exfil site</marker> and await the helicopter that will %4 them.",count _Units,_descriptionText,_exfilMarker,_typeVerbLower];
 } else {
 	_TaskDescription = format["%2, there are %1 in total. Transport them to the <marker name='%3'>exfil site</marker>.",count _Units,_descriptionText,_exfilMarker];
 };
@@ -177,8 +190,8 @@ _TaskPosition = _TaskPosition vectorMultiply (1 / (count _UnitsArray));
 	_TaskArray,
 	[
 		_TaskDescription,
-		"Extract HVT",
-		"Extract"
+		format ["%1 %2", _typeVerb, _typeLabel],
+		_typeVerb
 	],
 	_TaskPosition,
 	_TaskState,
@@ -226,7 +239,7 @@ if(_HelicopterEvac) then {
 	if(_HVTDebug) then {
 		format["[HVT TASK] Calling helicopter for extraction"] call OKS_fnc_LogDebug;
 	};
-	["hq","side","Be advised, extraction helicopter is inbound for your HVTs. Load them up when it arrives, HQ out"] remoteExec ["OKS_fnc_Chat",0];
+	["hq","side",format ["Be advised, extraction helicopter is inbound for your %1s. Load them up when it arrives, HQ out", _typeLabel]] remoteExec ["OKS_fnc_Chat",0];
 	[_Side,"",["helicopter_Spawn",_ExfilPosition,"helicopter_despawn","helicopter_despawn"],false] execVM "Scripts\NEKY_PickUp\NEKY_PickUp.sqf";
 
 	waitUntil{sleep 15; {!Alive _X || (ObjectParent _X) isKindOf "Helicopter"} count _Units == count _Units};

@@ -49,12 +49,12 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 	private _group = group _Vehicle;
 	private _wpIdx = currentWaypoint _group;
 	private _wpPos = waypointPosition [_group, _wpIdx];
-	private _distToWp = _Vehicle distance _wpPos;
+	private _distToWp = _Vehicle distance2D _wpPos;
 
 	// Stuck vehicle detection and nudge using sendSimpleCommand
 	private _stuckTimer = _Vehicle getVariable ["OKS_Convoy_StuckTimer", -1];
 	private _wpType = waypointType [_group, _wpIdx];
-	if (_wpType != "HOLD" && _distToWp <= 20) then {
+	if (_wpType != "HOLD" && _distToWp <= 60) then {
 		private _currentSpeed = vectorMagnitude (velocity _Vehicle);
 		if (_currentSpeed < 5) then {
 			if (_stuckTimer < 0) then { _stuckTimer = time; _Vehicle setVariable ["OKS_Convoy_StuckTimer", _stuckTimer]; };
@@ -233,7 +233,7 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 	private _group = group _Vehicle;
 	private _wpIdx = currentWaypoint _group;
 	private _wpPos = waypointPosition [_group, _wpIdx];
-	private _distToWp = _Vehicle distance _wpPos;
+	private _distToWp = _Vehicle distance2D _wpPos;
 	// Dispersion logic: ensure original value is respected and only increased near waypoint
 	private _dispMod = 1;
 	// Waypoint-level suppression: description tag indicates no near-WP dispersion increase
@@ -260,7 +260,7 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 	format ["[CONVOY-DISPERSION-INCREASED] %1 near WP (%2m): dispersion increased to %3m (param=%4m)", _Vehicle, _distToWp, _DispersionInMeters, _dispersionOriginal] spawn OKS_fnc_LogDebug;
 	};
 
-	private _Distance = _Vehicle distance _convoyLeaderVehicle;
+	private _Distance = _Vehicle distance2D _convoyLeaderVehicle;
 	private _DangerClose = _DispersionInMeters * 0.5;    	// Very close
 	private _Close = _DispersionInMeters * 0.75;       	// Close
 	private _Far = _DispersionInMeters * 1.5;          	// Far

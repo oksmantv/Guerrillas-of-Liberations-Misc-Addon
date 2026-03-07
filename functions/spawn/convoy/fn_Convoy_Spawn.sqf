@@ -18,11 +18,20 @@
 	10 - Dismount Behaviour - Array of Types of waypoints for dismounts
 	Options: ["rush", "defend", "patrol", "assault", "hunt"]
 		Default: ["rush"]
-	11 - Fill Both Sides - Boolean to enable filling both sides of road before moving to next segment
-		Default: false (traditional alternating pattern)
+	11 - Parking Mode - String enum controlling how vehicles park at the end waypoint
+		Options:
+			"alternate"   - Vehicles alternate left/right sides of the road (herringbone)
+			"successive"  - Both sides of each road segment are filled before moving to the next
+			"convoystop"  - Vehicles stop on the road in convoy order (no lateral offset)
+			"offroad"     - Vehicles form a single-file line from the end object using its direction, spaced by dispersion
+		Default: "alternate"
+		Backwards compatible: false = "alternate", true = "successive" (deprecated, use strings)
 
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false] spawn OKS_fnc_Convoy_Spawn;
-	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], true] spawn OKS_fnc_Convoy_Spawn; // Fill both sides
+	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "alternate"] spawn OKS_fnc_Convoy_Spawn;
+	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "successive"] spawn OKS_fnc_Convoy_Spawn;
+	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "convoystop"] spawn OKS_fnc_Convoy_Spawn;
+	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "offroad"] spawn OKS_fnc_Convoy_Spawn;
 */
 
 if(!isServer) exitWith {};
@@ -38,8 +47,28 @@ Params [
 	["_ForcedCareless",false,[false]],
 	["_DeleteAtFinalWP",false,[false]],
 	["_DismountBehaviour", ["rush"], [[]]],
-	["_FillBothSides", false, [false]]
+	["_ParkingMode", "alternate", [false, ""]]
 ];
+
+// --- Normalise legacy bool values to enum strings ---
+if (_ParkingMode isEqualType false) then {
+	private _legacyVal = _ParkingMode;
+	_ParkingMode = if (_legacyVal) then { "successive" } else { "alternate" };
+	private _warnMsg = format [
+		"[CONVOY-SPAWN WARNING] Boolean parking parameter is DEPRECATED (Last). Change to string enum: %1. (false='alternate', true='successive', or use 'convoystop')",
+		_ParkingMode
+	];
+	diag_log _warnMsg;
+	systemChat _warnMsg;
+};
+_ParkingMode = toLower _ParkingMode;
+if !(_ParkingMode in ["alternate", "successive", "convoystop", "offroad"]) then {
+	private _badVal = _ParkingMode;
+	_ParkingMode = "alternate";
+	private _errMsg = format ["[CONVOY-SPAWN WARNING] Unknown parking mode '%1' (last parameter), falling back to 'alternate'. Valid options: alternate, successive, convoystop, offroad", _badVal];
+	diag_log _errMsg;
+	systemChat _errMsg;
+};
 
 Private ["_Vehicles", "_Classname"];
 private _VehicleArray = [];
@@ -94,12 +123,12 @@ private _ReserveQueue = [];
 for "_i" from 0 to ((_Count - 1) + 4) do {
 	_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 	if(_i >= _Count) then {
-		private _herringBoneResult = [_End, false, _NextPreferLeft, true, _FillBothSides] call OKS_fnc_Convoy_SetupHerringBone;
-		private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { getPos _End };
+		private _herringBoneResult = [_End, false, _NextPreferLeft, true, _ParkingMode, _DispersionInMeters] call OKS_fnc_Convoy_SetupHerringBone;
+		private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { (getPos _End) select [0,2] };
 		private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
 		
-		// Only alternate sides in traditional mode, not in dual-side filling mode
-		if (!_FillBothSides) then {
+		// Only alternate sides in traditional mode
+		if (_ParkingMode == "alternate") then {
 			_NextPreferLeft = !_actualIsLeft;
 		};
 
@@ -107,7 +136,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		private _isDuplicate = false;
 		{
 			_x params ["_existingPos", "_occupied"];
-			if (_endPosition distance _existingPos < 5) exitWith {
+			if (_endPosition distance2D _existingPos < 5) exitWith {
 				_isDuplicate = true;
 			};
 		} forEach _ReserveQueue;
@@ -133,7 +162,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		if (_ConvoyDebug) then {
 			"[CONVOY-WAIT-CLEARANCE] near _Spawn" spawn OKS_fnc_LogDebug;
 		};
-		(getPos _Spawn nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []
+		((getPos _Spawn) select [0,2] nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []
 	};
 	if (_ConvoyDebug) then {
 		"[CONVOY-SPAWN] Vehicle spawning" spawn OKS_fnc_LogDebug;
@@ -146,7 +175,10 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 			format ["[CONVOY-VEHICLE-CLASS] %1 Remaining: %2", _Classname, _Vehicles] spawn OKS_fnc_LogDebug;
 		}
 	};
-	_Vehicle = CreateVehicle [_Classname, getPos _Spawn];
+
+	private _spawnPos = getPos _Spawn;
+	_spawnPos set [2, 0.15]; // prevent spawning underground on uneven terrain
+	_Vehicle = CreateVehicle [_Classname, _spawnPos];
 	_Vehicle setVariable ["OKS_ForceSpeedActive", true, true];
 	_Vehicle setVariable ["OKS_LimitSpeedBase", _SpeedKph, true];
 	_Vehicle setDir (getDir _Spawn);
@@ -213,23 +245,24 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		};
 
 		{
-			private _waypoint = _waypointGroup addWaypoint [getPos _waypointObject, 0];
+			private _waypoint = _waypointGroup addWaypoint [(getPos _waypointObject) select [0,2], 0];
 			_waypoint setWaypointType "MOVE";
+			_waypoint setWaypointCompletionRadius 50;
 		} foreach _waypointArray;
 	};
 
 	private _isFirstVehicle = (_i == 0);
-	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft, false, _FillBothSides] call OKS_fnc_Convoy_SetupHerringBone;
-	private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { getPos _End };
+	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft, false, _ParkingMode, _DispersionInMeters] call OKS_fnc_Convoy_SetupHerringBone;
+	private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { (getPos _End) select [0,2] };
 	private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
 	
-	// Only alternate sides in traditional mode, not in dual-side filling mode
-	if (!_FillBothSides) then {
+	// Only alternate sides in traditional mode
+	if (_ParkingMode == "alternate") then {
 		_NextPreferLeft = !_actualIsLeft;
 	};
 
 	private _endWaypointGroup = _Group;
-	private _endWaypoint = _endWaypointGroup addWaypoint [_endPosition, 1];
+	private _endWaypoint = _endWaypointGroup addWaypoint [_endPosition select [0,2], 1];
 	_endWaypoint setWaypointType "MOVE";
 	// Tag end waypoint to suppress dispersion increase near destination (waypoint-level indicator)
 	_endWaypoint setWaypointDescription "OKS_SUPPRESS_DISPERSION";

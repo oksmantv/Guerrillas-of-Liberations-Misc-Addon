@@ -193,12 +193,12 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 			// After _skipDistanceDelay seconds, stop waiting on the precise distance and proceed to engage
 			private _done = isNull _aaVehicle
 				|| !canMove _aaVehicle
-				|| (_aaVehicle distance _pullOffPos < 10)
+				|| (_aaVehicle distance2D _pullOffPos < 10)
 				|| ((time - _pullOffStartTime) > _skipDistanceDelay)
 				|| ((time - _pullOffStartTime) > _pullOffTimeout);
 			if (_isConvoyDebugEnabled && {!_done} && {(time - _lastHeartbeat) > 5}) then {
 				_lastHeartbeat = time;
-				format ["[CONVOY_AIR] En-route to pull-off. Distance=%1m, Elapsed=%2s", round (_aaVehicle distance _pullOffPos), round (time - _pullOffStartTime)] spawn OKS_fnc_LogDebug;
+				format ["[CONVOY_AIR] En-route to pull-off. Distance=%1m, Elapsed=%2s", round (_aaVehicle distance2D _pullOffPos), round (time - _pullOffStartTime)] spawn OKS_fnc_LogDebug;
 			};
 			_done
 		};
@@ -269,12 +269,12 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 		// After _skipDistanceDelay seconds, stop waiting on the precise distance and proceed to engage
 		private _done = isNull _aaVehicle
 			|| !canMove _aaVehicle
-			|| (_aaVehicle distance _pullOffPos < 10)
+			|| (_aaVehicle distance2D _pullOffPos < 10)
 			|| ((time - _pullOffStartTime) > _skipDistanceDelay)
 			|| ((time - _pullOffStartTime) > _pullOffTimeout);
 		if (_isConvoyDebugEnabled && {!_done} && {(time - _lastHeartbeat) > 5}) then {
 			_lastHeartbeat = time;
-			format ["[CONVOY_AIR] En-route to pull-off. Distance=%1m, Elapsed=%2s", round (_aaVehicle distance _pullOffPos), round (time - _pullOffStartTime)] spawn OKS_fnc_LogDebug;
+			format ["[CONVOY_AIR] En-route to pull-off. Distance=%1m, Elapsed=%2s", round (_aaVehicle distance2D _pullOffPos), round (time - _pullOffStartTime)] spawn OKS_fnc_LogDebug;
 		};
 		_done
 	};
@@ -386,8 +386,8 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 			// Only process vehicles that are actually behind the AA
 			{
 				if (!isNull _x && (_x != _aaVehicle)) then {
-					private _dist = _aaVehicle distance _x; // Distance from current AA position for final spacing
-					private _checkpointDist = _x distance _checkpointPos; // Distance from checkpoint for passage detection
+				private _dist = _aaVehicle distance2D _x; // Distance from current AA position for final spacing
+				private _checkpointDist = _x distance2D _checkpointPos; // Distance from checkpoint for passage detection
 					_vehicleDistances pushBack [_x, _dist];
 					
 					// Only process vehicles that are behind the AA in convoy order
@@ -453,9 +453,9 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 			{
 				private _veh = _x;
 				if (_veh in _vehiclesBehindAA) then {
-					private _dist = _aaVehicle distance _veh;
-					private _passedCheckpoint = (_veh in _vehiclesPassed);
-					private _checkpointDist = _veh distance _checkpointPos;
+				private _dist = _aaVehicle distance2D _veh;
+				private _passedCheckpoint = (_veh in _vehiclesPassed);
+				private _checkpointDist = _veh distance2D _checkpointPos;
 					private _displayName = getText (configFile >> "CfgVehicles" >> (typeOf _veh) >> "displayName");
 					
 					// Only track vehicles that are still causing delays
@@ -601,7 +601,7 @@ while { ({_x getVariable ['OKS_Convoy_Stopped', false]} count _convoyVehicleArra
 			private _aaVehicleDispersion = _aaVehicle getVariable ["OKS_Convoy_Dispersion", (_leaderVehicle getVariable ["OKS_Convoy_Dispersion", 25])];
 			waitUntil {
 				sleep 0.5;
-				isNull _aaVehicle || !canMove _aaVehicle || (_aaVehicle distance _leaderVehicle) <= _aaVehicleDispersion
+				isNull _aaVehicle || !canMove _aaVehicle || (_aaVehicle distance2D _leaderVehicle) <= _aaVehicleDispersion
 			};
 		};
 	};

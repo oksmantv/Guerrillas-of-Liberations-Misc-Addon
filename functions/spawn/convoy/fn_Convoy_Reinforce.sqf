@@ -145,7 +145,7 @@ For "_i" from 1 to _Count do {
 	_startMarker setMarkerSIze [0.7,0.7];
 	_endMarker setMarkerSIze [0.7,0.7];
 
-	waitUntil {sleep 1; if(_Debug_Variable) then {"[Convoy] Waiting for clearance near _Spawn" spawn OKS_fnc_LogDebug}; (getPos _Spawn nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []};
+	waitUntil {sleep 1; if(_Debug_Variable) then {"[Convoy] Waiting for clearance near _Spawn" spawn OKS_fnc_LogDebug}; ((getPos _Spawn) select [0,2] nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []};
 	if(_Debug_Variable) then {"[Convoy] Spawning Vehicle.." spawn OKS_fnc_LogDebug};
 
 	if(_Vehicles isNotEqualTo []) then {
@@ -155,7 +155,7 @@ For "_i" from 1 to _Count do {
 			format ["[Convoy] %1", str [_Classname,_Vehicles]] spawn OKS_fnc_LogDebug;
 		}		
 	};
-	_Vehicle = CreateVehicle [_Classname,getPos _Spawn];
+	_Vehicle = CreateVehicle [_Classname,(getPos _Spawn) select [0,2]];
 	_Vehicle setVariable ["OKS_ForceSpeedActive", true, true];
 	_Vehicle setDir (getDir _Spawn);
 	_Vehicle setVehicleLock "LOCKED";
@@ -187,14 +187,14 @@ For "_i" from 1 to _Count do {
 
     _Group setBehaviour "CARELESS";
 	_Group setCombatMode "BLUE";
-    _WP = _Group addWaypoint [getPos _Waypoint,0];
+    _WP = _Group addWaypoint [(getPos _Waypoint) select [0,2],0];
     _WP setWaypointType "MOVE";
 
 	_CargoGroup = createGroup [_Side,true];
 	_CargoGroup setVariable ["acex_headless_blacklist",true,true];
 
     Private ["_EndWP"];
-    _EndWP = _Group addWaypoint [_End,1];
+    _EndWP = _Group addWaypoint [(getPos _End) select [0,2],1];
     _EndWP setWaypointType "MOVE";
 
     if(_ShouldHaveCargo && ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount) >= 4) then {
@@ -234,7 +234,7 @@ For "_i" from 1 to _Count do {
 waitUntil{
 	sleep 2;
 	{
-		(leader _X) distance _End < 25;
+		(leader _X) distance2D _End < 25;
 	} count _ConvoyArray > 0
 };
 if(_Debug_Variable) then {"[Convoy] Reached Site, Deploying.." spawn OKS_fnc_LogDebug};
@@ -276,7 +276,7 @@ private _SpawnResupplyCrateWithTask = {
 		sleep 5;
 		[true, _VariableSetToTrue, ["A friendly force has brought in resupply for your squad. Make use of the supplies.", "1-1 Resupply", "1-1 Resupply"], _Crate, "ASSIGNED", 2, true, "rearm"] call BIS_fnc_taskCreate;
 		
-		waitUntil {sleep 5; {_X distance _Crate < 5} count allPlayers > 0 };
+		waitUntil {sleep 5; {_X distance2D _Crate < 5} count allPlayers > 0 };
 		[_VariableSetToTrue,"SUCCEEDED"] call BIS_fnc_taskSetState;
 	};
 };

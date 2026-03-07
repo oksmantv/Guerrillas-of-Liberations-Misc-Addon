@@ -1657,31 +1657,56 @@ Edited by OksmanTV & Bluwolf.
   <summary>OKS_fnc_Convoy_Spawn</summary>
 
   ### Description
-  Spawns a convoy of vehicles (optionally with troops in cargo) at a specified position, moves them through waypoints, and can delete the convoy upon reaching the final waypoint.  
-  Supports customizable vehicle types, troop loading, forced AI behavior, and dynamic convoy array management.
+  Spawns a convoy of vehicles (optionally with troops in cargo) at a specified position, moves them through waypoints, and parks at the final waypoint using a configurable parking mode.  
+  Supports customizable vehicle types, troop loading, forced AI behavior, dynamic convoy array management, and multiple parking formations.
 
   ### Parameters
 
-  | Name                | Type    | Default                           | Description                                                                 |
-  |---------------------|---------|-----------------------------------|-----------------------------------------------------------------------------|
-  | `_Spawn`            | Object  | —                                 | Spawn position for the convoy.                                              |
-  | `_Waypoint`         | Object  | —                                 | First waypoint object for the convoy.                                       |
-  | `_End`              | Object  | —                                 | Final waypoint object (where convoy disperses or is deleted).               |
-  | `_Side`             | Side    | `east`                            | Side of the convoy units.                                                   |
-  | `_VehicleArray`     | Array   | `[3,["UK3CB_ARD_O_BMP1"],30,45]`  | `[Count, Classnames (array/string), Speed (kph), Dispersion (m)]`.          |
-  | `_CargoArray`       | Array   | `[true,4]`                        | `[Should spawn troops in cargo (bool), Max soldiers per vehicle (int)]`.    |
-  | `_ConvoyArray`      | Array   | `[]`                              | Array that gets filled with convoy units (for tracking or later use).       |
-  | `_ForcedCareless`   | Boolean | `false`                           | If true, forces convoy AI to behave "careless" (no reaction to threats).    |
-  | `_DeleteAtFinalWP`  | Boolean | `false`                           | If true, deletes convoy vehicles and units at the final waypoint.           |
-  | `_DismountBehaviour`| Array   | `["rush","attack"]`               | Dismount Behaviour - ["rush","attack","defend","hold","hunt","patrol"]      |
+  | Name                | Type           | Default                           | Description                                                                 |
+  |---------------------|----------------|-----------------------------------|-----------------------------------------------------------------------------|
+  | `_Spawn`            | Object         | —                                 | Spawn position for the convoy.                                              |
+  | `_Waypoint`         | Object         | —                                 | First waypoint object for the convoy.                                       |
+  | `_End`              | Object         | —                                 | Final waypoint object (where convoy parks or is deleted).                   |
+  | `_Side`             | Side           | `east`                            | Side of the convoy units.                                                   |
+  | `_VehicleArray`     | Array          | `[3,["UK3CB_ARD_O_BMP1"],30,45]`  | `[Count, Classnames (array/string), Speed (kph), Dispersion (m)]`.          |
+  | `_CargoArray`       | Array          | `[true,4]`                        | `[Should spawn troops in cargo (bool), Max soldiers per vehicle (int)]`.    |
+  | `_ConvoyArray`      | Array          | `[]`                              | Array that gets filled with convoy units (for tracking or later use).       |
+  | `_ForcedCareless`   | Boolean        | `false`                           | If true, forces convoy AI to behave "careless" (no reaction to threats).    |
+  | `_DeleteAtFinalWP`  | Boolean        | `false`                           | If true, deletes convoy vehicles and units at the final waypoint.           |
+  | `_DismountBehaviour`| Array          | `["rush","attack"]`               | Dismount Behaviour - ["rush","attack","defend","hold","hunt","patrol"]      |
+  | `_ParkingMode`      | String or Bool | `"alternate"`                     | How vehicles park at the end waypoint. See **Parking Modes** below.         |
+
+  ### Parking Modes
+
+  | Mode            | Description                                                                                         |
+  |-----------------|-----------------------------------------------------------------------------------------------------|
+  | `"alternate"`   | Vehicles alternate left/right sides of the road in a herringbone pattern. *(Default)*               |
+  | `"successive"`  | Both sides of each road segment are filled before moving to the next segment.                       |
+  | `"convoystop"`  | Vehicles stop on the road in convoy order (no lateral offset).                                      |
+  | `"offroad"`     | Vehicles form a single-file line from the end object using its direction, spaced by dispersion.     |
+
+  > **Backwards compatible:** `false` = `"alternate"`, `true` = `"successive"`. Boolean values still work but are deprecated — a `systemChat` warning will be shown. Use the string enums instead.
 
   ### Example Usage
 
-    [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 50, 45], [true, 6], [], false, false, ["rush"]] spawn OKS_fnc_Convoy_Spawn;
+  ```sqf
+  // Default (alternate herringbone)
+  [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 50, 45], [true, 6], [], false, false, ["rush"]] spawn OKS_fnc_Convoy_Spawn;
 
-  - Vehicles and (optionally) troops are spawned at the start, move through waypoints, and can be deleted on completion.
+  // Successive (fill both sides per road segment)
+  [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 50, 45], [true, 6], [], false, false, ["rush"], "successive"] spawn OKS_fnc_Convoy_Spawn;
+
+  // Convoy stop (stay on road in formation)
+  [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 50, 45], [true, 6], [], false, false, ["rush"], "convoystop"] spawn OKS_fnc_Convoy_Spawn;
+
+  // Offroad (single-file line from end object direction, no road needed)
+  [convoy_1, convoy_2, convoy_3, east, [4, ["rhs_btr60_msv"], 50, 45], [true, 6], [], false, false, ["rush"], "offroad"] spawn OKS_fnc_Convoy_Spawn;
+  ```
+
+  ### Notes
   - The convoy array is filled with all spawned vehicles and units for further scripting or tracking.
-  - Designed for flexible convoy and reinforcement scenarios in Arma 3 missions[1][2].
+  - For `"offroad"` mode, the end object's `getDir` determines the line direction and the dispersion parameter (param 5.4) controls spacing between vehicles.
+  - Designed for flexible convoy and reinforcement scenarios in Arma 3 missions.
 
 </details>
 <details>

@@ -25,7 +25,7 @@ while {count _toCheck > 0} do {
         _combatSet pushBack _current;
         // Find all unmarked vehicles within range
         private _nearby = _convoyArray select {
-            _x != _current && { !(_x getVariable ["GOL_ConvoyAmbushed", false]) } && { _x distance _current <= _range }
+            _x != _current && { !(_x getVariable ["GOL_ConvoyAmbushed", false]) } && { _x distance2D _current <= _range }
         };
         _toCheck append _nearby;
     };

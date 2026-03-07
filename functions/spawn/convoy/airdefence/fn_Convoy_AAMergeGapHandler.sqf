@@ -3,7 +3,7 @@ params ["_aaVeh","_prevTail","_dispAA","_gapMin","_gapTimeout","_stepKph","_inte
 private _t0 = time;
 waitUntil {
 	sleep 0.5;
-	isNull _aaVeh || !canMove _aaVeh || (_aaVeh distance _prevTail) >= _gapMin || ((time - _t0) > _gapTimeout)
+	isNull _aaVeh || !canMove _aaVeh || (_aaVeh distance2D _prevTail) >= _gapMin || ((time - _t0) > _gapTimeout)
 };
 if (isNull _aaVeh || !canMove _aaVeh) exitWith {};
 private _base = _aaVeh getVariable ["OKS_LimitSpeedBase", 40];

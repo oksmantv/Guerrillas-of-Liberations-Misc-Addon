@@ -125,7 +125,7 @@ while { (time - _startTime) <= _maxRuntime } do {
 				_checked = _checked + 1;
 				if ([_observerUnit, _target, _spottingRange] call _hasLOS) then {
 					_confirmedTotal = _confirmedTotal + 1;
-					if ((_observerUnit distance _target) <= 50) then { _closeThreat = true; };
+					if ((_observerUnit distance2D _target) <= 50) then { _closeThreat = true; };
 					if (_confirmedTotal >= _minimumTargets) then {
 						_observerVeh setVariable ["GOL_Convoy_TargetsConfirmed", true, true];
 					};
