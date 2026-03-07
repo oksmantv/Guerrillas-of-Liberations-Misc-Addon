@@ -6,14 +6,7 @@ if (hasInterface) then {
 		_Side = [player] call GW_Common_Fnc_getSide;
 		[_Side, systemChat "Pilot: Awaiting coordinates"] onMapSingleClick
 		{
-			Private ["_BoxCode"];
-			Switch (_This select 0) do
-			{
-				Case WEST: {_BoxCode = {[_Box, ["small_box","west"]] call GW_Gear_Fnc_Init; [_Box] spawn OKS_fnc_SetupMobileServiceStation}};
-				Case EAST: {_BoxCode = {[_Box, ["small_box","east"]] call GW_Gear_Fnc_Init; [_Box] spawn OKS_fnc_SetupMobileServiceStation}};
-				Case INDEPENDENT: {_BoxCode = {[_Box, ["small_box","indep"]] call GW_Gear_Fnc_Init; [_Box] spawn OKS_fnc_SetupMobileServiceStation}};
-			};
-			[(_This select 0),GOL_NEKY_SUPPLY_HELICOPTER,"drop", ["helicopter_spawn",_pos,"helicopter_despawn"],_BoxCode,true] spawn OKS_fnc_SupplyMapClick;
+			[(_This select 0),GOL_NEKY_SUPPLY_HELICOPTER,"drop", ["helicopter_spawn",_pos,"helicopter_despawn"],"",true] spawn OKS_fnc_SupplyMapClick;
 		};
 	};
 
@@ -23,14 +16,7 @@ if (hasInterface) then {
 		_Side = [player] call GW_Common_Fnc_getSide;
 		[_Side, systemChat "Pilot: Awaiting coordinates"] onMapSingleClick
 		{
-			Private ["_BoxCode"];
-			Switch (_This select 0) do
-			{
-				Case WEST: {_BoxCode = {[_Box, ["small_box","west"]] call GW_Gear_Fnc_Init; [_Box] spawn OKS_fnc_SetupMobileServiceStation}};
-				Case EAST: {_BoxCode = {[_Box, ["small_box","east"]] call GW_Gear_Fnc_Init; [_Box] spawn OKS_fnc_SetupMobileServiceStation}};
-				Case INDEPENDENT: {_BoxCode = {[_Box, ["small_box","indep"]] call GW_Gear_Fnc_Init; [_Box] spawn OKS_fnc_SetupMobileServiceStation}};
-			};
-			[(_This select 0),GOL_NEKY_SUPPLY_HELICOPTER,"unload", ["helicopter_spawn",_pos,"helicopter_despawn"],_BoxCode,true] spawn OKS_fnc_SupplyMapClick;
+			[(_This select 0),GOL_NEKY_SUPPLY_HELICOPTER,"unload", ["helicopter_spawn",_pos,"helicopter_despawn"],"",true] spawn OKS_fnc_SupplyMapClick;
 		};
 	};
 

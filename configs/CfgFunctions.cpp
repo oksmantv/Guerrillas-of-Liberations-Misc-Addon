@@ -222,6 +222,7 @@ class CfgFunctions // Defines a function
 			class SetupCargoSpace {};
 			class AdjustPlayerVehicleDamage {};
 			class DebugVehicleDamage {};
+			class ToggleATGM {};
 		};
 
 		class OKS_Vehicles_MissileWarning {

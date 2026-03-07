@@ -1199,11 +1199,15 @@ class CfgWeapons {
 		recoilProne = "assaultRifleBase";
 	};
 
-// FPV throwables (soft dependency on BOT_FPV_Enhanced)
-class GrenadeLauncher;
-class Throw: GrenadeLauncher {
-		Muzzles[] += {"GOL_Weapon_FPV_AT_Throw","GOL_Weapon_FPV_AP_Throw","GOL_Weapon_FPV_AP_OG7V_Throw","GOL_Weapon_FPV_AP_IED_Throw"};
+	// FPV throwables (soft dependency on BOT_FPV_Enhanced)
+	class GrenadeLauncher;
+	class Throw: GrenadeLauncher {
+		Muzzles[] += {"GOL_MiniGrenadeMuzzle","GOL_Weapon_FPV_AT_Throw","GOL_Weapon_FPV_AP_Throw","GOL_Weapon_FPV_AP_OG7V_Throw","GOL_Weapon_FPV_AP_IED_Throw"};
+
 		class ThrowMuzzle: GrenadeLauncher {};
+		class GOL_MiniGrenadeMuzzle: ThrowMuzzle {
+			magazines[] = {"GOL_HandGrenade_Mini"};
+		};
 
 		class GOL_Weapon_FPV_base: ThrowMuzzle {};
 		class GOL_Weapon_FPV_AT_Throw: GOL_Weapon_FPV_base {
@@ -1218,6 +1222,32 @@ class Throw: GrenadeLauncher {
 		class GOL_Weapon_FPV_AP_IED_Throw: GOL_Weapon_FPV_base {
 			magazines[] = {"GOL_Mag_FPV_AP_IED_Throw"};
 		};
+	};
+
+	// --- GOL BMP-2D custom weapons (enable vanilla FCS auto-range) ---
+	// Split into two single-muzzle weapons (muzzles={"this"}) so parent-level
+	// bc=18 IS the effective muzzle-level value. This avoids the cross-PBO
+	// inner-class corruption that occurs when overriding HE/AP inside a child.
+	class rhs_weap_2a42;
+	class GOL_weap_2a42_HE: rhs_weap_2a42 {
+		ballisticsComputer = 18;
+		muzzles[] = {"this"};
+		magazineWell[] = {"RHS_AutoCannon_30mm_2A42_HE"};
+		displayName = "2A42 HE";
+		dispersion = 0.0012;
+	};
+	class GOL_weap_2a42_AP: rhs_weap_2a42 {
+		ballisticsComputer = 18;
+		muzzles[] = {"this"};
+		magazineWell[] = {"RHS_AutoCannon_30mm_2A42_AP"};
+		displayName = "2A42 AP";
+		dispersion = 0.0012;
+	};
+
+	class rhs_weap_pkt;
+	class GOL_weap_pkt: rhs_weap_pkt {
+		ballisticsComputer = 18;
+		dispersion = 0.002;
 	};
 
 	// AP45 Compatibility patches

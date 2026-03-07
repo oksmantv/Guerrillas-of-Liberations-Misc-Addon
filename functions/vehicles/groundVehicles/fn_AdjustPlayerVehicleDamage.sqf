@@ -5,6 +5,18 @@ params ["_Vehicle"];
 
 if (hasInterface && !isServer) exitWith {};
 
+private _Enabled = missionNamespace getVariable ["GOL_PlayerVehicle_Enabled", false];
+if(!_Enabled) exitWith {
+	private _Debug = missionNamespace getVariable ["GOL_PlayerVehicle_Debug", false];
+	if (_Debug) then {
+		format ["AdjustPlayerVehicleDamage Script is disabled. Exiting.."] spawn OKS_fnc_LogDebug;
+	};
+	private _PlayerVehicleDamageDebug = missionNamespace getVariable ["GOL_PlayerVehicleDamage_Debug", false];
+	if (_PlayerVehicleDamageDebug) then {
+		format["[PLAYER-VEHICLE-DAMAGE] AdjustPlayerVehicleDamage Script is disabled, exiting"] spawn OKS_fnc_LogDebug;
+	};
+};
+
 private _Debug = missionNamespace getVariable ["GOL_PlayerVehicle_Debug", false];
 private _PlayerVehicleDamageDebug = missionNamespace getVariable ["GOL_PlayerVehicleDamage_Debug", false];
 

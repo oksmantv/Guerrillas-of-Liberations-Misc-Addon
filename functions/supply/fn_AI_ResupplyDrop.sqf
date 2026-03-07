@@ -20,9 +20,9 @@ if (!isServer) exitWith {};
 
 params [
     ["_aircraft", objNull, [objNull]],
-    ["_supplyBoxClass", "B_supplyCrate_F", [""]],
+    ["_supplyBoxClass", "", [""]],           // Leave empty to auto-resolve GOL crate from aircraft side
     ["_customItems", [], [[]]],                     // Array of [classname, quantity] arrays
-    ["_addDefaultSupplies", true, [false]],         // Add default medical/ammo supplies
+    ["_addDefaultSupplies", false, [false]],        // Ignored when using GOL crates (init EH handles content)
     ["_dropDistance", 100, [0]],                    // Distance before target to drop (meters)
     ["_enableDebug", false, [false]],               // Enable debug for this specific drop
     ["_numberOfDrops", 1, [0]]                      // Number of supply crates to drop (default: 1)
@@ -39,6 +39,23 @@ if (isNull _aircraft || !alive _aircraft) exitWith {
 // Validate number of drops
 if (_numberOfDrops < 1) then {_numberOfDrops = 1};
 if (_numberOfDrops > 10) then {_numberOfDrops = 10}; // Reasonable maximum
+
+// Resolve GOL faction crate from aircraft side if no class was specified
+if (_supplyBoxClass == "") then {
+    private _aircraftSide = side (group (driver _aircraft));
+    _supplyBoxClass = switch (_aircraftSide) do {
+        case west:        {"GOL_SquadResupplybox_WEST"};
+        case east:        {"GOL_SquadResupplybox_EAST"};
+        case independent: {"GOL_SquadResupplybox_GUER"};
+        default           {"GOL_SquadResupplybox_WEST"};
+    };
+    if (_enableDebug) then {
+        format["[RESUPPLY_DROP] Auto-resolved supply box class: %1", _supplyBoxClass] call OKS_fnc_LogDebug;
+    };
+};
+
+// Use JCA signal flares on landing if the mod is loaded
+private _jcaLoaded = isClass (configFile >> "CfgAmmo" >> "JCA_GrenadeAmmo_SignalFlare_Red");
 
 if (_enableDebug) then {
     format["[RESUPPLY_DROP] Initiating %1 supply drop(s) from %2 at position %3", 
@@ -166,8 +183,8 @@ if (_enableDebug) then {
 };
 
 // Monitor parachute descent and handle landing
-[_supplyBox, _parachute, _enableDebug] spawn {
-    params ["_box", "_chute", "_debug"];
+[_supplyBox, _parachute, _enableDebug, _jcaLoaded] spawn {
+    params ["_box", "_chute", "_debug", "_jcaLoaded"];
     
     
     // Monitor parachute descent and handle landing
@@ -185,6 +202,28 @@ if (_enableDebug) then {
         // Clean up parachute
         if (!isNull _chute) then {
             deleteVehicle _chute;
+        };
+        
+        // Spawn JCA signal flare at landing site if mod is loaded
+        if (_jcaLoaded) then {
+            private _landPos = getPosATL _box;
+            private _flareTrigger = createTrigger ["EmptyDetector", _landPos];
+            _flareTrigger setTriggerArea [10, 10, 0, false];
+            _flareTrigger setTriggerActivation ["ANYPLAYER", "PRESENT", false];
+            _flareTrigger setTriggerStatements ["this", "", ""];
+            [_landPos, _flareTrigger, "red", "signal"] spawn OKS_fnc_SignalFlare;
+            // Auto-stop after 20 minutes
+            [_flareTrigger] spawn {
+                params ["_trigger"];
+                sleep 1200;
+                _trigger setTriggerActivation ["NONE", "PRESENT", false];
+                _trigger setTriggerStatements ["true", "", ""];
+                sleep 60;
+                deleteVehicle _trigger;
+            };
+            if (_debug) then {
+                "[RESUPPLY_DROP] JCA signal flare spawned at landing site" call OKS_fnc_LogDebug;
+            };
         };
         
         if (_debug) then {

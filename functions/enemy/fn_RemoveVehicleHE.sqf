@@ -23,12 +23,36 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 	private _Enabled = false;
 	private _RemoveATGM = missionNamespace getVariable ["GOL_RemoveVehicleATGM_Enabled",true];
 	// BM-2T
-	if(["O_APC_Tracked_02", typeOf _Vehicle, false] call BIS_fnc_inString) then {
+	if([
+		"O_APC_Tracked_02", typeOf _Vehicle, false] call BIS_fnc_inString &&
+		["O_T_APC_Tracked_02", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
 		_Enabled = true;
 		if(_RemoveATGM) then {	
-			_Vehicle removeMagazinesTurret ["2Rnd_GAT_missiles_0",[0]] // BM-2T
+			_Vehicle removeMagazinesTurret ["2Rnd_GAT_missiles_0",[0]]
+			_Vehicle removeWeaponTurret ["missiles_titan",[0]]
 		};
 		_Vehicle removeMagazinesTurret ["140Rnd_30mm_MP_shells_Tracer_Green",[0]] // BM-2T
+	};
+
+	if(
+		["Marid", typeOf _Vehicle, false] call BIS_fnc_inString &&
+		["Wheeled_02_rcws_v2", typeOf _Vehicle, false] call BIS_fnc_inString &&
+		["Tracked_01_rcws_F", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["GMG_40MM", [0]]; // Marid
+	};
+
+	if(
+		["Wheeled_03_cannon", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["missiles_titan", [0]]; // Pandur
+	};	
+
+	if(
+		["BTR90", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["uk3cb_weap_ags17_btr90", [0]]; // BTR-90
 	};
 
 	if(["BMP", typeOf _Vehicle, false] call BIS_fnc_inString) then {
@@ -103,6 +127,11 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
         _Vehicle removeMagazinesTurret ["UK3CB_20_HE",[0]];
         _Vehicle removeMagazinesTurret ["UK3CB_20_HE_G",[0]];
         _Vehicle removeMagazinesTurret ["UK3CB_20_HE_Y",[0]];
+    };
+
+	if(["M1117", typeOf _Vehicle, false] call BIS_fnc_inString) then {
+		_Enabled = true;
+        _Vehicle removeWeaponTurret ["RHS_MK19", [0]]; // M1117
     };
 
 	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];

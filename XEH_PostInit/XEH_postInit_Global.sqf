@@ -396,3 +396,34 @@ if(GOL_Core_Enabled isEqualTo true) then {
         };  
     };
 };
+
+// --- GOL_BMP2DM: ACE self-actions for ATGM deploy/stow (commander only) ---
+// Added via script to avoid wiping parent ACE actions in config.
+if (hasInterface) then {
+	private _atgmParent = ["GOL_ATGM", "ATGM Launcher", "",
+		{},
+		{_player == (vehicle _player) turretUnit [0,0] && {isTurnedOut _player}}
+	] call ace_interact_menu_fnc_createAction;
+
+	private _atgmDeploy = ["GOL_ATGM_Deploy", "Deploy ATGM", "",
+		{[vehicle _player, true] call OKS_fnc_ToggleATGM},
+		{!((vehicle _player) getVariable ["GOL_ATGM_Deployed", true])}
+	] call ace_interact_menu_fnc_createAction;
+
+	private _atgmStow = ["GOL_ATGM_Stow", "Stow ATGM", "",
+		{[vehicle _player, false] call OKS_fnc_ToggleATGM},
+		{(vehicle _player) getVariable ["GOL_ATGM_Deployed", true]}
+	] call ace_interact_menu_fnc_createAction;
+
+	["GOL_BMP2DM", 1, ["ACE_SelfActions"], _atgmParent] call ace_interact_menu_fnc_addActionToClass;
+	["GOL_BMP2DM", 1, ["ACE_SelfActions", "GOL_ATGM"], _atgmDeploy] call ace_interact_menu_fnc_addActionToClass;
+	["GOL_BMP2DM", 1, ["ACE_SelfActions", "GOL_ATGM"], _atgmStow] call ace_interact_menu_fnc_addActionToClass;
+};
+
+// --- GOL_BMP2DM: remove ghost inherited weapons (rhs_weap_9k11) ---
+// Done via CBA class EH to avoid overriding parent RHS EventHandlers in config.
+["GOL_BMP2DM", "init", {
+	params ["_vehicle"];
+	_vehicle removeWeaponTurret ["rhs_weap_9k11", [0]];
+	_vehicle removeWeaponTurret ["rhs_weap_9k111", [0]];
+}, true, [], true] call CBA_fnc_addClassEventHandler;

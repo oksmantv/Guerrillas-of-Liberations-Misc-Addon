@@ -60,7 +60,7 @@ switch (_Side) do
 	case BLUFOR:
 	{
 		if (_HeliClass == "") then {_HeliClass = "B_Heli_Transport_03_F";};
-		_BoxClass = "B_CargoNet_01_ammo_F";
+		_BoxClass = "GOL_SquadResupplybox_WEST";
 		_ChuteClass = "B_Parachute_02_F";
 		_PilotClass = "B_Pilot_F";
 	};
@@ -68,7 +68,7 @@ switch (_Side) do
 	case OPFOR:
 	{
 		if (_HeliClass == "") then {_HeliClass = "O_Heli_Transport_04_F";};
-		_BoxClass = "O_CargoNet_01_ammo_F";
+		_BoxClass = "GOL_SquadResupplybox_EAST";
 		_ChuteClass = "O_Parachute_02_F";
 		_PilotClass = "O_Pilot_F";
 	};
@@ -76,7 +76,7 @@ switch (_Side) do
 	case INDEPENDENT:
 	{
 		if (_HeliClass == "") then {_HeliClass = "I_Heli_Transport_02_F";};
-		_BoxClass = "I_CargoNet_01_ammo_F";
+		_BoxClass = "GOL_SquadResupplybox_GUER";
 		_ChuteClass = "I_Parachute_02_F";
 		_PilotClass = "I_Pilot_F";
 	};
@@ -84,6 +84,9 @@ switch (_Side) do
 
 // Whether it'll have a smoke grenade or a chemlight for signal
 if ((dayTime > 04.30) and (dayTime < 19.30)) then {_SignalClass = "SmokeShellGreen"} else {_SignalClass = "F_40mm_Green"};
+
+// Use JCA signal flares if the mod is loaded
+private _jcaLoaded = isClass (configFile >> "CfgAmmo" >> "JCA_GrenadeAmmo_SignalFlare_Green");
 
 // Spawning Heli & Crew
 _Heli = CreateVehicle [_HeliClass, (_STD select 0), [], 0, "FLY"];
@@ -124,9 +127,9 @@ Switch (_Type) do
 		_DirCorrection = [(_STD select 0), (_STD Select 1)] call BIS_fnc_dirTo;
 		_Correction = [(_STD Select 1), 20, _DirCorrection] call BIS_fnc_relPos;
 		sleep 0.5;
-		[_Pilot,_Heli,_BoxClass,_BoxCode,_ChuteClass,_SignalClass,_STD] Spawn
+		[_Pilot,_Heli,_BoxClass,_BoxCode,_ChuteClass,_SignalClass,_STD,_jcaLoaded] Spawn
 		{
-			Params ["_Pilot","_Heli","_BoxClass","_BoxCode","_ChuteClass","_SignalClass","_STD"];
+			Params ["_Pilot","_Heli","_BoxClass","_BoxCode","_ChuteClass","_SignalClass","_STD","_jcaLoaded"];
 
 			WaitUntil {sleep 0.5; ( (!(Alive _Heli) or !(CanMove _Heli)) or !(Alive _Pilot) or ((_STD Select 1) distance2D _Heli < 200))};
 
@@ -140,7 +143,7 @@ Switch (_Type) do
 				{
 					_Box = _This select 0;
 					_BoxCode = _This select 1;
-					sleep 2;
+					sleep 5;
 					if (TypeName _BoxCode == "STRING") Then {if (_BoxCode != "") then {[_Box] execVM _BoxCode};} else {[_Box] call _BoxCode};
 				};
 				_Box HideObjectGlobal True;
@@ -162,17 +165,34 @@ Switch (_Type) do
 				_Chute setVelocity [((Velocity _Heli) select 0), ((Velocity _Heli) select 1),-5];
 				[_Chute] spawn { For "_i" from 1 to 10 do { Params ["_Chute"]; _Chute setvelocity [Velocity _Chute select 0, Velocity _Chute select 1, -5]; sleep 0.5 } };
 
-				[_SignalClass, _Box] spawn
+				[_SignalClass, _Box, _jcaLoaded, (_STD select 1)] spawn
 				{
-					_SignalClass = _This select 0;
-					_Box = _This select 1;
+					params ["_signalClass", "_box", "_jcaLoaded", "_targetPos"];
 
 					sleep 15;
-					_Signal = createVehicle [_SignalClass, [0,0,0], [], 0, "NONE"];
-					_Signal AttachTo [_Box,[0,0,0]];
-					WaitUntil {(((GetPosATL _Box) select 2) <= 1)};
+					if (_jcaLoaded) then {
+						private _flareTrigger = createTrigger ["EmptyDetector", _targetPos];
+						_flareTrigger setTriggerArea [10, 10, 0, false];
+						_flareTrigger setTriggerActivation ["ANYPLAYER", "PRESENT", false];
+						_flareTrigger setTriggerStatements ["this", "", ""];
+						WaitUntil {(((GetPosATL _box) select 2) <= 1)};
+						[getPos _box, _flareTrigger, "green", "signal"] spawn OKS_fnc_SignalFlare;
 
-					Detach _Box;
+						// Auto-stop flares 20 minutes after box lands
+						[_flareTrigger] spawn {
+							params ["_trigger"];
+							sleep 1200;
+							_trigger setTriggerActivation ["NONE", "PRESENT", false];
+							_trigger setTriggerStatements ["true", "", ""];
+							sleep 60;
+							deleteVehicle _trigger;
+						};
+					} else {
+						private _signal = createVehicle [_signalClass, [0,0,0], [], 0, "NONE"];
+						_signal attachTo [_box, [0,0,0]];
+						WaitUntil {(((GetPosATL _box) select 2) <= 1)};
+						detach _box;
+					};
 					"Pilot: Supplies Landed!" remoteExec ["systemChat"];
 				};
 			};
@@ -182,9 +202,9 @@ Switch (_Type) do
 	case "unload":
 	{
 		_HeliPad = createVehicle ["Land_HelipadEmpty_F", (_STD select 1), [], 0, "NONE"];
-		[_Pilot,_PilotClass,_Heli,_HeliPad,_BoxClass,_BoxCode,_SignalClass,_STD] spawn
+		[_Pilot,_PilotClass,_Heli,_HeliPad,_BoxClass,_BoxCode,_SignalClass,_STD,_jcaLoaded] spawn
 		{
-			Params ["_Pilot","_PilotClass","_Heli","_HeliPad","_BoxClass","_BoxCode","_SignalClass","_STD"];
+			Params ["_Pilot","_PilotClass","_Heli","_HeliPad","_BoxClass","_BoxCode","_SignalClass","_STD","_jcaLoaded"];
 
 			_Heli forceSpeed 100;
 			WaitUntil {sleep 2; ( (!(Alive _Heli) or !(CanMove _Heli)) or !(Alive _Pilot) or ((_Heli distance _HeliPad) < 600))};
@@ -192,7 +212,17 @@ Switch (_Type) do
 			{
 				_Heli Land "LAND";
 				doStop _Heli;
-				createVehicle [_SignalClass, (getPos _HeliPad), [], 5, "CAN_COLLIDE"];
+				if (_jcaLoaded) then {
+					private _lzPos = getPos _HeliPad;
+					private _flareTrigger = createTrigger ["EmptyDetector", _lzPos];
+					_flareTrigger setTriggerArea [10, 10, 0, false];
+					_flareTrigger setTriggerActivation ["ANYPLAYER", "PRESENT", false];
+					_flareTrigger setTriggerStatements ["this", "", ""];
+					[_lzPos, _flareTrigger, "green", "signal"] spawn OKS_fnc_SignalFlare;
+					_HeliPad setVariable ["OKS_supply_flareTrigger", _flareTrigger];
+				} else {
+					createVehicle [_SignalClass, (getPos _HeliPad), [], 5, "CAN_COLLIDE"];
+				};
 				WaitUntil {sleep 2; ( (!(Alive _Heli) or !(CanMove _Heli)) or !(Alive _Pilot) or (((GetPosATL _Heli) Select 2) < 5))};
 				_Pilot forceSpeed 0;
 				_Pilot DisableAI "MOVE";
@@ -208,6 +238,19 @@ Switch (_Type) do
 						if (TypeName _BoxCode == "STRING") Then {if (_BoxCode != "") then {[_Box] execVM _BoxCode};} else {[_Box] call _BoxCode};
 					};
 					"Pilot: Supplies Unloaded." remoteExec ["systemChat"];
+					// Stop JCA flares now that the heli is departing
+					if (_jcaLoaded) then {
+						private _flareTrigger = _HeliPad getVariable ["OKS_supply_flareTrigger", objNull];
+						if (!isNull _flareTrigger) then {
+							_flareTrigger setTriggerActivation ["NONE", "PRESENT", false];
+							_flareTrigger setTriggerStatements ["true", "", ""];
+							[_flareTrigger] spawn {
+								params ["_trigger"];
+								sleep 60;
+								deleteVehicle _trigger;
+							};
+						};
+					};
 					DeleteVehicle _Pilot;
 					_Pilot = CreateAgent [_PilotClass, [0,0,0], [], 0, "NONE"];		// Ghetto fix for agent getting stuck on "_Heli Land 'LAND'".
 					_Pilot MoveInDriver _Heli;

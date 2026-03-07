@@ -329,15 +329,6 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_PlayerVehicleDamage_Debug",
-    "CHECKBOX",
-    ["Enable Player Vehicle Damage DEBUG", "Enables debugging specifically for the player vehicle damage reduction system for targeted damage testing."],
-    ["GOL DEBUG", "Module Specific"],
-    true,
-    1
-] call CBA_fnc_addSetting;
-
-[
     "GOL_SignalFlare_Debug",
     "CHECKBOX",
     ["Enable Signal Flare Debug", "Enables debug messages for signal flare scripts."],

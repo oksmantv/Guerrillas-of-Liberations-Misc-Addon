@@ -74,6 +74,34 @@ missionNamespace setVariable [
     1
 ] call CBA_fnc_addSetting;
 
+// Player Vehicle Survivability (OKS_fnc_AdjustPlayerVehicleDamage)
+[
+    "GOL_PlayerVehicle_Enabled",
+    "CHECKBOX",
+    ["Enable Experimental Survivability Upgrade", "When enabled, qualifying IFVs/APCs crewed by players receive reduced component damage. This is experimental — disable if you notice unexpected vehicle behaviour."],
+    ["GOL Ground Vehicles", "Player Vehicle Survivability"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_PlayerVehicle_Debug",
+    "CHECKBOX",
+    ["Survivability Upgrade Debug", "Enables general [AdjustPlayerVehicleDamage] logging to RPT."],
+    ["GOL Ground Vehicles", "Player Vehicle Survivability"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_PlayerVehicleDamage_Debug",
+    "CHECKBOX",
+    ["Survivability Upgrade Damage Debug", "Enables per-hit [PLAYER-VEHICLE-DAMAGE] logging to RPT. Can be verbose."],
+    ["GOL Ground Vehicles", "Player Vehicle Survivability"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
 // Amphibious IFVs: Water boost while holding Shift
 [
     "GOL_AmphIFVBoost_Enabled",

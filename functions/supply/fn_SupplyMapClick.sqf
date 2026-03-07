@@ -13,7 +13,7 @@ _Side = [_This, 0, BLUFOR, [SideUnknown]] call BIS_fnc_param;
 _HeliClass = toLower ([_This, 1, "", [""]] call BIS_fnc_Param);
 _Type = toLower ([_This, 2, "drop", [""]] call BIS_fnc_Param);
 _STDs = [_This, 3, [""], [[""],[]]] call BIS_fnc_Param;
-_BoxCode = [_This, 4, "Scripts\NEKY_Supply\NEKY_SupplyBox.sqf", ["", {}]] call BIS_fnc_Param;
+_BoxCode = [_This, 4, "", ["", {}]] call BIS_fnc_Param;
 _Vulnerable = [_This, 5, false, [false]] call BIS_fnc_Param;
 
 //	Run main script

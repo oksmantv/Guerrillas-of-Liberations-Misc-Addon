@@ -267,4 +267,12 @@ class CfgAmmo {
 		tracerEndTime = 2.5;
 		nvgOnly = 0;
 	};
+
+	class GOL_Ammo_HandGrenade_Mini: GrenadeHand {
+		hit = 8;
+		indirectHit = 8;
+		indirectHitRange = 4;
+		explosionEffects = "MiniGrenadeExplosion";
+		CraterEffects = "MiniGrenadeCrater";
+	};
 };

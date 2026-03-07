@@ -379,4 +379,15 @@ class CfgMagazines {
         tracersEvery = 1;
         lastRoundsTracer = 200;
     };
+
+	// GOL Mini Hand Grenade magazine
+	class GOL_HandGrenade_Mini: HandGrenade {
+		scope = 2;
+		scopeArsenal = 2;
+		scopeCurator = 2;
+		displayName = "M67 Fragmentation Grenade (AI)";
+		displayNameShort = "M67 AI Grenade";
+		descriptionShort = "Compact hand grenade with reduced blast radius.";
+		ammo = "Mini_Grenade";
+	};
 };

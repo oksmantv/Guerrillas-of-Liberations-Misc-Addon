@@ -28,15 +28,29 @@ if (!hasInterface) exitWith {};
 		params ["_vehicle", "_role", "_unit"];
 		if (isPlayer _unit && {local _unit}) then {
 			_unit setVariable ["GOL_lastIntercomVehicle", _vehicle];
-			// Disconnect if currently on this vehicle's intercom
-			if (!(_unit isNil "TFAR_ExternalIntercomVehicle")) then {
-				[{
-					params ["_vehicle", "_unit"];
-					if (!isNil "TFAR_external_intercom_fnc_disconnect") then {
-						[_vehicle, _unit] call TFAR_external_intercom_fnc_disconnect;
-					};
-				}, [_vehicle, _unit], 0.1] call CBA_fnc_waitAndExecute;
-			};
+			// Wait until on foot AND TFAR has set its intercom state, then clean up.
+			// If wireless was never active, the timeout fallback still resets wired channel.
+			[{
+				params ["_vehicle", "_unit"];
+				vehicle _unit == _unit
+				&& {!(_unit isNil "TFAR_ExternalIntercomVehicle")}
+			}, {
+				params ["_vehicle", "_unit"];
+				// Disable wired intercom channel
+				if (!isNil "TFAR_fnc_setIntercomChannel") then {
+					[_vehicle, _unit, -1] call TFAR_fnc_setIntercomChannel;
+				};
+				// Disconnect wireless intercom (using TFAR's own tracked vehicle)
+				if (!isNil "TFAR_external_intercom_fnc_disconnect") then {
+					[_unit getVariable "TFAR_ExternalIntercomVehicle", _unit] call TFAR_external_intercom_fnc_disconnect;
+				};
+			}, [_vehicle, _unit], 5, {
+				// Timeout: no wireless was active — still reset wired channel
+				params ["_vehicle", "_unit"];
+				if (!isNil "TFAR_fnc_setIntercomChannel") then {
+					[_vehicle, _unit, -1] call TFAR_fnc_setIntercomChannel;
+				};
+			}] call CBA_fnc_waitUntilAndExecute;
 		};
 	}, true, [], true] call CBA_fnc_addClassEventHandler;
 

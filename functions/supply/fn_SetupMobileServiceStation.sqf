@@ -1,11 +1,16 @@
 /*
 	Sets up an ACE Mobile Service Station.
 
+	Full setup (clears cargo, adds 3CB rearm ammo):
 	[_Crate] spawn OKS_fnc_SetupMobileServiceStation;
-*/	
+
+	Append-only (preserves existing cargo, only sets ACE service properties):
+	[_Crate, true] spawn OKS_fnc_SetupMobileServiceStation;
+*/
 
 Params [
-	"_Crate"
+	"_Crate",
+	["_appendOnly", false, [false]]
 ];
 
 sleep 1;
@@ -13,10 +18,12 @@ if(!isServer) exitWith {
 	"[SetupMSS] Not server exited." spawn OKS_fnc_LogDebug;
 };
 
-// Ensure Cargo is empty
-ClearMagazineCargoGlobal _Crate;
-ClearWeaponCargoGlobal _Crate;
-ClearItemCargoGlobal _Crate;
+if (!_appendOnly) then {
+	// Ensure Cargo is empty
+	ClearMagazineCargoGlobal _Crate;
+	ClearWeaponCargoGlobal _Crate;
+	ClearItemCargoGlobal _Crate;
+};
 
 // Set Repair
 _Crate setVariable ["ace_repair_canRepair", 1, true];
@@ -25,11 +32,14 @@ _Crate setVariable ["ace_isRepairFacility", 1, true];
 // Set Rearm
 _Crate setVariable ["ace_rearm_isSupplyVehicle", true, true];
 [_Crate, 9999] call ace_rearm_fnc_makeSource;
-_Crate AddMagazineCargoGlobal ["UK3CB_BAF_127_100Rnd",20];
-_Crate AddMagazineCargoGlobal ["UK3CB_BAF_32Rnd_40mm_G_Box",12];
-_Crate AddMagazineCargoGlobal ["UK3CB_BAF_1Rnd_Milan",8];
-_Crate AddMagazineCargoGlobal ["UK3CB_BAF_762_100Rnd_T",20];
-_Crate AddMagazineCargoGlobal ["UK3CB_BAF_762_200Rnd_T",20];
+
+if (!_appendOnly) then {
+	_Crate AddMagazineCargoGlobal ["UK3CB_BAF_127_100Rnd",20];
+	_Crate AddMagazineCargoGlobal ["UK3CB_BAF_32Rnd_40mm_G_Box",12];
+	_Crate AddMagazineCargoGlobal ["UK3CB_BAF_1Rnd_Milan",8];
+	_Crate AddMagazineCargoGlobal ["UK3CB_BAF_762_100Rnd_T",20];
+	_Crate AddMagazineCargoGlobal ["UK3CB_BAF_762_200Rnd_T",20];
+};
 
 // Add client-side ACE action for this station only (supports JIP).
 if ((typeOf _Crate) isEqualTo "GOL_MobileServiceStation") then {

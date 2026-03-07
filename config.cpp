@@ -17,6 +17,7 @@ class CfgPatches
             "rhs_main",
             "rhs_weapons",
             "rhs_c_weapons",
+            "rhs_c_bmp",
             "rhsusf_main",
             "rhsusf_c_airweapons",
             "rhsusf_c_heavyweapons",
@@ -76,7 +77,10 @@ class CfgPatches
             "OKS_Module_ApplyUnitGear",
 			"GOL_FastRope_DZ",
 			"GOL_Flag_Hellfish",
-            "Fennek_wd","Fennek_d","Fennek_e","Fennek_hmg_wd","Fennek_hmg_d","Fennek_hmg_e","Fennek_gmg_wd","Fennek_gmg_d","Fennek_gmg_e"
+            "Fennek_wd","Fennek_d","Fennek_e","Fennek_hmg_wd","Fennek_hmg_d","Fennek_hmg_e","Fennek_gmg_wd","Fennek_gmg_d","Fennek_gmg_e",
+            "GOL_BMP2DM",
+            "GOL_BMP2DM_CDF",
+            "GOL_BMP2DM_GAF"
 		};
 		weapons[] = {
             "UK3CB_V_Invisible_Plate_Low",
@@ -102,7 +106,10 @@ class CfgPatches
             "GOL_MMG_02_sand_F",
             "GOL_LMG_Zafir_F",
             "GOL_weap_fnmag",
-            "GOL_MG3_KWS_B"
+            "GOL_MG3_KWS_B",
+            "GOL_weap_2a42_HE",
+            "GOL_weap_2a42_AP",
+            "GOL_weap_pkt"
         };
 		magazines[] = {
 			"GOL_150Rnd_93x64_Mag",
