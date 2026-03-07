@@ -29,10 +29,10 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 	) then {
 		_Enabled = true;
 		if(_RemoveATGM) then {	
-			_Vehicle removeMagazinesTurret ["2Rnd_GAT_missiles_0",[0]]
-			_Vehicle removeWeaponTurret ["missiles_titan",[0]]
+			_Vehicle removeMagazinesTurret ["2Rnd_GAT_missiles_0",[0]];
+			_Vehicle removeWeaponTurret ["missiles_titan",[0]];
 		};
-		_Vehicle removeMagazinesTurret ["140Rnd_30mm_MP_shells_Tracer_Green",[0]] // BM-2T
+		_Vehicle removeMagazinesTurret ["140Rnd_30mm_MP_shells_Tracer_Green",[0]]; // BM-2T
 	};
 
 	if(
