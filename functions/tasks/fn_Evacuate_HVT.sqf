@@ -183,7 +183,7 @@ _TaskPosition = _TaskPosition vectorMultiply (1 / (count _UnitsArray));
 	_TaskPosition,
 	_TaskState,
 	-1,
-	true,
+	_TaskNotification,
 	"exit",
 	false
 ] call BIS_fnc_taskCreate;
