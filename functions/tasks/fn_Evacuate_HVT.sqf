@@ -36,7 +36,14 @@ if(_HVTDebug) then {
 	format["[HVT TASK] fn_Evacuate_HVT started with params: Units=%1, ExfilSite=%2, Side=%3, HelicopterEvac=%4, ParentTask=%5, IsCaptive=%6, TaskOnStart=%7", _UnitsOrGroupOrArray, _ExfilSite, _Side, _HelicopterEvac, _ParentTask, _IsCaptive, _TaskOnStart] call OKS_fnc_LogDebug;
 };
 
-Private ["_Units","_ExfilPosition","_TaskDescription"];
+Private ["_Units","_ExfilPosition","_TaskDescription","_TaskNotification"];
+
+if(_TaskOnStart) then {
+	_TaskNotification = false;
+} else {
+	_TaskNotification = true;
+};
+
 if(typeName _UnitsOrGroupOrArray == "OBJECT") then {
 	_Units = [_UnitsOrGroupOrArray];
 	group _UnitsOrGroupOrArray setVariable ["acex_headless_blacklist",true,true];
