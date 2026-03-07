@@ -19,7 +19,13 @@ class CfgMagazineWells {
             "GOL_30Rnd_556x45_AP45",
             "GOL_30Rnd_556x45_AP45_Tracer_Red",
             "GOL_30Rnd_556x45_AP45_Tracer_Green",
-            "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+            "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+            "GOL_30Rnd_556x45_AP45_Mixed_Red",
+            "GOL_30Rnd_556x45_AP45_Mixed_Green",
+            "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
         };
     };
 
@@ -40,7 +46,13 @@ class CfgMagazineWells {
             "GOL_30Rnd_556x45_AP45",
             "GOL_30Rnd_556x45_AP45_Tracer_Red",
             "GOL_30Rnd_556x45_AP45_Tracer_Green",
-            "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+            "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+            "GOL_30Rnd_556x45_AP45_Mixed_Red",
+            "GOL_30Rnd_556x45_AP45_Mixed_Green",
+            "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
         };
     };
 
@@ -52,7 +64,13 @@ class CfgMagazineWells {
             "GOL_30Rnd_556x45_AP45",
             "GOL_30Rnd_556x45_AP45_Tracer_Red",
             "GOL_30Rnd_556x45_AP45_Tracer_Green",
-            "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+            "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+            "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+            "GOL_30Rnd_556x45_AP45_Mixed_Red",
+            "GOL_30Rnd_556x45_AP45_Mixed_Green",
+            "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
         };
     };
 };

@@ -191,7 +191,7 @@ class CfgMagazines {
         displayName = "5.56mm 30Rnd AP45";
         displayNameShort = "AP45";
         descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45 armor-piercing, last 5 red tracers";
-        ammo = "GOL_B_556x45_Ball_AP45";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
         tracersEvery = 0;
         lastRoundsTracer = 5;
     };
@@ -221,6 +221,53 @@ class CfgMagazines {
         ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
         tracersEvery = 1;
         lastRoundsTracer = 30;
+    };
+
+    // 5.56mm AP45 reload tracer variants (last 5 rounds are tracers)
+    class GOL_30Rnd_556x45_AP45_Reload_Tracer_Red: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Reload Tracer (Red)";
+        displayNameShort = "AP45 RT (Red)";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, last 5 red tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
+    };
+
+    class GOL_30Rnd_556x45_AP45_Reload_Tracer_Green: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Reload Tracer (Green)";
+        displayNameShort = "AP45 RT (Green)";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, last 5 green tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Green";
+    };
+
+    class GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Reload Tracer (Yellow)";
+        displayNameShort = "AP45 RT (Yellow)";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, last 5 yellow tracers";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
+    };
+
+    // 5.56mm AP45 mixed tracer variants (every 4th round is a tracer)
+    class GOL_30Rnd_556x45_AP45_Mixed_Red: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Mixed (Red)";
+        displayNameShort = "AP45 Mixed (Red)";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, every 4th round red tracer";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
+        tracersEvery = 4;
+    };
+
+    class GOL_30Rnd_556x45_AP45_Mixed_Green: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Mixed (Green)";
+        displayNameShort = "AP45 Mixed (Green)";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, every 4th round green tracer";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Green";
+        tracersEvery = 4;
+    };
+
+    class GOL_30Rnd_556x45_AP45_Mixed_Yellow: GOL_30Rnd_556x45_AP45 {
+        displayName = "5.56mm 30Rnd AP45 Mixed (Yellow)";
+        displayNameShort = "AP45 Mixed (Yellow)";
+        descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, every 4th round yellow tracer";
+        ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
+        tracersEvery = 4;
     };
 
     // 5.56mm AP45 magazines (G36-type, inherits G36 model/mass/initspeed)
