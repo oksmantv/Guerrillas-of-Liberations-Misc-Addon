@@ -37,7 +37,13 @@ class UK3CB_BAF_L85A2: arifle_Mk20_plain_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -61,7 +67,13 @@ class UK3CB_BAF_L119A1: UK3CB_BAF_L119_Base {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -70,7 +82,13 @@ class UK3CB_BAF_L119A1_CQB: UK3CB_BAF_L119_Base {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -79,7 +97,13 @@ class UK3CB_BAF_L119A1_RIS: UK3CB_BAF_L119_Base {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -88,7 +112,13 @@ class UK3CB_BAF_L119A1_UKUGL: UK3CB_BAF_L119_Base {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -102,6 +132,12 @@ class UK3CB_BAF_L110A1: UK3CB_BAF_L110_556_Base {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_UK3CB_BAF_556_200Rnd_AP45",
         "GOL_UK3CB_BAF_556_200Rnd_AP45_T_Red",
         "GOL_UK3CB_BAF_556_200Rnd_AP45_T_Green",
@@ -115,6 +151,12 @@ class UK3CB_BAF_L110A2: UK3CB_BAF_L110_556_Base {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_UK3CB_BAF_556_200Rnd_AP45",
         "GOL_UK3CB_BAF_556_200Rnd_AP45_T_Red",
         "GOL_UK3CB_BAF_556_200Rnd_AP45_T_Green",
@@ -128,6 +170,12 @@ class UK3CB_BAF_L110A2RIS: UK3CB_BAF_L110_556_Base {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_UK3CB_BAF_556_200Rnd_AP45",
         "GOL_UK3CB_BAF_556_200Rnd_AP45_T_Red",
         "GOL_UK3CB_BAF_556_200Rnd_AP45_T_Green",
@@ -141,6 +189,12 @@ class UK3CB_BAF_L110A3: UK3CB_BAF_L110_556_Base {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_UK3CB_BAF_556_200Rnd_AP45",
         "GOL_UK3CB_BAF_556_200Rnd_AP45_T_Red",
         "GOL_UK3CB_BAF_556_200Rnd_AP45_T_Green",

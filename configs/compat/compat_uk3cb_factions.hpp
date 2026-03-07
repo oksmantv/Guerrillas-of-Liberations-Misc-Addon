@@ -30,7 +30,13 @@ class UK3CB_HK416_eotech_552: rhs_weap_hk416d145 {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -39,7 +45,13 @@ class UK3CB_HK416_eotech_552_sup: rhs_weap_hk416d145 {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -48,7 +60,13 @@ class UK3CB_HK416_eotech_552_anpeq15_sup: rhs_weap_hk416d145 {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -57,7 +75,13 @@ class UK3CB_HK416_LMT_eotech_552: rhs_weap_hk416d10_LMT {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -66,7 +90,13 @@ class UK3CB_HK416_M320_eotech_552: rhs_weap_hk416d145_m320 {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -78,7 +108,13 @@ class uk3cb_weap_m16a4_eotech_552_anpeq15_bk: rhs_weap_m16a4_carryhandle_pmag {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -87,7 +123,13 @@ class uk3cb_weap_m16a4_eotech_552_anpeq15_bk_sup: rhs_weap_m16a4_carryhandle_pma
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -96,7 +138,13 @@ class uk3cb_weap_m16a4_eotech_552_anpeq15_sup: rhs_weap_m16a4_carryhandle_pmag {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -105,7 +153,13 @@ class uk3cb_weap_m16a4_m203s_eotech_552_anpeq15_sup: rhs_weap_m16a4_carryhandle_
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -117,7 +171,13 @@ class uk3cb_weap_m4a1_eot552: rhs_weap_m4_carryhandle {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -126,7 +186,13 @@ class uk3cb_weap_m4a1_acog_anpeq15_sup: rhs_weap_m4_carryhandle {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -135,7 +201,13 @@ class uk3cb_weap_m4a1_eot552_anpeq15_bk: rhs_weap_m4_carryhandle {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -144,7 +216,13 @@ class uk3cb_weap_m4a1_eot552_anpeq15: rhs_weap_m4_carryhandle {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -153,7 +231,13 @@ class uk3cb_weap_m4a1_eot552_anpeq15_sup: rhs_weap_m4_carryhandle {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -165,7 +249,13 @@ class uk3cb_weap_m4a1_m203s_eot552_anpeq15: rhs_weap_m4a1_m203s {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -174,7 +264,13 @@ class uk3cb_weap_m4a1_m203s_eot552_anpeq15_sup: rhs_weap_m4a1_m203s {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -186,7 +282,13 @@ class uk3cb_weap_m4a1_d_eotech_552_d_anpeq15: rhs_weap_m4a1_d {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -195,7 +297,13 @@ class uk3cb_weap_m4a1_d_eotech_552_d_anpeq15_sup: rhs_weap_m4a1_d {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -204,7 +312,13 @@ class uk3cb_weap_m4a1_m203s_d_eotech_552_d_anpeq15: rhs_weap_m4a1_m203s_d {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -213,7 +327,13 @@ class uk3cb_weap_m4a1_m203s_d_eotech_552_d_anpeq15_sup: rhs_weap_m4a1_m203s_d {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -225,7 +345,13 @@ class uk3cb_weap_m4a1_w_eotech_552_wd_anpeq15_sup: rhs_weap_m4a1_wd {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -234,7 +360,13 @@ class uk3cb_weap_m4a1_m203s_wd_eotech_552_wd_anpeq15_sup: rhs_weap_m4a1_m203s_wd
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -251,6 +383,12 @@ class uk3cb_weap_m249_pip_L_vfg3_acog_bip_sup: rhs_weap_m249_pip_L_vfg3 {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_rhsusf_200rnd_556x45_AP45",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_green",

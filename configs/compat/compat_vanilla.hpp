@@ -24,7 +24,13 @@ class arifle_SPAR_01_blk_F: arifle_SPAR_01_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -33,7 +39,13 @@ class arifle_SPAR_01_khk_F: arifle_SPAR_01_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -42,7 +54,13 @@ class arifle_SPAR_01_snd_F: arifle_SPAR_01_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -54,7 +72,13 @@ class arifle_SPAR_01_GL_blk_F: arifle_SPAR_01_GL_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -63,7 +87,13 @@ class arifle_SPAR_01_GL_khk_F: arifle_SPAR_01_GL_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -72,7 +102,13 @@ class arifle_SPAR_01_GL_snd_F: arifle_SPAR_01_GL_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -89,7 +125,13 @@ class arifle_Mk20_GL_plain_F: arifle_Mk20_GL_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -101,7 +143,13 @@ class arifle_SPAR_02_blk_F: arifle_SPAR_02_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -110,7 +158,13 @@ class arifle_SPAR_02_khk_F: arifle_SPAR_02_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -119,7 +173,13 @@ class arifle_SPAR_02_snd_F: arifle_SPAR_02_base_F {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -132,6 +192,12 @@ class LMG_03_F: LMG_03_base_F {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_200Rnd_556x45_AP45_Box",
         "GOL_200Rnd_556x45_AP45_Box_Tracer_Red",
         "GOL_200Rnd_556x45_AP45_Box_Tracer_Green",

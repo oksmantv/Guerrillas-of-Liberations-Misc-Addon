@@ -21,7 +21,13 @@ class rhs_weap_m4: rhs_weap_m4_Base {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -30,7 +36,13 @@ class rhs_weap_m4a1: rhs_weap_m4_Base {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -39,7 +51,13 @@ class rhs_weap_m16a4: rhs_weap_m4_Base {
         "GOL_30Rnd_556x45_AP45",
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
-        "GOL_30Rnd_556x45_AP45_Tracer_Yellow"
+        "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
     };
 };
 
@@ -52,6 +70,12 @@ class rhs_weap_m249: rhs_weap_lmg_minimi_railed {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_rhsusf_200rnd_556x45_AP45",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
@@ -65,6 +89,12 @@ class rhs_weap_m249_pip_L: rhs_weap_lmg_minimi_railed {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_rhsusf_200rnd_556x45_AP45",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
@@ -78,6 +108,12 @@ class rhs_weap_m249_pip: rhs_weap_lmg_minimi_railed {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_rhsusf_200rnd_556x45_AP45",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
@@ -91,6 +127,12 @@ class rhs_weap_m249_pip_S: rhs_weap_lmg_minimi_railed {
         "GOL_30Rnd_556x45_AP45_Tracer_Red",
         "GOL_30Rnd_556x45_AP45_Tracer_Green",
         "GOL_30Rnd_556x45_AP45_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Red",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Green",
+        "GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow",
+        "GOL_30Rnd_556x45_AP45_Mixed_Red",
+        "GOL_30Rnd_556x45_AP45_Mixed_Green",
+        "GOL_30Rnd_556x45_AP45_Mixed_Yellow",
         "GOL_rhsusf_200rnd_556x45_AP45",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
         "GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
