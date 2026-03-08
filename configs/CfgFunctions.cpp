@@ -139,6 +139,7 @@ class CfgFunctions // Defines a function
 			class CopyAndElevateObjects {};
 			class CopyAndElevateObjectsMenu {};
 			class EdenAddVehicleCrew {};
+			class EdenBuildingRestCamp {};
 		};
 
 		class OKS_Zeus {
@@ -164,6 +165,8 @@ class CfgFunctions // Defines a function
 			class CreateVehicleWithCrew {};
 			class UndercoverAI {};	
 			class UndercoverAI_Activate {};	
+			class RestCamp {};
+			class RestCamp_WakeUp {};
 		};	
 		
 		class OKS_Suppression {
@@ -402,6 +405,7 @@ class CfgFunctions // Defines a function
 			class AirSpawn {};
 			class DroneHuntZone {};
 			class Helicopter_Attack {};
+			class BuildingRestCamp {};
 		};
 
 		class OKS_Jammer {

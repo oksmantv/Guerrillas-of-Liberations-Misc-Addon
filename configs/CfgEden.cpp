@@ -29,7 +29,8 @@ class Display3DEN {
                     "GOL_SCRIPTS_CONVOY",
                     "GOL_SCRIPTS_ATTACK_SPAWNGROUP",
                     "GOL_SCRIPTS_AI_BATTLE",
-                    "GOL_SCRIPTS_ADD_VEHICLE_CREW"
+                    "GOL_SCRIPTS_ADD_VEHICLE_CREW",
+                    "GOL_SCRIPTS_BUILDING_RESTCAMP"
                 };
             };
 
@@ -338,6 +339,44 @@ class Display3DEN {
                 text = "10 MAN";
                 picture = "\a3\ui_f\data\GUI\Cfg\Ranks\sergeant_gs.paa";
                 action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), independent, 10] call OKS_fnc_EdenTemplatePatrol;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_BUILDING_RESTCAMP {
+                text = "Building RestCamp";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_BUILDING_RESTCAMP_GARRISON",
+                    "GOL_SCRIPTS_BUILDING_RESTCAMP_RUSH",
+                    "GOL_SCRIPTS_BUILDING_RESTCAMP_HUNT",
+                    "GOL_SCRIPTS_BUILDING_RESTCAMP_PATROL",
+                    "GOL_SCRIPTS_BUILDING_RESTCAMP_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_BUILDING_RESTCAMP_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_BuildingRestCamp'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_BUILDING_RESTCAMP_GARRISON {
+                text = "GARRISON";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'',-1,-1,'GARRISON'] call OKS_fnc_EdenBuildingRestCamp;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_BUILDING_RESTCAMP_RUSH {
+                text = "RUSH";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'',-1,-1,'RUSH'] call OKS_fnc_EdenBuildingRestCamp;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_BUILDING_RESTCAMP_HUNT {
+                text = "HUNT";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'',-1,-1,'HUNT'] call OKS_fnc_EdenBuildingRestCamp;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_BUILDING_RESTCAMP_PATROL {
+                text = "PATROL";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'',-1,-1,'PATROL'] call OKS_fnc_EdenBuildingRestCamp;";
                 conditionShow = "1";
             };
 
