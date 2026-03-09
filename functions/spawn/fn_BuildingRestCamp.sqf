@@ -56,7 +56,7 @@ params [
 
 _wakeMode = toUpper _wakeMode;
 
-if (hasInterface && !isServer) exitWith {};
+if (!isServer) exitWith {};
 
 private _debug = missionNamespace getVariable ["GOL_Enemy_Debug", false];
 
@@ -109,7 +109,8 @@ _unitArray params ["_leaders", "_units", "_officer"];
 
 // ── Create group and spawn one unit per building position ──────────────────
 private _group = createGroup _side;
-_group setVariable ["lambs_danger_disableGroupAI", true];
+_group setVariable ["acex_headless_blacklist", true, true];
+_group setVariable ["lambs_danger_disableGroupAI", true, true];
 
 {
     private _unit = objNull;
@@ -203,9 +204,9 @@ if (_wakeMode == "GARRISON") then {
     [_group] spawn OKS_fnc_EnablePath;
 } else {
     // Enable PATH AI on all alive units so they can move
-    { _x enableAI "PATH" } forEach _aliveUnits;
+    { [_x, "PATH"] remoteExec ["enableAI", _x] } forEach _aliveUnits;
     // Re-enable LAMBS group AI so danger.fsm can drive behaviour
-    _group setVariable ["lambs_danger_disableGroupAI", false];
+    _group setVariable ["lambs_danger_disableGroupAI", false, true];
 };
 
 switch (toUpper _wakeMode) do {

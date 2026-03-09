@@ -18,9 +18,9 @@ if(_ConvoySpeedDebug) then {
 
 waitUntil {
 	sleep 1.0;
-	{behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0
+	_Vehicle getVariable ["OKS_Convoy_Active", false]
 };
-while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
+while { _Vehicle getVariable ["OKS_Convoy_Active", false] } do {
 	// CRITICAL: Exit disabled vehicles from convoy behavior to prevent alternating loop
 	private _isVehicleDisabled = (isNull _Vehicle) || {!(alive _Vehicle)} || {!(canMove _Vehicle)};
 	if (_isVehicleDisabled) then {
@@ -36,6 +36,7 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 		} forEach crew _Vehicle;
 		
 		// Remove convoy variables to prevent interference
+		_Vehicle setVariable ["OKS_Convoy_Active", false, true];
 		_Vehicle setVariable ["OKS_Convoy_ImmediateLeader", nil, true];
 		_Vehicle setVariable ["OKS_Convoy_FrontLeader", nil, true];
 		_Vehicle setVariable ["OKS_Convoy_AAEngaging", nil, true]; // Clear AA status
@@ -76,6 +77,7 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 	} else {
 		_Vehicle setVariable ["OKS_Convoy_StuckTimer", -1];
 	};
+
 	private _SpeedKph = _Vehicle getVariable ["OKS_LimitSpeedBase", 20];
 
 	// Rebind leader if the current one is AA-engaging or disabled/cannot move
@@ -358,6 +360,7 @@ while { {behaviour _X isEqualTo "CARELESS"} count crew _Vehicle > 0 } do {
 		if (_ConvoyDebug) then {
 			format ["[CONVOY-DISABLED-FINAL] %1 became disabled during loop, exiting convoy behavior", _Vehicle] spawn OKS_fnc_LogDebug;
 		};
+		_Vehicle setVariable ["OKS_Convoy_Active", false, true];
 		{
 			_x setBehaviour "COMBAT";
 			_x setCombatMode "RED";

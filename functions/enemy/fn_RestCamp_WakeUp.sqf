@@ -56,9 +56,9 @@ private _playTransition = {
     _u playMove _animName;
     private _t = diag_tickTime + _timeout;
     // Wait for the engine to start the requested anim
-    waitUntil { sleep 0.05; !alive _u || {animationState _u == _animName} || {diag_tickTime > _t} };
+    waitUntil { sleep 0.1; !alive _u || {animationState _u == _animName} || {diag_tickTime > _t} };
     // Wait for it to finish (transitions away)
-    waitUntil { sleep 0.05; !alive _u || {animationState _u != _animName} || {diag_tickTime > _t} };
+    waitUntil { sleep 0.1; !alive _u || {animationState _u != _animName} || {diag_tickTime > _t} };
     if (alive _u) then { _u disableAI "ANIM" };
 };
 

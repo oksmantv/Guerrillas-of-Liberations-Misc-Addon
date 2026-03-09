@@ -8,7 +8,8 @@
 		1 - Integer - Count of Vehicles
 		2 - Array of Classnames or String
 		3 - Integer M/S Speed
-		4 - Dispersion
+		4 - Dispersion (convoy spacing while driving)
+		5 - ParkingDispersion (meters between parked vehicles in offroad/convoystop, default: 30)
 	6 - Troop Array
 		1 - Bool - Should spawn troop in cargo
 		2 - Integer - Max Number of Soldiers per vehicle
@@ -31,7 +32,7 @@
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "alternate"] spawn OKS_fnc_Convoy_Spawn;
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "successive"] spawn OKS_fnc_Convoy_Spawn;
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "convoystop"] spawn OKS_fnc_Convoy_Spawn;
-	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "offroad"] spawn OKS_fnc_Convoy_Spawn;
+	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25, 30],[true,6],[], false, false, ["rush"], "offroad"] spawn OKS_fnc_Convoy_Spawn;
 */
 
 if(!isServer) exitWith {};
@@ -79,7 +80,8 @@ _VehicleParams Params [
 	["_Count", 4, [0]], 
 	["_Vehicles",["UK3CB_ARD_O_BMP1"],[[]]], 
 	["_SpeedKph", 35, [0]], 
-	["_DispersionInMeters", 50, [0]]
+	["_DispersionInMeters", 50, [0]],
+	["_ParkingDispersion", 30, [0]]
 ];
 _CargoParams Params [
 	["_ShouldHaveCargo", true, [false]],
@@ -123,7 +125,7 @@ private _ReserveQueue = [];
 for "_i" from 0 to ((_Count - 1) + 4) do {
 	_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
 	if(_i >= _Count) then {
-		private _herringBoneResult = [_End, false, _NextPreferLeft, true, _ParkingMode, _DispersionInMeters] call OKS_fnc_Convoy_SetupHerringBone;
+		private _herringBoneResult = [_End, false, _NextPreferLeft, true, _ParkingMode, _ParkingDispersion] call OKS_fnc_Convoy_SetupHerringBone;
 		private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { (getPos _End) select [0,2] };
 		private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
 		
@@ -181,6 +183,8 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 	_Vehicle = CreateVehicle [_Classname, _spawnPos];
 	_Vehicle setVariable ["OKS_ForceSpeedActive", true, true];
 	_Vehicle setVariable ["OKS_LimitSpeedBase", _SpeedKph, true];
+	_Vehicle setVariable ["OKS_Convoy_Active", true, true];
+	_Vehicle setVariable ["OKS_Convoy_ParkingMode", _ParkingMode, true];
 	_Vehicle setDir (getDir _Spawn);
 	_Vehicle setVehicleLock "LOCKED";
 	_VehicleArray pushBack _Vehicle;
@@ -248,11 +252,23 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 			private _waypoint = _waypointGroup addWaypoint [(getPos _waypointObject) select [0,2], 0];
 			_waypoint setWaypointType "MOVE";
 			_waypoint setWaypointCompletionRadius 50;
+
+			// Offroad: switch to AWARE on last midway WP so AI stops road pathfinding for the final leg
+			if (_ParkingMode == "offroad") then {
+				_waypoint setWaypointStatements ["true", "
+					private _grp = group this;
+					_grp setBehaviour 'AWARE';
+					_grp setCombatMode 'GREEN';
+					if (missionNamespace getVariable ['GOL_Convoy_Debug', false]) then {
+						format ['[CONVOY-OFFROAD-AWARE] %1 reached midway WP, switching to AWARE for offroad approach', vehicle this] spawn OKS_fnc_LogDebug;
+					};
+				"];
+			};
 		} foreach _waypointArray;
 	};
 
 	private _isFirstVehicle = (_i == 0);
-	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft, false, _ParkingMode, _DispersionInMeters] call OKS_fnc_Convoy_SetupHerringBone;
+	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft, false, _ParkingMode, _ParkingDispersion] call OKS_fnc_Convoy_SetupHerringBone;
 	private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { (getPos _End) select [0,2] };
 	private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
 	
@@ -277,6 +293,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 			{_x setBehaviour 'COMBAT'; _x setCombatMode 'RED';} foreach units this; 
 			(vehicle this) setVariable ['OKS_Convoy_Stopped', true, true]; 
 			(vehicle this) setVariable ['OKS_Convoy_IndividualArrival', true, true];
+			(vehicle this) setVariable ['OKS_Convoy_Active', false, true];
 			if (missionNamespace getVariable ['GOL_Convoy_Debug', false]) then {
 				format ['[CONVOY-INDIVIDUAL-ARRIVAL] %1 reached its herringbone position', vehicle this] spawn OKS_fnc_LogDebug;
 			};

@@ -46,6 +46,11 @@ if (_group getVariable ["OKS_RestCamp_Active", false]) exitWith {
 };
 _group setVariable ["OKS_RestCamp_Active", true, true];
 
+// ── Prevent ACEX headless client from transferring this group ───────────────
+//    HC transfer breaks local-effect commands (disableAI, switchMove, playMove,
+//    animationState) which must execute where the group is local.
+_group setVariable ["acex_headless_blacklist", true, true];
+
 // ── Wait until the spawn handler has finished creating all units ───────────
 //    GW_Performance_autoDelete starts false and flips true when spawnHandler
 //    is done.  30 s safety cap to avoid an infinite hang.
@@ -54,6 +59,22 @@ waitUntil {
     sleep 0.5;
     _group getVariable ["GW_Performance_autoDelete", true]
     || {diag_tickTime > _spawnTimeout}
+};
+
+// ── Locality safety net ────────────────────────────────────────────────────
+//    If ACEX transferred the group before the blacklist was set (race
+//    condition), redirect execution to the machine that owns the group.
+sleep 0.5;
+private _groupLeader = leader _group;
+if (!isNull _groupLeader && {!local _groupLeader}) exitWith {
+    if (_debug) then {
+        format ["[RestCamp] Group %1 not local (owner: %2), redirecting.",
+            _group, owner _groupLeader] spawn OKS_fnc_LogDebug;
+    };
+    _group setVariable ["OKS_RestCamp_Active", nil, true];
+    [[_group, _delayRange, _activeRatio], {
+        _this spawn OKS_fnc_RestCamp;
+    }] remoteExec ["call", owner _groupLeader];
 };
 
 if (_debug) then {

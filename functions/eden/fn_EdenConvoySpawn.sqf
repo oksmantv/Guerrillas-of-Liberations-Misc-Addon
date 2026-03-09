@@ -207,7 +207,7 @@ if (_cargoCountOverride >= 0) then {
     _cargoCount = _cargoCountOverride;
 };
 
-private _vehParams = [_vehicleCount, _vehicleClasses, 35, 50];
+private _vehParams = [_vehicleCount, _vehicleClasses, 35, 50, 30];
 private _cargoParams = [true, _cargoCount];
 private _rushTypes = ["rush"];
 
@@ -222,7 +222,7 @@ private _example = format [
     false,
     false,
     str _rushTypes,
-    false
+    """convoystop"""
 ];
 
 copyToClipboard _example;
