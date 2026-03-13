@@ -1,20 +1,29 @@
 /*
-     Add destroy or kill task to unit/vehicle.
+    Function: OKS_fnc_Destroy_Task
 
-    [officer_1] spawn OKS_fnc_Destroy_Task;
-    [[officer_1,officer_2,officer_3]] spawn OKS_fnc_Destroy_Task;
+    Description:
+        Creates a destroy or kill task for one or more target objects/units.
+        Automatically sets icon to "kill" for infantry or "destroy" for vehicles.
+        Supports single targets and arrays of targets. When all targets are dead
+        or destroyed, the task auto-completes.
 
-    [officer_1,"Kill the Officer","Enemy Officer","You need to kill this %1 because it needs to happen","kill",nil,true,true] spawn OKS_Destroy_Task;
-    [
-        TargetOrTargets,
-        TaskTitle,
-        TargetName,
-        TaskDescription - "You need to kill this %1 because it needs to happen. There are %2 targets." (1% == TargetName, %2 == Count of targets),
-        TaskIcon,
-        TaskParent,
-        shouldShowPos,
-        shouldPopUpNotify
-    ] spawn OKS_fnc_Destroy_Task;    
+    Parameters:
+        0: _Target                   - OBJECT or ARRAY   - Target object or array of targets (required)
+        1: _CustomTitle              - STRING             - Task title (default: auto-generated from target name)
+        2: _CustomDisplayName        - STRING             - Target display name override (default: auto-detected)
+        3: _CustomDescription        - STRING             - Task description. %1 = target name, %2 = target count
+        4: _CustomIcon               - STRING             - Task icon type (default: "destroy" or "kill")
+        5: _TaskParent               - STRING             - Parent task ID (default: nil)
+        6: _ShouldShowPosition       - BOOL               - Show target position on map (default: true)
+        7: _ShouldPopUpNotification  - BOOL               - Show popup notification (default: true)
+
+    Returns:
+        Nothing
+
+    Example:
+        [officer_1] spawn OKS_fnc_Destroy_Task;
+        [[officer_1, officer_2, officer_3]] spawn OKS_fnc_Destroy_Task;
+        [officer_1, "Kill the Officer", "Enemy Officer", "You need to kill this %1", "kill", nil, true, true] spawn OKS_fnc_Destroy_Task;
 */
 
 if(!isServer) exitWith {};

@@ -1,17 +1,24 @@
 /*
-    OKS_fnc_BeachLandingInstallNoRemount
+    Function: OKS_fnc_BeachLandingInstallNoRemount
 
-    Installs a local GetInMan handler on AI units to prevent them from re-boarding
-    the beach landing boat after dismount.
+    Description:
+        Installs a local GetInMan event handler on AI units that prevents them from
+        re-boarding a specific boat vehicle after dismounting. Used internally by
+        OKS_fnc_BeachLanding to ensure dismounted troops push inland rather than
+        attempting to re-enter the landing craft. The handler is only installed once
+        per unit; subsequent calls update the blocked boat reference. Player units
+        are skipped. Must run where the units are local (server or HC).
 
-    Must run where the units are local (server/HC).
-
-    Params:
-      0: ARRAY or GROUP - units or group to protect
-      1: OBJECT        - boat vehicle to block
+    Parameters:
+        0: _unitsOrGroup - ARRAY or GROUP - Units array or group to protect from re-mounting
+        1: _boatVehicle  - OBJECT         - Boat vehicle to block re-entry into
 
     Returns:
-      BOOL
+        BOOLEAN - true on success, false if boat is null or no valid units provided
+
+    Example:
+        [units _dismountGroup, _boat] call OKS_fnc_BeachLandingInstallNoRemount;
+        [_dismountGroup, _boat] call OKS_fnc_BeachLandingInstallNoRemount;
 */
 
 params [

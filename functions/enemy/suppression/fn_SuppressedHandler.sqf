@@ -33,14 +33,15 @@ if(getSuppression _unit > _SuppressThreshold && !(_Unit getVariable ["GOL_IsSupp
 		format["[SUPPRESS] Suppressed for %1 in stance %2",_Delay,_SuppressedStance] spawn OKS_fnc_LogDebug;
 	};  
 
-	_skillSpeed = _Unit skill "aimingSpeed";
 	_skillAccuracy = _Unit skill "aimingAccuracy";
 	_skillShake = _Unit skill "aimingShake";
 	{
 		_Unit setSkill [_X,0.1]
-	} foreach ["aimingSpeed","aimingAccuracy","aimingShake"];
+	} foreach ["aimingAccuracy","aimingShake"];
+	
 
 	[_Unit,_SuppressedStance] remoteExec ["setUnitPos",0];
+	_unit suppressFor 2;
 	sleep _Delay;
 
 	if(getSuppression _unit < _SuppressThreshold) then {
@@ -52,6 +53,5 @@ if(getSuppression _unit > _SuppressThreshold && !(_Unit getVariable ["GOL_IsSupp
 	};
 	_Unit setVariable ["GOL_IsSuppressed",false,true];
 	_Unit setSkill ["aimingAccuracy",_skillAccuracy];
-	_Unit setSkill ["aimingSpeed",_skillSpeed];
 	_Unit setSkill ["aimingShake",_skillShake];
 };

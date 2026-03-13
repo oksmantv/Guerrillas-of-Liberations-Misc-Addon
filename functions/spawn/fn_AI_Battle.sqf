@@ -1,30 +1,46 @@
 /*
-    Function: AI Battle - Continuous Background Combat System
-    
-    Creates persistent AI vs AI vehicle battles with looping rounds, player interference prevention,
-    and intelligent resource management. Battles continue until manually stopped.
+    Function: OKS_fnc_AI_Battle
+
+    Description:
+        Creates persistent AI vs AI vehicle battles with looping rounds, player interference
+        prevention, and intelligent resource management. Vehicles spawn at faction positions
+        with up to 3 spawn slots (center, left flank, right flank) and engage at a meeting
+        point. Supports land and water-based battles, with static firefight mode for naval
+        engagements. Each round spawns fresh vehicles, and battles continue until manually
+        stopped, the max round count is reached, or player observation triggers pausing.
+        Returns the Faction1 spawn object as a control handle.
+
+    Parameters:
+        0:  _Faction1Spawn         - OBJECT  - Spawn position object for Faction 1 vehicles
+        1:  _Faction2Spawn         - OBJECT  - Spawn position object for Faction 2 vehicles
+        2:  _MeetingPos            - OBJECT  - Object at the battle meeting/engagement point
+        3:  _Side1                 - SIDE    - Faction 1 side (default: west)
+        4:  _Side2                 - SIDE    - Faction 2 side (default: east)
+        5:  _Faction1Classes       - ARRAY   - Vehicle classnames for faction 1 (default: ["UK3CB_CW_US_B_EARLY_M1A1"])
+        6:  _Faction2Classes       - ARRAY   - Vehicle classnames for faction 2 (default: ["UK3CB_CHD_O_T72A"])
+        7:  _DefendingSide         - SIDE    - Optional defending side; sideUnknown for no defender (default: sideUnknown)
+        8:  _ShouldLoop            - BOOLEAN - Enable continuous battle rounds (default: true)
+        9:  _RoundDelay            - NUMBER  - Delay in seconds between rounds (default: 300)
+        10: _MaxRounds             - NUMBER  - Maximum rounds; -1 for infinite (default: 5)
+        11: _RoundVictoryDelay     - NUMBER  - Delay after round victory before cleanup (default: 60)
+        12: _MaxVehiclesPerSide    - NUMBER  - Vehicles per side per round, 1-3 (default: 3)
+        13: _PlayerObservationRange - NUMBER  - Simulation activation range for players in meters (default: 2000)
+
+    Returns:
+        OBJECT - Faction1 spawn object (control handle); use setVariable to control:
+            "OKS_AIBattle_On"    - BOOLEAN - Set false to stop after current round
+            "OKS_AIBattle_Pause" - BOOLEAN - Set true to pause
 
     Example:
-    _battleRef = [
-        west_1,                     // Faction 1 spawn object
-        east_1,                     // Faction 2 spawn object  
-        meet_1,                     // Meeting point object (returned for control)
-        west,                       // Faction 1 side
-        east,                       // Faction 2 side
-        ["B_APC_Tracked_01_rcws_F"], // Faction 1 vehicle classes
-        ["O_APC_Wheeled_02_rcws_v2_F"], // Faction 2 vehicle classes
-        sideUnknown,                // Defending side (optional)
-        true,                       // Enable looping battles
-        90,                         // Delay between rounds (seconds)
-        -1,                         // Max rounds (-1 = infinite)
-        30,                         // Victory delay before cleanup
-        3,                          // Vehicles per side (1-3: uses center/left/right spawn positions)
-        3000                        // Player observation range (meters)
-    ] call OKS_fnc_AI_Battle;
-    
-    // Control the battle:
-    _battleRef setVariable ["OKS_AIBattle_On", false]; // Stop after current round
-    _battleRef getVariable ["OKS_AIBattle_Round", 0];  // Get current round number
+        _battleRef = [
+            west_1, east_1, meet_1,
+            west, east,
+            ["B_APC_Tracked_01_rcws_F"], ["O_APC_Wheeled_02_rcws_v2_F"],
+            sideUnknown, true, 90, -1, 30, 3, 3000
+        ] call OKS_fnc_AI_Battle;
+
+        // Stop the battle:
+        _battleRef setVariable ["OKS_AIBattle_On", false];
 */
 
 if (!isServer) exitWith {};

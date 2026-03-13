@@ -1,35 +1,48 @@
 /*
-	OKS_fnc_DroneHuntZone
-	
-	Spawns a kamikaze drone that patrols a zone and attacks hostile targets with terminal guidance.
-	Orchestrates patrol, target selection, attack approach, terminal guidance, and detonation.
-	
-	Parameters:
-	0: ARRAY/OBJECT - spawn position ATL or spawn object
-	1: STRING/ARRAY/OBJECT - Target zone (marker name, position, or trigger object)
-	2: STRING - Drone className (empty string for auto-detection based on side)
-	3: side - Drone side (default: east)
-	4: NUMBER - Target zone radius in meters (default: 1000, fallback if zone doesn't define radius)
-	5: NUMBER - Search timeout in seconds (default: 60, 0 for infinite)
-	6: NUMBER - Cruise speed in km/h (default: 70)
-	7: NUMBER - Detonation distance in meters (default: 5)
-	8: STRING - Explosion classname (default: "OKS_Drone_Warhead_Medium", "AUTO" for FPV_UA default)
-	
-	Returns:
-	OBJECT - Spawned drone vehicle, or objNull if spawn failed
-	
-	Example:
-	[
-		[1000, 1000, 10], 
-		"targetMarker", 
-		"O_UAV_01_F", 
-		east, 
-		1000, 
-		60, 
-		70, 
-		5, 
-		"AUTO"
-	] spawn OKS_fnc_DroneHuntZone;
+    Function: OKS_fnc_DroneHuntZone
+
+    Description:
+        Spawns a kamikaze drone that patrols a defined zone and attacks hostile targets
+        with terminal guidance. The drone follows a patrol-detect-attack lifecycle:
+        it loiters within the target zone searching for enemies, selects the best target
+        based on side hostility, performs an attack approach run, then executes terminal
+        guidance with configurable detonation distance. The explosion classname controls
+        warhead severity. If no drone classname is provided, it auto-selects based on
+        the drone's side using the GOL_DroneATClass_<SIDE> variable. Target zones can
+        be specified as marker names, position arrays, or trigger objects (with radius
+        auto-extracted from the trigger). Supports configurable cruise speed, search
+        timeout, and countermeasure interaction. Debug logging is controlled via
+        GOL_Drones_MasterDebug and GOL_Drones_Debug variables.
+
+    Parameters:
+        0: _spawnPosition                - ARRAY or OBJECT - Spawn position ATL or spawn object
+        1: _targetZone                   - STRING, ARRAY, or OBJECT - Target zone marker name, [x,y,z] position, or trigger object
+        2: _droneClassName               - STRING  - Drone classname; empty string for auto-detect based on side (default: "")
+        3: _droneSide                    - SIDE    - Faction side of the drone (default: east)
+        4: _targetZoneRadiusMeters       - NUMBER  - Target zone radius in meters, fallback if zone doesn't define one (default: 1000)
+        5: _searchTimeoutSeconds         - NUMBER  - Search timeout in seconds; 0 for infinite patrol (default: 300)
+        6: _cruiseSpeedKilometersPerHour - NUMBER  - Cruise speed in km/h (default: 70)
+        7: _detonationDistanceMeters     - NUMBER  - Terminal detonation distance in meters (default: 5)
+        8: _explosionClassName           - STRING  - Explosion ammo classname; "AUTO" for FPV_UA default (default: "OKS_Drone_Warhead_Medium")
+
+    Returns:
+        OBJECT - Spawned drone vehicle, or objNull if spawn failed
+
+    Example:
+        [
+            getPos droneSpawn_1,
+            "targetMarker",
+            "O_UAV_01_F",
+            east,
+            1000,
+            60,
+            70,
+            5,
+            "AUTO"
+        ] spawn OKS_fnc_DroneHuntZone;
+
+        // Minimal call with auto-detection
+        [getPos droneSpawn_1, triggerZone_1] spawn OKS_fnc_DroneHuntZone;
 */
 
 params [

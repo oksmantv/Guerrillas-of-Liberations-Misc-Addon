@@ -1,29 +1,41 @@
 /*
-    Function: AI Helicopter Fly-By - Looping Helicopter Transit System
-    
-    Creates persistent helicopter fly-by missions where helicopters spawn, fly to endpoint,
-    return to spawn, and delete. Continues looping with configurable delays and helicopter types.
+    Function: OKS_fnc_AI_HelicopterFlyBy
+
+    Description:
+        Creates persistent helicopter fly-by missions where helicopters spawn at a start
+        point, fly to an endpoint at configurable altitude and behaviour, optionally drop
+        parachute resupply crates, return to the spawn point, and are deleted. The cycle
+        repeats with a randomized delay between missions until manually stopped or the
+        maximum mission count is reached. Useful for ambient helicopter traffic, resupply
+        runs, or background atmosphere. Returns the spawn object as a control handle.
+
+    Parameters:
+        0:  _SpawnPoint          - OBJECT  - Helicopter spawn position object
+        1:  _EndPoint            - OBJECT  - Flight endpoint object
+        2:  _Side                - SIDE    - Faction side (default: west)
+        3:  _HelicopterClasses   - ARRAY   - Helicopter classnames to randomly select from (default: ["B_Heli_Transport_01_F"])
+        4:  _EnableResupplyDrop  - BOOLEAN - Enable parachute resupply drops using default supplies (default: false)
+        5:  _FlyByDelay          - ARRAY   - [min, max] delay in seconds between missions (default: [90, 180])
+        6:  _FlightAltitude      - NUMBER  - Flight altitude in meters (default: 250)
+        7:  _FlightBehaviour     - STRING  - Flight behaviour mode, e.g. "STEALTH", "AWARE" (default: "STEALTH")
+        8:  _ShouldLoop          - BOOLEAN - Enable continuous flyby missions (default: true)
+        9:  _MaxFlyByMissions    - NUMBER  - Maximum missions; -1 for infinite (default: -1)
+        10: _CleanupDelay        - NUMBER  - Delay in seconds before cleanup after final mission (default: 30)
+
+    Returns:
+        OBJECT - Spawn point object (control handle); use setVariable to control:
+            "OKS_HeliFlyBy_On"    - BOOLEAN - Set false to stop
+            "OKS_HeliFlyBy_Pause" - BOOLEAN - Set true to pause
 
     Example:
-    _helicopterFlyByRef = [
-        heli_spawn_1,               // Helicopter spawn object
-        heli_endpoint_1,            // Flight endpoint object
-        west,                       // Side faction
-        ["B_Heli_Transport_01_F"],  // Helicopter classes
-        true,                        // Enable resupply drops (uses default supplies)
-        [90, 180],                  // Delay between flyby missions [min, max] seconds
-        150,                        // Flight altitude (meters)
-        "STEALTH",                  // Flight behavior
-        true,                       // Enable looping
-        -1,                         // Max flyby missions (-1 = infinite)
-        30                          // Cleanup delay after completion
-        
-    ] call OKS_fnc_AI_HelicopterFlyBy;
-    
-    // Control the flyby:
-    _helicopterFlyByRef setVariable ["OKS_HeliFlyBy_On", false]; // Stop flyby
-    _helicopterFlyByRef setVariable ["OKS_HeliFlyBy_Pause", true]; // Pause flyby
-    _helicopterFlyByRef getVariable ["OKS_HeliFlyBy_Mission", 0]; // Get current mission number
+        _helicopterFlyByRef = [
+            heli_spawn_1, heli_endpoint_1,
+            west, ["B_Heli_Transport_01_F"],
+            true, [90, 180], 150, "STEALTH", true, -1, 30
+        ] call OKS_fnc_AI_HelicopterFlyBy;
+
+        // Stop the flyby:
+        _helicopterFlyByRef setVariable ["OKS_HeliFlyBy_On", false];
 */
 
 if (!isServer) exitWith {};

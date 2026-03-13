@@ -1,48 +1,38 @@
 /*
-    OKS_fnc_BuildingRestCamp
+    Function: OKS_fnc_BuildingRestCamp
 
-    Place a game logic near a building. This script finds the nearest building,
-    fills every building position with a spawned AI unit, puts them all into
-    rest/sleep state (OKS_fnc_RestCamp). When combat is detected the group
-    wakes up, gears up, and executes one of four behaviours:
+    Description:
+        Place a game logic near a building. This script finds the nearest building,
+        fills every building position with a spawned AI unit, puts them all into
+        rest/sleep state (OKS_fnc_RestCamp). When combat is detected the group
+        wakes up, gears up, and executes one of four behaviours:
 
-        "GARRISON" — ACE garrison scatter into nearby buildings (no teleport)
-        "RUSH"    — LAMBS taskRush (aggressive push toward enemies)
-        "HUNT"    — LAMBS taskHunt (sweep and search the area)
-        "PATROL"  — LAMBS taskPatrol (patrol around the building)
+            "GARRISON" — ACE garrison scatter into nearby buildings (no teleport)
+            "RUSH"    — LAMBS taskRush (aggressive push toward enemies)
+            "HUNT"    — LAMBS taskHunt (sweep and search the area)
+            "PATROL"  — LAMBS taskPatrol (patrol around the building)
+
+        Unit classnames are pulled from OKS_fnc_Dynamic_Settings based on the
+        configured mission faction. Must be spawned (uses sleep/waitUntil).
+        Runs on server or HC only. GARRISON mode requires ACE AI module
+        (ace_ai_fnc_garrison). RUSH/HUNT/PATROL require LAMBS Danger.
 
     Parameters:
-        _logic         - OBJECT : game logic placed near a building
-        _side          - SIDE (optional): side for the spawned group.
-                         Default: east
-        _maxUnits      - NUMBER (optional): max number of units to spawn.
-                         -1 = no limit (fill every building position).
-                         Default: 8
-        _garrisonRange - NUMBER (optional): radius (m) for ACE garrison
-                         scatter or LAMBS task range. Default: 50
-        _delayRange    - ARRAY (optional): [min, max] per-unit wake-up
-                         delay passed to RestCamp. Default: [10, 30]
-        _wakeMode      - STRING (optional): post-wake behaviour.
-                         One of: "GARRISON", "RUSH", "HUNT", "PATROL".
-                         Default: "GARRISON"
+        0: _logic         - OBJECT - Game logic placed near a building
+        1: _side          - SIDE   - Side for the spawned group (default: east)
+        2: _maxUnits      - NUMBER - Max number of units to spawn; -1 = fill all positions (default: 8)
+        3: _garrisonRange - NUMBER - Radius in meters for ACE garrison or LAMBS task range (default: 50)
+        4: _delayRange    - ARRAY  - [min, max] per-unit wake-up delay in seconds (default: [10, 30])
+        5: _wakeMode      - STRING - Post-wake behaviour: "GARRISON", "RUSH", "HUNT", or "PATROL" (default: "GARRISON")
 
-    Usage:
+    Returns:
+        Nothing
+
+    Example:
         [_logic] spawn OKS_fnc_BuildingRestCamp;
-        [_logic, east] spawn OKS_fnc_BuildingRestCamp;
-        [_logic, east, -1] spawn OKS_fnc_BuildingRestCamp;
         [_logic, east, 8, 75] spawn OKS_fnc_BuildingRestCamp;
-        [_logic, east, 8, 50, [5, 20]] spawn OKS_fnc_BuildingRestCamp;
-        [_logic, east, -1, 50, [10, 30], "RUSH"] spawn OKS_fnc_BuildingRestCamp;
-        [_logic, east, 8, 50, [10, 30], "GARRISON"] spawn OKS_fnc_BuildingRestCamp;
-
-    Notes:
-        - Must be spawned (uses sleep / waitUntil).
-        - Runs on server or HC only.
-        - GARRISON mode requires ACE AI module (ace_ai_fnc_garrison).
-        - RUSH / HUNT / PATROL require LAMBS Danger (lambs_wp_fnc_*).
-        - Unit classnames are pulled from OKS_fnc_Dynamic_Settings
-          (mission-configured faction).
-        - Debug logging via GOL_Enemy_Debug variable.
+        [_logic, east, -1, 50, [5, 20]] spawn OKS_fnc_BuildingRestCamp;
+        [_logic, east, 8, 50, [10, 30], "RUSH"] spawn OKS_fnc_BuildingRestCamp;
 */
 
 params [

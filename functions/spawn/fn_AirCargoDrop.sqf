@@ -1,19 +1,31 @@
 /*
-    OKS_fnc_AirCargoDrop
+    Function: OKS_fnc_AirCargoDrop
 
-    Ported from legacy script: Scripts\OKS_Spawn\OKS_AirCargoDrop.sqf
+    Description:
+        Spawns a crewed aircraft that flies from a spawn position toward a drop position,
+        releases three parachute-delivered cargo crates (Box_NATO_AmmoVeh_F) when within
+        500m of the drop waypoint, then continues to an exit position where it is deleted.
+        The aircraft is spawned at 900m altitude if the provided Z is below 500m, and flies
+        at 700m. The aircraft is set captive (ignored by AI) regardless of other settings.
+        If the careless flag is set, crew behaviour is additionally set to STEALTH/BLUE.
+        The exit waypoint auto-deletes the aircraft and crew on completion, but only if
+        the waypoint type is not SAD. Crew is added via OKS_fnc_AddVehicleCrew and
+        blacklisted from headless client transfer.
 
-    Params:
-    0: SpawnPos (position)
-    1: DropToPos (position)
-    2: MoveToPos (position)
-    3: Aircraft classname (string)
-    4: Side (side)
-    5: ShouldBeCareless (bool)
-    6: WaypointType (string)
+    Parameters:
+        0: _spawnPos         - ARRAY   [x,y,z] - Spawn position for the aircraft (altitude auto-raised to 900m if below 500m)
+        1: _dropToPos        - ARRAY   [x,y,z] - Position where cargo is released (waypoint completion radius 1000m)
+        2: _moveToPos        - ARRAY   [x,y,z] - Exit position; aircraft and crew are deleted on arrival
+        3: _classname         - STRING          - Aircraft classname (e.g. "B_T_VTOL_01_vehicle_F")
+        4: _side              - SIDE            - Faction side for the crew (east/west/independent/civilian)
+        5: _shouldBeCareless  - BOOLEAN         - If true, crew is set to STEALTH/BLUE (non-combat transit)
+        6: _waypointType      - STRING          - Waypoint type for both drop and exit waypoints (e.g. "MOVE", "SAD")
+
+    Returns:
+        Nothing
 
     Example:
-    [getPos plane_1, getPos drop_1, getPos exit_1, "B_T_VTOL_01_vehicle_F", west, true, "MOVE"] spawn OKS_fnc_AirCargoDrop;
+        [getPos plane_1, getPos drop_1, getPos exit_1, "B_T_VTOL_01_vehicle_F", west, true, "MOVE"] spawn OKS_fnc_AirCargoDrop;
 */
 
 if (!isServer) exitWith {};

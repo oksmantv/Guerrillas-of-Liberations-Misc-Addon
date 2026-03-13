@@ -1,15 +1,34 @@
 /*
-    OKS_fnc_BeachLanding
+    Function: OKS_fnc_BeachLanding
 
-    Server-only.
+    Description:
+        Spawns a boat with full crew and cargo infantry at a water position, then drives it
+        in a straight line toward a beach target using physics-based steering via
+        OKS_fnc_SteerVehicleToTarget. Propulsion is cut shortly before shore so the boat
+        glides onto the beach. When speed drops below 3 km/h the infantry dismounts quickly;
+        the driver exits while gunners remain to provide covering fire. Dismounts are formed
+        into a new group and assigned a LAMBS offensive task (rush, hunt, or attack) within
+        the specified range. A no-remount handler prevents AI from re-boarding the boat.
+        An optional public variable name can be set to true on completion to signal other
+        scripts. Debug logging is controlled via GOL_Amphibious_Debug and
+        GOL_Amphibious_DebugChat variables. Approach speed, cutoff distance, max approach
+        time, and beach scan settings are all configurable via missionNamespace variables.
 
-    [beachLandingSpawn, beachLandingTarget, boatClassname, cargoUnitCount, side, lambsType, lambsRange, publicVariableName] spawn OKS_fnc_BeachLanding;
+    Parameters:
+        0: _beachLandingSpawn  - OBJECT or ARRAY - Water spawn position object or [x,y,z]
+        1: _beachLandingTarget - OBJECT or ARRAY - Beach target position object or [x,y,z]
+        2: _boatClassname      - STRING          - Boat vehicle classname (default: "B_Boat_Transport_01_F")
+        3: _cargoUnitCount     - NUMBER          - Number of infantry passengers to spawn (default: 5)
+        4: _assaultSide        - SIDE            - Faction side (default: east)
+        5: _lambsTaskType      - STRING          - LAMBS task type for dismounts: "rush", "hunt", or "attack" (default: "rush")
+        6: _lambsTaskRange     - NUMBER          - Range in meters for the LAMBS offensive task (default: 1500)
+        7: _publicVariableName - STRING          - Public variable set to true when landing completes (default: "")
 
-    - Spawns a boat with full crew and cargo
-    - Beaches in a straight line (physics steering)
-    - Cuts propulsion shortly before shore so it glides
-    - When speed < 2 km/h: dismounts quickly (driver + cargo; gunners stay)
-    - Dismounts form a new group and get a reduced-set LAMBS offensive task (rush/hunt/attack)
+    Returns:
+        BOOLEAN - true on success, false on failure
+
+    Example:
+        [beachSpawn_1, beachTarget_1, "B_Boat_Transport_01_F", 5, east, "rush", 1500, "landing1Complete"] spawn OKS_fnc_BeachLanding;
 */
 
 if (!isServer) exitWith {false};

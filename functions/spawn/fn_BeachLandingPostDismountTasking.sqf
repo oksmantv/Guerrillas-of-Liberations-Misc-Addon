@@ -1,22 +1,31 @@
 /*
-    OKS_fnc_BeachLandingPostDismountTasking
+    Function: OKS_fnc_BeachLandingPostDismountTasking
 
-    Runs on the machine that owns the dismount group (server or HC).
+    Description:
+        Assigns a LAMBS offensive task to a dismounted infantry group after a beach landing.
+        Supports optional delay before tasking, combat suppression during the delay period,
+        and a fan-out formation in front of the landing boat. Units are spread in an arc in
+        front of the boat before receiving their LAMBS task, creating a realistic beachhead
+        push. The function waits for LAMBS Danger to be available before proceeding.
+        Used internally by OKS_fnc_BeachLanding but can be called independently.
 
-    Params:
-      0: GROUP  - dismount group
-      1: STRING - task type ("rush" | "hunt" | "attack")
-      2: NUMBER - range meters
-      3: ARRAY  - target position (ASL/ATL acceptable; z is ignored by LAMBS)
-      4: NUMBER - delay seconds before tasking (default 0)
-      5: BOOL   - if true, suppress combat during delay (enableAttack false + disableAI FSM/COVER)
-            6: OBJECT - boat vehicle (optional; used to fan units out)
-            7: NUMBER - cone radius meters (default 10)
-            8: NUMBER - cone arc degrees (default 140)
-                        9: NUMBER - restore stagger seconds per unit (default 5)
+    Parameters:
+        0: _grp                   - GROUP   - Dismount group to task
+        1: _taskType              - STRING  - LAMBS task type: "rush", "hunt", or "attack" (default: "rush")
+        2: _range                 - NUMBER  - Range in meters for the LAMBS task (default: 1500)
+        3: _targetPos             - ARRAY   - Target position [x,y,z] (default: [0,0,0])
+        4: _delaySeconds          - NUMBER  - Delay in seconds before assigning task (default: 0)
+        5: _suppressCombat        - BOOLEAN - Suppress combat behaviour during delay (default: false)
+        6: _boatVehicle           - OBJECT  - Boat vehicle used to calculate fan-out direction (default: objNull)
+        7: _coneRadiusMeters      - NUMBER  - Fan-out cone radius in meters (default: 10)
+        8: _coneArcDegrees        - NUMBER  - Fan-out cone arc width in degrees (default: 140)
+        9: _restoreStaggerSeconds - NUMBER  - Stagger delay in seconds per unit when restoring combat (default: 5)
 
     Returns:
-      BOOL
+        BOOLEAN - true on success, false if group is null or LAMBS is unavailable
+
+    Example:
+        [_dismountGroup, "rush", 1500, getPos beachTarget_1, 3, true, _boat, 15, 140, 5] spawn OKS_fnc_BeachLandingPostDismountTasking;
 */
 
 params [

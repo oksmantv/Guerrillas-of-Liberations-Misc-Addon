@@ -1,25 +1,43 @@
 /*
+    Function: OKS_fnc_AirScout
 
-	Param 1: Spawn Position for Aircraft (Helicopters, Planes, UAVs)
-	Param 2: Target Position for Waypoint
-	Param 3: Side of Aircraft
-	Param 4: Aircraft Classname
-	Param 5: [Waypoint Type,ShouldBeCareless]
-	Param 6: [Spotting Distance,Spotting Value (0-1)]
-	Param 7: [Waypoint Altitude,LoiterDistance]
-	Param 8: Should call in Mortars when spotting players
+    Description:
+        Spawns an aerial scout/reconnaissance aircraft (UAV, helicopter, or plane) that loiters
+        over a target area and actively scans for players. Uses visibility checks and concealment
+        detection (prone stance near terrain objects) to determine spotting success. When a player
+        is spotted, the crew is given a reveal command and the aircraft redirects its loiter toward
+        that player. If mortar support is enabled, spotted players may trigger a mortar fire mission
+        via OKS_Fnc_Mortars (with friendly proximity checks to avoid fratricide). When not set to
+        careless, the aircraft also receives SAD waypoints toward spotted players for direct attack.
+        Safe zones (flag objects named flag_west_1/2 and flag_east_1/2) exclude nearby players from
+        targeting. Supports custom pylon loadouts or automatic loadout assignment via OKS_fnc_AirLoadout.
 
-	[
-		getPos drone_1,
-		getPos droneTarget_1,
-		east,
-		"rhs_pchela1t_vvs",
-		["LOITER",false],		
-		[500,4],
-		[250,500],
-		["","","","","","",""],
-		true
-	] spawn OKS_fnc_AirScout;	
+    Parameters:
+        0: _SpawnPosition     - ARRAY   [x,y,z] - Spawn position for the aircraft
+        1: _TargetArea        - ARRAY   [x,y,z] - Target loiter/scouting area position
+        2: _Side              - SIDE            - Side of the aircraft (default: east)
+        3: _Classname         - STRING          - Aircraft classname (default: "rhs_pchela1t_vvs")
+        4: _BehaviourArray    - ARRAY           - [waypointType, shouldBeCareless] (default: ["LOITER", true])
+        5: _SpottingArray     - ARRAY           - [spottingRange, revealValue 0-4] (default: [500, 4])
+        6: _FlyingArray       - ARRAY           - [altitude, loiterRadius] in meters (default: [250, 500])
+        7: _Loadout           - ARRAY or NIL    - Pylon loadout classnames; nil uses OKS_fnc_AirLoadout auto-assignment
+        8: _ShouldCallMortars - BOOLEAN         - Call mortar strikes on spotted players (default: true)
+
+    Returns:
+        Nothing
+
+    Example:
+        [
+            getPos drone_1,
+            getPos droneTarget_1,
+            east,
+            "rhs_pchela1t_vvs",
+            ["LOITER", false],
+            [500, 4],
+            [250, 500],
+            nil,
+            true
+        ] spawn OKS_fnc_AirScout;
 */
 
 	if(HasInterface && !isServer) exitWith {};

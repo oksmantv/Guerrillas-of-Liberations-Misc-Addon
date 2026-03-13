@@ -1,13 +1,32 @@
 /*
+    Function: OKS_fnc_Civilian_Vehicle
 
-    [
-        getPos civilianStart_1,
-        getPos CivilianEnd_1,     
-        selectRandom ["UK3CB_ADC_C_Datsun_Civ_Open","UK3CB_ADC_C_Hatchback","UK3CB_ADC_C_V3S_Repair","UK3CB_ADC_C_Skoda","UK3CB_ADC_C_Sedan","UK3CB_ADC_C_UAZ_Open","UK3CB_ADC_C_UAZ_Closed"],
-        10,
-        true
-    ] spawn OKS_fnc_Civilian_Vehicle;
+    Description:
+        Spawns a civilian vehicle with a driver at a start position and sends it via a
+        MOVE waypoint to an end position at a forced speed. Useful for ambient traffic or
+        scripted civilian movement in missions. The driver is set to CARELESS behaviour
+        so it ignores combat entirely. On arrival (within 20m of end position), the vehicle
+        and driver are either deleted (default) or the driver receives GETOUT and DISMISS
+        waypoints to exit the vehicle and go about civilian life.
 
+    Parameters:
+        0: _SpawnPosition - ARRAY   [x,y,z] - Spawn position for the vehicle
+        1: _EndPosition   - ARRAY   [x,y,z] - Destination position for the vehicle
+        2: _VehicleType   - STRING          - Vehicle classname to spawn
+        3: _Speed         - NUMBER          - Forced speed of the vehicle in km/h (default: 8)
+        4: _ShouldDelete  - BOOLEAN         - Delete vehicle and driver on arrival (default: true)
+
+    Returns:
+        Nothing
+
+    Example:
+        [
+            getPos civilianStart_1,
+            getPos civilianEnd_1,
+            selectRandom ["UK3CB_ADC_C_Datsun_Civ_Open", "UK3CB_ADC_C_Hatchback", "UK3CB_ADC_C_Skoda"],
+            10,
+            true
+        ] spawn OKS_fnc_Civilian_Vehicle;
 */
 
 if(!isServer) exitWith {};

@@ -1,6 +1,34 @@
 /*
-	OKS_fnc_Mechanized_Spawn
-	[this,Trigger_1,"O_APC_Wheeled_02_rcws_v2_F",5,east,500] spawn OKS_fnc_Mechanized_Spawn;
+    Function: OKS_fnc_Mechanized_Spawn
+
+    Description:
+        Spawns a crewed vehicle (APC/IFV) with infantry cargo at a position. After spawning,
+        the vehicle is locked and units are split into a crew group (driver/gunner/commander)
+        and an infantry group (cargo passengers). The crew group is sent hunting toward a
+        trigger zone via OKS_fnc_HuntRun. The script then waits until any unit enters COMBAT
+        behaviour, at which point the hunt is disabled, the vehicle unlocks, and infantry
+        dismounts. Once all cargo has exited, the infantry group receives a LAMBS taskHunt
+        within the specified range. The vehicle is then re-locked and begins following the
+        infantry via OKS_fnc_Follow_Squad, creating a coordinated mechanized assault pattern.
+        Skill levels are set via GW_SetDifficulty_fnc_setSkill. If an array of classnames is
+        passed as the vehicle type, one is randomly selected.
+
+    Parameters:
+        0: _Spawn          - OBJECT or ARRAY - Spawn position object or [x,y,z] position
+        1: _HuntTrigger    - OBJECT          - Trigger zone for initial vehicle hunt behaviour
+        2: _VehicleType    - STRING or ARRAY - Vehicle classname or array of classnames (one selected randomly)
+        3: _InfantryNumber - NUMBER          - Number of infantry units to spawn as cargo (default: 5)
+        4: _Side           - SIDE            - Faction side (default: east)
+        5: _Range          - NUMBER          - LAMBS hunt range in meters after dismount (default: 2000)
+
+    Returns:
+        Nothing
+
+    Example:
+        [this, Trigger_1, "O_APC_Wheeled_02_rcws_v2_F", 5, east, 500] spawn OKS_fnc_Mechanized_Spawn;
+
+        // With random vehicle selection
+        [this, Trigger_1, ["O_APC_Wheeled_02_rcws_v2_F", "O_APC_Tracked_02_cannon_F"], 6, east, 1000] spawn OKS_fnc_Mechanized_Spawn;
 */
 
  	if(!isServer) exitWith {};

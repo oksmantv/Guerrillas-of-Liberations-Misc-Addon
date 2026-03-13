@@ -1,23 +1,30 @@
 /*
-	OKS_fnc_RailVehicle_Spawn
+    Function: OKS_fnc_RailVehicle_Spawn
 
-	Spawns a ground vehicle with crew + optional cargo group, then starts rail movement.
-	Cargo is created in a separate group (important so convoy-style dismount doesn't dismount the driver/crew).
+    Description:
+        Spawns a ground vehicle with crew and optional cargo infantry, then initiates
+        rail-guided movement along a predefined waypoint path via OKS_fnc_RailMove.
+        Cargo is created in a separate group from the crew, which is critical for
+        convoy-style dismount logic to work correctly (prevents the driver/gunner from
+        dismounting). The driver can optionally be replaced with a non-combat agent
+        (controlled via GOL_RailMove_UseAgentDriver) that ignores targets and autocombat,
+        ensuring reliable pathfinding along the rail route. The deployment style parameter
+        is passed to the convoy dismount tasking system for post-arrival behaviour.
 
-	Params:
-	0: OBJECT|ARRAY - Spawn (object or position ATL array)
-	1: STRING       - Vehicle classname
-	2: SIDE         - Side for spawned units
-	3: NUMBER       - Cargo unit count
-	4: NUMBER       - Speed limit km/h
-	5: ARRAY        - Waypoints (objects/positions/markers) for OKS_fnc_RailMove
-	6: STRING       - Deployment style (passed to convoy dismount tasking)
+    Parameters:
+        0: _spawn           - OBJECT or ARRAY - Spawn position object or [x,y,z] ATL position
+        1: _vehicleClass    - STRING          - Vehicle classname (e.g. "O_APC_Wheeled_02_rcws_v2_F")
+        2: _side            - SIDE            - Faction side for spawned units (default: east)
+        3: _cargoCount      - NUMBER          - Number of cargo infantry to spawn (default: 0)
+        4: _speedLimitKph   - NUMBER          - Speed limit in km/h for rail movement (default: 35)
+        5: _waypoints       - ARRAY           - Waypoints for OKS_fnc_RailMove (objects, positions, or markers)
+        6: _deploymentStyle - STRING          - Deployment behaviour passed to dismount tasking (default: "rush")
 
-	Example:
-		[this, "O_APC_Wheeled_02_rcws_v2_F", east, 8, 35, [wp1, wp2, wp3], "rush"] spawn OKS_fnc_RailVehicle_Spawn;
+    Returns:
+        ARRAY - [vehicle, crewGroup, cargoGroup]
 
-	Returns:
-		[vehicle, crewGroup, cargoGroup]
+    Example:
+        [this, "O_APC_Wheeled_02_rcws_v2_F", east, 8, 35, [wp1, wp2, wp3], "rush"] spawn OKS_fnc_RailVehicle_Spawn;
 */
 
 if (!isServer) exitWith { [objNull, grpNull, grpNull] };

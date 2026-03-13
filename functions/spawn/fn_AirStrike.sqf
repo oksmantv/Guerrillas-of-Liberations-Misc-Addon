@@ -1,18 +1,34 @@
 /*
-    OKS_fnc_AirStrike
+    Function: OKS_fnc_AirStrike
 
-    Ported from legacy script: Scripts\OKS_Spawn\OKS_AirStrike.sqf
+    Description:
+        Spawns a crewed jet that performs a bombing run on a target position, then exits
+        and deletes. The aircraft flies from the spawn position toward a strike anchor
+        point (using the anchor's direction for attack heading), releases ordnance when
+        within 500m, then continues to the exit waypoint where it is cleaned up.
+        Supports guided bombs (GBU-12) and cluster munitions. For cluster strikes,
+        unexploded ordnance (UXO) is automatically force-detonated after a short delay
+        to prevent persistent ground hazards. The bomb ammo class can be overridden
+        globally via the OKS_AirStrike_BombAmmoClass variable.
 
-    Params:
-    0: Spawn (position or object)
-    1: Strike anchor (object preferred, position supported)
-    2: End (position or object)
-    3: Aircraft classname (string)
-    4: Side (side)
-    5: Height (number)
+    Parameters:
+        0: _spawnIn       - ARRAY or OBJECT - Spawn position [x,y,z] or spawn object
+        1: _strikeIn      - OBJECT or ARRAY - Strike anchor object (preferred; uses its direction) or position
+        2: _endIn         - ARRAY or OBJECT - Exit position [x,y,z] or object (aircraft deleted on arrival)
+        3: _classname     - STRING          - Aircraft classname (e.g. "B_Plane_Fighter_01_Stealth_F")
+        4: _side          - SIDE            - Faction side for the crew (default: east)
+        5: _height        - NUMBER          - Flight altitude in meters (default: 250)
+        6: _munitionSpec  - STRING          - Munition type: "BOMB" for guided bombs, "CLUSTER" for cluster munitions (default: "BOMB")
+
+    Returns:
+        Nothing
 
     Example:
-    [getPos jetspawn_1, jetstrike_1, getPos jetexit_1, "B_Plane_Fighter_01_Stealth_F", west, 250] spawn OKS_fnc_AirStrike;
+        // Guided bomb strike
+        [getPos jetspawn_1, jetstrike_1, getPos jetexit_1, "B_Plane_Fighter_01_Stealth_F", west, 250] spawn OKS_fnc_AirStrike;
+
+        // Cluster bomb strike
+        [getPos jetspawn_1, jetstrike_1, getPos jetexit_1, "B_Plane_Fighter_01_Stealth_F", west, 250, "CLUSTER"] spawn OKS_fnc_AirStrike;
 */
 
 if (!isServer) exitWith {};

@@ -1,17 +1,26 @@
 /*
-    OKS_fnc_Helicopter_Attack
+    Function: OKS_fnc_Helicopter_Attack
 
-    Ported from legacy script: Scripts\OKS_Spawn\OKS_Helicopter_Attack.sqf
+    Description:
+        Spawns a crewed attack helicopter at 150m altitude, assigns it an SAD (Search
+        and Destroy) waypoint at a target position, and reveals nearby enemy units to
+        the crew within the specified range. The helicopter is set to COMBAT behaviour
+        with RED combat mode for immediate engagement. The crew is created via
+        OKS_fnc_AddVehicleCrew and the vehicle is locked to prevent player boarding.
+        Useful for scripting helicopter CAS attacks against known enemy positions.
 
-    Params:
-    0: Spawn object (object)
-    1: Attack waypoint object (object)
-    2: Side (side)
-    3: Helicopter classname (string)
-    4: Reveal range around waypoint (number)
+    Parameters:
+        0: _spawn     - OBJECT - Spawn position object (helicopter appears at 150m above it)
+        1: _waypoint  - OBJECT - Target waypoint object (SAD waypoint destination)
+        2: _side      - SIDE   - Faction side for the crew (default: east)
+        3: _classname - STRING - Helicopter classname (e.g. "RHS_AH64DGrey")
+        4: _range     - NUMBER - Reveal radius in meters; enemy units within this range of the waypoint are revealed to the crew (default: 500)
+
+    Returns:
+        Nothing
 
     Example:
-    [attackheli_1, attacktarget_1, west, "RHS_AH64DGrey", 500] spawn OKS_fnc_Helicopter_Attack;
+        [attackheli_1, attacktarget_1, west, "RHS_AH64DGrey", 500] spawn OKS_fnc_Helicopter_Attack;
 */
 
 if (!isServer) exitWith {};

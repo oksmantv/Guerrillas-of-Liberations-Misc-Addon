@@ -1,6 +1,32 @@
 /*
-	OKS_Hold_Waypoint
-	[SpawnPosOrObject,ArrayOrObject,UnitOrClassname,Side] spawn OKS_fnc_Hold_Waypoint;
+    Function: OKS_fnc_Hold_Waypoint
+
+    Description:
+        Spawns an infantry group or crewed vehicle at a position and assigns a HOLD
+        waypoint at the target location. The group is set to SAFE behaviour with RED
+        combat mode, meaning they will hold position but engage threats that appear.
+        Unit classnames are pulled from OKS_fnc_Dynamic_Settings based on the specified
+        side. If a number is passed, that many infantry are spawned; if a classname
+        string is given, a vehicle is created and crewed; if an array of classnames
+        is passed, one is randomly selected and spawned. Skill levels are set via
+        GW_SetDifficulty_fnc_setSkill. Infantry units also receive suppression if
+        GOL_Suppression_Enabled is active.
+
+    Parameters:
+        0: _Spawn           - OBJECT or ARRAY        - Spawn position object or [x,y,z] position
+        1: _TargetWaypoint  - OBJECT or ARRAY        - Target HOLD waypoint position or object
+        2: _ClassnameOrNumber - NUMBER, STRING, or ARRAY - Infantry count, vehicle classname, or array of classnames (default: 5)
+        3: _Side            - SIDE                   - Faction side for the group (default: east)
+
+    Returns:
+        Nothing
+
+    Example:
+        // Hold with 5 infantry
+        [spawnObj, holdPos_1, 5, east] spawn OKS_fnc_Hold_Waypoint;
+
+        // Hold with a vehicle
+        [spawnObj, holdPos_1, "O_APC_Wheeled_02_rcws_v2_F", east] spawn OKS_fnc_Hold_Waypoint;
 */
 
  	if(!isServer) exitWith {};

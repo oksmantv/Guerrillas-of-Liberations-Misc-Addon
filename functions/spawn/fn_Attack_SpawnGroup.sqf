@@ -1,7 +1,37 @@
 /*
-	OKS_fnc_Attack_SpawnGroup
-	[_this,player,4,east,true,500] spawn OKS_fnc_Attack_SpawnGroup;
-	[SpawnPosOrObject,ArrayOrObject,UnitOrClassname,Side,ShouldAddStepWaypoint,RangeOfFallbackHuntScript] spawn OKS_fnc_Attack_SpawnGroup;
+    Function: OKS_fnc_Attack_SpawnGroup
+
+    Description:
+        Spawns an infantry group or crewed vehicle at a position and assigns attack waypoints
+        toward a target. Unit classnames are pulled from OKS_fnc_Dynamic_Settings based on
+        the specified side. If a number is passed as the third parameter, that many infantry
+        are spawned; if a classname string is passed, a vehicle is created and crewed instead;
+        if an array of classnames is passed, one is randomly selected and spawned as a vehicle.
+        When a target waypoint is provided, the group receives SAD-type attack waypoints (with
+        an optional intermediate MOVE step waypoint at the midpoint). If no target waypoint is
+        given, the group falls back to a LAMBS taskHunt within the specified range. Skill levels
+        are set via GW_SetDifficulty_fnc_setSkill on all spawned units.
+
+    Parameters:
+        0: _Spawn              - OBJECT or ARRAY        - Spawn position object or [x,y,z] position
+        1: _TargetWaypoint     - ARRAY, OBJECT, or NIL  - Target waypoint position, object, array of positions, or nil for hunt-only
+        2: _ClassnameOrNumber  - NUMBER, STRING, or ARRAY - Infantry count, vehicle classname, or array of vehicle classnames (default: 5)
+        3: _Side               - SIDE                   - Faction side for the spawned group (default: east)
+        4: _StepWaypoint       - BOOLEAN                - Add an intermediate MOVE waypoint at midpoint before SAD (default: false)
+        5: _RangeOfFallbackHunt - NUMBER                 - LAMBS hunt range in meters when no target waypoint is given (default: 1000)
+
+    Returns:
+        GROUP - The created group
+
+    Example:
+        // Spawn 4 infantry attacking a player position with step waypoint
+        [this, player, 4, east, true, 500] spawn OKS_fnc_Attack_SpawnGroup;
+
+        // Spawn a vehicle attacking a target
+        [spawnObj, targetObj, "O_APC_Wheeled_02_rcws_v2_F", east, false, 1000] spawn OKS_fnc_Attack_SpawnGroup;
+
+        // Spawn infantry with no target (LAMBS hunt fallback)
+        [spawnObj, nil, 6, east, false, 800] spawn OKS_fnc_Attack_SpawnGroup;
 */
 
  	if(!isServer) exitWith {};

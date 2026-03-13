@@ -1,27 +1,43 @@
 /*
-    Function: AI Artillery Battle - Continuous Background Artillery Combat System
-    
-    Creates persistent AI vs AI artillery battles with progressive accuracy improvement,
-    burst fire missions, and intelligent target selection. Battles continue until manually stopped.
+    Function: OKS_fnc_AI_ArtilleryBattle
+
+    Description:
+        Creates persistent AI vs AI artillery battles with progressive accuracy improvement,
+        burst fire missions, and intelligent target selection. Two opposing artillery pieces
+        are spawned at their respective positions and engage each other in alternating fire
+        missions. Accuracy improves over successive rounds simulating ranging. The battle
+        continues looping with configurable delays until manually stopped via the control
+        variable, a side is destroyed, or the maximum fire missions are reached. Returns
+        the Side1 spawn object as a control handle for start/stop/pause operations.
+
+    Parameters:
+        0:  _Side1Spawn          - OBJECT  - Spawn position object for Side 1 artillery
+        1:  _Side2Spawn          - OBJECT  - Spawn position object for Side 2 artillery
+        2:  _Side1               - SIDE    - Side 1 faction (default: west)
+        3:  _Side2               - SIDE    - Side 2 faction (default: east)
+        4:  _Side1Classes        - ARRAY   - Side 1 artillery vehicle classnames (default: ["B_MBT_01_arty_F"])
+        5:  _Side2Classes        - ARRAY   - Side 2 artillery vehicle classnames (default: ["O_MBT_02_arty_F"])
+        6:  _BaseFireMissionDelay - NUMBER  - Base delay in seconds between fire missions (default: 45)
+        7:  _RoundsPerFireMission - NUMBER  - Number of rounds per fire mission (default: 4)
+        8:  _ShouldLoop          - BOOLEAN - Enable continuous looping battles (default: true)
+        9:  _MaxFireMissions     - NUMBER  - Maximum fire missions; -1 for infinite (default: -1)
+        10: _VictoryDelay        - NUMBER  - Delay in seconds after victory before cleanup (default: 30)
+
+    Returns:
+        OBJECT - Side1 spawn object (control handle); use setVariable to control:
+            "OKS_ArtilleryBattle_On"    - BOOLEAN - Set false to stop the battle
+            "OKS_ArtilleryBattle_Pause" - BOOLEAN - Set true to pause
 
     Example:
-    _artilleryBattleRef = [
-        arty_spawn_1,               // Side 1 artillery spawn object
-        arty_spawn_2,               // Side 2 artillery spawn object  
-        west,                       // Side 1 faction
-        east,                       // Side 2 faction
-        ["B_MBT_01_arty_F"],        // Side 1 artillery classes
-        ["O_MBT_02_arty_F"],        // Side 2 artillery classes
-        45,                         // Base delay between fire missions (seconds)
-        4,                          // Rounds per fire mission
-        true,                       // Enable looping battles
-        -1,                         // Max fire missions (-1 = infinite)
-        30                          // Victory delay before cleanup
-    ] call OKS_fnc_AI_ArtilleryBattle;
-    
-    // Control the battle:
-    _artilleryBattleRef setVariable ["OKS_ArtilleryBattle_On", false]; // Stop battle
-    _artilleryBattleRef getVariable ["OKS_ArtilleryBattle_FireMission", 0]; // Get current fire mission number
+        _artilleryBattleRef = [
+            arty_spawn_1, arty_spawn_2,
+            west, east,
+            ["B_MBT_01_arty_F"], ["O_MBT_02_arty_F"],
+            45, 4, true, -1, 30
+        ] call OKS_fnc_AI_ArtilleryBattle;
+
+        // Stop the battle:
+        _artilleryBattleRef setVariable ["OKS_ArtilleryBattle_On", false];
 */
 
 if (!isServer) exitWith {};

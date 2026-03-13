@@ -1,23 +1,45 @@
 /*
-    OKS_fnc_AirSpawn
+    Function: OKS_fnc_AirSpawn
 
-    Spawns an aircraft at a given spawn position and routes it to a target/waypoint.
-    Supports selecting aircraft templates (including pylons) and optionally revealing hostile
-    ground targets near the waypoint so the aircraft starts with initial intel.
+    Description:
+        Spawns an aircraft at a given position and routes it to a target waypoint. Supports
+        multiple airframe specification formats: a single classname string, an array of
+        classnames (one randomly selected), or template arrays with pylon loadout definitions.
+        Optionally reveals hostile ground and air targets within configurable radii so the
+        aircraft starts with initial intelligence. The aircraft is created at the specified
+        altitude, oriented toward the target, and given initial velocity. Crew is added via
+        OKS_fnc_AddVehicleCrew and pylon loadouts are applied from templates or the _Loadout
+        parameter. Backward-compatible with the legacy 7-parameter signature.
 
-    Backward-compatible with old signature:
-        [_spawnPos, _moveToPos, _classname, _side, _shouldBeCareless, _waypointType, _height] spawn OKS_fnc_AirSpawn;
+    Parameters:
+        0:  _SpawnPos        - OBJECT or ARRAY - Spawn position object or [x,y,z]
+        1:  _MoveToPos       - OBJECT or ARRAY - Target waypoint object or [x,y,z]
+        2:  _Airframes       - STRING or ARRAY - Aircraft classname, array of classnames,
+                               or array of templates [[classname, pylons], ...] (see formats below)
+        3:  _Side            - SIDE            - Faction side (default: sideUnknown, falls back to east)
+        4:  _ShouldBeCareless - BOOLEAN         - Set crew to CARELESS/BLUE non-combat mode (default: false)
+        5:  _WaypointType    - STRING          - Waypoint type: "SAD", "LOITER", "MOVE", etc. (default: "SAD")
+        6:  _Height          - NUMBER          - Flight altitude in meters ASL (default: 500)
+        7:  _Loadout         - ARRAY           - Direct pylon loadout override (default: [])
+        8:  _RevealTargets   - BOOLEAN         - Reveal hostile targets to spawned aircraft (default: true)
+        9:  _RevealRadius    - NUMBER          - Ground target reveal radius in meters around waypoint (default: 2000)
+        10: _RevealAirRadius - NUMBER          - Air target reveal radius in meters around the aircraft (default: 10000)
 
-    New signature (defaults are applied when omitted):
-        [_spawnPos, _moveToPos, _airframes, _side, _shouldBeCareless, _waypointType, _height, _loadout, _revealTargets, _revealRadius, _revealAirRadius] spawn OKS_fnc_AirSpawn;
+    Airframes Formats:
+        - "B_Plane_Fighter_01_F"                           // Single classname
+        - ["B_Plane_Fighter_01_F", "B_Plane_CAS_01_F"]     // Random selection
+        - [["B_Plane_CAS_01_F", ["ammo_1", "ammo_2"]]]     // Template with pylon array
+        - [["B_Plane_CAS_01_F", [[1,"ammo_1",100]]]]       // Template with pylon tuples
 
-    _airframes formats:
-        - String classname
-        - Array of classnames
-        - Array of templates: [ [classname, pylons], ... ]
-            Where pylons is either:
-            - Array of pylon magazine classnames (index 1..n)
-            - Array of pylon tuples: [ [pylonIndex, magazineClass, ammoCount], ... ]
+    Returns:
+        Nothing
+
+    Example:
+        // Basic usage
+        [spawnObj, targetObj, "B_Plane_CAS_01_dynamicLoadout_F", west, false, "SAD", 500] spawn OKS_fnc_AirSpawn;
+
+        // With target reveal and custom loadout
+        [spawnObj, targetObj, "B_Plane_CAS_01_F", west, false, "SAD", 300, [], true, 3000, 15000] spawn OKS_fnc_AirSpawn;
 */
 
 params [

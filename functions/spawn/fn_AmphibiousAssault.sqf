@@ -1,7 +1,44 @@
 /*
-	OKS_fnc_AmphibiousAssault_v2 - Boat-specific movement version
+    Function: OKS_fnc_AmphibiousAssault
 
-	Legacy function (kept as-is).
+    Description:
+        Spawns a boat with crew and infantry passengers at a water position, then drives it
+        through optional intermediate waypoints to a dismount position on or near shore. On
+        arrival the passengers dismount and are assigned a behaviour (HUNT, STAY, or MOVE)
+        via the dismountBehavior parameter. The boat uses a 3-level waypoint system: an
+        auto-generated initial heading waypoint, user-provided mid waypoints for navigation
+        around obstacles, and the final dismount position. If no mid waypoints are provided
+        and the distance exceeds 800m, one is auto-generated at 60% of the route. Includes
+        active beaching assistance with velocity nudging when near shore, and a final forced
+        push if the boat hasn't reached land. After dismount, passengers join a new group
+        and crew (driver, gunner, commander) remain with the boat. The boat can be set to
+        STAY (immobilised), PATROL (water patrol), or DESPAWN after the assault. Note: the
+        crew group is currently hardcoded to east side regardless of the _Side parameter.
+
+    Parameters:
+        0: _spawnPos         - ARRAY or OBJECT - Water spawn position [x,y,z] or spawn object
+        1: _waypointArray    - ARRAY           - Intermediate waypoint positions (each element is [x,y,z] or object)
+        2: _dismountPos      - ARRAY or OBJECT - Shore/dismount position [x,y,z] or object
+        3: _dismountBehavior - STRING          - Passenger behaviour after dismounting: "HUNT", "STAY", or "MOVE" (default: "HUNT")
+        4: _boatClassname    - STRING          - Boat vehicle classname (default: "B_Boat_Armed_01_minigun_F")
+        5: _numUnits         - NUMBER          - Number of infantry passengers to spawn (default: 6)
+        6: _postBehavior     - STRING          - Post-assault boat behaviour: "STAY", "PATROL", or "DESPAWN" (default: "STAY")
+        7: _debug            - BOOLEAN         - Enable debug logging (default: false)
+
+    Returns:
+        ARRAY - [boat vehicle, mainGroup, crew array, passengerGroup]
+
+    Example:
+        [
+            getPos boatSpawn_1,
+            [getPos navWP_1, getPos navWP_2],
+            getPos beach_1,
+            "HUNT",
+            "B_Boat_Armed_01_minigun_F",
+            6,
+            "STAY",
+            false
+        ] spawn OKS_fnc_AmphibiousAssault;
 */
 
 if (!isServer) exitWith {};

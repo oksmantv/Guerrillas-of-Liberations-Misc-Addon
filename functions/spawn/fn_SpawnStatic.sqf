@@ -1,26 +1,43 @@
+/*
+    Function: OKS_fnc_SpawnStatic
+
+    Description:
+        Spawns static infantry and vehicle positions from a structured data array,
+        matching the format used by the GW Copy function. Infantry units are placed
+        at exact positions with specified directions and stances, with their PATH AI
+        disabled so they hold position. Vehicles are created at positions with crew
+        via OKS_fnc_AddVehicleCrew. The first infantry unit spawned is assigned as
+        group leader with SERGEANT rank. Unit classnames are pulled from
+        OKS_Dynamic_Setting based on the specified side. LAMBS group AI is disabled
+        for the infantry group to prevent autonomous repositioning.
+
+    Parameters:
+        0: _Array - ARRAY - Spawn data array structured as:
+            [
+                infantryArray,  // ARRAY of [position, direction, stance, extras]
+                vehicleArray,   // ARRAY of [classname, position, direction, crewArray]
+                reserved,       // ARRAY (unused, pass [])
+                side            // SIDE (e.g. east, west, independent)
+            ]
+
+    Returns:
+        Nothing
+
+    Example:
+        [
+            [
+                [[4349.69,3973.94,3.58], 233, "Auto", []],
+                [[4352.35,3972.95,3.65], 233, "Auto", []]
+            ],
+            [
+                ["UK3CB_ADE_O_DSHKM", [4352.14,3975.61,3.66], 267, [["gunner",-1,[0]]]]
+            ],
+            [],
+            east
+        ] spawn OKS_fnc_SpawnStatic;
+*/
 
 	if(!isServer) exitWith {};
-
-/*
- 	Function: SpawnStatic
-[
-	[
-		[
-			[4349.69,3973.94,3.58235],233,"Auto",[]
-		],
-		[
-			[4352.35,3972.95,3.65498],233,"Auto",[]
-		]
-	],
-	[	
-		["UK3CB_ADE_O_DSHKM",[4352.14,3975.61,3.65926],267,[["gunner",-1,[0]]],[]]
-	],
-	[],
-	[],
-	GUER] spawn OKS_fnc_SpawnStatic;
-
-	Same setup as our local GW Copy function for statics with the addition of side as the last parameter. In the example >> GUER.
-*/
 Params [
 	"_Array"
 ];
