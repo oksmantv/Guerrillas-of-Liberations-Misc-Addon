@@ -171,7 +171,8 @@ if ( (isNil "_Mortar") or (TypeName _Mortar == "STRING") ) then
 			_Unit DisableAI "TARGET";
 			_Unit DisableAI "AUTOTARGET";
 			_Unit DisableAI "FSM";
-			_Unit remoteExec ["GW_SetDifficulty_fnc_setSkill",0];
+			(group _Unit) setBehaviour "CARELESS";
+			(group _Unit) setCombatMode "BLUE";
 	
 			// Remove eventHandler when AI gunner dies.
 			[_Mortar,_Unit] spawn 
@@ -181,8 +182,13 @@ if ( (isNil "_Mortar") or (TypeName _Mortar == "STRING") ) then
 		
 				_Temp = _Mortar addEventHandler ["Fired", {
 					params ["","","","","","","_projectile"];
-					_projectile setPosASL [0,0,10000];
-					[_projectile] remoteExec ["deleteVehicle", 0];
+				
+					_projectile spawn {
+						params ["_projectile"];
+						"[Mortar] Fired Shot." spawn OKS_fnc_LogDebug;
+						sleep 5;
+						[_projectile] remoteExec ["deleteVehicle", 0];
+					};				
 				}]; 
 				WaitUntil {sleep 20; !(_Unit in _Mortar) or !(Alive _Unit)};
 				UnassignVehicle _Unit;
@@ -234,7 +240,7 @@ if ( (isNil "_Mortar") or (TypeName _Mortar == "STRING") ) then
 						
 						_enemyClose
 					};
-					[_Unit] Call OKS_fnc_MortarAIReset;					
+					[_Unit] call OKS_fnc_MortarAIReset;					
 				};
 			};
 		} else {
@@ -262,8 +268,10 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 	// Random Selector
 	if (_FiringMode == "random") then {
 		_SelectedFiringMode = toLower (_RandomFiringMode call BIS_FNC_SelectRandom)
-	} else {_SelectedFiringMode = _FiringMode};
-	format ["[Mortar] Firing mode: %1",_SelectedFiringMode] spawn OKS_fnc_LogDebug;
+	} else { 
+		_SelectedFiringMode = _FiringMode
+	};
+	format ["[Mortar] Firing mode: %1", _SelectedFiringMode] spawn OKS_fnc_LogDebug;
 	
 	// Inaccuracy definer
 	Switch (_SelectedFiringMode) do

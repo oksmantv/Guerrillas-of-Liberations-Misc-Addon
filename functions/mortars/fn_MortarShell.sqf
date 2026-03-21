@@ -8,7 +8,7 @@
 	_TravelTime = (_This select 5);	
 	_Flare = (_This select 6);
 
-	systemChat "Mortar Shell spawned";
+	"[Mortar] Shell spawned" spawn OKS_fnc_LogDebug;
 	
 	if (_TravelTime > 2) then {	sleep (_TravelTime - 2) };
 	_Pos = CreateVehicle ["Land_HelipadEmpty_F", [(_Position select 0), (_Position select 1), ((_Position select 2) + 50)], [], _Inaccuracy, "CAN_COLLIDE"];

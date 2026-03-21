@@ -78,12 +78,14 @@ private _customTriggers = [];
     switch (_type) do {
         case "spawn": {
             _x set3DENAttribute ["condition", _spawnConditionAAC];
-            _x set3DENAttribute ["sizeC", -1];
+            private _curSize = _x get3DENAttribute "size3" select 0;
+            _x set3DENAttribute ["size3", [_curSize select 0, _curSize select 1, -1]];
             _countSpawn = _countSpawn + 1;
         };
         case "reaction": {
             _x set3DENAttribute ["condition", _reactionConditionAAC];
-            _x set3DENAttribute ["sizeC", -1];
+            private _curSize = _x get3DENAttribute "size3" select 0;
+            _x set3DENAttribute ["size3", [_curSize select 0, _curSize select 1, -1]];
             _countReaction = _countReaction + 1;
         };
         case "custom": {

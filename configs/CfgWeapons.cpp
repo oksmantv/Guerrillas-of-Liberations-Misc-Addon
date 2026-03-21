@@ -1257,4 +1257,15 @@ class CfgWeapons {
 	#include "compat\compat_rhs.hpp"
 	#include "compat\compat_uk3cb.hpp"
 	#include "compat\compat_uk3cb_factions.hpp"
+
+	class GOL_weap_m249_pip: rhs_weap_m249_pip {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M249 PIP (GOL)";
+		baseWeapon = "GOL_weap_m249_pip";
+		
+		recoil = "UK3CB_BAF_recoil_saw_556";
+		recoilProne = "assaultRifleBase";
+	};
 };

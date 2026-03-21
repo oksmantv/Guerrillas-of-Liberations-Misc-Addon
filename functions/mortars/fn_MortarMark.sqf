@@ -3,7 +3,7 @@
 	_Position = _This select 0;	
 	#include "fn_Mortar_Settings.sqf"
 
-	systemChat "Marking Mortar Target";
+	"[Mortar] Marking Mortar Target" spawn OKS_fnc_LogDebug;
 	
 	if ((dayTime > _Sunrise) and (dayTime < _Sunset)) then {_DayTime = True} else {_Daytime = False};
 

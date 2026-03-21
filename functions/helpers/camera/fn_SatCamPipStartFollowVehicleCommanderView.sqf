@@ -419,9 +419,10 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
 };
 
 // Calculate target position for camera to look at.
-// _dirWorld is in WORLD space (from turretDir/eyeDirection), so compute target in world space.
-private _camWorldPos = _vehicle modelToWorld _cameraAttachOffset;
-private _targetWorld = _camWorldPos vectorAdd (_dirWorld vectorMultiply 2000);
+// modelToWorld returns AGL; convert to ASL so the direction vector stays correct
+// across terrain height changes, then convert the final target back to AGL for camSetTarget.
+private _camPosASL = AGLtoASL (_vehicle modelToWorld _cameraAttachOffset);
+private _targetWorld = ASLtoAGL (_camPosASL vectorAdd (_dirWorld vectorMultiply 2000));
 
 if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
     [format ["[Commander View] === CAMERA CREATION ==="]] spawn OKS_fnc_LogDebug;
@@ -440,7 +441,7 @@ if (missionNamespace getVariable ["GOL_VehicleCamera_Debug", true]) then {
     private _actualPosATL = getPosATL _camera;
     [format ["[Commander View]   Camera actual ASL: %1", _actualPosASL]] spawn OKS_fnc_LogDebug;
     [format ["[Commander View]   Camera actual ATL: %1", _actualPosATL]] spawn OKS_fnc_LogDebug;
-    [format ["[Commander View]   Position match: %1", if (_actualPosATL distance _camPosATL < 0.1) then {"YES"} else {format ["NO - Off by %1m", _actualPosATL distance _camPosATL]}]] spawn OKS_fnc_LogDebug;
+    [format ["[Commander View]   Camera ASL Z: %1", _actualPosASL#2]] spawn OKS_fnc_LogDebug;
 };
 
 _camera cameraEffect ["INTERNAL", "BACK", _rtName];
@@ -705,9 +706,9 @@ private _pfhId = [{
     detach _camera;
     _camera attachTo [_vehicle, _attachOffset];
 
-    // Update camera target — _dirWorld is in world space, so compute target in world space.
-    private _camWorldPos = _vehicle modelToWorld _attachOffset;
-    private _targetWorld = _camWorldPos vectorAdd (_dirWorld vectorMultiply 2000);
+    // Update camera target — compute in ASL so terrain height differences don't skew aim.
+    private _camPosASL = AGLtoASL (_vehicle modelToWorld _attachOffset);
+    private _targetWorld = ASLtoAGL (_camPosASL vectorAdd (_dirWorld vectorMultiply 2000));
     _camera camSetFov (missionNamespace getVariable ["OKS_SatCamPip_CommanderFov", _fov]);
     _camera camSetTarget _targetWorld;
     _camera camCommit 0;

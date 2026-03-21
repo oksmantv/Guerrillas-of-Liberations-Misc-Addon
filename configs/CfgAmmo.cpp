@@ -223,7 +223,7 @@ class CfgAmmo {
 	class B_556x45_Ball;
 	
 	class GOL_B_556x45_Ball_AP45: B_556x45_Ball {
-		hit = 11;               // Superior stopping power (Mk262 is 10.3)
+		hit = 12;               // Superior stopping power (Mk262 is 10.3)
 		indirectHit = 0;
 		indirectHitRange = 0;
 		caliber = 2.0;          // Superior armor penetration - AP45 armor-piercing core
@@ -231,9 +231,9 @@ class CfgAmmo {
 		airFriction = -0.00096; // Superior ballistic coefficient
 		
 		// ACE Advanced Ballistics
-		ACE_caliber = 5.69;     // 5.56mm diameter
-		ACE_bulletLength = 23.012; // AP45 bullet length in mm
-		ACE_bulletMass = 5.2;   // 80gr - heavier than Mk262 (77gr) for more impact
+		ACE_caliber = 5.9;     // 5.56mm diameter
+		ACE_bulletLength = 29.012; // AP45 bullet length in mm
+		ACE_bulletMass = 6.2;   // 80gr - heavier than Mk262 (77gr) for more impact
 		ACE_muzzleVelocityVariationSD = 0.4;
 		ACE_ammoTempMuzzleVelocityShifts[] = {-26.55, -25.47, -22.85, -20.12, -16.98, -12.80, -7.64, -1.53, 5.96, 15.17, 26.19};
 		ACE_ballisticCoefficients[] = {0.151}; // G7 BC from real AP45 data

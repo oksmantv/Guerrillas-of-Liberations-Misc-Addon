@@ -184,7 +184,7 @@ _TaskPosition = [0, 0, 0];
 	_TaskPosition = _TaskPosition vectorAdd (getPosWorld _x);
 } forEach _UnitsArray;
 _TaskPosition = _TaskPosition vectorMultiply (1 / (count _UnitsArray));	
-
+_TaskPosition set [2, 0]; // Set altitude to 0 for task marker
 [
 	true,
 	_TaskArray,
