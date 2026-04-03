@@ -77,6 +77,22 @@ if(_Debug) then {
 [_Vehicle] call OKS_fnc_SetupCargoItems;
 [_Vehicle] call OKS_fnc_AdjustPlayerVehicleDamage;
 
+// Clear persistent seat assignment when dead crew are unloaded.
+// Without unassignVehicle the engine keeps the dead unit assigned,
+// blocking the seat even though the body is gone.
+_Vehicle addEventHandler ["GetOut", {
+	params ["_vehicle", "_role", "_unit", "_turret"];
+	if (!alive _unit) then {
+		unassignVehicle _unit;
+		if (_role == "driver") then {
+			_vehicle lockDriver false;
+		};
+		if (missionNamespace getVariable ["GOL_GroundVehicles_Debug", false]) then {
+			format["[MECHANIZED] Dead %1 unloaded from %2 — seat assignment cleared", _role, typeOf _vehicle] spawn OKS_fnc_LogDebug;
+		};
+	};
+}];
+
 private _VehicleEmptyEnabled = missionNamespace getVariable ["GOL_VehicleEmpty_Enabled", false];
 if (_VehicleEmptyEnabled) then {
 	[_Vehicle] spawn OKS_fnc_VehicleEmpty;

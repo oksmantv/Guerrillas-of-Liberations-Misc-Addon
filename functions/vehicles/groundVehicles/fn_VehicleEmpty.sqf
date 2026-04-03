@@ -115,15 +115,18 @@ private _ClearTarget = {
 			terminate _hideMonitor;
 		};
 		
-		// Unlock vehicle before cleanup
-		_Vehicle lockDriver false;
 		deleteVehicle _InvisibleSoldier;
-		_Vehicle setVariable ["GOL_InvisibleTarget", nil, true];
-		_Vehicle setVariable ["GOL_VehicleEmpty_Active", false, true];
-		_Vehicle setVariable ["GOL_InvisibleTarget_EH", nil, true];
-		_Vehicle setVariable ["GOL_InvisibleTarget_HideMonitor", nil, true];
-		format["[VEHICLEMPTY] Cleared target for vehicle: %1", _Vehicle] call OKS_fnc_LogDebug;
+	} else {
+		format["[VEHICLEMPTY] WARNING: Invisible soldier was already null for vehicle: %1 — forcing cleanup", _Vehicle] call OKS_fnc_LogDebug;
 	};
+
+	// Always unlock and reset state, even if invisible soldier was externally deleted
+	_Vehicle lockDriver false;
+	_Vehicle setVariable ["GOL_InvisibleTarget", nil, true];
+	_Vehicle setVariable ["GOL_VehicleEmpty_Active", false, true];
+	_Vehicle setVariable ["GOL_InvisibleTarget_EH", nil, true];
+	_Vehicle setVariable ["GOL_InvisibleTarget_HideMonitor", nil, true];
+	format["[VEHICLEMPTY] Cleared target for vehicle: %1", _Vehicle] call OKS_fnc_LogDebug;
 };
 
 // Wait until vehicle has moved from spawn or is destroyed

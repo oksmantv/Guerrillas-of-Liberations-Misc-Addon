@@ -22,7 +22,7 @@ if(missionNamespace getVariable ["GOL_MissileWarning_Enabled",false]) then {
 				_Debug = missionNamespace getVariable ["GOL_MissileWarning_Debug", false];
 
 				_Timeout = 8;
-				waitUntil { sleep 1; _Timeoout = _Timeout - 1; getPos _unit distance2d _Position > 30 || _Timeout <= 0 };
+				waitUntil { sleep 1; _Timeout = _Timeout - 1; getPos _unit distance2d _Position > 30 || _Timeout <= 0 };
 				
 				_unit setVariable ["GOL_FiredSmoke", false, true];
 				if(_Debug) then {

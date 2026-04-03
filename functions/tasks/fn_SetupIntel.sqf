@@ -9,7 +9,8 @@
 		"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello",		// Custom Text (use %1 for target/targets list, %2 for custom details)
 		"Special Intel",														// Custom Header (Text when opening intel on map, nil for "Intel #X")
 		nil,																	// Custom Details (Text inserted as %2 in Custom Text, "" for none)
-		nil																		// Enable Intel Task Complete (true/false)	
+		nil,																	// Enable Intel Task Complete (true/false)
+		["marker1","marker2"]													// Turn Markers from Array to (Visibility 0 on start) and when completed (Visibility 1)
 	] spawn OKS_fnc_SetupIntel;
 
 	"ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n%2"
@@ -21,7 +22,6 @@
 	_CustomHeader is the header text for the intel item. If left nil, it will be set to "Intel #X" where X is the number of intel items created so far + 1.
 	_CustomDetails is the text that will be inserted in the _CustomText parameter as %2.
 
-
 	If you want intel with only text and no target, set _Target to objNull or nil, and set _CustomText to your desired text.
 */
 
@@ -32,7 +32,8 @@ Params [
 	["_CustomText","ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n\n%2",[""]],
 	["_CustomHeader",nil, [""]],
 	["_CustomDetails","", [""]],
-	["_EnableIntelTaskComplete",true, [false]]
+	["_EnableIntelTaskComplete",true, [false]],
+	["_MarkerArray",[""],[[]]]
 ];
 
 if(!isServer) exitWith {
@@ -41,6 +42,9 @@ if(!isServer) exitWith {
 
 Private _AssetText = "";
 Private _AssetList = "";
+{
+	_X setMarkerAlpha 0;
+} foreach _MarkerArray;
 
 _AllIntel = missionNamespace getVariable ["GOL_IntelPieces",[]];
 _AllIntel pushBack _IntelPiece;
@@ -139,9 +143,8 @@ if(_EnableIntelTaskComplete) then {
 	waitUntil {sleep 10; (_TaskPosition nearEntities ["Man",100]) select {isPlayer _X} isNotEqualTo []};
 	waitUntil {sleep 1; !alive _IntelPiece};
 	private _NearPlayers = (_TaskPosition nearEntities ["Man",15]) select {isPlayer _X};
-	if(count _NearPlayers == 0) exitWith {
+	if(count _NearPlayers == 0) exitWith {};
 
-	};
 	private _PlayersWithIntel = _NearPlayers select {isPlayer _X && [_X, "acex_intelitems_document"] call BIS_fnc_hasItem};
 	private _Player = selectRandom _PlayersWithIntel;
 	if(isNil "_Player") then {
@@ -160,13 +163,13 @@ if(_EnableIntelTaskComplete) then {
 		_Name = name _Player;
 	};
 
-	_TaskDescription = format["You have found a piece of intel. Open your map and ACE Self-Interact to open the intel. The intel was picked up by %1.",_Name];
+	_TaskDescription = format["You have secured a piece of intel. Open your map and ACE Self-Interact to open the intel. The intel was picked up by %1.",_Name];
 	[
 		true,
 		_TaskArray,
 		[
 			_TaskDescription,
-			"Intel Found",
+			"Intel Secured",
 			"Intel"
 		],
 		_TaskPosition,
@@ -177,12 +180,19 @@ if(_EnableIntelTaskComplete) then {
 		true
 	] call BIS_fnc_taskCreate;	
 
-	_AllIntel = missionNamespace getVariable ["GOL_IntelPieces",[]];
-	_FilteredIntels = _AllIntel select {
-		(_x getVariable ["GOL_TargetIntel",objNull]) isEqualTo _Target
-	};
 	{
-		deleteVehicle _X;
-	} foreach _FilteredIntels;
+		_X setMarkerAlpha 1;
+	} foreach _MarkerArray;
+
+	if(!isNil "_Target") then {
+		// Clean up any existing intel pieces with the same target to prevent multiple intel items for the same asset(s)
+		_AllIntel = missionNamespace getVariable ["GOL_IntelPieces",[]];
+		_FilteredIntels = _AllIntel select {
+			(_x getVariable ["GOL_TargetIntel",objNull]) isEqualTo _Target
+		};
+		{
+			deleteVehicle _X;
+		} foreach _FilteredIntels;
+	};
 };
 		

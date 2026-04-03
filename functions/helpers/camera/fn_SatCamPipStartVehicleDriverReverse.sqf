@@ -506,12 +506,13 @@ _ehIds pushBack ["player", "Killed", _idKilled];
 
 // Fail safe: stop camera when player becomes unconscious (ACE)
 if (isClass (configFile >> "CfgPatches" >> "ace_medical")) then {
-    private _idUnconscious = player addEventHandler ["HandleDamage", {
-        if (player getVariable ["ACE_isUnconscious", false]) then {
+    private _idUnconscious = ["ace_unconscious", {
+        params ["_unit", "_isUnconscious"];
+        if (_unit isEqualTo player && _isUnconscious) then {
             [] call OKS_fnc_SatCamPipStop;
         };
-    }];
-    _ehIds pushBack ["player", "HandleDamage", _idUnconscious];
+    }] call CBA_fnc_addEventHandler;
+    _ehIds pushBack ["cba", "ace_unconscious", _idUnconscious];
 };
 
 // Fail safe: stop camera when player dismounts or switches seat

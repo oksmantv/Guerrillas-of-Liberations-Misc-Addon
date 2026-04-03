@@ -320,6 +320,7 @@ class CfgMagazines {
         descriptionShort = "5.56x45mm NATO 200-round box, Nammo AP45 armor-piercing";
         ammo = "GOL_B_556x45_Ball_AP45";
         tracersEvery = 0;
+        ACE_isBelt = 1;
     };
 
     class GOL_200Rnd_556x45_AP45_Box_Tracer_Red: GOL_200Rnd_556x45_AP45_Box {

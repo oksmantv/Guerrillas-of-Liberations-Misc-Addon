@@ -25,6 +25,9 @@ private _ehs = missionNamespace getVariable ["OKS_SatCamPip_EHs", []];
         case "player": {
             player removeEventHandler [_type, _id];
         };
+        case "cba": {
+            [_type, _id] call CBA_fnc_removeEventHandler;
+        };
     };
 } forEach _ehs;
 missionNamespace setVariable ["OKS_SatCamPip_EHs", []];
