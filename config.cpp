@@ -75,6 +75,19 @@ class CfgPatches
             "OKS_Module_HelicopterSetup",
             "OKS_Module_MHQ",
             "OKS_Module_ApplyUnitGear",
+            "OKS_Module_Mortars",
+            "OKS_Module_MortarTarget",
+            "OKS_Module_Radar",
+            "OKS_Module_ArtyFire",
+            "OKS_Module_ArtyTarget",
+            "OKS_Module_ArtySuppression",
+            "OKS_Module_LambsSpawnGroup",
+            "OKS_Module_Convoy",
+            "OKS_Module_ConvoyWaypoint",
+            "OKS_Module_AmbientAAA",
+            "OKS_Module_HuntBase",
+            "OKS_Module_AirBase",
+            "OKS_Module_SpawnPoint",
 			"GOL_FastRope_DZ",
 			"GOL_Flag_Hellfish",
             "Fennek_wd","Fennek_d","Fennek_e","Fennek_hmg_wd","Fennek_hmg_d","Fennek_hmg_e","Fennek_gmg_wd","Fennek_gmg_d","Fennek_gmg_e",
@@ -202,6 +215,9 @@ class CfgEditorSubcategories {
     };  
     class GOL_Objects {
         displayName = "Objects";
+    };
+    class GOL_Modules {
+        displayName = "Modules";
     };      
 };
 

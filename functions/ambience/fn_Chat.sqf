@@ -1,14 +1,22 @@
-Params ["_Talker","_Channel","_Message",["_Callsign","",[""]]];
+Params [
+	"_Talker",
+	"_Channel",
+	"_Message",
+	["_Callsign","",[""]],
+	["_RadioRange", 25000, [0]],
+	["_LocalRange", 20, [0]]];
 /* 
  Local Execution - Requires to be run on all Clients (Globally) to show everyone a message.
    
  Parameters:
  _Talker = Entity (Person) or String (Custom Callsign)
  _Channel = "side" or "local" defaults to "side". "Side" is a radio message, and must be sent by the same side as the player to be visible (Cannot be captive).
-            "local" can be sent by any entity however cannot be sent by Preset callsigns. Local range is 20m, Radio range is 1000m.
+            "local" can be sent by any entity however cannot be sent by Preset callsigns. Local range is 20m, Radio range is 25000m.
  
- ["HQ","side","Test"] spawn OKS_fnc_Chat; - Has to be executed globally, for example using a trigger.
- [person1,"local","Hello World!"] remoteExec ["OKS_fnc_Chat",0]; - Has to be executed server/1 client ONLY, for example using a trigger with "Server Only".
+ --["HQ","side","Test"] spawn OKS_fnc_Chat--; - DO NOT DO THIS! It sas to be executed globally, for example using a trigger.
+   [person1,"local","Hello World!"] remoteExec ["OKS_fnc_Chat",0]; - Has to be executed server/1 client ONLY, for example using a trigger with "Server Only" or use the spawnlist.
+
+   The global version which is exactly the same except you may use the spawn OKS_fnc_ChatGlobal;
 */ 
 
 if(!HasInterface) exitWith {false};
@@ -16,7 +24,7 @@ if(!HasInterface) exitWith {false};
 Private _Code = {};
 Private ["_Range","_Color","_SideCode","_LocalCode"];
 
-true remoteExec ["showChat",0];
+showChat true;
 
 _SideCode = {
 	Params ["_Talker","_Message","_Range","_Callsign","_Color"];
@@ -53,7 +61,7 @@ _SideCode = {
 			format["<t shadow='2' align='left' size='1.6' color='#%1' font='PuristaSemibold'>%2</t><br/>", _Color, _Callsign]+
 			"<t shadow='2' align='left' size='1.3'  font='PuristaSemibold'>"+
 			toUpper _Message+
-			"<t/>",
+			"</t>",
 			"PLAIN",
 			1,
 			false,
@@ -81,7 +89,7 @@ _LocalCode = {
 			format["<t shadow='2' align='left' size='1.6' color='#%1' font='PuristaSemibold'>%2</t><br/>", _Color, _Callsign]+
 			"<t shadow='2' align='left' size='1.3' font='PuristaSemibold'>"+
 			toUpper _Message+
-			"<t/>",
+			"</t>",
 			"PLAIN",
 			1,
 			false,
@@ -96,8 +104,8 @@ _LocalCode = {
 Switch (toLower _Channel) do {
 
 	case "side": {
-		_Range = 5000;
 		_Code = _SideCode;
+		_Range = _RadioRange;
 	};
 
 	case "local": {
@@ -105,15 +113,14 @@ Switch (toLower _Channel) do {
 			[format ["[CHAT] Error: Local channel cannot use preset callsign '%1'. Local messages require an actual entity (object).", _Talker], true] call OKS_fnc_LogDebug;
 			false
 		};
-		
-		_Range = 20;
+		_Range = _LocalRange;
 		_Code = _LocalCode;
 	};
 
 	default {
 		systemChat "[CHAT] Invalid Channel specified, defaulting to 'side' channel.";
-		_Range = 5000;
 		_Code = _SideCode;	
+		_Range = _RadioRange;
 	}
 };
 
@@ -124,5 +131,19 @@ _Color = switch (side player) do {
 	default { "0D64EC" };
 };
 
+// Resolve display callsign before spawning so the diary gets the correct value
+private _diaryCallsign = _Callsign;
+if (_diaryCallsign == "") then {
+	if (_Talker isEqualType "") then {
+		_diaryCallsign = _Talker;
+	} else {
+		if (toLower _Channel == "local") then {
+			_diaryCallsign = name _Talker;
+		} else {
+			_diaryCallsign = "HQ";
+		};
+	};
+};
+
 [_Talker,_Message,_Range,_Callsign,_Color] spawn _Code;
-player createDiaryRecord ["Diary", ["Radio Messages", format["<br/>From: <font color='#%3' size='14'>%1</font><br/>Message: %2<br/>============",_Callsign,_Message,_Color]]];
+player createDiaryRecord ["Diary", ["Radio Messages", format["<br/>From: <font color='#%3' size='14'>%1</font><br/>Message: %2<br/>============",_diaryCallsign,_Message,_Color]]];

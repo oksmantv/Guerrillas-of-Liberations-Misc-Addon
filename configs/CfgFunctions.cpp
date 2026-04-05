@@ -140,6 +140,7 @@ class CfgFunctions // Defines a function
 			class CopyAndElevateObjectsMenu {};
 			class EdenAddVehicleCrew {};
 			class EdenBuildingRestCamp {};
+			class EdenChat {};
 		};
 
 		class OKS_Zeus {
@@ -148,6 +149,19 @@ class CfgFunctions // Defines a function
 			class SetupMechanized {};				
 			class SetupHelicopter {};				
 			class SetupMHQ {};							
+		};
+
+		class OKS_Modules {
+			file = "\OKS_GOL_Misc\functions\modules";
+			class ModuleMortars {};
+			class ModuleRadar {};
+			class ModuleArtyFire {};
+			class ModuleArtySuppression {};
+			class ModuleLambsSpawnGroup {};
+			class ModuleConvoy {};
+			class ModuleAmbientAAA {};
+			class ModuleHuntBase {};
+			class ModuleAirBase {};
 		};				
 
 		class OKS_Enemy {
@@ -323,6 +337,7 @@ class CfgFunctions // Defines a function
 			class AddGeneratorAction {};
 			class AlarmSound {};
 			class Chat {};
+			class ChatGlobal {};
 			class CreateExplosion {};
 			class DeleteDeadAndObjects {};
 			class Destroy_Houses {};

@@ -101,6 +101,7 @@ if (hasInterface) then {
     };
 };
 
+// --- Module Eden Hooks ---
 // CBA Settings for Eden Editor Marker Tools
 [
     "OKS_Eden_FlagMarker_BLUFOR",

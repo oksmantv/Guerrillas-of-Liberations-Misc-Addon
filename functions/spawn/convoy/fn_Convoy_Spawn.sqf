@@ -249,7 +249,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		};
 
 		{
-			private _waypoint = _waypointGroup addWaypoint [(getPos _waypointObject) select [0,2], 0];
+			private _waypoint = _waypointGroup addWaypoint [(getPos _x) select [0,2], 0];
 			_waypoint setWaypointType "MOVE";
 			_waypoint setWaypointCompletionRadius 50;
 

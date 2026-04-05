@@ -55,15 +55,19 @@ if(typeName _target == "OBJECT") then {
     } else {
         _TargetDisplayName = [configFile >> "CfgVehicles" >> typeOf _target] call BIS_fnc_displayName;
         _TaskIcon = "destroy";
-    };  
+    };
+    _target lock true;
     _TargetArray pushBackUnique _target;
 	if(_ShouldShowPosition) then {	
 		_TaskPosition = getPos _target;
-	}
+	};
 };
 if(typeName _target == "ARRAY") then {
     _TargetArray = _target;
     _selectedTarget = selectRandom _target;
+    {
+        _X lock true;
+    } foreach _TargetArray;
     if(_selectedTarget isKindOf "Man") then {
         _TargetDisplayName = name _selectedTarget;
         _TaskIcon = "kill";

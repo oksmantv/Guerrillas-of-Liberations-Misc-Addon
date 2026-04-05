@@ -120,7 +120,7 @@ if ((count _targetNames) == 1) then {
 private _customText = "ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n\n%2";
 
 private _example = format [
-    "null = [%1, %2, nil, %3, nil, %4, true] spawn OKS_fnc_SetupIntel;",
+    "null = [%1, %2, nil, %3, nil, %4, true, ['']] spawn OKS_fnc_SetupIntel;",
     _intelName,
     _targetExpr,
     str _customText,

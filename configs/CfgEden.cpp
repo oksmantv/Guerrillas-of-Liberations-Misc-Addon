@@ -1194,8 +1194,35 @@ class Display3DEN {
                 text = "AMBIENCE";
                 value = 0;
                 items[] = {
-                    "GOL_SCRIPTS_AMBIENCE_COPYANDELEVATE"
+                    "GOL_SCRIPTS_AMBIENCE_COPYANDELEVATE",
+                    "GOL_SCRIPTS_AMBIENCE_CHAT"
                 };
+            };
+
+            class GOL_SCRIPTS_AMBIENCE_CHAT {
+                text = "Chat Message";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_AMBIENCE_CHAT_SIDE",
+                    "GOL_SCRIPTS_AMBIENCE_CHAT_LOCAL",
+                    "GOL_SCRIPTS_AMBIENCE_CHAT_OPENFUNC"
+                };
+            };
+            class GOL_SCRIPTS_AMBIENCE_CHAT_SIDE {
+                text = "Side Channel";
+                action = "['side'] call OKS_fnc_EdenChat;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_AMBIENCE_CHAT_LOCAL {
+                text = "Local Channel";
+                action = "['local'] call OKS_fnc_EdenChat;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_AMBIENCE_CHAT_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_Chat'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
             };
 
             class GOL_SCRIPTS_AMBIENCE_COPYANDELEVATE {
