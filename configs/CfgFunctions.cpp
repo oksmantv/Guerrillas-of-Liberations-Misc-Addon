@@ -109,6 +109,8 @@ class CfgFunctions // Defines a function
 			class EdenMortars {};
 			class EdenAmbientAAA {};
 			class EdenRadar {};
+			class EdenSAM {};
+			class EdenSHORAD {};
 			class EdenArtyFire {};
 			class EdenBallisticMissile {};
 			class EdenDroneHuntZone {};
@@ -160,6 +162,8 @@ class CfgFunctions // Defines a function
 			class ModuleLambsSpawnGroup {};
 			class ModuleConvoy {};
 			class ModuleAmbientAAA {};
+			class ModuleSAM {};
+			class ModuleSHORAD {};
 			class ModuleHuntBase {};
 			class ModuleAirBase {};
 		};				
@@ -266,6 +270,8 @@ class CfgFunctions // Defines a function
 		class OKS_Jets {
 			file = "\OKS_GOL_Misc\functions\vehicles\jets";
 			class Jet {};
+			class JetAWSInit {};
+			class AWSNoop {};
 		};		
 
 		class OKS_RescueFriendly {
@@ -523,6 +529,12 @@ class CfgFunctions // Defines a function
 			class Radar {};
 			class SAM {};
 			class SAM_Fired {};
+		};
+
+		class OKS_Spawn_SHORAD {
+			file = "\OKS_GOL_Misc\functions\spawn\shorad";
+			class SHORAD {};
+			class SHORAD_Fired {};
 		};	
 
 		class OKS_Spawn_Arty {

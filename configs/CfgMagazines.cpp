@@ -5,11 +5,29 @@ class CfgMagazines {
         ammo = "gol_ammo_9k38";
     };
 
-    class magazine_Missile_s750_x4; // Reference the base class (no body)
+    class magazine_Missile_s750_x4;
     class gol_magazine_Missile_s750_x4: magazine_Missile_s750_x4 {
         displayName = "S750 (Disabled ACE Guidance)";
         ammo = "gol_ammo_s750_GOL";
-    };   
+    };
+
+
+	// ==================== SHORAD IR Magazines (single-shot) ====================
+	class gol_magazine_shorad_light_x1: rhs_mag_9k38_rocket {
+		displayName = "SHORAD IR Light (GOL)";
+		ammo = "gol_ammo_shorad_light";
+		count = 1;
+	};
+	class gol_magazine_shorad_medium_x1: rhs_mag_9k38_rocket {
+		displayName = "SHORAD IR Medium (GOL)";
+		ammo = "gol_ammo_shorad_medium";
+		count = 1;
+	};
+	class gol_magazine_shorad_heavy_x1: rhs_mag_9k38_rocket {
+		displayName = "SHORAD IR Heavy (GOL)";
+		ammo = "gol_ammo_shorad_heavy";
+		count = 1;
+	};
 
     // FPV throwables (soft dependency on BOT_FPV_Enhanced)
     class HandGrenade;

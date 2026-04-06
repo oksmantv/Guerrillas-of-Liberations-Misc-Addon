@@ -6,20 +6,12 @@ class CfgAmmo {
 		maneuvrability = 15;
 		cmImmunity = 0.8;
 		class ace_missileguidance {
-			enabled = 0;                // Enable ACE guidance
-			pitchRate = 15;             // Max pitch rate (deg/sec)
-			yawRate = 15;               // Max yaw rate (deg/sec)
-			canVanillaLock = 1;         // Disables vanilla lock
-			defaultSeekerType = "IR";   // Set appropriate seeker type, e.g., "IR"
-			seekerTypes[] = { "IR" };   // List allowed seeker types
-			defaultSeekerLockMode = "LOBL"; // Lock-On After Launch (or "LOBL" for Before Launch)
-			seekerAccuracy = 0.2;
-			leadExponent = 1.5;
-			leadMultiplier = 1.5;
-			// You can add more ACE parameters as needed
+			enabled = 0;
+			canVanillaLock = 1;
 		};
     };	
 
+    // Custom S750 ammo subclass — inherits everything, disables ACE guidance.
     class ammo_Missile_s750;
     class gol_ammo_s750_GOL: ammo_Missile_s750
 	{
@@ -27,17 +19,8 @@ class CfgAmmo {
 		maneuvrability = 20;
 		cmImmunity = 0.85;
 		class ace_missileguidance {
-			enabled = 0;                // Enable ACE guidance
-			pitchRate = 15;             // Max pitch rate (deg/sec)
-			yawRate = 15;               // Max yaw rate (deg/sec)
-			canVanillaLock = 1;         // Disables vanilla lock
-			defaultSeekerType = "IR";   // Set appropriate seeker type, e.g., "IR"
-			seekerTypes[] = { "IR" };   // List allowed seeker types
-			defaultSeekerLockMode = "LOBL"; // Lock-On After Launch (or "LOBL" for Before Launch)
-			seekerAccuracy = 0.2;
-			leadExponent = 1.5;
-			leadMultiplier = 1.5;
-			// You can add more ACE parameters as needed
+			enabled = 0;
+			canVanillaLock = 1;
 		};
     };	
 
@@ -274,5 +257,39 @@ class CfgAmmo {
 		indirectHitRange = 4;
 		explosionEffects = "MiniGrenadeExplosion";
 		CraterEffects = "MiniGrenadeCrater";
+	};
+
+	// ==================== SHORAD IR Missiles ====================
+	// Parent: rhs_ammo_9k38 (RHS Igla MANPAD — proven base with correct
+	// simulation, model, seeker and all engine-required properties)
+
+	class gol_ammo_shorad_light: rhs_ammo_9k38 {
+		displayName = "SHORAD IR Light (GOL)";
+		maneuvrability = 18;
+		cmImmunity = 0.35;
+		class ace_missileguidance {
+			enabled = 0;
+			canVanillaLock = 1;
+		};
+	};
+
+	class gol_ammo_shorad_medium: rhs_ammo_9k38 {
+		displayName = "SHORAD IR Medium (GOL)";
+		maneuvrability = 15;
+		cmImmunity = 0.55;
+		class ace_missileguidance {
+			enabled = 0;
+			canVanillaLock = 1;
+		};
+	};
+
+	class gol_ammo_shorad_heavy: rhs_ammo_9k38 {
+		displayName = "SHORAD IR Heavy (GOL)";
+		maneuvrability = 12;
+		cmImmunity = 0.75;
+		class ace_missileguidance {
+			enabled = 0;
+			canVanillaLock = 1;
+		};
 	};
 };

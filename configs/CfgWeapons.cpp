@@ -198,7 +198,18 @@ class CfgWeapons {
 		displayName = "S-400 (Disabled ACE Guidance)";
         magazines[] = { "gol_magazine_Missile_s750_x4" };
 		scope = 2;
-    };	
+    };
+
+	// ==================== SHORAD IR Launcher (turret weapon) ====================
+	class gol_weapon_shorad_ir : rhs_weap_igla {
+		displayName = "SHORAD IR Launcher (GOL)";
+		magazines[] = {
+			"gol_magazine_shorad_light_x1",
+			"gol_magazine_shorad_medium_x1",
+			"gol_magazine_shorad_heavy_x1"
+		};
+		scope = 2;
+	};
 
 	class UK3CB_V_Invisible_Plate;
 	class UK3CB_V_Invisible_Plate_Low : UK3CB_V_Invisible_Plate {

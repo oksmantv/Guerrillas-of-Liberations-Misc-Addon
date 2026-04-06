@@ -73,7 +73,7 @@ _ForcedRoundCount = [_this, 9, -1, [0]] call BIS_FNC_Param;
 _Inaccuracy = (_Position select 1);
 _EnableMarking = True;
 
-if (typeName _Mortar == "OBJECT") then {sleep 10};
+if (typeName _Mortar == "OBJECT") then {sleep 5};
 	"[Mortar] NEKY_Mortars running." spawn OKS_fnc_LogDebug;
 
 // Check if AUTO or designated location
@@ -188,6 +188,7 @@ if ( (isNil "_Mortar") or (TypeName _Mortar == "STRING") ) then
 						"[Mortar] Fired Shot." spawn OKS_fnc_LogDebug;
 						sleep 5;
 						[_projectile] remoteExec ["deleteVehicle", 0];
+						"[Mortar] Deleted Shot." spawn OKS_fnc_LogDebug;
 					};				
 				}]; 
 				WaitUntil {sleep 20; !(_Unit in _Mortar) or !(Alive _Unit)};

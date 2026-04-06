@@ -512,6 +512,8 @@ class Display3DEN {
                 items[] = {
                     "GOL_SCRIPTS_FIRESUPPORT_MORTARS",
                     "GOL_SCRIPTS_FIRESUPPORT_AAA",
+                    "GOL_SCRIPTS_FIRESUPPORT_SAM",
+                    "GOL_SCRIPTS_FIRESUPPORT_SHORAD",
                     "GOL_SCRIPTS_FIRESUPPORT_RADAR",
                     "GOL_SCRIPTS_FIRESUPPORT_ARTYFIRE",
                     "GOL_SCRIPTS_FIRESUPPORT_BALLISTICMISSILE",
@@ -662,6 +664,72 @@ class Display3DEN {
                 text = "Open Function";
                 picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
                 action = "['OKS_fnc_Ambient_AAA'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_SAM {
+                text = "SAM (Networked)";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_SAM_MAX2",
+                    "GOL_SCRIPTS_FIRESUPPORT_SAM_MAX1",
+                    "GOL_SCRIPTS_FIRESUPPORT_SAM_MAX3",
+                    "GOL_SCRIPTS_FIRESUPPORT_SAM_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_SAM_MAX2 {
+                text = "Create (Max 2 per target)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), 2] call OKS_fnc_EdenSAM;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_SAM_MAX1 {
+                text = "Create (Max 1 per target)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), 1] call OKS_fnc_EdenSAM;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_SAM_MAX3 {
+                text = "Create (Max 3 per target)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), 3] call OKS_fnc_EdenSAM;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_SAM_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_SAM'] call OKS_fnc_EdenOpenDocs;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_SHORAD {
+                text = "SHORAD (Networked)";
+                value = 0;
+                items[] = {
+                    "GOL_SCRIPTS_FIRESUPPORT_SHORAD_LIGHT",
+                    "GOL_SCRIPTS_FIRESUPPORT_SHORAD_MEDIUM",
+                    "GOL_SCRIPTS_FIRESUPPORT_SHORAD_HEAVY",
+                    "GOL_SCRIPTS_FIRESUPPORT_SHORAD_OPENFUNC"
+                };
+            };
+
+            class GOL_SCRIPTS_FIRESUPPORT_SHORAD_LIGHT {
+                text = "Create (Light — High Flare Susceptibility)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), 'light', 4, 10] call OKS_fnc_EdenSHORAD;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_SHORAD_MEDIUM {
+                text = "Create (Medium — Balanced)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), 'medium', 4, 10] call OKS_fnc_EdenSHORAD;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_SHORAD_HEAVY {
+                text = "Create (Heavy — Low Flare Susceptibility)";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'), 'heavy', 4, 10] call OKS_fnc_EdenSHORAD;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_FIRESUPPORT_SHORAD_OPENFUNC {
+                text = "Open Function";
+                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
+                action = "['OKS_fnc_SHORAD'] call OKS_fnc_EdenOpenDocs;";
                 conditionShow = "1";
             };
 
