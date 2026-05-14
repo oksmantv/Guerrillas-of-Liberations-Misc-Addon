@@ -43,10 +43,22 @@ class CfgFunctions // Defines a function
 			class SetupIntel {};
 		};	
 
+		class OKS_Tasks_InterceptHVT {
+			file = "\OKS_GOL_Misc\functions\tasks\InterceptHVT";
+			class InterceptHvtTask {};
+			class InterceptHvt_SelectVehicle {};
+			class InterceptHvt_MountGroup {};
+			class InterceptHvt_HandleDisabledVehicle {};
+			class InterceptHvt_GarrisonEnd {};
+			class InterceptHvt_SetHvtSurrendered {};
+			class InterceptHvt_UpdateTrackedTaskPos {};
+		};
+
 		class OKS_Logic {
 			file = "\OKS_GOL_Misc\functions\logic";
 			class GetClientId {};
 			class LogDebug {};
+			class TrimLeadingAndTrailingWhitespaceFromString {};
 			class SteerVehicleToTarget {};
 			class FlagTeleport {};
 			class SetMissionComplete {};
@@ -131,6 +143,7 @@ class CfgFunctions // Defines a function
 			class EdenVehicleOnRails {};
 			class EdenOpenDocs {};
 			class EdenExtractGearFromAI {};
+			class EdenCopyAircraftLoadout {};
 			class EdenSetTriggerIgnoreAAC {};
 			class next3DENName {};
 			class EdenMarkOrgStrength {};
@@ -170,6 +183,7 @@ class CfgFunctions // Defines a function
 
 		class OKS_Enemy {
 			file = "\OKS_GOL_Misc\functions\enemy";
+			class ReplaceUnitGear {};
 			class EnablePath {};
 			class SetStatic {};
 			class AbandonVehicle {};

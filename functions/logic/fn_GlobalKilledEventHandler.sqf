@@ -32,6 +32,21 @@ if (isNil "GOL_GlobalKilledEventHandler_Registered") then {
 					format["[KILLS] EntityKilled Event Exited: Not CAManBase (%1).", typeOf _unit] spawn OKS_fnc_LogDebug;
 				};
 			};
+
+			// Fix: engine disables simulation on dead crew bodies, which locks the vehicle seat.
+			// Re-enable simulation and eject the body so the slot is freed.
+			private _deadInVehicle = vehicle _unit;
+			if (_deadInVehicle != _unit) then {
+				[_unit, _deadInVehicle, _Debug] spawn {
+					params ["_unit", "_deadInVehicle", "_debug"];
+					sleep 0.1; // yield so the engine finishes disabling simulation first
+					_unit enableSimulationGlobal true;
+					if (_debug) then {
+						format ["[KILLS] Dead crew simulation restored. %1 (%2) to free vehicle slot.", typeOf _deadInVehicle, _deadInVehicle] spawn OKS_fnc_LogDebug;
+					};
+				};
+			};
+
 			if (isNull _instigator) then { _instigator = (UAVControl (vehicle _killer)) select 0 };
 			if (isNull _instigator) then { _instigator = _killer };
 

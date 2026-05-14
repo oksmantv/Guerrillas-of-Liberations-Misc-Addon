@@ -1103,13 +1103,20 @@ class Display3DEN {
                 text = "GEAR";
                 value = 0;
                 items[] = {
-                    "GOL_SCRIPTS_GEAR_EXTRACT"
+                    "GOL_SCRIPTS_GEAR_EXTRACT",
+                    "GOL_SCRIPTS_GEAR_COPY_LOADOUT"
                 };
             };
 
             class GOL_SCRIPTS_GEAR_EXTRACT {
                 text = "Extract Gear from selected AI";
                 action = "[] call OKS_fnc_EdenExtractGearFromAI;";
+                conditionShow = "1";
+            };
+
+            class GOL_SCRIPTS_GEAR_COPY_LOADOUT {
+                text = "Copy Aircraft Loadout";
+                action = "[] call OKS_fnc_EdenCopyAircraftLoadout;";
                 conditionShow = "1";
             };      
 

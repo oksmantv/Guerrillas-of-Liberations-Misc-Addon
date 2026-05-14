@@ -21,10 +21,10 @@ if(!(_unit getVariable ["HasHandleScoreEvent",false])) then {
     _unit addEventHandler ["Killed", {
         params ["_unit", "_killer", "_instigator"];
         if(isPlayer _killer || isPlayer _instigator) then {
-
             if(_unit getVariable ["GOL_NonCombatant", false]) exitWith {};
-            if((side (group _unit)) getFriend (side (group _killer)) > 0.6 ||
-                (side (group _unit)) getFriend (side (group _instigator)) > 0.6) exitWith 
+            if(((side (group _unit)) getFriend (side (group _killer)) > 0.6 ||
+                (side (group _unit)) getFriend (side (group _instigator)) > 0.6) &&
+                _Unit != _killer && _Unit != _instigator) exitWith 
             {
                 private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
                 _friendlyFireKills = _friendlyFireKills + 1;

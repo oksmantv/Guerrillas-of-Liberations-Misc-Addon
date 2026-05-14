@@ -172,6 +172,372 @@ class CfgMagazines {
         lastRoundsTracer = 100;
     };
 
+    // 7.62x51mm NATO M993 AP magazines
+    class 150Rnd_762x51_Box;
+    class UK3CB_BAF_762_200Rnd;
+    class rhsusf_100Rnd_762x51_m61_ap;
+    class UK3CB_MG3_250rnd_762x51;
+
+    class GOL_100Rnd_762x51_M993: 150Rnd_762x51_Box {
+        count = 100;
+        scope = 2;
+        displayName = "7.62mm 100Rnd M993 AP";
+        displayNameShort = "M993";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 tungsten AP";
+        ammo = "GOL_B_762x51_M993";
+        tracersEvery = 0;
+    };
+
+    class GOL_100Rnd_762x51_M993_Tracer_Red: GOL_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 AP Tracer (Red)";
+        displayNameShort = "M993 (Red)";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 AP, all red tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    class GOL_100Rnd_762x51_M993_Tracer_Green: GOL_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 AP Tracer (Green)";
+        displayNameShort = "M993 (Green)";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 AP, all green tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    // 150-round belt — inherits BAF L110 762 200Rnd model/UI, overrides count
+    class GOL_150Rnd_762x51_M993: UK3CB_BAF_762_200Rnd {
+        scope = 2;
+        displayName = "7.62mm 150Rnd M993 AP";
+        displayNameShort = "M993 150";
+        descriptionShort = "7.62x51mm NATO 150-round belt, M993 tungsten AP";
+        ammo = "GOL_B_762x51_M993";
+        count = 150;
+        tracersEvery = 0;
+        lastRoundsTracer = 0;
+    };
+
+    class GOL_150Rnd_762x51_M993_Tracer_Red: GOL_150Rnd_762x51_M993 {
+        displayName = "7.62mm 150Rnd M993 AP Tracer (Red)";
+        displayNameShort = "M993 150 (Red)";
+        descriptionShort = "7.62x51mm NATO 150-round belt, M993 AP, all red tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 150;
+    };
+
+    class GOL_150Rnd_762x51_M993_Tracer_Green: GOL_150Rnd_762x51_M993 {
+        displayName = "7.62mm 150Rnd M993 AP Tracer (Green)";
+        displayNameShort = "M993 150 (Green)";
+        descriptionShort = "7.62x51mm NATO 150-round belt, M993 AP, all green tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 150;
+    };
+
+    // 200-round belt — inherits BAF L110 762 200Rnd model/UI (belt box), overrides count
+    class GOL_200Rnd_762x51_M993: UK3CB_BAF_762_200Rnd {
+        scope = 2;
+        displayName = "7.62mm 200Rnd M993 AP";
+        displayNameShort = "M993 200";
+        descriptionShort = "7.62x51mm NATO 200-round belt, M993 tungsten AP";
+        ammo = "GOL_B_762x51_M993";
+        count = 200;
+        tracersEvery = 0;
+        lastRoundsTracer = 0;
+    };
+
+    class GOL_200Rnd_762x51_M993_Tracer_Red: GOL_200Rnd_762x51_M993 {
+        displayName = "7.62mm 200Rnd M993 AP Tracer (Red)";
+        displayNameShort = "M993 200 (Red)";
+        descriptionShort = "7.62x51mm NATO 200-round belt, M993 AP, all red tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_762x51_M993_Tracer_Green: GOL_200Rnd_762x51_M993 {
+        displayName = "7.62mm 200Rnd M993 AP Tracer (Green)";
+        displayNameShort = "M993 200 (Green)";
+        descriptionShort = "7.62x51mm NATO 200-round belt, M993 AP, all green tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    // MG3-specific M993 AP magazines (inherit UK3CB MG3 drum box model)
+    class GOL_MG3_100Rnd_762x51_M993: UK3CB_MG3_250rnd_762x51 {
+        scope = 2;
+        count = 100;
+        displayName = "7.62mm 100Rnd M993 AP (MG3)";
+        displayNameShort = "M993";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 tungsten AP";
+        ammo = "GOL_B_762x51_M993";
+        tracersEvery = 0;
+    };
+
+    class GOL_MG3_100Rnd_762x51_M993_Tracer_Red: GOL_MG3_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 AP Tracer (Red) (MG3)";
+        displayNameShort = "M993 (Red)";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 AP, all red tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    class GOL_MG3_100Rnd_762x51_M993_Tracer_Green: GOL_MG3_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 AP Tracer (Green) (MG3)";
+        displayNameShort = "M993 (Green)";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 AP, all green tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    class GOL_MG3_250Rnd_762x51_M993: UK3CB_MG3_250rnd_762x51 {
+        scope = 2;
+        count = 250;
+        displayName = "7.62mm 250Rnd M993 AP (MG3)";
+        displayNameShort = "M993 250";
+        descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 tungsten AP";
+        ammo = "GOL_B_762x51_M993";
+        tracersEvery = 0;
+    };
+
+    class GOL_MG3_250Rnd_762x51_M993_Tracer_Red: GOL_MG3_250Rnd_762x51_M993 {
+        displayName = "7.62mm 250Rnd M993 AP Tracer (Red) (MG3)";
+        displayNameShort = "M993 250 (Red)";
+        descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 AP, all red tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 250;
+    };
+
+    class GOL_MG3_250Rnd_762x51_M993_Tracer_Green: GOL_MG3_250Rnd_762x51_M993 {
+        displayName = "7.62mm 250Rnd M993 AP Tracer (Green) (MG3)";
+        displayNameShort = "M993 250 (Green)";
+        descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 AP, all green tracers";
+        ammo = "GOL_B_762x51_M993_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 250;
+    };
+
+    // 7.62x51mm M993 SLAP magazines (infantry belts — Zafir/FN MAG)
+    class GOL_100Rnd_762x51_M993_SLAP: GOL_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 SLAP";
+        displayNameShort = "M993 SLAP";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 SLAP saboted light armor penetrator";
+        ammo = "GOL_B_762x51_M993_SLAP";
+    };
+
+    class GOL_100Rnd_762x51_M993_SLAP_Tracer_Red: GOL_100Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 100Rnd M993 SLAP Tracer (Red)";
+        displayNameShort = "M993 SLAP (Red)";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 SLAP, all red tracers";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    class GOL_100Rnd_762x51_M993_SLAP_Tracer_Green: GOL_100Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 100Rnd M993 SLAP Tracer (Green)";
+        displayNameShort = "M993 SLAP (Green)";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 SLAP, all green tracers";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    class GOL_200Rnd_762x51_M993_SLAP: GOL_200Rnd_762x51_M993 {
+        displayName = "7.62mm 200Rnd M993 SLAP";
+        displayNameShort = "M993 SLAP";
+        descriptionShort = "7.62x51mm NATO 200-round belt, M993 SLAP saboted light armor penetrator";
+        ammo = "GOL_B_762x51_M993_SLAP";
+    };
+
+    class GOL_200Rnd_762x51_M993_SLAP_Tracer_Red: GOL_200Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 200Rnd M993 SLAP Tracer (Red)";
+        displayNameShort = "M993 SLAP (Red)";
+        descriptionShort = "7.62x51mm NATO 200-round belt, M993 SLAP, all red tracers";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_762x51_M993_SLAP_Tracer_Green: GOL_200Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 200Rnd M993 SLAP Tracer (Green)";
+        displayNameShort = "M993 SLAP (Green)";
+        descriptionShort = "7.62x51mm NATO 200-round belt, M993 SLAP, all green tracers";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    // 7.62x51mm M993 SLAP magazines (MG3-specific drum box model)
+    class GOL_MG3_100Rnd_762x51_M993_SLAP: GOL_MG3_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 SLAP (MG3)";
+        displayNameShort = "M993 SLAP";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 SLAP saboted light armor penetrator";
+        ammo = "GOL_B_762x51_M993_SLAP";
+    };
+
+    class GOL_MG3_100Rnd_762x51_M993_SLAP_Tracer_Red: GOL_MG3_100Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 100Rnd M993 SLAP Tracer (Red) (MG3)";
+        displayNameShort = "M993 SLAP (Red)";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 SLAP, all red tracers";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    class GOL_MG3_100Rnd_762x51_M993_SLAP_Tracer_Green: GOL_MG3_100Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 100Rnd M993 SLAP Tracer (Green) (MG3)";
+        displayNameShort = "M993 SLAP (Green)";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 SLAP, all green tracers";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+
+    class GOL_MG3_250Rnd_762x51_M993_SLAP: GOL_MG3_250Rnd_762x51_M993 {
+        displayName = "7.62mm 250Rnd M993 SLAP (MG3)";
+        displayNameShort = "M993 SLAP";
+        descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 SLAP saboted light armor penetrator";
+        ammo = "GOL_B_762x51_M993_SLAP";
+    };
+
+    class GOL_MG3_250Rnd_762x51_M993_SLAP_Tracer_Red: GOL_MG3_250Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 250Rnd M993 SLAP Tracer (Red) (MG3)";
+        displayNameShort = "M993 SLAP (Red)";
+        descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 SLAP, all red tracers";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 250;
+    };
+
+    class GOL_MG3_250Rnd_762x51_M993_SLAP_Tracer_Green: GOL_MG3_250Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 250Rnd M993 SLAP Tracer (Green) (MG3)";
+        displayNameShort = "M993 SLAP (Green)";
+        descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 SLAP, all green tracers";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 250;
+    };
+
+    // 7.62x51mm M993 / SLAP magazines — FN MAG-specific (RHS model parent)
+    class GOL_FNMAG_100Rnd_762x51_M993: rhsusf_100Rnd_762x51_m61_ap {
+        scope = 2;
+        count = 100;
+        displayName = "7.62mm 100Rnd M993 AP (FN MAG)";
+        displayNameShort = "M993";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 tungsten AP";
+        ammo = "GOL_B_762x51_M993";
+        tracersEvery = 0;
+    };
+    class GOL_FNMAG_100Rnd_762x51_M993_Tracer_Red: GOL_FNMAG_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 AP Tracer (Red) (FN MAG)";
+        displayNameShort = "M993 (Red)";
+        ammo = "GOL_B_762x51_M993_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+    class GOL_FNMAG_100Rnd_762x51_M993_Tracer_Green: GOL_FNMAG_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 AP Tracer (Green) (FN MAG)";
+        displayNameShort = "M993 (Green)";
+        ammo = "GOL_B_762x51_M993_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+    class GOL_FNMAG_150Rnd_762x51_M993: rhsusf_100Rnd_762x51_m61_ap {
+        scope = 2;
+        count = 150;
+        displayName = "7.62mm 150Rnd M993 AP (FN MAG)";
+        displayNameShort = "M993 150";
+        descriptionShort = "7.62x51mm NATO 150-round belt, M993 tungsten AP";
+        ammo = "GOL_B_762x51_M993";
+        tracersEvery = 0;
+    };
+    class GOL_FNMAG_150Rnd_762x51_M993_Tracer_Red: GOL_FNMAG_150Rnd_762x51_M993 {
+        displayName = "7.62mm 150Rnd M993 AP Tracer (Red) (FN MAG)";
+        displayNameShort = "M993 150 (Red)";
+        ammo = "GOL_B_762x51_M993_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 150;
+    };
+    class GOL_FNMAG_150Rnd_762x51_M993_Tracer_Green: GOL_FNMAG_150Rnd_762x51_M993 {
+        displayName = "7.62mm 150Rnd M993 AP Tracer (Green) (FN MAG)";
+        displayNameShort = "M993 150 (Green)";
+        ammo = "GOL_B_762x51_M993_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 150;
+    };
+    class GOL_FNMAG_200Rnd_762x51_M993: rhsusf_100Rnd_762x51_m61_ap {
+        scope = 2;
+        count = 200;
+        displayName = "7.62mm 200Rnd M993 AP (FN MAG)";
+        displayNameShort = "M993 200";
+        descriptionShort = "7.62x51mm NATO 200-round belt, M993 tungsten AP";
+        ammo = "GOL_B_762x51_M993";
+        tracersEvery = 0;
+    };
+    class GOL_FNMAG_200Rnd_762x51_M993_Tracer_Red: GOL_FNMAG_200Rnd_762x51_M993 {
+        displayName = "7.62mm 200Rnd M993 AP Tracer (Red) (FN MAG)";
+        displayNameShort = "M993 200 (Red)";
+        ammo = "GOL_B_762x51_M993_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+    class GOL_FNMAG_200Rnd_762x51_M993_Tracer_Green: GOL_FNMAG_200Rnd_762x51_M993 {
+        displayName = "7.62mm 200Rnd M993 AP Tracer (Green) (FN MAG)";
+        displayNameShort = "M993 200 (Green)";
+        ammo = "GOL_B_762x51_M993_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+    class GOL_FNMAG_100Rnd_762x51_M993_SLAP: GOL_FNMAG_100Rnd_762x51_M993 {
+        displayName = "7.62mm 100Rnd M993 SLAP (FN MAG)";
+        displayNameShort = "M993 SLAP";
+        descriptionShort = "7.62x51mm NATO 100-round belt, M993 SLAP saboted light armor penetrator";
+        ammo = "GOL_B_762x51_M993_SLAP";
+        tracersEvery = 0;
+    };
+    class GOL_FNMAG_100Rnd_762x51_M993_SLAP_Tracer_Red: GOL_FNMAG_100Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 100Rnd M993 SLAP Tracer (Red) (FN MAG)";
+        displayNameShort = "M993 SLAP (Red)";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+    class GOL_FNMAG_100Rnd_762x51_M993_SLAP_Tracer_Green: GOL_FNMAG_100Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 100Rnd M993 SLAP Tracer (Green) (FN MAG)";
+        displayNameShort = "M993 SLAP (Green)";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 100;
+    };
+    class GOL_FNMAG_200Rnd_762x51_M993_SLAP: GOL_FNMAG_200Rnd_762x51_M993 {
+        displayName = "7.62mm 200Rnd M993 SLAP (FN MAG)";
+        displayNameShort = "M993 SLAP";
+        descriptionShort = "7.62x51mm NATO 200-round belt, M993 SLAP saboted light armor penetrator";
+        ammo = "GOL_B_762x51_M993_SLAP";
+        tracersEvery = 0;
+    };
+    class GOL_FNMAG_200Rnd_762x51_M993_SLAP_Tracer_Red: GOL_FNMAG_200Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 200Rnd M993 SLAP Tracer (Red) (FN MAG)";
+        displayNameShort = "M993 SLAP (Red)";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+    class GOL_FNMAG_200Rnd_762x51_M993_SLAP_Tracer_Green: GOL_FNMAG_200Rnd_762x51_M993_SLAP {
+        displayName = "7.62mm 200Rnd M993 SLAP Tracer (Green) (FN MAG)";
+        displayNameShort = "M993 SLAP (Green)";
+        ammo = "GOL_B_762x51_M993_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
     // MMG_02 SPMG .338 magazines with red tracers
     class 130Rnd_338_Mag;
     
@@ -185,7 +551,7 @@ class CfgMagazines {
 
     class GOL_130Rnd_338_Mag_red: GOL_130Rnd_338_Mag {
         displayName = ".338 130Rnd Tracer (Red)";
-        displayNameShort = "Tracer (Red)";
+        displayNameShort = ".338 (Red)";
         descriptionShort = ".338 Norma Magnum 130-round belt, all red tracers";
         ammo = "GOL_B_338_Ball_Tracer_Red";
         tracersEvery = 1;
@@ -194,11 +560,88 @@ class CfgMagazines {
 
     class GOL_130Rnd_338_Mag_green: GOL_130Rnd_338_Mag {
         displayName = ".338 130Rnd Tracer (Green)";
-        displayNameShort = "Tracer (Green)";
+        displayNameShort = ".338 (Green)";
         descriptionShort = ".338 Norma Magnum 130-round belt, all green tracers";
         ammo = "GOL_B_338_Ball_Tracer_Green";
         tracersEvery = 1;
         lastRoundsTracer = 130;
+    };
+
+    class GOL_200Rnd_338_Mag: GOL_130Rnd_338_Mag {
+        displayName = ".338 200Rnd Belt";
+        displayNameShort = ".338 200";
+        descriptionShort = ".338 Norma Magnum 200-round belt, ball ammunition";
+        count = 200;
+        mass = 90;
+    };
+
+    class GOL_200Rnd_338_Mag_red: GOL_200Rnd_338_Mag {
+        displayName = ".338 200Rnd Tracer (Red)";
+        displayNameShort = ".338 (Red)";
+        descriptionShort = ".338 Norma Magnum 200-round belt, all red tracers";
+        ammo = "GOL_B_338_Ball_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_338_Mag_green: GOL_200Rnd_338_Mag {
+        displayName = ".338 200Rnd Tracer (Green)";
+        displayNameShort = ".338 (Green)";
+        descriptionShort = ".338 Norma Magnum 200-round belt, all green tracers";
+        ammo = "GOL_B_338_Ball_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    // .338 AP magazines — 70% of .50 cal, penetrates BTR-60 class armor
+    class GOL_130Rnd_338_AP: GOL_130Rnd_338_Mag {
+        displayName = ".338 130Rnd AP";
+        displayNameShort = ".338 AP";
+        descriptionShort = ".338 Norma Magnum 130-round belt, AP armor-piercing";
+        ammo = "GOL_B_338_Ball_AP";
+    };
+
+    class GOL_130Rnd_338_AP_Tracer_Red: GOL_130Rnd_338_AP {
+        displayName = ".338 130Rnd AP Tracer (Red)";
+        displayNameShort = ".338 AP (Red)";
+        descriptionShort = ".338 Norma Magnum 130-round belt, AP, all red tracers";
+        ammo = "GOL_B_338_Ball_AP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 130;
+    };
+
+    class GOL_130Rnd_338_AP_Tracer_Green: GOL_130Rnd_338_AP {
+        displayName = ".338 130Rnd AP Tracer (Green)";
+        displayNameShort = ".338 AP (Green)";
+        descriptionShort = ".338 Norma Magnum 130-round belt, AP, all green tracers";
+        ammo = "GOL_B_338_Ball_AP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 130;
+    };
+
+    class GOL_200Rnd_338_AP: GOL_200Rnd_338_Mag {
+        displayName = ".338 200Rnd AP";
+        displayNameShort = ".338 AP";
+        descriptionShort = ".338 Norma Magnum 200-round belt, AP armor-piercing";
+        ammo = "GOL_B_338_Ball_AP";
+    };
+
+    class GOL_200Rnd_338_AP_Tracer_Red: GOL_200Rnd_338_AP {
+        displayName = ".338 200Rnd AP Tracer (Red)";
+        displayNameShort = ".338 AP (Red)";
+        descriptionShort = ".338 Norma Magnum 200-round belt, AP, all red tracers";
+        ammo = "GOL_B_338_Ball_AP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_338_AP_Tracer_Green: GOL_200Rnd_338_AP {
+        displayName = ".338 200Rnd AP Tracer (Green)";
+        displayNameShort = ".338 AP (Green)";
+        descriptionShort = ".338 Norma Magnum 200-round belt, AP, all green tracers";
+        ammo = "GOL_B_338_Ball_AP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
     };
 
     // 5.56mm AP45 magazines (vanilla STANAG base)
@@ -455,5 +898,51 @@ class CfgMagazines {
 		displayNameShort = "M67 AI Grenade";
 		descriptionShort = "Compact hand grenade with reduced blast radius.";
 		ammo = "Mini_Grenade";
+	};
+
+	// ==================== GOL Accurate RPG-7 Magazines ====================
+	// All use VS mag as base for consistent initSpeed/mass/maxLeadSpeed.
+	class rhs_rpg7_PG7VS_mag;
+
+	class GOL_mag_rpg7_PG7VL: rhs_rpg7_PG7VS_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "RPG-7 PG-7VL (GOL)";
+		displayNameShort = "PG-7VL";
+		descriptionShort = "HEAT anti-armour round. Identical trajectory to all GOL RPG rounds.";
+		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_pg7vl_mag";
+		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_pg7vl";
+		ammo = "GOL_ammo_PG7VL";
+	};
+
+	class GOL_mag_rpg7_OG7V: rhs_rpg7_PG7VS_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "RPG-7 OG-7V (GOL)";
+		displayNameShort = "OG-7V";
+		descriptionShort = "HE fragmentation round. Identical trajectory to all GOL RPG rounds.";
+		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_og7v_mag";
+		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_og7v";
+		ammo = "GOL_ammo_OG7V";
+	};
+
+	class GOL_mag_rpg7_TBG7V: rhs_rpg7_PG7VS_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "RPG-7 TBG-7V (GOL)";
+		displayNameShort = "TBG-7V";
+		descriptionShort = "Thermobaric round. Identical trajectory to all GOL RPG rounds.";
+		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_tbg7v_mag";
+		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_tbg7v";
+		ammo = "GOL_ammo_TBG7V";
+	};
+
+	class GOL_mag_rpg7_Modern: rhs_rpg7_PG7VS_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "RPG-7 Modern HEAT (GOL)";
+		displayNameShort = "Modern HEAT";
+		descriptionShort = "Precision modern HEAT round. Sight-aligned flight path, boosted warhead.";
+		ammo = "GOL_ammo_Modern";
 	};
 };

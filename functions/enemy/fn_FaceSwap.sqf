@@ -29,6 +29,16 @@ if(isNull _unit) exitWith {
     };
 };
 
+if (_unit getVariable ["GOL_FaceSwap_BlacklistedUnit", false]) exitWith {
+    if (_faceswapDebug) then {
+        format [
+            "[FaceSwap] Exited - Unit blacklisted from faceswap: %1 (%2)",
+            name _unit,
+            typeOf _unit
+        ] spawn OKS_fnc_LogDebug;
+    };
+};
+
 sleep (3 + (random 3));
 
 private _faces = [];
@@ -185,6 +195,52 @@ switch (toLower _faceType) do {
 if(count _faces == 0 || count _speakers == 0) exitWith {
     if(_faceswapDebug) then {
         format ["[FaceSwap] Exited - No faces or speakers found for type: %1", (toupper _faceType)] spawn OKS_fnc_LogDebug;
+    };
+};
+
+private _blacklistRaw = missionNamespace getVariable ["GOL_FaceSwap_BlacklistedFaces", ""];
+private _blacklistedFaces = [];
+
+if (_blacklistRaw isEqualType []) then {
+    {
+        if (_x isEqualType "" && {_x != ""}) then {
+            _blacklistedFaces pushBack (toLower ([_x] call OKS_fnc_TrimLeadingAndTrailingWhitespaceFromString));
+        };
+    } forEach _blacklistRaw;
+};
+
+if (_blacklistRaw isEqualType "") then {
+    private _clean = [_blacklistRaw] call OKS_fnc_TrimLeadingAndTrailingWhitespaceFromString;
+    if (_clean != "") then {
+        if ((_clean select [0,1]) isEqualTo "[") then {
+            _clean = _clean select [1, (count _clean) - 1];
+        };
+        if ((count _clean) > 0 && {(_clean select [(count _clean) - 1, 1]) isEqualTo "]"}) then {
+            _clean = _clean select [0, (count _clean) - 1];
+        };
+
+        {
+            private _token = [_x] call OKS_fnc_TrimLeadingAndTrailingWhitespaceFromString;
+            _token = (_token splitString """") joinString "";
+            _token = (_token splitString "'") joinString "";
+            _token = [_token] call OKS_fnc_TrimLeadingAndTrailingWhitespaceFromString;
+            if (_token != "") then {
+                _blacklistedFaces pushBack (toLower _token);
+            };
+        } forEach (_clean splitString ",");
+    };
+};
+
+_blacklistedFaces = _blacklistedFaces arrayIntersect _blacklistedFaces;
+if ((count _blacklistedFaces) > 0) then {
+    private _facesOriginal = +_faces;
+    _faces = _faces select {!(toLower _x in _blacklistedFaces)};
+
+    if ((count _faces) == 0) then {
+        _faces = _facesOriginal;
+        if (_faceswapDebug) then {
+            "[FaceSwap] Blacklist excluded all faces, using original pool." spawn OKS_fnc_LogDebug;
+        };
     };
 };
 

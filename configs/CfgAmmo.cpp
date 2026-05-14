@@ -183,8 +183,131 @@ class CfgAmmo {
 		nvgOnly = 0;
 	};
 
+	// Custom 7.62x51mm NATO M993 AP ammunition
+	// Stats scaled from GOL_B_556x45_Ball_AP45 ×1.3 — tungsten AP core
+	class B_762x51_Ball;
+
+	class GOL_B_762x51_M993: B_762x51_Ball {
+		hit = 16;               // AP45 hit (12) × 1.3
+		indirectHit = 0;
+		indirectHitRange = 0;
+		caliber = 2.6;          // AP45 caliber (2.0) × 1.3 — tungsten AP core
+		typicalSpeed = 960;     // M993 muzzle velocity (m/s)
+		airFriction = -0.00086; // Better BC than 5.56 AP45
+
+		// Suppress inherited white tracer from B_762x51_Ball — tracer variants handle this explicitly
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_white";
+		tracerScale = 0;
+		tracerStartTime = 100;
+		tracerEndTime = 100;
+
+		// ACE Advanced Ballistics
+		ACE_caliber = 7.62;
+		ACE_bulletLength = 29.0;  // M993 bullet length in mm
+		ACE_bulletMass = 8.0;     // ~123gr tungsten AP core
+		ACE_muzzleVelocityVariationSD = 0.4;
+		ACE_ammoTempMuzzleVelocityShifts[] = {-24.0, -22.0, -20.0, -17.0, -14.0, -10.0, -5.0, 0.0, 6.0, 13.0, 22.0};
+		ACE_ballisticCoefficients[] = {0.270}; // G7 BC
+		ACE_velocityBoundaries[] = {};
+		ACE_standardAtmosphere = "ICAO";
+		ACE_dragModel = 7;
+		ACE_muzzleVelocities[] = {780, 820, 860, 900, 935, 960};
+		ACE_barrelLengths[] = {381, 457.2, 508, 558.8, 609.6, 660.4}; // 15" to 26" barrels in mm
+	};
+
+	class GOL_B_762x51_M993_Tracer_Red: GOL_B_762x51_M993 {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_762x51_M993_Tracer_Green: GOL_B_762x51_M993 {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	// M993 SLAP — Saboted Light Armor Penetrator. Tungsten sub-caliber penetrator with sabot.
+	// Extreme AP capability, trades raw hit for penetration.
+	class GOL_B_762x51_M993_SLAP: GOL_B_762x51_M993 {
+		hit = 18;               // Slightly lower raw damage — energy focused into penetrator
+		caliber = 3.5;          // ~135% of .50 cal — defeats light APC armor
+		typicalSpeed = 1020;    // Sabot increases muzzle velocity
+		airFriction = -0.00080; // Sub-caliber penetrator has high BC
+
+		// Suppress tracer — SLAP ball
+		tracerScale = 0;
+		tracerStartTime = 100;
+		tracerEndTime = 100;
+
+		// ACE Advanced Ballistics
+		ACE_bulletMass = 5.2;   // ~80gr sub-caliber penetrator (lighter than M993)
+		ACE_muzzleVelocities[] = {850, 890, 940, 980, 1000, 1020};
+	};
+
+	class GOL_B_762x51_M993_SLAP_Tracer_Red: GOL_B_762x51_M993_SLAP {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_762x51_M993_SLAP_Tracer_Green: GOL_B_762x51_M993_SLAP {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
 	// Custom .338 Norma Magnum tracer ammunition (MMG_02 SPMG)
 	class B_338_Ball;
+
+	// .338 AP — 70% of .50 cal. Defeats BTR-60 class armor.
+	class GOL_B_338_Ball_AP: B_338_Ball {
+		hit = 21;               // damage kept at 70% of .50 cal (30)
+		caliber = 1.65;         // ~63% of .50 cal (2.6) — penetrates light APC hulls
+		typicalSpeed = 860;     // AP loadings typically slightly faster than ball
+		airFriction = -0.00070; // Better BC than vanilla .338
+
+		// Suppress inherited red tracer from B_338_Ball (it uses tracer_red by default)
+		tracerScale = 0;
+		tracerStartTime = 100;
+		tracerEndTime = 100;
+
+		// ACE Advanced Ballistics
+		ACE_caliber = 8.6;
+		ACE_bulletLength = 36.0;
+		ACE_bulletMass = 16.8;  // ~260gr AP projectile
+		ACE_muzzleVelocityVariationSD = 0.4;
+		ACE_ballisticCoefficients[] = {0.310}; // G7 BC — AP bullet has high BC
+		ACE_velocityBoundaries[] = {};
+		ACE_standardAtmosphere = "ICAO";
+		ACE_dragModel = 7;
+		ACE_muzzleVelocities[] = {800, 830, 860};
+		ACE_barrelLengths[] = {508, 558.8, 609.6};
+	};
+
+	class GOL_B_338_Ball_AP_Tracer_Red: GOL_B_338_Ball_AP {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_338_Ball_AP_Tracer_Green: GOL_B_338_Ball_AP {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
 	
 	class GOL_B_338_Ball_Tracer_Red: B_338_Ball {
 		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
@@ -291,5 +414,78 @@ class CfgAmmo {
 			enabled = 0;
 			canVanillaLock = 1;
 		};
+	};
+
+	// ==================== GOL Accurate RPG-7 Rounds ====================
+	// All rounds inherit from rhs_rpg7v2_pg7vs for identical flight/trajectory.
+	// Damage, model and effects are restored per-round from their original configs.
+	class rhs_rpg7v2_pg7vs;
+
+	// PG-7VL — HEAT anti-armour
+	class GOL_ammo_PG7VL: rhs_rpg7v2_pg7vs {
+		deflecting = 0;
+		hit = 220;
+		indirectHit = 20;
+		indirectHitRange = 4;
+		model = "\rhsafrf\addons\rhs_weapons\rpg7\projectiles\pg7vl";
+		explosionEffects = "ATRocketExplosion";
+		CraterEffects = "ATRocketCrater";
+	};
+
+	// OG-7V — HE fragmentation
+	class GOL_ammo_OG7V: rhs_rpg7v2_pg7vs {
+		deflecting = 0;
+		hit = 75;
+		indirectHit = 20;
+		indirectHitRange = 15;
+		model = "\rhsafrf\addons\rhs_weapons\rpg7\projectiles\og7v";
+		CraterEffects = "HEShellCrater";
+		CraterWaterEffects = "ImpactEffectsWaterHE";
+		warheadName = "HE";
+		explosive = 1;
+		ace_frag_charge = 210;
+		ace_frag_classes[] = {"ACE_frag_medium_HD"};
+		ace_frag_force = 1;
+		ace_frag_gurney_c = 2800;
+		ace_frag_gurney_k = 0.6;
+		ace_frag_metal = 400;
+		ace_frag_skip = 0;
+		ace_vehicle_damage_incendiary = 0.1;
+	};
+
+	// TBG-7V — thermobaric
+	class GOL_ammo_TBG7V: rhs_rpg7v2_pg7vs {
+		deflecting = 0;
+		hit = 120;
+		indirectHit = 60;
+		indirectHitRange = 12;
+		model = "\rhsafrf\addons\rhs_weapons\rpg7\projectiles\tbg7v";
+		explosionEffects = "RHS_FAE_Explosion";
+		CraterEffects = "ArtyShellCrater";
+		warheadName = "HE";
+		explosive = 1;
+		ACE_damageType = "explosive";
+		ace_frag_enabled = 0;
+		ace_frag_force = 0;
+		ace_frag_skip = 1;
+		ace_vehicle_damage_incendiary = 0.7;
+		triggerOnImpact = 1;
+		submunitionAmmo = "rhs_ammo_thermobaric_wave";
+		submunitionAutoleveling = 1;
+		submunitionConeAngle[] = {120, 220};
+		submunitionConeAngleHorizontal = 720;
+		submunitionConeType[] = {"randomupcone", 15};
+		submunitionDirectionType = "SubmunitionModelDirection";
+		submunitionInitialOffset[] = {0, 0, -0.4};
+		submunitionInitSpeed = 200;
+		submunitionParentSpeedCoef = 0;
+	};
+
+	// Modern round — boosted HEAT on VS base
+	class GOL_ammo_Modern: rhs_rpg7v2_pg7vs {
+		deflecting = 0;
+		hit = 900;
+		indirectHit = 12;
+		indirectHitRange = 1.5;
 	};
 };

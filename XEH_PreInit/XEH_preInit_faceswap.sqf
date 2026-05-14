@@ -63,3 +63,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_faceswap.sqf executed";
     ],
     1
 ] call CBA_settings_fnc_init;
+
+[
+    "GOL_FaceSwap_BlacklistedFaces",
+    "EDITBOX",
+    [
+        "Blacklisted Faces",
+        "Faces excluded from FaceSwap pool. Supported input: x,y,z or [x,y,z]."
+    ],
+    ["GOL FaceSwap", "General"],
+    "",
+    1
+] call CBA_fnc_addSetting;

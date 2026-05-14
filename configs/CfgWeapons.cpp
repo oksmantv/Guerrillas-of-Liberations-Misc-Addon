@@ -1,3 +1,18 @@
+class CfgRecoils {
+class recoil_default;
+class GOL_recoil_machinegun: recoil_default {
+kickBack[]    = {0.04, 0.07};
+muzzleOuter[] = {0.2, 0.4, 0.1, 0.05};
+temporary     = 0.008;
+};
+class GOL_recoil_machinegun_prone: recoil_default {
+kickBack[]    = {0.03, 0.0525};
+muzzleOuter[] = {0.15, 0.3, 0.075, 0.0375};
+temporary     = 0.006;
+};
+};
+class Mode_FullAuto;
+class Mode_SemiAuto;
 class CfgWeapons {
 	class ACE_ItemCore;
 	class CBA_MiscItem_ItemInfo;
@@ -209,6 +224,37 @@ class CfgWeapons {
 			"gol_magazine_shorad_heavy_x1"
 		};
 		scope = 2;
+	};
+
+	// ==================== GOL PSRL-1 (accurate RPG-7 variant) ====================
+	// Standalone weapon inheriting from rhs_weap_rpg7. No body on the parent —
+	// safe forward declaration only. dispersion = 0 removes launch spread.
+	// GOL ammo variants have deflecting = 0 for stable flight.
+	class rhs_weap_rpg7;
+	class GOL_weap_PSRL1: rhs_weap_rpg7 {
+		author = "Guerrillas of Liberation";
+		displayName = "PSRL-1 (GOL)";
+		descriptionShort = "US-made RPG-7 variant. Precision-tuned rounds, near-zero deviation.";
+		scope = 2;
+		scopeArsenal = 2;
+		baseWeapon = "GOL_weap_PSRL1";
+		dispersion = 0;
+		magazines[] = {
+			"GOL_mag_rpg7_PG7VL",
+			"GOL_mag_rpg7_OG7V",
+			"GOL_mag_rpg7_TBG7V",
+			"GOL_mag_rpg7_Modern"
+		};
+		class Single: Mode_SemiAuto  {
+			reloadTime = 6;
+			sounds[] = {"StandardSound"};
+			class StandardSound {
+				begin1[] = {"rhsafrf\addons\rhs_sounds\rpg\rpg_1", 2.35, 1, 1100};
+				begin2[] = {"rhsafrf\addons\rhs_sounds\rpg\rpg_2", 2.35, 1, 1100};
+				soundBegin[] = {"begin1", 0.5, "begin2", 0.5};
+				weaponSoundEffect = "DefaultRifle";
+			};
+		};
 	};
 
 	class UK3CB_V_Invisible_Plate;
@@ -1027,8 +1073,8 @@ class CfgWeapons {
 		baseWeapon = "GOL_MMG_01_tan_F";
 		
 		// Custom recoil presets
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
 		
 		// Clear linkedItems to show in arsenal
 		linkedItems[] = {};
@@ -1053,8 +1099,8 @@ class CfgWeapons {
 		baseWeapon = "GOL_MMG_01_hex_F";
 		
 		// Custom recoil presets
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
 		
 		// Clear linkedItems to show in arsenal
 		linkedItems[] = {};
@@ -1080,8 +1126,8 @@ class CfgWeapons {
 		displayName = "PKM (GOL)";
 		baseWeapon = "GOL_weap_pkm";
 		
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
 		
 		magazines[] = {
 			"GOL_100Rnd_762x54mmR",
@@ -1100,8 +1146,8 @@ class CfgWeapons {
 		displayName = "PKP (GOL)";
 		baseWeapon = "GOL_weap_pkp";
 		
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
 		
 		magazines[] = {
 			"GOL_100Rnd_762x54mmR",
@@ -1124,13 +1170,34 @@ class CfgWeapons {
 		displayName = "LWMMG .338 (Black/GOL)";
 		baseWeapon = "GOL_MMG_02_black_F";
 		
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+		
+		class manual: Mode_FullAuto {
+			sounds[] = {"StandardSound", "SilencedSound"};
+			class BaseSoundModeType {};
+			class StandardSound: BaseSoundModeType {
+				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
+			};
+			class SilencedSound: BaseSoundModeType {
+				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
+			};
+			reloadTime = 0.0923;
+		};
 		
 		magazines[] = {
 			"GOL_130Rnd_338_Mag",
 			"GOL_130Rnd_338_Mag_red",
 			"GOL_130Rnd_338_Mag_green",
+			"GOL_130Rnd_338_AP",
+			"GOL_130Rnd_338_AP_Tracer_Red",
+			"GOL_130Rnd_338_AP_Tracer_Green",
+			"GOL_200Rnd_338_Mag",
+			"GOL_200Rnd_338_Mag_red",
+			"GOL_200Rnd_338_Mag_green",
+			"GOL_200Rnd_338_AP",
+			"GOL_200Rnd_338_AP_Tracer_Red",
+			"GOL_200Rnd_338_AP_Tracer_Green",
 			// Vanilla compatibility
 			"130Rnd_338_Mag"
 		};
@@ -1143,13 +1210,34 @@ class CfgWeapons {
 		displayName = "LWMMG .338 (Camo/GOL)";
 		baseWeapon = "GOL_MMG_02_camo_F";
 		
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+		
+		class manual: Mode_FullAuto {
+			sounds[] = {"StandardSound", "SilencedSound"};
+			class BaseSoundModeType {};
+			class StandardSound: BaseSoundModeType {
+				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
+			};
+			class SilencedSound: BaseSoundModeType {
+				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
+			};
+			reloadTime = 0.0923;
+		};
 		
 		magazines[] = {
 			"GOL_130Rnd_338_Mag",
 			"GOL_130Rnd_338_Mag_red",
 			"GOL_130Rnd_338_Mag_green",
+			"GOL_130Rnd_338_AP",
+			"GOL_130Rnd_338_AP_Tracer_Red",
+			"GOL_130Rnd_338_AP_Tracer_Green",
+			"GOL_200Rnd_338_Mag",
+			"GOL_200Rnd_338_Mag_red",
+			"GOL_200Rnd_338_Mag_green",
+			"GOL_200Rnd_338_AP",
+			"GOL_200Rnd_338_AP_Tracer_Red",
+			"GOL_200Rnd_338_AP_Tracer_Green",
 			"130Rnd_338_Mag"
 		};
 	};
@@ -1161,13 +1249,34 @@ class CfgWeapons {
 		displayName = "LWMMG .338 (Sand/GOL)";
 		baseWeapon = "GOL_MMG_02_sand_F";
 		
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+		
+		class manual: Mode_FullAuto {
+			sounds[] = {"StandardSound", "SilencedSound"};
+			class BaseSoundModeType {};
+			class StandardSound: BaseSoundModeType {
+				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
+			};
+			class SilencedSound: BaseSoundModeType {
+				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
+			};
+			reloadTime = 0.0923;
+		};
 		
 		magazines[] = {
 			"GOL_130Rnd_338_Mag",
 			"GOL_130Rnd_338_Mag_red",
 			"GOL_130Rnd_338_Mag_green",
+			"GOL_130Rnd_338_AP",
+			"GOL_130Rnd_338_AP_Tracer_Red",
+			"GOL_130Rnd_338_AP_Tracer_Green",
+			"GOL_200Rnd_338_Mag",
+			"GOL_200Rnd_338_Mag_red",
+			"GOL_200Rnd_338_Mag_green",
+			"GOL_200Rnd_338_AP",
+			"GOL_200Rnd_338_AP_Tracer_Red",
+			"GOL_200Rnd_338_AP_Tracer_Green",
 			"130Rnd_338_Mag"
 		};
 	};
@@ -1183,9 +1292,27 @@ class CfgWeapons {
 		author = "Guerrillas of Liberation";
 		displayName = "Zafir 7.62mm (GOL)";
 		baseWeapon = "GOL_LMG_Zafir_F";
-		
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+
+		magazines[] += {
+			"GOL_100Rnd_762x51_M993",
+			"GOL_100Rnd_762x51_M993_Tracer_Red",
+			"GOL_100Rnd_762x51_M993_Tracer_Green",
+			"GOL_100Rnd_762x51_M993_SLAP",
+			"GOL_100Rnd_762x51_M993_SLAP_Tracer_Red",
+			"GOL_100Rnd_762x51_M993_SLAP_Tracer_Green",
+			"GOL_150Rnd_762x51_M993",
+			"GOL_150Rnd_762x51_M993_Tracer_Red",
+			"GOL_150Rnd_762x51_M993_Tracer_Green",
+			"GOL_200Rnd_762x51_M993",
+			"GOL_200Rnd_762x51_M993_Tracer_Red",
+			"GOL_200Rnd_762x51_M993_Tracer_Green",
+			"GOL_200Rnd_762x51_M993_SLAP",
+			"GOL_200Rnd_762x51_M993_SLAP_Tracer_Red",
+			"GOL_200Rnd_762x51_M993_SLAP_Tracer_Green"
+		};
 	};
 
 	class GOL_weap_fnmag: rhs_weap_fnmag {
@@ -1194,9 +1321,27 @@ class CfgWeapons {
 		author = "Guerrillas of Liberation";
 		displayName = "FN MAG (GOL)";
 		baseWeapon = "GOL_weap_fnmag";
-		
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+
+		magazines[] += {
+			"GOL_FNMAG_100Rnd_762x51_M993",
+			"GOL_FNMAG_100Rnd_762x51_M993_Tracer_Red",
+			"GOL_FNMAG_100Rnd_762x51_M993_Tracer_Green",
+			"GOL_FNMAG_100Rnd_762x51_M993_SLAP",
+			"GOL_FNMAG_100Rnd_762x51_M993_SLAP_Tracer_Red",
+			"GOL_FNMAG_100Rnd_762x51_M993_SLAP_Tracer_Green",
+			"GOL_FNMAG_150Rnd_762x51_M993",
+			"GOL_FNMAG_150Rnd_762x51_M993_Tracer_Red",
+			"GOL_FNMAG_150Rnd_762x51_M993_Tracer_Green",
+			"GOL_FNMAG_200Rnd_762x51_M993",
+			"GOL_FNMAG_200Rnd_762x51_M993_Tracer_Red",
+			"GOL_FNMAG_200Rnd_762x51_M993_Tracer_Green",
+			"GOL_FNMAG_200Rnd_762x51_M993_SLAP",
+			"GOL_FNMAG_200Rnd_762x51_M993_SLAP_Tracer_Red",
+			"GOL_FNMAG_200Rnd_762x51_M993_SLAP_Tracer_Green"
+		};
 	};
 
 	class GOL_MG3_KWS_B: UK3CB_MG3_KWS_B {
@@ -1205,9 +1350,24 @@ class CfgWeapons {
 		author = "Guerrillas of Liberation";
 		displayName = "MG3 KWS (GOL)";
 		baseWeapon = "GOL_MG3_KWS_B";
-		
-		recoil = "UK3CB_BAF_recoil_saw_762";
-		recoilProne = "assaultRifleBase";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+
+		magazines[] += {
+			"GOL_MG3_100Rnd_762x51_M993",
+			"GOL_MG3_100Rnd_762x51_M993_Tracer_Red",
+			"GOL_MG3_100Rnd_762x51_M993_Tracer_Green",
+			"GOL_MG3_100Rnd_762x51_M993_SLAP",
+			"GOL_MG3_100Rnd_762x51_M993_SLAP_Tracer_Red",
+			"GOL_MG3_100Rnd_762x51_M993_SLAP_Tracer_Green",
+			"GOL_MG3_250Rnd_762x51_M993",
+			"GOL_MG3_250Rnd_762x51_M993_Tracer_Red",
+			"GOL_MG3_250Rnd_762x51_M993_Tracer_Green",
+			"GOL_MG3_250Rnd_762x51_M993_SLAP",
+			"GOL_MG3_250Rnd_762x51_M993_SLAP_Tracer_Red",
+			"GOL_MG3_250Rnd_762x51_M993_SLAP_Tracer_Green"
+		};
 	};
 
 	// FPV throwables (soft dependency on BOT_FPV_Enhanced)
@@ -1276,7 +1436,7 @@ class CfgWeapons {
 		displayName = "M249 PIP (GOL)";
 		baseWeapon = "GOL_weap_m249_pip";
 		
-		recoil = "UK3CB_BAF_recoil_saw_556";
-		recoilProne = "assaultRifleBase";
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
 	};
 };
