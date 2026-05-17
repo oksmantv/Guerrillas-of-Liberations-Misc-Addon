@@ -41,6 +41,7 @@ class CfgFunctions // Defines a function
 			class TaskRun {};
 			class NekyTasks {};
 			class SetupIntel {};
+			class GiveIntelToNearestPlayer {};
 		};	
 
 		class OKS_Tasks_InterceptHVT {
@@ -52,6 +53,13 @@ class CfgFunctions // Defines a function
 			class InterceptHvt_GarrisonEnd {};
 			class InterceptHvt_SetHvtSurrendered {};
 			class InterceptHvt_UpdateTrackedTaskPos {};
+		};
+
+		class OKS_Tasks_RescueSurvivor {
+			file = "\OKS_GOL_Misc\functions\tasks\RescueSurvivor";
+			class RescueSurvivorTask {};
+			class RescueSurvivor_MedCheck {};
+			class RescueSurvivor_ExtractMonitor {};
 		};
 
 		class OKS_Logic {
@@ -192,6 +200,7 @@ class CfgFunctions // Defines a function
 			class RemoveVehicleHE {};					
 			class FaceSwap {};
 			class GetEthnicity {};
+			class GetEthnicityFromFace {};
 			class Has_Sight {};
 			class AddVehicleCrew {};	
 			class CreateVehicleWithCrew {};
@@ -469,6 +478,7 @@ class CfgFunctions // Defines a function
 
 		class OKS_Helpers {
 			file = "\OKS_GOL_Misc\functions\helpers";
+			class ClearWaypoints {};
 			class DroneHelper_NormalizePos {};
 			class DroneHelper_GetZoneInfo {};
 			class DroneHelper_SelectTarget {};

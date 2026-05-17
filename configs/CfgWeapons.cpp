@@ -239,14 +239,19 @@ class CfgWeapons {
 		scopeArsenal = 2;
 		baseWeapon = "GOL_weap_PSRL1";
 		dispersion = 0;
+		recoil = "recoil_rpg";
+		reloadAction = "GestureReloadRPG7";
+		magazineReloadSwitchPhase = 0.48;
 		magazines[] = {
-			"GOL_mag_rpg7_PG7VL",
+			// LEFT reticle (VM markings)
+			"GOL_mag_rpg7_Modern",
+			// RIGHT reticle (VL markings)
 			"GOL_mag_rpg7_OG7V",
 			"GOL_mag_rpg7_TBG7V",
-			"GOL_mag_rpg7_Modern"
+			"GOL_mag_rpg7_VR"
 		};
 		class Single: Mode_SemiAuto  {
-			reloadTime = 6;
+			reloadAction = "GestureReloadRPG7";
 			sounds[] = {"StandardSound"};
 			class StandardSound {
 				begin1[] = {"rhsafrf\addons\rhs_sounds\rpg\rpg_1", 2.35, 1, 1100};

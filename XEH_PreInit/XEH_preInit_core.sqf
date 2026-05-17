@@ -320,6 +320,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_EnemyGear_Debug",
+    "CHECKBOX",
+    ["Enable Enemy Gear DEBUG", "Enables debug logging for OKS_fnc_ReplaceUnitGear."],
+    ["GOL DEBUG", "Module Specific"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_GroundVehicles_Debug",
     "CHECKBOX",
     ["Enable Ground Vehicles DEBUG", "Enables debugging for ground vehicle setup scripts such as Mechanized, SetupCargoSpace, etc. (excludes damage system)"],

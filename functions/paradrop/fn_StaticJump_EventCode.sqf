@@ -4,9 +4,11 @@
 
 params ["_vehicle", "_role", "_unit", "_turret", "_isEject"];
 
+if (_unit != player) exitWith {};
+
 _Debug = missionNamespace getVariable ["GOL_Paradrop_Debug",false];
 
-if((_player getVariable ["GOL_StaticJump", false]) || !(_player getVariable ["GOL_Hooked", false])) exitWith {
+if((_unit getVariable ["GOL_StaticJump", false]) || !(_unit getVariable ["GOL_Hooked", false])) exitWith {
 	if(_Debug) then {
 		"[StaticLine] GetOut Event Exited. Already Ejected or not hooked." spawn OKS_fnc_LogDebug;
 	};

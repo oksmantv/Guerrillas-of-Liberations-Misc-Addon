@@ -11,6 +11,9 @@ private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", f
 if(_surrenderDebug) then {
     format["[SURRENDER] %1 Surrender Handle triggered", name _unit] spawn OKS_fnc_LogDebug;
 };
+// HVT units are disarmed and surrendered by the intercept system; skip the general flow.
+if (_unit getVariable ["OKS_InterceptHvt_Surrendered", false]) exitWith {};
+
 _unit setVariable ["GOL_NonCombatant", true, true];
 [_unit] spawn OKS_fnc_ThrowWeaponsOnGround;
 sleep 0.5;

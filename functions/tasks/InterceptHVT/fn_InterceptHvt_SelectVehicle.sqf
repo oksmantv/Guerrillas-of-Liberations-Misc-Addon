@@ -49,6 +49,7 @@ if ([_designatedVehicle] call _isValidVehicleFn) then {
         if (_hvtDebug) then {
             format ["[INTERCEPT HVT][SELECT_VEH] Using designated vehicle %1 seats=%2", typeOf _designatedVehicle, _designatedGuardSeats] call OKS_fnc_LogDebug;
         };
+        _designatedVehicle setVariable ["OKS_InterceptHvt_Reserved", true, true];
         _designatedVehicle
     };
 };
@@ -96,10 +97,15 @@ private _bestSeatsEnough = -1;
     };
 } forEach _candidates;
 
-if (!isNull _bestVehicleEnough) exitWith {_bestVehicleEnough};
+if (!isNull _bestVehicleEnough) exitWith {
+    _bestVehicleEnough setVariable ["OKS_InterceptHvt_Reserved", true, true];
+    _bestVehicleEnough
+};
 
 if (_hvtDebug) then {
-    private _selected = if (!isNull _bestVehicleEnough) then {_bestVehicleEnough} else {_bestVehicle};
-    format ["[INTERCEPT HVT][SELECT_VEH] Selected=%1 bestSeats=%2", typeOf _selected, _bestSeats] call OKS_fnc_LogDebug;
+    format ["[INTERCEPT HVT][SELECT_VEH] Selected=%1 bestSeats=%2", typeOf _bestVehicle, _bestSeats] call OKS_fnc_LogDebug;
+};
+if (!isNull _bestVehicle) then {
+    _bestVehicle setVariable ["OKS_InterceptHvt_Reserved", true, true];
 };
 _bestVehicle;

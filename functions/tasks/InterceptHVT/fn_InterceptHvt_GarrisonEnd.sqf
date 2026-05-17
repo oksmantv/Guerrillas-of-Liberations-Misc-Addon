@@ -36,6 +36,7 @@ private _mountedGunner = objNull;
             if (_x == gunner _currentVehicle) then {
                 _mountedGunner = _x;
             } else {
+                _x setVariable ["OKS_InterceptHvt_ShouldExit", true];
                 [_x] allowGetIn false;
                 _x leaveVehicle _currentVehicle;
                 doGetOut _x;
@@ -49,6 +50,7 @@ private _mountedGunner = objNull;
 
 if (alive _hvtUnit && {vehicle _hvtUnit != _hvtUnit}) then {
     private _hvtVehicle = vehicle _hvtUnit;
+    _hvtUnit setVariable ["OKS_InterceptHvt_ShouldExit", true];
     [_hvtUnit] allowGetIn false;
     _hvtUnit leaveVehicle _hvtVehicle;
     doGetOut _hvtUnit;
@@ -71,9 +73,11 @@ waitUntil {
     (!alive _hvtUnit || {vehicle _hvtUnit == _hvtUnit})
 };
 
-// Single-building garrison using ACE with building-by-building fill mode (1).
+// Multi-building garrison: radius 30 with even-distribution fill mode (0) so guards
+// spread across surrounding buildings rather than stacking in a single one.
 {
     _x enableAI "PATH";
+    _x enableAI "FSM";
     _x setBehaviour "AWARE";
 } forEach _dismountGuards;
 
@@ -82,8 +86,8 @@ _guardGroup setSpeedMode "FULL";
 if (_dismountGuards isNotEqualTo []) then {
     waitUntil {sleep 1; !(isNil "ace_ai_fnc_garrison")};
     // Args: [position, building type filter, units, radius, fill mode, top-to-bottom, teleport]
-    // Fill mode 1 = building by building. Teleport false = natural movement.
-    [getPosATL _targetBuilding, nil, _dismountGuards, 8, 1, false, false] remoteExec ["ace_ai_fnc_garrison", 0];
+    // Fill mode 1 = building by building. Radius 30 covers surrounding buildings if one fills up.
+    [getPosATL _targetBuilding, nil, _dismountGuards, 30, 1, false, false] remoteExec ["ace_ai_fnc_garrison", 0];
 };
 
 
@@ -100,8 +104,8 @@ if (alive _hvtUnit) then {
     _hvtUnit enableAI "PATH";
     _hvtUnit setBehaviour "CARELESS";
     _hvtGroup setSpeedMode "FULL";
-    _hvtUnit orderGetIn false;
-    clearWaypoints _hvtGroup;
+    [_hvtUnit] orderGetIn false;
+    [_hvtGroup] call OKS_fnc_ClearWaypoints;
     _hvtUnit doMove _hvtDest;
     [_hvtUnit, _hvtDest, _buildingPositions] spawn {
         params ["_hvt", "_dest", "_positions"];
@@ -166,7 +170,8 @@ if (alive _hvtUnit) then {
                 sleep 0.4;
             };
 
-            clearWaypoints (group _hvt);
+            private _grp = group _hvt;
+            [_grp] call OKS_fnc_ClearWaypoints;
             _hvt disableAI "PATH";
             _hvt setUnitPos "MIDDLE";
         };

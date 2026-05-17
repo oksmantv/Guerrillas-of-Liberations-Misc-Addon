@@ -901,48 +901,58 @@ class CfgMagazines {
 	};
 
 	// ==================== GOL Accurate RPG-7 Magazines ====================
-	// All use VS mag as base for consistent initSpeed/mass/maxLeadSpeed.
-	class rhs_rpg7_PG7VS_mag;
+	// LEFT reticle (VM markings): PG-7VM (HEAT+)
+	// RIGHT reticle (VL markings): OG-7V, TBG-7V, PG-7VR
+	class rhs_rpg7_PG7VM_mag;
+	class rhs_rpg7_PG7VL_mag;
 
-	class GOL_mag_rpg7_PG7VL: rhs_rpg7_PG7VS_mag {
+	class GOL_mag_rpg7_Modern: rhs_rpg7_PG7VM_mag {
 		scope = 2;
 		scopeArsenal = 2;
-		displayName = "RPG-7 PG-7VL (GOL)";
-		displayNameShort = "PG-7VL";
-		descriptionShort = "HEAT anti-armour round. Identical trajectory to all GOL RPG rounds.";
-		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_pg7vl_mag";
-		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_pg7vl";
-		ammo = "GOL_ammo_PG7VL";
+		displayName = "RPG-7 PG-7VM (GOL)";
+		displayNameShort = "PG-7VM";
+		descriptionShort = "HEAT+. Aim using LEFT reticle.";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_PG7VM_mag_ca.paa";
+		mass = 22;
+		ammo = "GOL_ammo_Modern";
 	};
 
-	class GOL_mag_rpg7_OG7V: rhs_rpg7_PG7VS_mag {
+	class GOL_mag_rpg7_OG7V: rhs_rpg7_PG7VL_mag {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "RPG-7 OG-7V (GOL)";
 		displayNameShort = "OG-7V";
-		descriptionShort = "HE fragmentation round. Identical trajectory to all GOL RPG rounds.";
+		descriptionShort = "HE fragmentation. Aim using RIGHT reticle.";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_OG7V_mag_ca.paa";
 		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_og7v_mag";
 		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_og7v";
+		mass = 30;
 		ammo = "GOL_ammo_OG7V";
 	};
 
-	class GOL_mag_rpg7_TBG7V: rhs_rpg7_PG7VS_mag {
+	class GOL_mag_rpg7_TBG7V: rhs_rpg7_PG7VL_mag {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "RPG-7 TBG-7V (GOL)";
 		displayNameShort = "TBG-7V";
-		descriptionShort = "Thermobaric round. Identical trajectory to all GOL RPG rounds.";
+		descriptionShort = "Thermobaric. Aim using RIGHT reticle.";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_TBG7V_mag_ca.paa";
 		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_tbg7v_mag";
 		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_tbg7v";
+		mass = 52;
 		ammo = "GOL_ammo_TBG7V";
 	};
 
-	class GOL_mag_rpg7_Modern: rhs_rpg7_PG7VS_mag {
+	class GOL_mag_rpg7_VR: rhs_rpg7_PG7VL_mag {
 		scope = 2;
 		scopeArsenal = 2;
-		displayName = "RPG-7 Modern HEAT (GOL)";
-		displayNameShort = "Modern HEAT";
-		descriptionShort = "Precision modern HEAT round. Sight-aligned flight path, boosted warhead.";
-		ammo = "GOL_ammo_Modern";
+		displayName = "RPG-7 PG-7VR (GOL)";
+		displayNameShort = "PG-7VR";
+		descriptionShort = "Tandem HEAT — defeats ERA. Aim using RIGHT reticle.";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_PG7VR_mag_ca.paa";
+		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_pg7vr_mag";
+		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_pg7vr";
+		mass = 56;
+		ammo = "GOL_ammo_PG7VR";
 	};
 };

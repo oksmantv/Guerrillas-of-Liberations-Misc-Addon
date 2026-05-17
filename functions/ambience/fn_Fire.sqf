@@ -1,3 +1,6 @@
+	// Creates a fire at the given position with sound and light effects.
+	// Example: [_position] spawn OKS_fnc_Fire;
+	
 	Params ["_Position"];
 
 	_fire = createVehicle ["test_EmptyObjectForFireBig", [_Position#0,_Position#1,(_Position#2 - 2)], [], -1, "CAN_COLLIDE"];

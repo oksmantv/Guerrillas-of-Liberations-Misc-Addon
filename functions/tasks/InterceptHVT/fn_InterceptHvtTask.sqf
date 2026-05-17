@@ -21,7 +21,8 @@
      5: _delay (NUMBER|ARRAY)
          Number in seconds or [min,max] random range. Default 180.
      6: _guardData (ARRAY)
-         [guardCount, surrenderThresholdPercent].
+         [guardCount, surrenderThresholdPercent, convoySpeedKmh].
+         convoySpeedKmh caps the convoy driving speed via forceSpeed. Default 50. Pass 0 to disable.
      7: _taskData (ARRAY)
          [showTaskPosition, taskParentId, showVehicleType, hvtProfileImagePath].
      8: _failOnKill (BOOL|STRING legacy)
@@ -47,7 +48,7 @@
         "GARRISON",
         objNull,
         [120, 240],
-        [8, 30],
+        [8, 30, 50],
         [true, "MainTask", true, ""],
         true,
         nil
@@ -68,7 +69,7 @@ params [
     ["_endBehavior", "DISAPPEAR", [""]],
     ["_designatedVehicle", objNull, [objNull]],
     ["_delay", 180, [0, []]],
-    ["_guardData", [6, 35], [[]]],
+    ["_guardData", [6, 35, 50], [[]]],  
     ["_taskData", [true, "", true, ""], [[]]],
     ["_failOnKill", true, [true, ""]],
     ["_extractionSite", nil]
@@ -110,10 +111,13 @@ private _hvtClass = switch (_hvtSide) do {
 
 _guardData params [
     ["_guardCount", 6, [0]],
-    ["_surrenderThresholdPct", 35, [0]]
+    ["_surrenderThresholdPct", 35, [0]],
+    ["_convoySpeedKmh", 50, [0]]
 ];
 _guardCount = _guardCount max 0;
 _surrenderThresholdPct = (_surrenderThresholdPct max 0) min 100;
+// Convert km/h → m/s. Pass 0 to disable speed cap (-1 = forceSpeed default/unlimited).
+private _convoySpeedMS = if (_convoySpeedKmh > 0) then {_convoySpeedKmh / 3.6} else {-1};
 
 _taskData params [
     ["_showTaskPosition", true, [false]],
@@ -147,7 +151,7 @@ if (!isNil "_extractionSite") then {
         if (_extractionSite isEqualType []) then {
             if ((count _extractionSite) >= 2) then {
                 _hasExtraction = true;
-                _extractionPos = +_extractionSite;
+                _extractionPos = _extractionSite;
             };
         };
     };
@@ -169,6 +173,7 @@ if (_delay isEqualType []) then {
 };
 
 private _hvtGroup = createGroup [_hvtSide, true];
+_hvtGroup setVariable ["lambs_danger_disableGroupAI", true, true];
 private _hvtUnit = _hvtGroup createUnit [_hvtClass, _spawnPosition, [], 0, "NONE"];
 _hvtUnit setVariable ["GOL_HVT", true, true];
 _hvtUnit setVariable ["GOL_SurrenderEnabled", true, true];
@@ -187,6 +192,7 @@ if (_leaders isEqualTo [] || {_units isEqualTo []}) exitWith {
 };
 
 private _guardGroup = createGroup [_guardSide, true];
+_guardGroup setVariable ["lambs_danger_disableGroupAI", true, true];
 for "_i" from 1 to _guardCount do {
     private _className = if ((count units _guardGroup) == 0) then {selectRandom _leaders} else {selectRandom _units};
     private _u = _guardGroup createUnit [_className, _spawnPosition, [], 0, "NONE"];
@@ -219,6 +225,7 @@ if (_hvtDebug) then {
     _waitDelay,
     _guardCount,
     _surrenderThresholdPct,
+    _convoySpeedMS,
     _showTaskPosition,
     _taskParent,
     _showVehicleType,
@@ -238,6 +245,7 @@ if (_hvtDebug) then {
         "_waitDelay",
         "_initialGuardCount",
         "_surrenderThresholdPct",
+        "_convoySpeedMS",
         "_showTaskPosition",
         "_taskParent",
         "_showVehicleType",
@@ -254,7 +262,15 @@ if (_hvtDebug) then {
 
     {
         _x enableAI "PATH";
+        _x enableAI "FSM";
         _x setBehaviour "CARELESS";
+        _x setUnitPos "AUTO";
+        if (_x == leader _guardGroup) then {
+            _x doMove ((nearestBuilding (getPos _x)) buildingExit 0);
+        } else {
+            doStop _x;
+            _x doFollow (leader _guardGroup);
+        };
     } forEach (units _guardGroup);
 
     private _vehicle = [_spawnPosition, _designatedVehicle, _guardGroup, _hvtUnit, 250] call OKS_fnc_InterceptHvt_SelectVehicle;
@@ -264,9 +280,19 @@ if (_hvtDebug) then {
     private _overflowGroup = grpNull;
 
     if (!isNull _vehicle) then {
-        _vehicle setVariable ["OKS_InterceptHvt_Reserved", true, false];
-        private _mountResult = [_vehicle, _guardGroup, _hvtUnit, _spawnPosition] call OKS_fnc_InterceptHvt_MountGroup;
-        _mountResult params ["_overflowGuards", "_hvtMounted", "_driverMountedNow", "_overflowGroup"];
+        private _mountResult = [_vehicle, _guardGroup, _hvtUnit, _spawnPosition, _convoySpeedMS] call OKS_fnc_InterceptHvt_MountGroup;
+        _mountResult params ["_overflowGuards", "_hvtMounted", "_driverMountedNow"];
+        // Store only the immediate (main-vehicle) guards for the surrender threshold.
+        // Overflow guards ride in separate vehicles and should not prevent the HVT from surrendering
+        // when his personal escort is eliminated. Overflow units already left _guardGroup via
+        // [_x] join _overflowGroup in MountGroup, so units _guardGroup here is exactly the
+        // guards that boarded the main convoy vehicle.
+        _hvtUnit setVariable ["OKS_InterceptHvt_AllGuards", units _guardGroup];
+        // Plain assignment so the outer-scope private variable is updated, not shadowed by params.
+        _overflowGroup = _mountResult param [3, grpNull, [grpNull]];
+        if (!isNull _overflowGroup) then {
+            _overflowGroup setVariable ["lambs_danger_disableGroupAI", true, true];
+        };
         _hvtInVehicle = _hvtMounted;
         _driverMounted = _driverMountedNow;
 
@@ -302,17 +328,43 @@ if (_hvtDebug) then {
         _guardGroup setBehaviour "CARELESS";
         _guardGroup setSpeedMode "FULL";
 
-        private _wp = _guardGroup addWaypoint [_moveTarget, 0];
+        // Offset the waypoint so multiple convoy vehicles don't pile onto the same grid.
+        private _wpPos = [_moveTarget, 10 + random 10, random 360] call BIS_fnc_relPos;
+        private _wp = _guardGroup addWaypoint [_wpPos, 0];
         _wp setWaypointType "MOVE";
         _wp setWaypointBehaviour "CARELESS";
         _wp setWaypointSpeed "FULL";
+        if (_convoySpeedMS > 0) then {
+            private _d = driver _vehicle;
+            if (!isNull _d && {alive _d}) then { _d forceSpeed _convoySpeedMS; };
+        };
+
+        // Disable FSM on cargo/commander/gunner guards and add a GetOut safety net.
+        // Any unit that exits without OKS_InterceptHvt_ShouldExit = true is immediately
+        // moved back into cargo. Intentional ejections (surrender, garrison, disabled
+        // vehicle) must set that flag on each unit before calling leaveVehicle/doGetOut.
+        {
+            if (alive _x && {vehicle _x == _vehicle} && {_x != driver _vehicle}) then {
+                _x disableAI "FSM";
+            };
+        } forEach (units _guardGroup);
+        _vehicle allowCrewInImmobile true;
+        _vehicle addEventHandler ["GetOut", {
+            params ["_veh", "_role", "_unit"];
+            if (alive _veh && {alive _unit} && {!(_unit getVariable ["OKS_InterceptHvt_ShouldExit", false])}) then {
+                _unit moveInCargo _veh;
+            };
+        }];
 
         // Overflow guards: sequential vehicle assignment with simple getIn waypoint.
         // Each overflow unit/pair gets their own vehicle and group, then follows main group.
         if (!isNull _overflowGroup && {(units _overflowGroup) isNotEqualTo []}) then {
-            [_overflowGroup, _spawnPosition, _moveTarget, _hvtDebug] spawn {
-                params ["_og", "_spawnPos", "_target", "_debug"];
+            [_overflowGroup, _spawnPosition, _moveTarget, _endPosition, _convoySpeedMS, _hvtDebug, _hvtUnit] spawn {
+                params ["_og", "_spawnPos", "_target", "_endPos", "_convoySpeedMS", "_debug", "_hvt"];
                 private _pool = (units _og) select {alive _x};
+                // Snapshot taken before the while loop so the safety net below can scan all
+                // originally assigned overflow units regardless of which group they ended up in.
+                private _allOverflowUnits = +_pool;
                 if (_pool isEqualTo []) exitWith {};
 
                 if (_debug) then {
@@ -320,11 +372,16 @@ if (_hvtDebug) then {
                 };
 
                 private _overflowSide = side _og;
-                
+
+                // Tracks which vehicle each overflow unit was assigned to.
+                // Used by the safety net to force-mount stragglers into their correct vehicle.
+                private _unitVehicleMap = [];
+
                 // Sequentially assign overflow units to vehicles.
                 while {_pool isNotEqualTo []} do {
                     // Create a new independent group for this overflow team.
                     private _teamGrp = createGroup [_overflowSide, true];
+                    _teamGrp setVariable ["lambs_danger_disableGroupAI", true, true];
                     
                     // Pick a vehicle for this team.
                     private _teamVeh = [_spawnPos, objNull, _teamGrp, objNull, 250] call OKS_fnc_InterceptHvt_SelectVehicle;
@@ -341,7 +398,11 @@ if (_hvtDebug) then {
 
                         _og setBehaviour "AWARE";
                         _og setSpeedMode "FULL";
+                        if (_convoySpeedMS > 0) then { { _x forceSpeed _convoySpeedMS; } forEach (units _og); };
                         _og move _target;
+                        // Register on-foot overflow group on HVT so surrender logic can redirect it.
+                        _hvt setVariable ["OKS_InterceptHvt_OverflowGroups",
+                            (_hvt getVariable ["OKS_InterceptHvt_OverflowGroups", []]) + [_og]];
 
                         _pool = [];
                         
@@ -354,13 +415,12 @@ if (_hvtDebug) then {
                             if (_debug) then {
                                 format ["[INTERCEPT HVT][OVERFLOW] Skip non-drivable vehicle %1", typeOf _teamVeh] call OKS_fnc_LogDebug;
                             };
-                            _teamVeh setVariable ["OKS_InterceptHvt_Reserved", false, false];
+                            // Vehicle has no driver seat; it stays reserved so SelectVehicle skips it on the next call.
                             deleteGroup _teamGrp;
                             sleep 0.2;
                             continue;
                         };
 
-                        _teamVeh setVariable ["OKS_InterceptHvt_Reserved", true, false];
                         _teamGrp addVehicle _teamVeh;
                         
                         // Fill this team with units up to vehicle capacity.
@@ -378,8 +438,14 @@ if (_hvtDebug) then {
                             [_u] joinSilent _teamGrp;
                             _teamUnits pushBack _u;
                         };
-                        
+
+                        // Record each unit's assigned vehicle for the safety net below.
+                        { _unitVehicleMap pushBack [_x, _teamVeh]; } forEach _teamUnits;
+
                         if (_teamUnits isNotEqualTo []) then {
+                            // Cancel any stale doFollow/doMove orders before issuing board commands.
+                            { doStop _x; } forEach _teamUnits;
+
                             // Explicitly assign seats so overflow teams reliably mount secondary vehicles.
                             private _teamPool = +_teamUnits;
                             private _teamAssignedDriver = objNull;
@@ -401,6 +467,7 @@ if (_hvtDebug) then {
                                 [_teamAssignedCommander] allowGetIn true;
                                 _teamAssignedCommander assignAsCommander _teamVeh;
                                 [_teamAssignedCommander] orderGetIn true;
+                                _teamAssignedCommander doMove (getPosATL _teamVeh);
                             };
 
                             if ((_teamVeh emptyPositions "gunner") > 0 && {_teamPool isNotEqualTo []} && {isNull gunner _teamVeh}) then {
@@ -408,40 +475,44 @@ if (_hvtDebug) then {
                                 [_teamAssignedGunner] allowGetIn true;
                                 _teamAssignedGunner assignAsGunner _teamVeh;
                                 [_teamAssignedGunner] orderGetIn true;
+                                _teamAssignedGunner doMove (getPosATL _teamVeh);
                             };
 
                             {
                                 [_x] allowGetIn true;
-                                _x assignAsCargo _teamVeh;
                                 [_x] orderGetIn true;
+                                _x doMove (getPosATL _teamVeh);
                             } forEach _teamPool;
 
                             _teamGrp setBehaviour "AWARE";
                             _teamGrp setSpeedMode "FULL";
-                            
-                            private _moveVehWp = _teamGrp addWaypoint [getPosATL _teamVeh, 0];
-                            _moveVehWp setWaypointType "GETIN NEAREST";
-                            _moveVehWp setWaypointBehaviour "AWARE";
-                            _moveVehWp setWaypointSpeed "FULL";
+                            private _teamGetInWp = _teamGrp addWaypoint [getPosATL _teamVeh, 0];
+                            _teamGetInWp setWaypointType "GETIN NEAREST";
+                            _teamGetInWp setWaypointBehaviour "AWARE";
+                            _teamGetInWp setWaypointSpeed "FULL";
+                            _teamGrp setCurrentWaypoint _teamGetInWp;
 
-                            private _mountTimeout = time + 35;
+                            private _mountTimeout = time + 45;
                             private _lastOverflowLog = time;
                             waitUntil {
                                 sleep 0.5;
+                                private _drvMounted = isNull _teamAssignedDriver || {!alive _teamAssignedDriver} || {driver _teamVeh == _teamAssignedDriver};
+                                private _cmdMounted = isNull _teamAssignedCommander || {!alive _teamAssignedCommander} || {vehicle _teamAssignedCommander == _teamVeh};
+                                private _gunMounted = isNull _teamAssignedGunner || {!alive _teamAssignedGunner} || {vehicle _teamAssignedGunner == _teamVeh};
+                                private _cgoMounted = (_teamPool select {alive _x && {vehicle _x != _teamVeh}}) isEqualTo [];
                                 if (_debug && {time >= _lastOverflowLog}) then {
                                     _lastOverflowLog = time + 5;
                                     format [
-                                        "[INTERCEPT HVT][OVERFLOW] WaitTick. team=%1 veh=%2 assignedDriver=%3 currentDriver=%4 mounted=%5 tLeft=%6",
-                                        _teamGrp,
-                                        typeOf _teamVeh,
-                                        _teamAssignedDriver,
-                                        driver _teamVeh,
-                                        (!isNull _teamAssignedDriver && {driver _teamVeh == _teamAssignedDriver}),
+                                        "[INTERCEPT HVT][OVERFLOW] WaitTick. driver=%1 commander=%2 gunner=%3 cargo=%4 tLeft=%5",
+                                        _drvMounted,
+                                        _cmdMounted,
+                                        _gunMounted,
+                                        _cgoMounted,
                                         round (_mountTimeout - time)
                                     ] call OKS_fnc_LogDebug;
                                 };
                                 (time >= _mountTimeout) ||
-                                (!isNull _teamAssignedDriver && {driver _teamVeh == _teamAssignedDriver})
+                                (_drvMounted && _cmdMounted && _gunMounted && _cgoMounted)
                             };
 
                             if (!isNull _teamAssignedDriver && {alive _teamAssignedDriver} && {driver _teamVeh != _teamAssignedDriver}) then {
@@ -472,13 +543,94 @@ if (_hvtDebug) then {
                                     _x moveInCargo _teamVeh;
                                 };
                             } forEach _teamPool;
-                            
-                            // Then move to main destination.
-                            private _moveWp = _teamGrp addWaypoint [_target, 0];
+
+                            // Re-assign cargo seats, lock the vehicle, and disable FSM on cargo guards.
+                            {
+                                _x params ["_occupant", "_role", "_cargoIdx"];
+                                if (!isNull _occupant && {alive _occupant} && {toLowerANSI _role == "cargo"}) then {
+                                    _occupant assignAsCargoIndex [_teamVeh, _cargoIdx];
+                                    _occupant disableAI "FSM";
+                                };
+                            } forEach (fullCrew _teamVeh);
+                            _teamVeh lock 2;
+
+                            // Then move to main destination. Use a wider spread (30-90 m at random angle)
+                            // so multiple overflow teams do not converge at the same road point.
+                            // Snap to the nearest road so the waypoint cannot land inside a building.
+                            private _teamWpPos = [_target, 30 + random 60, random 360] call BIS_fnc_relPos;
+                            private _snapRoads = _teamWpPos nearRoads 50;
+                            if (_snapRoads isNotEqualTo []) then {
+                                _teamWpPos = getPos (_snapRoads select 0);
+                            };
+                            private _moveWp = _teamGrp addWaypoint [_teamWpPos, 0];
                             _moveWp setWaypointType "MOVE";
                             _moveWp setWaypointBehaviour "AWARE";
                             _moveWp setWaypointSpeed "FULL";
-                            
+                            _teamGrp setCurrentWaypoint _moveWp;
+                            if (_convoySpeedMS > 0) then {
+                                private _d = driver _teamVeh;
+                                if (!isNull _d && {alive _d}) then { _d forceSpeed _convoySpeedMS; };
+                            };
+
+                            // Watcher: unlock, dismount, and garrison the overflow team on arrival.
+                            [_teamGrp, _teamVeh, _teamWpPos, _endPos, _debug] spawn {
+                                params ["_grp", "_veh", "_wp", "_garrisonPos", "_dbg"];
+                                waitUntil {
+                                    sleep 1;
+                                    isNull _veh || {!alive _veh} ||
+                                    ((_veh distance2D _wp) < 60) ||
+                                    (((units _grp) select {alive _x && {vehicle _x == _veh}}) isEqualTo [])
+                                };
+                                if (isNull _veh || {!alive _veh}) then {
+                                    // Vehicle destroyed mid-route (ambush): do not continue to garrison destination.
+                                    // Give surviving dismounted units a GUARD order at their current position.
+                                    private _aliveUnits = (units _grp) select {alive _x};
+                                    if (_aliveUnits isNotEqualTo []) then {
+                                        [_grp] call OKS_fnc_ClearWaypoints;
+                                        private _holdWp = _grp addWaypoint [getPos (_aliveUnits select 0), 30];
+                                        _holdWp setWaypointType "GUARD";
+                                        _holdWp setWaypointBehaviour "COMBAT";
+                                        _holdWp setWaypointCombatMode "RED";
+                                        _grp setCurrentWaypoint _holdWp;
+                                    };
+                                } else {
+                                    _veh lock 0;
+                                    {
+                                        if (alive _x && {vehicle _x == _veh}) then {
+                                            [_x] allowGetIn false;
+                                            _x leaveVehicle _veh;
+                                            doGetOut _x;
+                                            unassignVehicle _x;
+                                            _x enableAI "FSM";
+                                            _x enableAI "PATH";
+                                            _x setBehaviour "AWARE";
+                                        };
+                                    } forEach (units _grp);
+                                    sleep 2;
+                                    // Use a wider radius and even-distribution fill mode (0) so teams
+                                    // spread across multiple buildings rather than stacking in one.
+                                    private _bld = nearestBuilding _garrisonPos;
+                                    if (!isNull _bld) then {
+                                        private _aliveTeam = (units _grp) select {alive _x};
+                                        if (_aliveTeam isNotEqualTo []) then {
+                                            [_garrisonPos, nil, _aliveTeam, 30, 0, false, false] remoteExec ["ace_ai_fnc_garrison", 0];
+                                            if (_dbg) then {
+                                                format ["[INTERCEPT HVT][OVERFLOW] Garrison triggered. grp=%1 units=%2", _grp, count _aliveTeam] call OKS_fnc_LogDebug;
+                                            };
+                                        };
+                                    } else {
+                                        { if (alive _x) then { _x move _garrisonPos; }; } forEach (units _grp);
+                                        if (_dbg) then {
+                                            "[INTERCEPT HVT][OVERFLOW] No building at garrison pos; guards moving on foot." call OKS_fnc_LogDebug;
+                                        };
+                                    };
+                                };
+                            };
+
+                            // Register this overflow team on the HVT so surrender logic can redirect it.
+                            _hvt setVariable ["OKS_InterceptHvt_OverflowGroups",
+                                (_hvt getVariable ["OKS_InterceptHvt_OverflowGroups", []]) + [_teamGrp]];
+
                             if (_debug) then {
                                 format [
                                     "[INTERCEPT HVT][OVERFLOW] Team ready. team=%1 veh=%2 units=%3 driver=%4 waypoints=%5",
@@ -494,6 +646,40 @@ if (_hvtDebug) then {
                     
                     sleep 0.5;
                 };
+
+                // Safety net: any overflow unit still on foot after the while loop failed to board
+                // (stuck in geometry, force-mount rejected, etc.). Look up the vehicle it was
+                // assigned to and teleport it directly into cargo. Fall back to garrisoning at the
+                // destination only if its vehicle is no longer available.
+                {
+                    private _unit = _x;
+                    if (alive _unit && {vehicle _unit == _unit}) then {
+                        private _assignedVeh = objNull;
+                        {
+                            if ((_x#0) isEqualTo _unit) exitWith { _assignedVeh = _x#1; };
+                        } forEach _unitVehicleMap;
+
+                        if (!isNull _assignedVeh && {alive _assignedVeh}) then {
+                            // Teleport next to the vehicle first so moveInCargo cannot be
+                            // rejected due to distance or building-geometry collision.
+                            _unit setPos (getPosATL _assignedVeh);
+                            sleep 0.1;
+                            _unit moveInCargo _assignedVeh;
+                            if (_debug) then {
+                                format ["[INTERCEPT HVT][OVERFLOW] Safety net: force-mounted %1 into %2.", name _unit, typeOf _assignedVeh] call OKS_fnc_LogDebug;
+                            };
+                        } else {
+                            // Vehicle is gone or was never assigned; garrison at destination.
+                            _unit setPos _endPos;
+                            [_unit] allowGetIn false;
+                            _unit disableAI "FSM";
+                            [_endPos, nil, [_unit], 50, 0, false, false] remoteExec ["ace_ai_fnc_garrison", 0];
+                            if (_debug) then {
+                                format ["[INTERCEPT HVT][OVERFLOW] Safety net: no vehicle for %1; garrisoned at end pos.", name _unit] call OKS_fnc_LogDebug;
+                            };
+                        };
+                    };
+                } forEach _allOverflowUnits;
             };
         };
     } else {
@@ -585,14 +771,18 @@ if (_hvtDebug) then {
         _vehicleName = _vehicleName splitString "&" joinString "&amp;";
         _textureDisplayName = _textureDisplayName splitString "&" joinString "&amp;";
 
+        private _vehicleImageText = "";
+        if !(_vehiclePicture isEqualTo "") then {
+            _vehicleImageText = format ["<br/><img image='%1' width='320' height='213' />", _vehiclePicture];
+        };
         _vehicleText = format [
-            "<br/><t color='#C8D6E5'>Transport:</t> <t color='#FFFFFF'>%1</t><br/><t color='#C8D6E5'>Texture:</t> <t color='#FFFFFF'>%2</t>",
+            "<br/><br/><t size='1.4' color='#6EC1E4'>TRANSPORT</t>%1" +
+            "<br/><t color='#C8D6E5'>Vehicle:</t> <t color='#FFFFFF'>%2</t>" +
+            "<br/><t color='#C8D6E5'>Variant:</t> <t color='#FFFFFF'>%3</t>",
+            _vehicleImageText,
             _vehicleName,
             _textureDisplayName
         ];
-        if !(_vehiclePicture isEqualTo "") then {
-            _vehicleText = _vehicleText + format ["<br/><img image='%1' width='128' height='64' />", _vehiclePicture];
-        };
     };
 
     // Build HVT profile after delay/movement so caller-side identity/appearance overrides are reflected.
@@ -624,7 +814,7 @@ if (_hvtDebug) then {
 
     private _hvtName = name _hvtUnit;
     private _hvtFaceClass = face _hvtUnit;
-    private _hvtRace = [_hvtUnit, sideUnknown] call OKS_fnc_GetEthnicity;
+    private _hvtRace = [_hvtUnit] call OKS_fnc_GetEthnicityFromFace;
     if (isNil "_hvtRace" || {_hvtRace isEqualTo ""}) then {
         _hvtRace = "Unknown";
     };
@@ -647,14 +837,20 @@ if (_hvtDebug) then {
     _hvtVestName = _hvtVestName splitString "&" joinString "&amp;";
     _hvtBackpackName = _hvtBackpackName splitString "&" joinString "&amp;";
 
+    private _hvtProfileImageText = "";
+    if !(_hvtProfileImage isEqualTo "") then {
+        _hvtProfileImageText = format ["<br/><img image='%1' width='320' height='320' />", _hvtProfileImage];
+    };
     private _identityText = format [
-        "<br/><t color='#C8D6E5'>Officer:</t> <t color='#FFFFFF'>%1</t><br/>" +
-        "<t color='#C8D6E5'>Race:</t> <t color='#FFFFFF'>%2</t><br/>" +
-        "<t color='#C8D6E5'>Headgear:</t> <t color='#FFFFFF'>%3</t><br/>" +
-        "<t color='#C8D6E5'>Goggles:</t> <t color='#FFFFFF'>%4</t><br/>" +
-        "<t color='#C8D6E5'>Uniform:</t> <t color='#FFFFFF'>%5</t><br/>" +
-        "<t color='#C8D6E5'>Vest:</t> <t color='#FFFFFF'>%6</t><br/>" +
-        "<t color='#C8D6E5'>Backpack:</t> <t color='#FFFFFF'>%7</t>",
+        "<br/><br/><t size='1.4' color='#F4D35E'>HVT PROFILE</t>%1" +
+        "<br/><t color='#C8D6E5'>Name:</t> <t color='#FFFFFF'>%2</t><br/>" +
+        "<t color='#C8D6E5'>Ethnicity:</t> <t color='#FFFFFF'>%3</t><br/>" +
+        "<t color='#C8D6E5'>Headgear:</t> <t color='#FFFFFF'>%4</t><br/>" +
+        "<t color='#C8D6E5'>Eyewear:</t> <t color='#FFFFFF'>%5</t><br/>" +
+        "<t color='#C8D6E5'>Uniform:</t> <t color='#FFFFFF'>%6</t><br/>" +
+        "<t color='#C8D6E5'>Vest:</t> <t color='#FFFFFF'>%7</t><br/>" +
+        "<t color='#C8D6E5'>Backpack:</t> <t color='#FFFFFF'>%8</t>",
+        _hvtProfileImageText,
         _hvtName,
         _hvtRace,
         _hvtHeadgearName,
@@ -664,42 +860,45 @@ if (_hvtDebug) then {
         _hvtBackpackName
     ];
 
-    if !(_hvtProfileImage isEqualTo "") then {
-        _identityText = _identityText + format ["<br/><img image='%1' width='96' height='96' />", _hvtProfileImage];
-    };
-
     private _mainTaskTitle = "Intercept HVT";
     private _mainTaskDescription = format [
-        "<t size='1.15' color='#F4D35E'>High Value Target Intercept</t><br/>" +
-        "<t color='#FFFFFF'>Track and contain the HVT movement corridor before escape.</t>%1%2",
+        "<t size='1.8' color='#F4D35E'>HIGH VALUE TARGET INTERCEPT</t><br/><br/>" +
+        "<t color='#FFFFFF'>A high-value target has been identified moving through the AO." +
+        " Intercept and contain the convoy before the target reaches its destination.</t>%1%2",
         _vehicleText,
         _identityText
     ];
     private _locateTaskTitle = "Locate HVT";
     private _locateTaskDescription = format [
-        "<t size='1.15' color='#F4D35E'>Locate High Value Target</t><br/>" +
-        "<t color='#FFFFFF'>The HVT has dismounted and garrisoned in a nearby building. Proceed with caution, they may have reached a friendly position.</t>%1%2",
+        "<t size='1.8' color='#F7B267'>LOCATE HIGH VALUE TARGET</t><br/><br/>" +
+        "<t color='#FFFFFF'>The HVT has dismounted and garrisoned in a nearby structure." +
+        " Proceed with caution — the target may have reached a fortified position.</t>%1%2",
         _vehicleText,
         _identityText
     ];
     private _secureTaskTitle = "Secure HVT";
     private _secureTaskDescription = format [
-        "<t size='1.15' color='#F4D35E'>Secure High Value Target</t><br/>" +
-        "<t color='#FFFFFF'>The HVT has surrendered. Maintain custody and prepare for transfer to extraction.</t>%1%2",
+        "<t size='1.8' color='#6EC1E4'>HVT IN CUSTODY</t><br/><br/>" +
+        "<t color='#FFFFFF'>The HVT has surrendered and is now in custody." +
+        " Maintain positive control and prepare for transfer to the extraction point.</t>%1%2",
         _vehicleText,
         _identityText
     ];
 
     private _captureTaskTitle = if (_isCaptureOrKill && {!_hasExtraction}) then {"Capture or Kill HVT"} else {"Capture HVT"};
     private _captureTaskDescription = if (_isCaptureOrKill && {!_hasExtraction}) then {
-        "<t size='1.10' color='#F7B267'>Capture Phase</t><br/><t color='#FFFFFF'>Intercept the HVT. Lethal resolution is authorized.</t>"
+        "<t size='1.6' color='#F7B267'>CAPTURE PHASE</t><br/><br/>" +
+        "<t color='#FFFFFF'>Intercept the HVT. Lethal resolution is authorized if capture is not viable.</t>"
     } else {
-        "<t size='1.10' color='#F7B267'>Capture Phase</t><br/><t color='#FFFFFF'>Force HVT surrender and secure him alive.</t>"
+        "<t size='1.6' color='#F7B267'>CAPTURE PHASE</t><br/><br/>" +
+        "<t color='#FFFFFF'>Force the HVT to surrender. The target must be secured alive — lethal force is not authorized.</t>"
     };
 
     private _extractTaskTitle = "Extract HVT";
     private _extractTaskDescription = format [
-        "<t size='1.10' color='#6EC1E4'>Extraction Phase</t><br/><t color='#FFFFFF'>Escort the surrendered HVT to extraction at grid %1 (within 50m).</t>",
+        "<t size='1.6' color='#6EC1E4'>EXTRACTION PHASE</t><br/><br/>" +
+        "<t color='#FFFFFF'>Escort the surrendered HVT to the extraction point at grid </t>" +
+        "<t color='#F4D35E'>%1</t><t color='#FFFFFF'> (within 50 m).</t>",
         mapGridPosition _extractionPos
     ];
 
@@ -713,7 +912,7 @@ if (_hvtDebug) then {
     };
 
     private _captureTaskArray = [_captureTaskId, _mainTaskId];
-    private _mainTaskPos = getPosATL _hvtUnit;
+    private _mainTaskPos = if (_showTaskPosition) then {getPosATL _hvtUnit} else {nil};
 
     [
         true,
@@ -739,9 +938,16 @@ if (_hvtDebug) then {
         false
     ] call BIS_fnc_taskCreate;
 
-    [_mainTaskId, _hvtUnit] spawn OKS_fnc_InterceptHvt_UpdateTrackedTaskPos;
+    if (_showTaskPosition) then {
+        [_mainTaskId, _hvtUnit] spawn OKS_fnc_InterceptHvt_UpdateTrackedTaskPos;
+    };
 
-    private _thresholdCount = ceil (_initialGuardCount * (_surrenderThresholdPct / 100));
+    // Base the threshold on the actual immediate guard count stored in AllGuards.
+    // _initialGuardCount is the total spawned (including overflow), but AllGuards was trimmed
+    // to only the guards that fit in the main vehicle. Using _initialGuardCount here would
+    // produce a threshold that the immediate-guards count can never meaningfully reach.
+    private _immediateGuardCount = count (_hvtUnit getVariable ["OKS_InterceptHvt_AllGuards", units _guardGroup]);
+    private _thresholdCount = ceil (_immediateGuardCount * (_surrenderThresholdPct / 100));
     private _garrisonTriggered = false;
     private _locatePhaseStarted = false;
     private _extractionPhaseStarted = false;
@@ -764,8 +970,13 @@ if (_hvtDebug) then {
             };
             _finished = true;
         } else {
-            private _aliveGuards = {(alive _x)} count (units _guardGroup);
-            if (_aliveGuards <= _thresholdCount) then {
+            // Count only the HVT's immediate guards (main vehicle crew).
+            // A guard is effective only if alive AND not ACE-unconscious; wounded-down guards
+            // cannot protect the HVT so they are treated as eliminated for this check.
+            private _aliveGuards = {alive _x && {!(_x getVariable ["ACE_isUnconscious", false])}} count (_hvtUnit getVariable ["OKS_InterceptHvt_AllGuards", units _guardGroup]);
+            // Guard against repeated calls: SetHvtSurrendered is idempotent but calling it
+            // every loop tick is wasteful and can produce noisy logs.
+            if (!(_hvtUnit getVariable ["OKS_InterceptHvt_Surrendered", false]) && {_aliveGuards <= _thresholdCount}) then {
                 [_hvtUnit] call OKS_fnc_InterceptHvt_SetHvtSurrendered;
             };
 
@@ -797,12 +1008,14 @@ if (_hvtDebug) then {
 
                         private _onFootAtExtract = (vehicle _hvtUnit == _hvtUnit) && {(_hvtUnit distance2D _extractionPos) <= 50};
                         if (_onFootAtExtract) then {
+                            _hvtUnit setVariable ["GOL_HVT_SECURED", true, true];
                             [_extractTaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
                             [_mainTaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
                             _finished = true;
                         };
                     };
                 } else {
+                    _hvtUnit setVariable ["GOL_HVT_SECURED", true, true];
                     [_captureTaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
                     [_mainTaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
                     _finished = true;
@@ -811,7 +1024,9 @@ if (_hvtDebug) then {
 
             if (!_finished) then {
                 private _movingAsset = if (vehicle _hvtUnit == _hvtUnit) then {_hvtUnit} else {vehicle _hvtUnit};
-                private _atDestination = _movingAsset distance2D _endPosition < 25;
+                // Use _moveTarget (the road stop point) rather than _endPosition so the
+                // vehicle's actual stopping point triggers arrival, not the abstract end pos.
+                private _atDestination = _movingAsset distance2D _moveTarget < 60;
                 if (_atDestination) then {
                     private _behaviorUpper = toUpperANSI _endBehavior;
                     private _assetSpeed = vectorMagnitude velocity _movingAsset;
@@ -839,6 +1054,8 @@ if (_hvtDebug) then {
                         };
                         if (!_garrisonTriggered) then {
                             if (_assetSpeed <= 0.14) then {
+                                // Unlock before garrison so scripted doGetOut/leaveVehicle can eject occupants.
+                                if (!isNull _vehicle && {alive _vehicle}) then { _vehicle lock 0; };
                                 _garrisonTriggered = [_guardGroup, _hvtUnit, _endPosition, _overflowGroup] call OKS_fnc_InterceptHvt_GarrisonEnd;
                             };
                         };

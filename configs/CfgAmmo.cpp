@@ -417,23 +417,22 @@ class CfgAmmo {
 	};
 
 	// ==================== GOL Accurate RPG-7 Rounds ====================
-	// All rounds inherit from rhs_rpg7v2_pg7vs for identical flight/trajectory.
-	// Damage, model and effects are restored per-round from their original configs.
-	class rhs_rpg7v2_pg7vs;
+	// LEFT reticle (VM markings): PG-7VM (HEAT+)
+	// RIGHT reticle (VL markings): OG-7V, TBG-7V, PG-7VR
+	class rhs_rpg7v2_pg7vm;
+	class rhs_rpg7v2_pg7vl;
 
-	// PG-7VL — HEAT anti-armour
-	class GOL_ammo_PG7VL: rhs_rpg7v2_pg7vs {
+	// Improved HEAT (HEAT+) — VM base +25% main charge. Inherits VM submunition (penetrator hit=290).
+	class GOL_ammo_Modern: rhs_rpg7v2_pg7vm {
 		deflecting = 0;
-		hit = 220;
-		indirectHit = 20;
-		indirectHitRange = 4;
-		model = "\rhsafrf\addons\rhs_weapons\rpg7\projectiles\pg7vl";
-		explosionEffects = "ATRocketExplosion";
-		CraterEffects = "ATRocketCrater";
+		hit = 275;        // VM original (220) +25%
+		explosive = 0.35;
 	};
 
+	// --- RIGHT reticle group (VL trajectory) ---
+
 	// OG-7V — HE fragmentation
-	class GOL_ammo_OG7V: rhs_rpg7v2_pg7vs {
+	class GOL_ammo_OG7V: rhs_rpg7v2_pg7vl {
 		deflecting = 0;
 		hit = 75;
 		indirectHit = 20;
@@ -454,7 +453,7 @@ class CfgAmmo {
 	};
 
 	// TBG-7V — thermobaric
-	class GOL_ammo_TBG7V: rhs_rpg7v2_pg7vs {
+	class GOL_ammo_TBG7V: rhs_rpg7v2_pg7vl {
 		deflecting = 0;
 		hit = 120;
 		indirectHit = 60;
@@ -481,11 +480,28 @@ class CfgAmmo {
 		submunitionParentSpeedCoef = 0;
 	};
 
-	// Modern round — boosted HEAT on VS base
-	class GOL_ammo_Modern: rhs_rpg7v2_pg7vs {
+	// PG-7VR penetrator — custom subclass so we can tune damage independently of VM's penetrator
+	class rhs_rpg7v2_pg7vr_penetrator;
+	class GOL_ammo_PG7VR_penetrator: rhs_rpg7v2_pg7vr_penetrator {
+		hit = 420;        // ~45% above VM penetrator (290) — meaningful advantage post-ERA
+	};
+
+	// PG-7VR — tandem HEAT (ERA-defeating)
+	class GOL_ammo_PG7VR: rhs_rpg7v2_pg7vl {
 		deflecting = 0;
-		hit = 900;
-		indirectHit = 12;
-		indirectHitRange = 1.5;
+		hit = 310;        // Higher than Improved HEAT (275) — VR is the harder hitter
+		indirectHit = 20;
+		indirectHitRange = 3.8;
+		initTime = 0.15;
+		warheadName = "TandemHEAT";
+		triggerOnImpact = 1;
+		model = "\rhsafrf\addons\rhs_weapons\rpg7\projectiles\pg7vr";
+		explosionEffects = "ATRocketExplosion";
+		CraterEffects = "ATRocketCrater";
+		submunitionAmmo = "GOL_ammo_PG7VR_penetrator";
+		submunitionDirectionType = "SubmunitionModelDirection";
+		submunitionInitSpeed = 1053;
+		submunitionInitialOffset[] = {0, 0, -0.1};
+		submunitionParentSpeedCoef = 0;
 	};
 };

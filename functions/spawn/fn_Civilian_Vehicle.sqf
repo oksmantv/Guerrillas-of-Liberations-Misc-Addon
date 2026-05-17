@@ -36,13 +36,29 @@ Params [
     "_EndPosition",   
     "_VehicleType",
     ["_Speed",8,[0]],
-    ["_ShouldDelete",true,[true]]
+    ["_ShouldDelete",true,[true]],
+    ["_RandomCargoSeats",true,[true]]
 ];
 
+waitUntil { sleep 1; (nearestObjects [_SpawnPosition, ["LandVehicle", "Air", "Ship"], 15] isEqualTo []) };
+
 _vehicle = createVehicle [_VehicleType, _SpawnPosition, [], 0, "CAN_COLLIDE"];
+if(_SpawnPosition isEqualType objNull) then {
+    _vehicle setDir (getDir _SpawnPosition)
+};
+
 _civilianGroup = createGroup civilian;
 _driver = _civilianGroup createUnit ["C_man_polo_1_F", [0,0,0], [], 0, "NONE"];
 _driver moveInDriver _vehicle;
+
+if(_RandomCargoSeats) then {
+    _vehicleCargoSeatCount = _vehicle emptyPositions "Cargo";
+    _randomCargoCount = round(random _vehicleCargoSeatCount);
+    for "_i" from 1 to _randomCargoCount do {
+        _randomCargo = _civilianGroup createUnit ["C_man_polo_1_F", [0,0,0], [], 0, "NONE"];
+        _randomCargo moveInCargo [_vehicle, round(random _vehicleCargoSeatCount)];
+    };
+};
 
 _waypoint = _civilianGroup addWaypoint [_EndPosition,0];
 _waypoint setWaypointType "MOVE";
@@ -53,12 +69,12 @@ _vehicle forceSpeed _Speed;
 waitUntil {sleep 5; _vehicle distance _EndPosition < 20};
 
 if(_ShouldDelete) then {
-    deleteVehicle _driver;
+    {deleteVehicle _X} foreach crew _vehicle;
     deleteVehicle _vehicle;
 } else {
     _waypointGetout = _civilianGroup addWaypoint [_EndPosition,0];
     _waypointGetout setWaypointType "GETOUT";   
     _waypointEnd = _civilianGroup addWaypoint [_EndPosition,0];
-    _waypoint setWaypointType "DISMISS";
-    _waypoint setWaypointBehaviour "SAFE";
+    _waypointEnd setWaypointType "DISMISS";
+    _waypointEnd setWaypointBehaviour "SAFE";
 };

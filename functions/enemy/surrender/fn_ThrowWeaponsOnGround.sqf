@@ -3,7 +3,7 @@
     Usage: [unit] spawn OKS_fnc_ThrowWeaponsOnGround;
 */
 
-params ["_unit"];
+params ["_unit", ["_targetContainer", objNull, [objNull]], ["_clearItems", true, [true]]];
 
 if(hasInterface && !isServer) exitWith {};
 
@@ -41,24 +41,34 @@ _GetCorrectWeaponsItems = {
 };
 
 if(isServer) then {
-    // Create the ground weapon holder at the drop position
-    private _groundHolder = createVehicle ["GroundWeaponHolder", [0,0,0], [], 0, "NONE"];
-    _groundHolder setPosATL [_dropPosition select 0, _dropPosition select 1, _dropAltitude];
+    private _dest = if (!isNull _targetContainer && {alive _targetContainer}) then {
+        _targetContainer
+    } else {
+        private _groundHolder = createVehicle ["GroundWeaponHolder", [0,0,0], [], 0, "NONE"];
+        _groundHolder setPosATL [_dropPosition select 0, _dropPosition select 1, _dropAltitude];
+        _groundHolder enableSimulationGlobal false;
+        _groundHolder
+    };
 
     _WeaponsArray = [_unit] call _GetCorrectWeaponsItems;
     {
         if(_X isNotEqualTo []) then {
-            _groundHolder addWeaponWithAttachmentsCargoGlobal [_X, 1];
+            _dest addWeaponWithAttachmentsCargoGlobal [_X, 1];
         };
     } foreach _WeaponsArray;
-
-    _groundHolder enableSimulationGlobal false;
 };
     
-// Remove all weapons, magazines, and items from the unit
-removeAllWeapons _unit;
-removeAllItems _unit;
-removeAllAssignedItems _unit;
+// Remove weapons and optionally all items from the unit.
+// When _clearItems is false, use per-weapon removal so loose magazines
+// in containers are preserved (removeAllWeapons strips all mags too).
+if (_clearItems) then {
+    removeAllWeapons _unit;
+    removeAllItems _unit;
+    removeAllAssignedItems _unit;
+} else {
+    private _weapons = [primaryWeapon _unit, handgunWeapon _unit, secondaryWeapon _unit, binocular _unit] select {_x != ""};
+    {_unit removeWeapon _x} forEach _weapons;
+};
 
 // Debug message
 private _surrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", false];

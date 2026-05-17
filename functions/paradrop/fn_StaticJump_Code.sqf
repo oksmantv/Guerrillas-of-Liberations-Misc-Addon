@@ -15,6 +15,7 @@ if(!(_player getVariable ["GOL_Hooked",false])) exitWith {
 if(!(_ejected)) then {
 	_player setVariable ["GOL_StaticJump", true, true];
 	_player action ["Eject", _aircraft];
+	hintSilent parseText "<t align='center' font='PuristaBold' size='1.1' color='#ffffff'>STATIC LINE</t><br/><t align='center' size='0.9' color='#f5c518'>Ejecting from aircraft...</t>";
 	if(_Debug) then {
 		format["[StaticLine] Static Jump Code - Not Ejected - Triggering Action",_aircraft, name _player] spawn OKS_fnc_LogDebug;
 	};
@@ -33,7 +34,10 @@ _player setVariable ["GOL_HasJumped", true, true];
 _aircraftVelocity = velocity _aircraft;
 _aircraftDir = direction _aircraft;
 
-waitUntil {vehicle _player == _player};
+while {vehicle _player != _player} do {
+	if (!_ejected) then { _player action ["Eject", _aircraft]; };
+	sleep 0.3;
+};
 private _currentDamageThreshold = ace_medical_playerDamageThreshold;
 ace_medical_playerDamageThreshold = (ace_medical_playerDamageThreshold * 1.25);
 

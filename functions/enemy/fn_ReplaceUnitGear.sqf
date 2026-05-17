@@ -62,6 +62,29 @@ if (isNull _Unit || {!alive _Unit}) exitWith {
     false
 };
 
+// Wait for the Framework gear module to finish before overriding gear.
+// GW_Gear_appliedGear is set by fnc_Handler.sqf once the module has run.
+private _gearModuleDeadline = time + 30;
+waitUntil {
+    sleep 1;
+    (_Unit getVariable ["GW_Gear_appliedGear", false]) || (time > _gearModuleDeadline) || !alive _Unit
+};
+
+if (!alive _Unit) exitWith {
+    if (_Debug) then {
+        "[ReplaceUnitGear] Unit died while waiting for gear module. Exiting with false." spawn OKS_fnc_LogDebug;
+    };
+    false
+};
+
+if (_Debug) then {
+    format ["[ReplaceUnitGear] Starting gear application for %1. GW_Gear_appliedGear=%2, alive=%3",
+        _Unit,
+        _Unit getVariable ["GW_Gear_appliedGear", false],
+        alive _Unit
+    ] spawn OKS_fnc_LogDebug;
+};
+
 private _OriginalDamage = damage _Unit;
 private _OriginalCaptive = captive _Unit;
 private _OriginalGroup = group _Unit;
@@ -107,6 +130,13 @@ private _ToArray = {
     []
 };
 
+// Allow face/name/identity/rank to be specified inside gearSpec as an alternative to
+// positional parameters. Positional parameters take precedence when non-empty.
+if (_Face     isEqualTo "") then { _Face     = _GearMap getOrDefault ["face",     ""]; };
+if (_Name     isEqualTo "") then { _Name     = _GearMap getOrDefault ["name",     ""]; };
+if (_Identity isEqualTo "") then { _Identity = _GearMap getOrDefault ["identity", ""]; };
+if (_Rank     isEqualTo "") then { _Rank     = _GearMap getOrDefault ["rank",     ""]; };
+
 if (_ClearMagazines) then {
     private _ExistingMags = magazines _Unit;
     {
@@ -121,6 +151,16 @@ if (_ClearMagazines) then {
 private _OldUniformItems = +uniformItems _Unit;
 private _OldVestItems = +vestItems _Unit;
 private _OldBackpackItems = +backpackItems _Unit;
+
+if (_Debug) then {
+    format ["[ReplaceUnitGear] Pre-removal containers — uniform:'%1' vest:'%2' backpack:'%3'",
+        uniform _Unit, vest _Unit, backpack _Unit
+    ] spawn OKS_fnc_LogDebug;
+    format ["[ReplaceUnitGear] Pre-removal items — uniformItems:%1 | vestItems:%2 | backpackItems:%3",
+        _OldUniformItems, _OldVestItems, _OldBackpackItems
+    ] spawn OKS_fnc_LogDebug;
+    format ["[ReplaceUnitGear] Pre-removal magazines: %1", magazines _Unit] spawn OKS_fnc_LogDebug;
+};
 
 private _ReplaceUniform = ["uniform"] call _HasKey;
 private _ReplaceVest = ["vest"] call _HasKey;
@@ -150,6 +190,12 @@ if (_ReplaceBackpack && {_NewBackpack isEqualType ""} && {_NewBackpack != ""}) t
     _Unit addBackpack _NewBackpack;
 };
 
+if (_Debug) then {
+    format ["[ReplaceUnitGear] Post-container swap — uniform:'%1' vest:'%2' backpack:'%3'",
+        uniform _Unit, vest _Unit, backpack _Unit
+    ] spawn OKS_fnc_LogDebug;
+};
+
 if (_PreserveItems && {(_ReplaceUniform || _ReplaceVest || _ReplaceBackpack)}) then {
     private _GroundHolder = objNull;
 
@@ -173,7 +219,13 @@ if (_PreserveItems && {(_ReplaceUniform || _ReplaceVest || _ReplaceBackpack)}) t
             default { ["uniform", "vest", "backpack"] };
         };
 
-        private _Added = ({[_x, _Item] call _AddToContainer} count _Order) > 0;
+        // Use exitWith to stop at the first container that accepts the item.
+        // The old `count` approach ran for ALL containers, duplicating items across
+        // any that had space (filling capacity and creating duplicate gear).
+        private _Added = false;
+        {
+            if ([_x, _Item] call _AddToContainer) exitWith { _Added = true; };
+        } forEach _Order;
 
         if (!_Added) then {
             if (isNull _GroundHolder) then {
@@ -293,14 +345,22 @@ private _AddWeaponPackage = {
         };
     };
 
+    if (_Debug) then {
+        format ["[ReplaceUnitGear] Weapon '%1' — compatibleMagazines: %2", _WeaponClass, _Compatible] spawn OKS_fnc_LogDebug;
+        format ["[ReplaceUnitGear] Weapon '%1' — magazine plan: %2", _WeaponClass, _MagazinePlan] spawn OKS_fnc_LogDebug;
+    };
+
     {
         _x params ["_MagClass", "_MagCount"];
         if (_MagClass isEqualType "" && {_MagClass != ""} && {_MagCount > 0}) then {
             if ((count _Compatible) isEqualTo 0 || {_MagClass in _Compatible}) then {
                 _Unit addMagazines [_MagClass, _MagCount];
+                if (_Debug) then {
+                    format ["[ReplaceUnitGear] addMagazines [%1, %2] — post-add mags: %3", _MagClass, _MagCount, magazines _Unit] spawn OKS_fnc_LogDebug;
+                };
             } else {
                 if (_Debug) then {
-                    format ["[ReplaceUnitGear] Skipped incompatible magazine %1 for %2.", _MagClass, _WeaponClass] spawn OKS_fnc_LogDebug;
+                    format ["[ReplaceUnitGear] SKIPPED incompatible mag '%1' for '%2'. Compatible list: %3", _MagClass, _WeaponClass, _Compatible] spawn OKS_fnc_LogDebug;
                 };
             };
         };
@@ -389,9 +449,16 @@ if (_Face != "") then {
 };
 
 if (_Name != "") then {
-    [_Unit, ""] remoteExec ["setNameSound", 0];
-    [_Unit, _Name] remoteExec ["setUnitName", 0];
-    [_Unit, _Name] remoteExec ["setName", 0];
+    _Unit setNameSound "";
+    _Unit setName _Name;
+    // setName is not network-synced: broadcast to all current clients and JIP players.
+    [_Unit, _Name] remoteExec ["setName", 0, _Unit];
+    // DUI Squad Radar reads ACE_Name rather than the native name command.
+    // ace_common_fnc_setName reads name _unit and writes ACE_Name/ACE_NameRaw (global).
+    // Packets from the same machine are processed in order, so this runs after setName.
+    if (isClass (configFile >> "CfgPatches" >> "ace_common")) then {
+        [_Unit] remoteExec ["ace_common_fnc_setName", 0, _Unit];
+    };
 };
 
 if (_Rank != "") then {
@@ -412,8 +479,15 @@ if ((group _Unit) != _OriginalGroup) then {
     [_Unit] joinSilent _OriginalGroup;
 };
 
+_Unit setVariable ["GW_Gear_BlackList", true, true];
+// Signal that gear replacement is fully applied so dependent scripts (e.g. SetupIntel) can proceed.
+_Unit setVariable ["GOL_GearReady", true, true];
+
 if (_Debug) then {
     format ["[ReplaceUnitGear] Applied gear replacement to %1. Face='%2' Name='%3' Identity='%4' Rank='%5'", _Unit, _Face, _Name, _Identity, _Rank] spawn OKS_fnc_LogDebug;
+    format ["[ReplaceUnitGear] FINAL STATE — uniform:'%1' vest:'%2' backpack:'%3'", uniform _Unit, vest _Unit, backpack _Unit] spawn OKS_fnc_LogDebug;
+    format ["[ReplaceUnitGear] FINAL STATE — magazines:%1", magazines _Unit] spawn OKS_fnc_LogDebug;
+    format ["[ReplaceUnitGear] FINAL STATE — items:%1", items _Unit] spawn OKS_fnc_LogDebug;
 };
 
 true

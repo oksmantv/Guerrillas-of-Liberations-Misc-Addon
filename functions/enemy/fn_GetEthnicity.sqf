@@ -48,4 +48,4 @@ switch (_Side) do {
     };
 };
 
-_ethnicity   
+_ethnicity

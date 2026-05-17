@@ -22,7 +22,7 @@ _StaticJumpActionId = _aircraft addAction [
 	[],	  													  	  			   // Arguments
 	6,    														  			   // Priority
 	true, 														  			   // ShowWindow
-	true, 														  			   // Hide On Use
+	false, 														  			   // Hide On Use
 	"Action",															  	   // Keybind
 	"_target getcargoindex player != -1 && (getPosATL _target) select 2 > 100" // Condition
 ];

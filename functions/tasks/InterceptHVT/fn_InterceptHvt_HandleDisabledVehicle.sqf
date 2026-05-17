@@ -45,14 +45,17 @@ waitUntil {
     private _disabled = (!canMove _vehicle) || _driverInvalid || ([_vehicle] call _isFrontWheelDisabledFn);
 
     if (_disabled) then {
+        _vehicle lock 0;
         {
             if (alive _x && {vehicle _x == _vehicle}) then {
+                _x setVariable ["OKS_InterceptHvt_ShouldExit", true];
                 [_x] allowGetIn false;
                 _x leaveVehicle _vehicle;
                 moveOut _x;
                 unassignVehicle _x;
                 _x setBehaviour "AWARE";
                 _x enableAI "PATH";
+                _x enableAI "FSM";
             };
         } forEach (units _guardGroup);
 
@@ -81,6 +84,35 @@ waitUntil {
                     _hvtUnit disableAI "PATH";
                     _hvtUnit setUnitPos "MIDDLE";
                 };
+            };
+        };
+
+        // When the main convoy vehicle is first disabled, redirect each overflow team to a
+        // unique spread position around the ambush site. Without this, all teams drive to the
+        // same road waypoint and pile their vehicles at the garrison entrance.
+        if (!(_vehicle getVariable ["OKS_InterceptHvt_OverflowRedirected", false])) then {
+            _vehicle setVariable ["OKS_InterceptHvt_OverflowRedirected", true];
+            private _overflowGroups = _hvtUnit getVariable ["OKS_InterceptHvt_OverflowGroups", []];
+            if (_overflowGroups isNotEqualTo []) then {
+                private _disabledPos = getPos _vehicle;
+                private _groupCount = count _overflowGroups;
+                {
+                    private _og = _x;
+                    if (!isNull _og && {(units _og) isNotEqualTo []}) then {
+                        // Spread teams evenly around the compass, 80-120 m from the disabled vehicle.
+                        private _spreadAngle = _forEachIndex * (360 / _groupCount);
+                        private _offsetPos = [_disabledPos, 80 + random 40, _spreadAngle] call BIS_fnc_relPos;
+                        private _roads = _offsetPos nearRoads 60;
+                        if (_roads isNotEqualTo []) then { _offsetPos = getPos (_roads select 0); };
+                        [_og] call OKS_fnc_ClearWaypoints;
+                        private _wp = _og addWaypoint [_offsetPos, 0];
+                        _wp setWaypointType "MOVE";
+                        _wp setWaypointBehaviour "COMBAT";
+                        _wp setWaypointCombatMode "RED";
+                        _wp setWaypointSpeed "FULL";
+                        _og setCurrentWaypoint _wp;
+                    };
+                } forEach _overflowGroups;
             };
         };
     };
