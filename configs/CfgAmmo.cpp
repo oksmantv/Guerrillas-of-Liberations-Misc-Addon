@@ -417,10 +417,12 @@ class CfgAmmo {
 	};
 
 	// ==================== GOL Accurate RPG-7 Rounds ====================
-	// LEFT reticle (VM markings): PG-7VM (HEAT+)
-	// RIGHT reticle (VL markings): OG-7V, TBG-7V, PG-7VR
+	// LEFT   reticle (VM markings) : PG-7VM (HEAT+)
+	// RIGHT  reticle (VL markings) : OG-7V
+	// CENTER reticle (VR markings) : TBG-7V, PG-7VR
 	class rhs_rpg7v2_pg7vm;
 	class rhs_rpg7v2_pg7vl;
+	class rhs_rpg7v2_pg7vr;
 
 	// Improved HEAT (HEAT+) — VM base +25% main charge. Inherits VM submunition (penetrator hit=290).
 	class GOL_ammo_Modern: rhs_rpg7v2_pg7vm {
@@ -452,8 +454,10 @@ class CfgAmmo {
 		ace_vehicle_damage_incendiary = 0.1;
 	};
 
+	// --- CENTER reticle group (VR trajectory) ---
+
 	// TBG-7V — thermobaric
-	class GOL_ammo_TBG7V: rhs_rpg7v2_pg7vl {
+	class GOL_ammo_TBG7V: rhs_rpg7v2_pg7vr {
 		deflecting = 0;
 		hit = 120;
 		indirectHit = 60;
@@ -487,7 +491,7 @@ class CfgAmmo {
 	};
 
 	// PG-7VR — tandem HEAT (ERA-defeating)
-	class GOL_ammo_PG7VR: rhs_rpg7v2_pg7vl {
+	class GOL_ammo_PG7VR: rhs_rpg7v2_pg7vr {
 		deflecting = 0;
 		hit = 310;        // Higher than Improved HEAT (275) — VR is the harder hitter
 		indirectHit = 20;

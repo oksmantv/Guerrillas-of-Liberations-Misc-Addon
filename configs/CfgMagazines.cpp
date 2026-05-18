@@ -901,10 +901,12 @@ class CfgMagazines {
 	};
 
 	// ==================== GOL Accurate RPG-7 Magazines ====================
-	// LEFT reticle (VM markings): PG-7VM (HEAT+)
-	// RIGHT reticle (VL markings): OG-7V, TBG-7V, PG-7VR
+	// LEFT   reticle (VM markings) : PG-7VM (HEAT+)
+	// RIGHT  reticle (VL markings) : OG-7V
+	// CENTER reticle (VR markings) : TBG-7V, PG-7VR
 	class rhs_rpg7_PG7VM_mag;
 	class rhs_rpg7_PG7VL_mag;
+	class rhs_rpg7_PG7VR_mag;
 
 	class GOL_mag_rpg7_Modern: rhs_rpg7_PG7VM_mag {
 		scope = 2;
@@ -930,12 +932,12 @@ class CfgMagazines {
 		ammo = "GOL_ammo_OG7V";
 	};
 
-	class GOL_mag_rpg7_TBG7V: rhs_rpg7_PG7VL_mag {
+	class GOL_mag_rpg7_TBG7V: rhs_rpg7_PG7VR_mag {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "RPG-7 TBG-7V (GOL)";
 		displayNameShort = "TBG-7V";
-		descriptionShort = "Thermobaric. Aim using RIGHT reticle.";
+		descriptionShort = "Thermobaric. Aim using CENTER reticle.";
 		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_TBG7V_mag_ca.paa";
 		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_tbg7v_mag";
 		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_tbg7v";
@@ -943,12 +945,12 @@ class CfgMagazines {
 		ammo = "GOL_ammo_TBG7V";
 	};
 
-	class GOL_mag_rpg7_VR: rhs_rpg7_PG7VL_mag {
+	class GOL_mag_rpg7_VR: rhs_rpg7_PG7VR_mag {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "RPG-7 PG-7VR (GOL)";
 		displayNameShort = "PG-7VR";
-		descriptionShort = "Tandem HEAT — defeats ERA. Aim using RIGHT reticle.";
+		descriptionShort = "Tandem HEAT — defeats ERA. Aim using CENTER reticle.";
 		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_PG7VR_mag_ca.paa";
 		model = "\rhsafrf\addons\rhs_weapons\rpg7\magazines\rhs_pg7vr_mag";
 		modelSpecial = "\rhsafrf\addons\rhs_weapons\mag_proxies\rhs_mag_pg7vr";

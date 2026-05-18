@@ -43,9 +43,10 @@ Params [
 waitUntil { sleep 1; (nearestObjects [_SpawnPosition, ["LandVehicle", "Air", "Ship"], 15] isEqualTo []) };
 
 _vehicle = createVehicle [_VehicleType, _SpawnPosition, [], 0, "CAN_COLLIDE"];
-if(_SpawnPosition isEqualType objNull) then {
-    _vehicle setDir (getDir _SpawnPosition)
-};
+if(_SpawnPosition isEqualType ) then {
+
+}
+
 
 _civilianGroup = createGroup civilian;
 _driver = _civilianGroup createUnit ["C_man_polo_1_F", [0,0,0], [], 0, "NONE"];
@@ -75,6 +76,6 @@ if(_ShouldDelete) then {
     _waypointGetout = _civilianGroup addWaypoint [_EndPosition,0];
     _waypointGetout setWaypointType "GETOUT";   
     _waypointEnd = _civilianGroup addWaypoint [_EndPosition,0];
-    _waypointEnd setWaypointType "DISMISS";
-    _waypointEnd setWaypointBehaviour "SAFE";
+    _waypoint setWaypointType "DISMISS";
+    _waypoint setWaypointBehaviour "SAFE";
 };
