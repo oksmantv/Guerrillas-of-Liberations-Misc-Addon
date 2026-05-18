@@ -248,7 +248,7 @@ if (!isNil "_guardData" && { _guardData isEqualType [] } && { count _guardData >
     _wp setWaypointCombatMode "GREEN";
 
     _guardGroup setBehaviourStrong "STEALTH";
-    _guardGroup setCombatModeStrong "GREEN";
+    _guardGroup setCombatMode "GREEN";
 
     // Switch to COMBAT when any player closes within 100m
     [_guardGroup, _casualtyUnit] spawn {
@@ -259,7 +259,7 @@ if (!isNil "_guardData" && { _guardData isEqualType [] } && { count _guardData >
         };
         if (alive _unit) then {
             _grp setBehaviourStrong "COMBAT";
-            _grp setCombatModeStrong "RED";
+            _grp setCombatMode "RED";
         };
     };
 
