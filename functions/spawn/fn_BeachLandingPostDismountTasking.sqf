@@ -93,15 +93,15 @@ private _applyLambsTask = {
 
     switch (toLower _taskType) do {
         case "hunt": {
-            [_grp, _range, 30, [], [], false, false, false] call lambs_wp_fnc_taskHunt;
+            [_grp, _range, 30, [], [], false, false, false] spawn lambs_wp_fnc_taskHunt;
         };
         case "attack": {
             {
-                [_x, _targetPos, true] call lambs_wp_fnc_taskAssault;
+                [_x, _targetPos, true] spawn lambs_wp_fnc_taskAssault;
             } forEach (units _grp);
         };
         default {
-            [_grp, _range, 10, [], [], false] call lambs_wp_fnc_taskRush;
+            [_grp, _range, 10, [], [], false] spawn lambs_wp_fnc_taskRush;
         };
     };
 };

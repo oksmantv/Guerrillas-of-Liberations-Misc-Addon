@@ -65,7 +65,7 @@ Params [
 	["_DeleteAtFinalWP",false,[false]],
 	["_DismountBehaviour", ["rush"], [[]]],
 	["_ParkingMode", "alternate", [false, ""]],
-	["_TaskArray", nil, [[]]],
+	["_TaskArray", nil, [[],""]],
 	["_PreTaskId", "", [""]]
 ];
 

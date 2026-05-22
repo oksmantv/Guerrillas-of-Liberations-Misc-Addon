@@ -58,12 +58,19 @@ Examples (spawn form, return value discarded):
 
 if (!isServer) exitWith { "" };
 
+if (!(_this isEqualType [])) exitWith {
+	diag_log format ["[CONVOY-SPAWN ERROR] OKS_fnc_Convoy_Spawn called with non-array argument (type: %1, value: %2). Stack: %3", typeName _this, str _this, diag_stacktrace];
+	""
+};
+
 private _taskArray = _this param [11, nil];
 private _taskId = "";
 if (!isNil "_taskArray" && { _taskArray isEqualType [] } && { count _taskArray > 0 }) then {
 _taskId = format ["OKS_ConvoyTask_%1_%2", round (random 99999), round (diag_tickTime * 1000)];
 };
 
+// Pad to 12 elements so _taskId always lands at index 12 (_PreTaskId), not 11 (_TaskArray)
+if (count _this < 12) then { _this resize 12; };
 (_this + [_taskId]) spawn OKS_fnc_Convoy_SpawnBody;
 
 _taskId
