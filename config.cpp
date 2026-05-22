@@ -220,6 +220,7 @@ class CfgPatches
 		requiredAddons[] = {"Weapons_F_JCA_IA_Rifles_HK437"};
 		requiredVersion = 2.14;
 		author = "OksmanTV";
+		units[] = {};
 		weapons[] = {
 			"GOL_arifle_HK437_VFG_black_F",
 			"GOL_arifle_HK437_AFG_black_F"
@@ -234,6 +235,7 @@ class CfgPatches
 #include "configs\CfgEden.cpp"
 #include "configs\CfgMagazines.cpp"
 #include "configs\CfgMagazineWells.cpp"
+#include "configs\CfgRecoils.cpp"
 #include "configs\CfgWeapons.cpp"
 #include "configs\CfgVehicles.cpp"
 #include "configs\CfgFunctions.cpp"

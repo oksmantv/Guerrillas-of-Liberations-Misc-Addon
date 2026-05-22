@@ -1,43 +1,3 @@
-class CfgRecoils {
-	class recoil_default;
-
-	// muzzleOuter[] = {horizontal_pos, vertical_pos, horizontal_magnitude, vertical_magnitude}
-	// vertical_pos drives muzzle climb; reference RHS PKM: {0.55, 1.0, 0.7, 0.35}
-
-	// Light MG preset — 5.56mm class (M249 PIP)
-	class GOL_recoil_machinegun_light: recoil_default {
-		kickBack[]    = {0.015, 0.035};
-		muzzleOuter[] = {0.2, 0.5, 0.25, 0.15};
-		temporary     = 0.0075;
-	};
-	class GOL_recoil_machinegun_light_prone: recoil_default {
-		kickBack[]    = {0.010, 0.025};
-		muzzleOuter[] = {0.15, 0.375, 0.2, 0.125};
-		temporary     = 0.005;
-	};
-	// Medium MG preset — 7.62mm class (PKM, PKP, FN MAG, Zafir, MG3)
-	class GOL_recoil_machinegun: recoil_default {
-		kickBack[]    = {0.02, 0.045};
-		muzzleOuter[] = {0.275, 0.6, 0.35, 0.175};
-		temporary     = 0.010;
-	};
-	class GOL_recoil_machinegun_prone: recoil_default {
-		kickBack[]    = {0.015, 0.035};
-		muzzleOuter[] = {0.2, 0.45, 0.25, 0.14};
-		temporary     = 0.0075;
-	};
-	// Heavy MG preset — 9.3mm/.338 class (HK121, LWMMG)
-	class GOL_recoil_machinegun_heavy: recoil_default {
-		kickBack[]    = {0.025, 0.055};
-		muzzleOuter[] = {0.3, 0.75, 0.4, 0.2};
-		temporary     = 0.0125;
-	};
-	class GOL_recoil_machinegun_heavy_prone: recoil_default {
-		kickBack[]    = {0.02, 0.04};
-		muzzleOuter[] = {0.225, 0.55, 0.3, 0.15};
-		temporary     = 0.009;
-	};
-};
 class Mode_FullAuto;
 class Mode_SemiAuto;
 class CfgWeapons {
@@ -1360,8 +1320,31 @@ class CfgWeapons {
 		recoil = "GOL_recoil_machinegun";
 		recoilProne = "GOL_recoil_machinegun_prone";
 
-		// Disable barrel heat shimmer and gun smoke/heat particle effects
+		// Suppresses AI heat-signature detection.
 		heatRadiation = 0;
+		// FN MAG inherits RHSUSF_BarrelRefractHeavy — downgrade to standard refract.
+		class GunParticles {
+			class M240_AmmoBeltCaseEject {
+				directionName = "shelleject_end";
+				effectName    = "RHSUSF_762Cartridge";
+				positionName  = "shelleject_start";
+			};
+			class M240_AmmoBeltLinkEject {
+				directionName = "ammobeltlinks_end";
+				effectName    = "MachineGunEject2";
+				positionName  = "ammobeltlinks_start";
+			};
+			class M240_RHSUSF_BarrelRefract {
+				directionName = "usti hlavne up";
+				effectName    = "RHSUSF_BarrelRefract";
+				positionName  = "usti hlavne";
+			};
+			class M240_WhiteGas {
+				directionName = "konec hlavne";
+				effectName    = "RifleAssaultCloud";
+				positionName  = "usti hlavne";
+			};
+		};
 
 		magazines[] += {
 			"GOL_FNMAG_100Rnd_762x51_M993",
