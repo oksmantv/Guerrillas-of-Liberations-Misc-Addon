@@ -40,13 +40,14 @@ Params [
     ["_RandomCargoSeats",true,[true]]
 ];
 
+Private ["_Direction"];
 waitUntil { sleep 1; (nearestObjects [_SpawnPosition, ["LandVehicle", "Air", "Ship"], 15] isEqualTo []) };
 
 _vehicle = createVehicle [_VehicleType, _SpawnPosition, [], 0, "CAN_COLLIDE"];
-if(_SpawnPosition isEqualType ) then {
-
-}
-
+if(_SpawnPosition isEqualType objNull) then {
+    _Direction = getDir _SpawnPosition;
+    _vehicle setDir _Direction;
+};
 
 _civilianGroup = createGroup civilian;
 _driver = _civilianGroup createUnit ["C_man_polo_1_F", [0,0,0], [], 0, "NONE"];

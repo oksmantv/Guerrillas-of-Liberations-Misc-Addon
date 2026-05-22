@@ -498,6 +498,7 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\spawn\convoy";
 			class Convoy_Reinforce {};
 			class Convoy_Spawn {};
+			class Convoy_SpawnBody {};
 
 		};
 
@@ -523,6 +524,7 @@ class CfgFunctions // Defines a function
 			class Convoy_WaitUntilTargets {};
 			class Convoy_DeleteAllWaypoints {};
 			class Convoy_DismountAndTaskCode {};
+			class Convoy_TaskTracker {};
 		};
 		
 		class OKS_Spawn_Convoy_AirDefence {

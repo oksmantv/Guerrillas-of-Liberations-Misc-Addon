@@ -1,415 +1,69 @@
 /*
-	Params:
-	1 - Object - Spawn Position
-	2 - Object - First Waypoint
-	3 - Object - Final Waypoint (Where they spread out in the area)
-	4 - Side
-	5 - Vehicle Array
-		1 - Integer - Count of Vehicles
-		2 - Array of Classnames or String
-		3 - Integer M/S Speed
-		4 - Dispersion (convoy spacing while driving)
-		5 - ParkingDispersion (meters between parked vehicles in offroad/convoystop, default: 30)
-	6 - Troop Array
-		1 - Bool - Should spawn troop in cargo
-		2 - Integer - Max Number of Soldiers per vehicle
-	7 - Convoy Array (Array that gets filled with convoy units)
-	8 - Should be forced to careless (No reaction from Convoy)
-	9 - Should be deleted on reaching final waypoint
-	10 - Dismount Behaviour - Array of Types of waypoints for dismounts
-	Options: ["rush", "defend", "patrol", "assault", "hunt"]
-		Default: ["rush"]
-	11 - Parking Mode - String enum controlling how vehicles park at the end waypoint
-		Options:
-			"alternate"   - Vehicles alternate left/right sides of the road (herringbone)
-			"successive"  - Both sides of each road segment are filled before moving to the next
-			"convoystop"  - Vehicles stop on the road in convoy order (no lateral offset)
-			"offroad"     - Vehicles form a single-file line from the end object using its direction, spaced by dispersion
-		Default: "alternate"
-		Backwards compatible: false = "alternate", true = "successive" (deprecated, use strings)
+OKS_fnc_Convoy_Spawn
 
-	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false] spawn OKS_fnc_Convoy_Spawn;
-	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "alternate"] spawn OKS_fnc_Convoy_Spawn;
-	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "successive"] spawn OKS_fnc_Convoy_Spawn;
-	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "convoystop"] spawn OKS_fnc_Convoy_Spawn;
-	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25, 30],[true,6],[], false, false, ["rush"], "offroad"] spawn OKS_fnc_Convoy_Spawn;
+Spawns a convoy from a position through a waypoint to a final destination.
+This function is callable (call) and returns the task ID immediately.
+The convoy execution runs in a separate spawned thread.
+
+Params:
+1  - Object - Spawn Position
+2  - Object - First Waypoint
+3  - Object - Final Waypoint (Where they spread out in the area)
+4  - Side
+5  - Vehicle Array
+1 - Integer - Count of Vehicles
+2 - Array of Classnames or String
+3 - Integer M/S Speed
+4 - Dispersion (convoy spacing while driving)
+5 - ParkingDispersion (meters between parked vehicles in offroad/convoystop, default: 30)
+6  - Troop Array
+1 - Bool - Should spawn troop in cargo
+2 - Integer - Max Number of Soldiers per vehicle
+7  - Convoy Array (Array that gets filled with convoy units)
+8  - Should be forced to careless (No reaction from Convoy)
+9  - Should be deleted on reaching final waypoint
+10 - Dismount Behaviour - Array of Types of waypoints for dismounts
+Options: ["rush", "defend", "patrol", "assault", "hunt"]
+Default: ["rush"]
+11 - Parking Mode - String enum controlling how vehicles park at the end waypoint
+Options:
+"alternate"   - Vehicles alternate left/right sides of the road (herringbone)
+"successive"  - Both sides of each road segment are filled before moving to the next
+"convoystop"  - Vehicles stop on the road in convoy order (no lateral offset)
+"offroad"     - Vehicles form a single-file line from the end object using its direction, spaced by dispersion
+Default: "alternate"
+Backwards compatible: false = "alternate", true = "successive" (deprecated, use strings)
+12 - Task Array (Optional. If defined, creates a moving BIS task via OKS_fnc_Convoy_TaskTracker.)
+Structure:
+1 - String - Task Parent ("" for none)
+2 - Bool   - Show Task Position (marker visible on map)
+3 - Bool   - Task-Popup Notification
+4 - String - Task Condition enum: "destroy" | "intercept"
+
+Returns:
+String - Pre-generated BIS task ID when param 12 is provided, "" otherwise.
+The task is created in the convoy thread once vehicles have spawned (~10-30s after call).
+Use taskState to poll (returns "" until the task is created, safe to poll from the start):
+
+private _taskId = [convoy_1,convoy_2,convoy_3,east,[4,["rhs_t80u"],6,25],[true,6],[],false,false,["rush"],"alternate",["",true,true,"destroy"]] call OKS_fnc_Convoy_Spawn;
+waitUntil { sleep 5; taskState _taskId in ["SUCCEEDED","FAILED"] };
+
+Backwards compatible: old [params] spawn OKS_fnc_Convoy_Spawn calls still work.
+Examples (spawn form, return value discarded):
+[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false] spawn OKS_fnc_Convoy_Spawn;
+[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "alternate"] spawn OKS_fnc_Convoy_Spawn;
+[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "convoystop"] spawn OKS_fnc_Convoy_Spawn;
+[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25, 30],[true,6],[], false, false, ["rush"], "offroad"] spawn OKS_fnc_Convoy_Spawn;
 */
 
-if(!isServer) exitWith {};
+if (!isServer) exitWith { "" };
 
-Params [
-	["_Spawn",objNull,[objNull]],
-	["_Waypoint",nil,[objNull,[],""]],
-	["_End",objNull,[objNull]],
-	["_Side",east,[sideUnknown]],
-	["_VehicleParams",[],[[]]],
-	["_CargoParams",[],[[]]],
-	["_ConvoyGroupArray",[],[[]]],
-	["_ForcedCareless",false,[false]],
-	["_DeleteAtFinalWP",false,[false]],
-	["_DismountBehaviour", ["rush"], [[]]],
-	["_ParkingMode", "alternate", [false, ""]]
-];
-
-// --- Normalise legacy bool values to enum strings ---
-if (_ParkingMode isEqualType false) then {
-	private _legacyVal = _ParkingMode;
-	_ParkingMode = if (_legacyVal) then { "successive" } else { "alternate" };
-	private _warnMsg = format [
-		"[CONVOY-SPAWN WARNING] Boolean parking parameter is DEPRECATED (Last). Change to string enum: %1. (false='alternate', true='successive', or use 'convoystop')",
-		_ParkingMode
-	];
-	diag_log _warnMsg;
-	systemChat _warnMsg;
-};
-_ParkingMode = toLower _ParkingMode;
-if !(_ParkingMode in ["alternate", "successive", "convoystop", "offroad"]) then {
-	private _badVal = _ParkingMode;
-	_ParkingMode = "alternate";
-	private _errMsg = format ["[CONVOY-SPAWN WARNING] Unknown parking mode '%1' (last parameter), falling back to 'alternate'. Valid options: alternate, successive, convoystop, offroad", _badVal];
-	diag_log _errMsg;
-	systemChat _errMsg;
+private _taskArray = _this param [11, nil];
+private _taskId = "";
+if (!isNil "_taskArray" && { _taskArray isEqualType [] } && { count _taskArray > 0 }) then {
+_taskId = format ["OKS_ConvoyTask_%1_%2", round (random 99999), round (diag_tickTime * 1000)];
 };
 
-Private ["_Vehicles", "_Classname"];
-private _VehicleArray = [];
-private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
-private _NextPreferLeft = true;
+(_this + [_taskId]) spawn OKS_fnc_Convoy_SpawnBody;
 
-_VehicleParams Params [
-	["_Count", 4, [0]], 
-	["_Vehicles",["UK3CB_ARD_O_BMP1"],[[]]], 
-	["_SpeedKph", 35, [0]], 
-	["_DispersionInMeters", 50, [0]],
-	["_ParkingDispersion", 30, [0]]
-];
-_CargoParams Params [
-	["_ShouldHaveCargo", true, [false]],
-	["_CargoCount", 4, [0]]
-];
-if (isNil "_ConvoyGroupArray") then {
-	_ConvoyGroupArray = [];
-};
-
-private _parseCSV = {
-	params ["_raw"];
-	if !(_raw isEqualType "") exitWith { [] };
-	private _out = [];
-	private _dq = """"; // a single double-quote character in SQF
-	{
-		private _s = trim _x;
-		// Allow entries with surrounding quotes (common when copying classnames).
-		if ((count _s) >= 2) then {
-			private _c0 = _s select [0, 1];
-			private _cN = _s select [(count _s) - 1, 1];
-			if ((_c0 == _dq) && (_cN == _dq)) then {
-				_s = _s select [1, (count _s) - 2];
-			} else {
-				if ((_c0 == "'") && (_cN == "'")) then {
-					_s = _s select [1, (count _s) - 2];
-				};
-			};
-			_s = trim _s;
-		};
-		if (_s != "") then { _out pushBack _s; };
-	} forEach (_raw splitString ",;");
-	_out
-};
-
-private _forcedAAClassnames = [missionNamespace getVariable ["OKS_Convoy_AA_ForcedClassnames", ""]] call _parseCSV;
-private _forcedAAMaxCount = floor (missionNamespace getVariable ["OKS_Convoy_AA_ForcedMaxCount", 0]);
-private _forcedAAUsed = 0;
-
-
-private _ReserveQueue = [];
-for "_i" from 0 to ((_Count - 1) + 4) do {
-	_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
-	if(_i >= _Count) then {
-		private _herringBoneResult = [_End, false, _NextPreferLeft, true, _ParkingMode, _ParkingDispersion] call OKS_fnc_Convoy_SetupHerringBone;
-		private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { (getPos _End) select [0,2] };
-		private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
-		
-		// Only alternate sides in traditional mode
-		if (_ParkingMode == "alternate") then {
-			_NextPreferLeft = !_actualIsLeft;
-		};
-
-		// Check for duplicate positions (road capacity exceeded)
-		private _isDuplicate = false;
-		{
-			_x params ["_existingPos", "_occupied"];
-			if (_endPosition distance2D _existingPos < 5) exitWith {
-				_isDuplicate = true;
-			};
-		} forEach _ReserveQueue;
-
-		if (_isDuplicate) then {
-			if (_ConvoyDebug) then {
-				format ["[WARNING] Convoy cannot fit on end waypoint road. Reduce vehicles or pick a longer stretch of road. Position: %1", _endPosition] spawn OKS_fnc_LogDebug;
-			};
-		} else {
-			_ReserveQueue pushBack [_endPosition, false]; // [position, isOccupied]
-			// Debug: Log reserve position creation
-			if (_ConvoyDebug) then {
-				format ["[CONVOY-SPAWN] Created reserve position %1 at %2 (left: %3)", count _ReserveQueue - 1, _endPosition, _actualIsLeft] spawn OKS_fnc_LogDebug;
-			};
-		};
-
-		continue;
-	};
-
-	waitUntil {
-		sleep 1;
-		_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
-		if (_ConvoyDebug) then {
-			"[CONVOY-WAIT-CLEARANCE] near _Spawn" spawn OKS_fnc_LogDebug;
-		};
-		((getPos _Spawn) select [0,2] nearEntities ["LandVehicle", _DispersionInMeters]) isEqualTo []
-	};
-	if (_ConvoyDebug) then {
-		"[CONVOY-SPAWN] Vehicle spawning" spawn OKS_fnc_LogDebug;
-	};
-
-	if (_Vehicles isNotEqualTo []) then {
-		_Classname = _Vehicles select 0;
-		_Vehicles deleteAt 0;
-		if (_ConvoyDebug) then {
-			format ["[CONVOY-VEHICLE-CLASS] %1 Remaining: %2", _Classname, _Vehicles] spawn OKS_fnc_LogDebug;
-		}
-	};
-
-	private _spawnPos = getPos _Spawn;
-	_spawnPos set [2, 0.15]; // prevent spawning underground on uneven terrain
-	_Vehicle = CreateVehicle [_Classname, _spawnPos];
-	_Vehicle setVariable ["OKS_ForceSpeedActive", true, true];
-	_Vehicle setVariable ["OKS_LimitSpeedBase", _SpeedKph, true];
-	_Vehicle setVariable ["OKS_Convoy_Active", true, true];
-	_Vehicle setVariable ["OKS_Convoy_ParkingMode", _ParkingMode, true];
-	_Vehicle setDir (getDir _Spawn);
-	_Vehicle setVehicleLock "LOCKED";
-	_VehicleArray pushBack _Vehicle;
-
-	private _isForcedAAClass = (_forcedAAClassnames find _Classname) >= 0;
-	private _forceAsAA = _isForcedAAClass && (_forcedAAMaxCount > 0) && (_forcedAAUsed < _forcedAAMaxCount);
-	if (_forceAsAA) then {
-		_forcedAAUsed = _forcedAAUsed + 1;
-		_Vehicle setVariable ["OKS_Convoy_ForceAA", true, true];
-		if (_ConvoyDebug) then {
-			format ["[CONVOY-SPAWN] Forced AA vehicle (%1/%2): %3", _forcedAAUsed, _forcedAAMaxCount, _Classname] spawn OKS_fnc_LogDebug;
-		};
-	} else {
-		if (_isForcedAAClass && (_forcedAAMaxCount > 0)) then {
-			_Vehicle setVariable ["OKS_Convoy_ExcludeFromAA", true, true];
-			if (_ConvoyDebug) then {
-				format ["[CONVOY-SPAWN] Excluding from AA (max reached): %1", _Classname] spawn OKS_fnc_LogDebug;
-			};
-		};
-	};
-
-	private _PreviousVehicle = objNull;
-	private _CargoGroup = grpNull;
-	if (count _VehicleArray > 1) then {
-		_PreviousVehicle = _VehicleArray select (_i - 1);
-	};
-	// Set immediate leader for formation following (objNull for front vehicle)
-	_Vehicle setVariable ["OKS_Convoy_ImmediateLeader", _PreviousVehicle, true];
-	// Debug variables for troubleshooting
-	_Vehicle setVariable ["DEBUG_SpawnImmediateLeader", _PreviousVehicle, true];
-	_Vehicle setVariable ["DEBUG_LastUpdated", time, true];
-	[_Vehicle, _PreviousVehicle, _DispersionInMeters] spawn OKS_fnc_Convoy_CheckAndAdjustSpeeds;
-
-	_Group = createGroup [_Side, true];
-	_CargoGroup = createGroup [_Side, true];
-	if (_ConvoyDebug) then {
-		format ["[CONVOY-GROUP] %1 Side: %2", _Group, _Side] spawn OKS_fnc_LogDebug;
-	};
-
-	private _crewSlots = 0;
-	if ((_Vehicle emptyPositions "driver" > 0) && (_Vehicle emptyPositions "gunner" == 0) && (_Vehicle emptyPositions "commander" == 0)) then {
-		_crewSlots = 1;
-	};
-
-	private _addCargoCommander = (_crewSlots == 1);
-	_Group = [_Vehicle, _Side, _crewSlots, 0, true, _addCargoCommander] call OKS_fnc_AddVehicleCrew;
-	_Vehicle limitSpeed _SpeedKph;
-	_NewSpeedMps = _SpeedKph / 3.6;
-	_Vehicle forceSpeed _NewSpeedMps;
-
-	_Group setBehaviour "CARELESS";
-	_Group setCombatMode "BLUE";
-
-	if(!isNil "_Waypoint") then {
-		private _waypointObject = _Waypoint;
-		private _waypointGroup = _Group;
-		private _waypointArray = [];
-		if(typeName _Waypoint isEqualTo "ARRAY") then {
-			_waypointArray = _Waypoint;
-		} else {
-			_waypointArray = [_Waypoint];
-		};
-
-		{
-			private _waypoint = _waypointGroup addWaypoint [(getPos _x) select [0,2], 0];
-			_waypoint setWaypointType "MOVE";
-			_waypoint setWaypointCompletionRadius 50;
-
-			// Offroad: switch to AWARE on last midway WP so AI stops road pathfinding for the final leg
-			if (_ParkingMode == "offroad") then {
-				_waypoint setWaypointStatements ["true", "
-					private _grp = group this;
-					_grp setBehaviour 'AWARE';
-					_grp setCombatMode 'GREEN';
-					if (missionNamespace getVariable ['GOL_Convoy_Debug', false]) then {
-						format ['[CONVOY-OFFROAD-AWARE] %1 reached midway WP, switching to AWARE for offroad approach', vehicle this] spawn OKS_fnc_LogDebug;
-					};
-				"];
-			};
-		} foreach _waypointArray;
-	};
-
-	private _isFirstVehicle = (_i == 0);
-	private _herringBoneResult = [_End, _isFirstVehicle, _NextPreferLeft, false, _ParkingMode, _ParkingDispersion] call OKS_fnc_Convoy_SetupHerringBone;
-	private _endPosition = if (_herringBoneResult isEqualType []) then { _herringBoneResult select 0 } else { (getPos _End) select [0,2] };
-	private _actualIsLeft = if (_herringBoneResult isEqualType [] && {count _herringBoneResult > 1}) then { _herringBoneResult select 1 } else { _NextPreferLeft };
-	
-	// Only alternate sides in traditional mode
-	if (_ParkingMode == "alternate") then {
-		_NextPreferLeft = !_actualIsLeft;
-	};
-
-	private _endWaypointGroup = _Group;
-	private _endWaypoint = _endWaypointGroup addWaypoint [_endPosition select [0,2], 1];
-	_endWaypoint setWaypointType "MOVE";
-	// Tag end waypoint to suppress dispersion increase near destination (waypoint-level indicator)
-	_endWaypoint setWaypointDescription "OKS_SUPPRESS_DISPERSION";
-
-	if (_DeleteAtFinalWP) then {
-		_endWaypoint setWaypointCompletionRadius 200;
-		_endWaypoint setWaypointStatements ["true", "{ _unit = this; if(_unit != _X) then {deleteVehicle _X}}foreach crew (vehicle this); deleteVehicle (objectParent this); deleteVehicle (this); "];
-	} else {
-		_endWaypoint setWaypointCompletionRadius 2;
-		// Individual vehicle arrival - only this vehicle switches to combat mode for deployment
-		_endWaypoint setWaypointStatements ["true", "
-			{_x setBehaviour 'COMBAT'; _x setCombatMode 'RED';} foreach units this; 
-			(vehicle this) setVariable ['OKS_Convoy_Stopped', true, true]; 
-			(vehicle this) setVariable ['OKS_Convoy_IndividualArrival', true, true];
-			(vehicle this) setVariable ['OKS_Convoy_Active', false, true];
-			if (missionNamespace getVariable ['GOL_Convoy_Debug', false]) then {
-				format ['[CONVOY-INDIVIDUAL-ARRIVAL] %1 reached its herringbone position', vehicle this] spawn OKS_fnc_LogDebug;
-			};
-		"];
-	};
-
-	// Check if vehicle type contains any blacklisted strings
-	_Blacklist = ["zu23"];
-	private _vehicleType = toLower (typeOf _Vehicle);
-	private _isBlacklisted = false;
-	{
-		if (_vehicleType find (toLower _x) >= 0) exitWith {
-			_isBlacklisted = true;
-		};
-	} forEach _Blacklist;
-	private _suppressCargoForAA = _Vehicle getVariable ["OKS_Convoy_ForceAA", false];
-	
-	if (_suppressCargoForAA && {_ConvoyDebug}) then {
-		format ["[CONVOY-SPAWN] Cargo suppressed for forced AA vehicle: %1", typeOf _Vehicle] spawn OKS_fnc_LogDebug;
-	};
-
-    if(_ShouldHaveCargo && !_isBlacklisted && !_suppressCargoForAA) then {
-		_CargoGroup = [_Vehicle, _Side, -1, _CargoCount, true] call OKS_fnc_AddVehicleCrew;
-    };
-	_CargoGroup setBehaviour "CARELESS"; _CargoGroup setCombatMode "BLUE";
-    _ConvoyGroupArray pushBackUnique _Group; _ConvoyGroupArray pushBackUnique _CargoGroup;
-
-	if(_ForcedCareless) then {
-		_Vehicle setCaptive true;
-		{_X setCaptive true; _X setBehaviour "CARELESS"; _X setCombatMode "BLUE"; } foreach units _Group;
-		{_X setCaptive true; _X setBehaviour "CARELESS"; _X setCombatMode "BLUE"; } foreach units _CargoGroup;
-		_Vehicle setBehaviour "CARELESS"; _Vehicle setCombatMode "BLUE";
-	} else {
-		[_Vehicle, _Group, _CargoGroup, selectRandom _DismountBehaviour] spawn OKS_fnc_Convoy_WaitUntilCombat;
-	};
-
-	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _Group;
-	{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill",0]} foreach units _CargoGroup; 
-};
-
-_ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];
-_LeadVehicle = _VehicleArray select 0;
-
-// Never allow the lead vehicle to perform AA duties (keeps convoy navigation stable).
-_LeadVehicle setVariable ["OKS_Convoy_ExcludeFromAA", true, true];
-if (_ConvoyDebug) then {
-	format ["[CONVOY-SPAWN] Lead vehicle excluded from AA: %1", typeOf _LeadVehicle] spawn OKS_fnc_LogDebug;
-};
-{
-	_x setVariable ["OKS_Convoy_FrontLeader", _LeadVehicle, true];
-	_x setVariable ["OKS_Convoy_VehicleArray", _VehicleArray, true];
-} forEach _VehicleArray;
-
-
-[_LeadVehicle] call OKS_fnc_Convoy_InitIntendedSlots;
-_primarySlots = _LeadVehicle getVariable ["OKS_Convoy_PrimarySlotCount", count _VehicleArray];
-_reserveSlots = count _ReserveQueue;
-_endPos = _End;
-
-// Publish the final reserve queue to all vehicles (only once, after loop)
-{
-	_x setVariable ["OKS_Convoy_ReserveQueue", _ReserveQueue, true];
-} forEach _VehicleArray;
-
-// Debug: Log final reserve queue
-if (_ConvoyDebug) then {
-	private _debugQueue = [];
-	{
-		_x params ["_pos", "_occupied"];
-		_debugQueue pushBack format ["Index %1: %2", _forEachIndex, _pos];
-	} forEach _ReserveQueue;
-	format ["[CONVOY-SPAWN] Final reserve queue (%1 positions): %2", count _ReserveQueue, _debugQueue joinString " | "] spawn OKS_fnc_LogDebug;
-};
-
-//[_LeadVehicle, _ReserveQueue] spawn OKS_fnc_Convoy_MonitorReserveActivation;
-//[_LeadVehicle, _endPos, _primarySlots, _reserveSlots] spawn OKS_fnc_Convoy_LeadArrivalMonitor;
-
-if(!_ForcedCareless) then {
-	
-	[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilCasualties;
-	[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilTargets;
-
-	// Only start air defense if dedicated AA vehicles (without cargo seats) are available
-	private _dedicatedAACount = [_VehicleArray] call OKS_fnc_Convoy_CheckDedicatedAAAvailable;
-	if (_dedicatedAACount > 0) then {
-		if (_ConvoyDebug) then {
-			format [
-				"[CONVOY-SPAWN] Starting air defense system with %1 dedicated AA vehicles",
-				_dedicatedAACount
-			] spawn OKS_fnc_LogDebug;
-		};
-		
-		// Wait for cargo loading to complete before starting AA system
-		if (_ShouldHaveCargo) then {
-			if (_ConvoyDebug) then {
-				"[CONVOY-SPAWN] Waiting for cargo loading completion before starting AA system" spawn OKS_fnc_LogDebug;
-			};
-			sleep 3; // Allow cargo loading to complete
-		};
-		
-		// Initialize AA availability states for all vehicles
-		{
-			_x setVariable ["OKS_AA_Available", true, true];
-		} forEach _VehicleArray;
-		
-		[_VehicleArray] spawn OKS_fnc_Convoy_WaitUntilAirTarget;
-	} else {
-		if (_ConvoyDebug) then {
-			"[CONVOY-SPAWN] No dedicated AA vehicles available. Air defense system disabled for this convoy." spawn OKS_fnc_LogDebug;
-		};
-	};
-
-};
-
-{
-	deleteVehicle _x
-} forEach (nearestObjects [_End, ["Land_ClutterCutter_large_F"], 500] select {
-	_x getVariable ["GOL_Convoy_Cutter", false]
-});
+_taskId

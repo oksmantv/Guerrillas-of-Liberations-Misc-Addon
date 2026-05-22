@@ -215,6 +215,17 @@ class CfgPatches
 			"GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow"
 		};
 	};
+
+	class GOL_MISC_COMPAT_JCA {
+		requiredAddons[] = {"Weapons_F_JCA_IA_Rifles_HK437"};
+		requiredVersion = 2.14;
+		author = "OksmanTV";
+		weapons[] = {
+			"GOL_arifle_HK437_VFG_black_F",
+			"GOL_arifle_HK437_AFG_black_F"
+		};
+		magazines[] = {};
+	};
 };
 
 #include "version.hpp"

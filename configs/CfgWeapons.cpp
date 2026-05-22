@@ -1,15 +1,42 @@
 class CfgRecoils {
-class recoil_default;
-class GOL_recoil_machinegun: recoil_default {
-kickBack[]    = {0.04, 0.07};
-muzzleOuter[] = {0.2, 0.4, 0.1, 0.05};
-temporary     = 0.008;
-};
-class GOL_recoil_machinegun_prone: recoil_default {
-kickBack[]    = {0.03, 0.0525};
-muzzleOuter[] = {0.15, 0.3, 0.075, 0.0375};
-temporary     = 0.006;
-};
+	class recoil_default;
+
+	// muzzleOuter[] = {horizontal_pos, vertical_pos, horizontal_magnitude, vertical_magnitude}
+	// vertical_pos drives muzzle climb; reference RHS PKM: {0.55, 1.0, 0.7, 0.35}
+
+	// Light MG preset — 5.56mm class (M249 PIP)
+	class GOL_recoil_machinegun_light: recoil_default {
+		kickBack[]    = {0.015, 0.035};
+		muzzleOuter[] = {0.2, 0.5, 0.25, 0.15};
+		temporary     = 0.0075;
+	};
+	class GOL_recoil_machinegun_light_prone: recoil_default {
+		kickBack[]    = {0.010, 0.025};
+		muzzleOuter[] = {0.15, 0.375, 0.2, 0.125};
+		temporary     = 0.005;
+	};
+	// Medium MG preset — 7.62mm class (PKM, PKP, FN MAG, Zafir, MG3)
+	class GOL_recoil_machinegun: recoil_default {
+		kickBack[]    = {0.02, 0.045};
+		muzzleOuter[] = {0.275, 0.6, 0.35, 0.175};
+		temporary     = 0.010;
+	};
+	class GOL_recoil_machinegun_prone: recoil_default {
+		kickBack[]    = {0.015, 0.035};
+		muzzleOuter[] = {0.2, 0.45, 0.25, 0.14};
+		temporary     = 0.0075;
+	};
+	// Heavy MG preset — 9.3mm/.338 class (HK121, LWMMG)
+	class GOL_recoil_machinegun_heavy: recoil_default {
+		kickBack[]    = {0.025, 0.055};
+		muzzleOuter[] = {0.3, 0.75, 0.4, 0.2};
+		temporary     = 0.0125;
+	};
+	class GOL_recoil_machinegun_heavy_prone: recoil_default {
+		kickBack[]    = {0.02, 0.04};
+		muzzleOuter[] = {0.225, 0.55, 0.3, 0.15};
+		temporary     = 0.009;
+	};
 };
 class Mode_FullAuto;
 class Mode_SemiAuto;
@@ -1077,9 +1104,9 @@ class CfgWeapons {
 		displayName = "HK121 9.3 mm (Tan/GOL)";
 		baseWeapon = "GOL_MMG_01_tan_F";
 		
-		// Custom recoil presets
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
+		// Custom recoil presets — heavy tier (9.3mm)
+		recoil = "GOL_recoil_machinegun_heavy";
+		recoilProne = "GOL_recoil_machinegun_heavy_prone";
 		
 		// Clear linkedItems to show in arsenal
 		linkedItems[] = {};
@@ -1103,9 +1130,9 @@ class CfgWeapons {
 		displayName = "HK121 9.3 mm (Hex/GOL)";
 		baseWeapon = "GOL_MMG_01_hex_F";
 		
-		// Custom recoil presets
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
+		// Custom recoil presets — heavy tier (9.3mm)
+		recoil = "GOL_recoil_machinegun_heavy";
+		recoilProne = "GOL_recoil_machinegun_heavy_prone";
 		
 		// Clear linkedItems to show in arsenal
 		linkedItems[] = {};
@@ -1175,8 +1202,9 @@ class CfgWeapons {
 		displayName = "LWMMG .338 (Black/GOL)";
 		baseWeapon = "GOL_MMG_02_black_F";
 		
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
+		// Heavy tier recoil (.338 Norma Magnum)
+		recoil = "GOL_recoil_machinegun_heavy";
+		recoilProne = "GOL_recoil_machinegun_heavy_prone";
 		
 		class manual: Mode_FullAuto {
 			sounds[] = {"StandardSound", "SilencedSound"};
@@ -1215,8 +1243,9 @@ class CfgWeapons {
 		displayName = "LWMMG .338 (Camo/GOL)";
 		baseWeapon = "GOL_MMG_02_camo_F";
 		
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
+		// Heavy tier recoil (.338 Norma Magnum)
+		recoil = "GOL_recoil_machinegun_heavy";
+		recoilProne = "GOL_recoil_machinegun_heavy_prone";
 		
 		class manual: Mode_FullAuto {
 			sounds[] = {"StandardSound", "SilencedSound"};
@@ -1254,8 +1283,9 @@ class CfgWeapons {
 		displayName = "LWMMG .338 (Sand/GOL)";
 		baseWeapon = "GOL_MMG_02_sand_F";
 		
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
+		// Heavy tier recoil (.338 Norma Magnum)
+		recoil = "GOL_recoil_machinegun_heavy";
+		recoilProne = "GOL_recoil_machinegun_heavy_prone";
 		
 		class manual: Mode_FullAuto {
 			sounds[] = {"StandardSound", "SilencedSound"};
@@ -1329,6 +1359,9 @@ class CfgWeapons {
 
 		recoil = "GOL_recoil_machinegun";
 		recoilProne = "GOL_recoil_machinegun_prone";
+
+		// Disable barrel heat shimmer and gun smoke/heat particle effects
+		heatRadiation = 0;
 
 		magazines[] += {
 			"GOL_FNMAG_100Rnd_762x51_M993",
@@ -1427,12 +1460,13 @@ class CfgWeapons {
 	};
 
 	// AP45 Compatibility patches
-	// NOTE: UK3CB Factions (ACR/M16/G36/AUG) and JCA rifles are handled
-	// via CfgMagazineWells — no per-weapon patching needed for those.
+	// NOTE: UK3CB Factions (ACR/M16/G36/AUG) AP45 mags handled via CfgMagazineWells.
+	// JCA HK437 5.56 conversion is in compat_jca.hpp (soft dependency via GOL_MISC_COMPAT_JCA).
 	#include "compat\compat_vanilla.hpp"
 	#include "compat\compat_rhs.hpp"
 	#include "compat\compat_uk3cb.hpp"
 	#include "compat\compat_uk3cb_factions.hpp"
+	#include "compat\compat_jca.hpp"
 
 	class GOL_weap_m249_pip: rhs_weap_m249_pip {
 		scope = 2;
@@ -1441,7 +1475,187 @@ class CfgWeapons {
 		displayName = "M249 PIP (GOL)";
 		baseWeapon = "GOL_weap_m249_pip";
 		
+		// Light tier recoil (5.56mm)
+		recoil = "GOL_recoil_machinegun_light";
+		recoilProne = "GOL_recoil_machinegun_light_prone";
+	};
+
+	// ===== UK59N (7.62x51 NATO) — Medium MG tier =====
+	class UK3CB_UK59N;
+
+	class GOL_weap_UK59N: UK3CB_UK59N {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "UK59N (GOL)";
+		baseWeapon = "GOL_weap_UK59N";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+
+		magazines[] += {
+			"GOL_UK59_100Rnd_762x51_M993",
+			"GOL_UK59_100Rnd_762x51_M993_Tracer_Red",
+			"GOL_UK59_100Rnd_762x51_M993_Tracer_Green",
+			"GOL_UK59_100Rnd_762x51_M993_Tracer_Yellow",
+			"GOL_UK59_200Rnd_762x51_M993",
+			"GOL_UK59_200Rnd_762x51_M993_Tracer_Red",
+			"GOL_UK59_200Rnd_762x51_M993_Tracer_Green",
+			"GOL_UK59_200Rnd_762x51_M993_Tracer_Yellow"
+		};
+	};
+
+	// ===== UK3CB RPD (7.62x39) — Medium MG tier =====
+	// RPD has empty magazineWell[]; GOL mags added directly via magazines[] +=.
+	class UK3CB_RPD;
+
+	class GOL_weap_RPD: UK3CB_RPD {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "RPD (GOL)";
+		baseWeapon = "GOL_weap_RPD";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+
+		magazines[] += {
+			"GOL_RPD_100Rnd_762x39",
+			"GOL_RPD_100Rnd_762x39_Tracer_Red",
+			"GOL_RPD_100Rnd_762x39_Tracer_Green",
+			"GOL_RPD_100Rnd_762x39_Tracer_Yellow"
+		};
+	};
+
+	// ===== RHS M249 (5.56mm) — Light MG tier =====
+	// rhs_weap_m249 already fully defined in compat_rhs.hpp — no forward decl needed.
+	class GOL_weap_m249: rhs_weap_m249 {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M249 (GOL)";
+		baseWeapon = "GOL_weap_m249";
+
+		recoil = "GOL_recoil_machinegun_light";
+		recoilProne = "GOL_recoil_machinegun_light_prone";
+
+		// Existing GOL 200Rnd AP45 5.56mm belt mags
+		magazines[] += {
+			"GOL_rhsusf_200rnd_556x45_AP45",
+			"GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
+			"GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
+			"GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow"
+		};
+	};
+
+	// ===== LMG Mk200 (6.5mm cased) — Medium MG tier =====
+	// Vanilla Mk200 has no magazineWell[]; GOL mags added directly.
+	class LMG_Mk200_F;
+
+	class GOL_LMG_Mk200_F: LMG_Mk200_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "LMG Mk200 (GOL)";
+		baseWeapon = "GOL_LMG_Mk200_F";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+
+		magazines[] += {
+			"GOL_200Rnd_65x39_cased_Box",
+			"GOL_200Rnd_65x39_cased_Box_Tracer_Red",
+			"GOL_200Rnd_65x39_cased_Box_Tracer_Green",
+			"GOL_200Rnd_65x39_cased_Box_Tracer_Yellow"
+		};
+	};
+
+	// ===== Vanilla RPK-12 (7.62x39) — Medium MG tier =====
+	// GOL 75Rnd drums also injected via CBA_762x39_RPK well for 3CB RPK variants.
+	class arifle_RPK12_F;
+
+	class GOL_weap_RPK12: arifle_RPK12_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "RPK-12 (GOL)";
+		baseWeapon = "GOL_weap_RPK12";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+
+		magazines[] += {
+			"GOL_75Rnd_762x39",
+			"GOL_75Rnd_762x39_Tracer_Red",
+			"GOL_75Rnd_762x39_Tracer_Green",
+			"GOL_75Rnd_762x39_Tracer_Yellow"
+		};
+	};
+
+	// ===== RHS RPK-74M (5.45x39) — Light MG tier =====
+	// GOL 7N22 AP mags available via CBA_545x39_RPK well (CfgMagazineWells).
+	class rhs_weap_rpk74m;
+	class rhs_weap_rpk74m_npz;
+
+	class GOL_weap_rpk74m: rhs_weap_rpk74m {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "RPK-74M (GOL)";
+		baseWeapon = "GOL_weap_rpk74m";
+
+		recoil = "GOL_recoil_machinegun_light";
+		recoilProne = "GOL_recoil_machinegun_light_prone";
+	};
+
+	class GOL_weap_rpk74m_npz: rhs_weap_rpk74m_npz {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "RPK-74M (NPZ/GOL)";
+		baseWeapon = "GOL_weap_rpk74m_npz";
+
+		recoil = "GOL_recoil_machinegun_light";
+		recoilProne = "GOL_recoil_machinegun_light_prone";
+	};
+
+	// ===== Vanilla MX SW variants (6.5mm caseless) — Medium MG tier =====
+	// GOL 100Rnd caseless belt mags available via MX_65x39_Large well (CfgMagazineWells).
+	class arifle_MX_SW_F;
+	class arifle_MX_SW_Black_F;
+	class arifle_MX_SW_khk_F;
+
+	class GOL_arifle_MX_SW_F: arifle_MX_SW_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "MX SW (GOL)";
+		baseWeapon = "GOL_arifle_MX_SW_F";
+
 		recoil = "GOL_recoil_machinegun";
 		recoilProne = "GOL_recoil_machinegun_prone";
 	};
+
+	class GOL_arifle_MX_SW_Black_F: arifle_MX_SW_Black_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "MX SW Black (GOL)";
+		baseWeapon = "GOL_arifle_MX_SW_Black_F";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+	};
+
+	class GOL_arifle_MX_SW_khk_F: arifle_MX_SW_khk_F {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "MX SW Khaki (GOL)";
+		baseWeapon = "GOL_arifle_MX_SW_khk_F";
+
+		recoil = "GOL_recoil_machinegun";
+		recoilProne = "GOL_recoil_machinegun_prone";
+	};
+
 };

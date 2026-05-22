@@ -4816,4 +4816,5 @@ class CfgVehicles {
 
 	// TFAR Intercom patch (enables intercom on MRAPs)
 	#include "compat\compat_tfar_intercom.hpp"
+
 };

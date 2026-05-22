@@ -220,108 +220,98 @@ if (_debug) then {
 // Movement enhancement system - spawn to avoid blocking
 [_boat, _dismountPos, _mainGroup, _debug] spawn {
     params ["_boat", "_targetPos", "_group", "_debug"];
-    
+
     private _driver = driver _boat;
     if (isNull _driver) exitWith {};
-    
+
     sleep 3; // Allow initial waypoint system to start
-    
+
     while {alive _boat && canMove _boat && !isNull _driver} do {
         private _currentPos = getPosASL _boat;
         private _distToTarget = _currentPos distance _targetPos;
-        private _currentSpeed = vectorMagnitude (velocity _boat);
-        private _boatDir = getDir _boat;
-        private _dirToTarget = _currentPos getDir _targetPos;
-        
-        // Calculate angle difference to target
-        private _angleDiff = _dirToTarget - _boatDir;
-        while {_angleDiff > 180} do {_angleDiff = _angleDiff - 360};
-        while {_angleDiff < -180} do {_angleDiff = _angleDiff + 360};
-        private _isPointingAtTarget = (abs _angleDiff) < 45; // Within 45 degrees
-        
-        // Check if we've reached the shore
-        if (_distToTarget < 30 || !(surfaceIsWater _currentPos)) exitWith {
+
+        // Exit when beached
+        if (!(surfaceIsWater _currentPos)) exitWith {
             if (_debug) then {
-                format["[AMPHIBIOUS_ASSAULT_V2] Reached shore. Distance: %1m", _distToTarget] spawn OKS_fnc_LogDebug;
+                format["[AMPHIBIOUS_ASSAULT_V2] Beached. Distance to target: %1m", round _distToTarget] spawn OKS_fnc_LogDebug;
             };
         };
-        
-        // Speed management based on distance
-        if (_distToTarget > 500) then {
-            _boat limitSpeed 80;
-            _boat forceSpeed 22; // ~80 kph
+
+        private _beachRunComplete = false;
+
+        if (_distToTarget <= 150) then {
+            // --- Final beaching run ---
+            // Take direct control: lock direction to shore and push hard every 0.2s.
+            // AI waypoints are left in place but velocity impulses dominate at this frequency.
+            if (_debug) then {
+                format["[AMPHIBIOUS_ASSAULT_V2] Beaching run started at %1m", round _distToTarget] spawn OKS_fnc_LogDebug;
+            };
+
+            while {alive _boat && canMove _boat && surfaceIsWater (getPosASL _boat)} do {
+                private _pos = getPosASL _boat;
+                private _dirToShore = _pos getDir _targetPos;
+                _boat setDir _dirToShore;
+                _boat setVelocity ([sin _dirToShore, cos _dirToShore, 0] vectorMultiply 18);
+                _boat forceSpeed 18;
+                _boat limitSpeed 65;
+
+                if (_debug && (time mod 3) < 0.2) then {
+                    format["[AMPHIBIOUS_ASSAULT_V2] Beaching: %1m remaining", round (_pos distance _targetPos)] spawn OKS_fnc_LogDebug;
+                };
+
+                sleep 0.2;
+            };
+            _beachRunComplete = true;
         } else {
-            if (_distToTarget > 200) then {
-                _boat limitSpeed 60;
-                _boat forceSpeed 17; // ~60 kph
+            // --- Long-range travel: AI drives, we assist speed ---
+            private _currentSpeed = vectorMagnitude (velocity _boat);
+            private _boatDir = getDir _boat;
+
+            if (_distToTarget > 500) then {
+                _boat limitSpeed 80; _boat forceSpeed 22;
             } else {
-                _boat limitSpeed 40;
-                _boat forceSpeed 11; // ~40 kph - slower for beaching
-            };
-        };
-        
-        // Beach approach system - smart nudging when close to shore
-        if (_distToTarget < 150 && _distToTarget > 30) then {
-            // Check if boat is moving too slowly near beach
-            if (_currentSpeed < 5) then {
-                if (_isPointingAtTarget) then {
-                    // Gentle forward nudge in current direction (don't force alignment)
-                    private _currentVelocity = velocity _boat;
-                    private _forwardNudge = [sin _boatDir, cos _boatDir, 0] vectorMultiply 8;
-                    _boat setVelocity (_currentVelocity vectorAdd _forwardNudge);
-                    
-                    if (_debug) then {
-                        format["[AMPHIBIOUS_ASSAULT_V2] Beach nudge applied - pointing at target (angle: %1°)", _angleDiff] spawn OKS_fnc_LogDebug;
-                    };
+                if (_distToTarget > 200) then {
+                    _boat limitSpeed 60; _boat forceSpeed 17;
                 } else {
-                    // Boat not pointing at beach, let AI reorient first
-                    _driver doWatch _targetPos;
-                    _driver doMove _targetPos;
-                    
-                    if (_debug) then {
-                        format["[AMPHIBIOUS_ASSAULT_V2] Reorienting boat toward beach (angle off: %1°)", _angleDiff] spawn OKS_fnc_LogDebug;
-                    };
+                    _boat limitSpeed 40; _boat forceSpeed 11;
                 };
             };
-        } else {
-            // Normal velocity boost for boats stuck in deep water
-            if (_currentSpeed < 8 && _distToTarget > 150) then {
-                private _boostVelocity = [sin _boatDir, cos _boatDir, 0] vectorMultiply 15;
-                _boat setVelocity _boostVelocity;
-                
-                if (_debug) then {
-                    format["[AMPHIBIOUS_ASSAULT_V2] Deep water velocity boost: %1 m/s", 15] spawn OKS_fnc_LogDebug;
-                };
+
+            // Nudge if stuck in deep water
+            if (_currentSpeed < 8) then {
+                _boat setVelocity ([sin _boatDir, cos _boatDir, 0] vectorMultiply 15);
             };
+
+            // Periodic doMove so AI doesn't idle
+            if ((time mod 5) < 0.5) then { _driver doMove _targetPos; };
+
+            if (_debug && (time mod 8) < 0.5) then {
+                format["[AMPHIBIOUS_ASSAULT_V2] Travel: %1m at %2 m/s", round _distToTarget, round _currentSpeed] spawn OKS_fnc_LogDebug;
+            };
+
+            sleep 1;
         };
-        
-        // Backup doMove commands every few seconds
-        if ((time mod 5) < 0.5) then {
-            _driver doMove _targetPos;
-        };
-        
-        // Status logging
-        if (_debug && (time mod 8) < 0.5) then {
-            format["[AMPHIBIOUS_ASSAULT_V2] Status - Dist: %1m, Speed: %2 m/s, Angle: %3°, Pointing: %4", 
-                _distToTarget, _currentSpeed, round _angleDiff, _isPointingAtTarget] spawn OKS_fnc_LogDebug;
-        };
-        
-        sleep 1;
+
+        if (_beachRunComplete) exitWith {}; // Beached or boat lost — exit outer loop
     };
 };
 
 // Wait for boat to reach shore - must be properly beached for safe dismount
-private _maxWaitTime = 300; // 5 minute timeout
+private _maxWaitTime = 120; // 2 minute hard timeout
 private _startTime = time;
+private _nearShoreTime = -1;
 waitUntil {
     sleep 2;
     private _currentPos = getPosASL _boat;
     private _distToTarget = _currentPos distance _dismountPos;
     private _onLand = !(surfaceIsWater _currentPos);
     private _timeout = (time - _startTime) > _maxWaitTime;
-    
-    // Only dismount when actually on land or very close AND not in deep water
-    (_distToTarget < 30 && !surfaceIsWater _currentPos) || _onLand || !alive _boat || !canMove _boat || _timeout
+
+    // If stuck within 60m for >20s, proceed with dismount regardless of beaching
+    if (_distToTarget < 60 && _nearShoreTime < 0) then { _nearShoreTime = time; };
+    private _stuckNearShore = (_nearShoreTime > 0) && ((time - _nearShoreTime) > 20);
+
+    (_distToTarget < 30 && !surfaceIsWater _currentPos) || _onLand || !alive _boat || !canMove _boat || _timeout || _stuckNearShore
 };
 
 // Final beaching attempt - more aggressive to ensure proper landing
@@ -418,64 +408,111 @@ if (surfaceIsWater _boatPos) then {
     };
 };
 
-// Dismount passengers properly - only when safe
+// Dismount passengers - GETOUT waypoint triggers AI dismount, moveOut as fallback
 sleep 1;
 
-// First, create separate group for passengers BEFORE dismounting
-private _passengerGroup = createGroup east;
+// Add GETOUT waypoint so the AI handles dismount naturally
+private _getoutWP = _mainGroup addWaypoint [_dismountPos, 0];
+_getoutWP setWaypointType "GETOUT";
+_getoutWP setWaypointCompletionRadius 5;
 
-// Dismount and reassign passengers
+if (_debug) then {
+    "[AMPHIBIOUS_ASSAULT_V2] GETOUT waypoint added - waiting for AI dismount" spawn OKS_fnc_LogDebug;
+};
+
+// Wait for AI to dismount passengers (up to 15 seconds)
+private _dismountWaitStart = time;
+waitUntil {
+    sleep 0.5;
+    private _stillInBoat = _passengers select {alive _x && vehicle _x == _boat};
+    (count _stillInBoat == 0) || (time - _dismountWaitStart > 15)
+};
+
+// Force dismount any passengers still in boat
 {
     if (alive _x && vehicle _x == _boat) then {
-        // Unassign from vehicle first to prevent re-mounting
         unassignVehicle _x;
-        
-        // Force dismount
         moveOut _x;
-        
-        // Join new group immediately to break ties with crew
-        [_x] joinSilent _passengerGroup;
-        
-        // Enable AI combat abilities
-        _x enableAI "MOVE";
-        _x enableAI "TARGET";
-        _x enableAI "AUTOTARGET";
-        _x enableAI "FSM";
-        
-        // Override careless behavior from transport - set to combat ready
-        _x setBehaviour "AWARE";
-        _x setCombatMode "YELLOW";
-        
         if (_debug) then {
-            format["[AMPHIBIOUS_ASSAULT_V2] Unit %1 dismounted, reassigned, and set to AWARE", name _x] spawn OKS_fnc_LogDebug;
+            format["[AMPHIBIOUS_ASSAULT_V2] Forced moveOut of unit %1", name _x] spawn OKS_fnc_LogDebug;
         };
     };
 } forEach _passengers;
 
-sleep 2; // Allow time for dismount to complete
+sleep 0.5;
+
+// Create separate group for passengers
+private _passengerGroup = createGroup east;
+
+// Calculate inland rally point 25m beyond dismount position
+private _inlandDir = _spawnPos getDir _dismountPos;
+private _rallyPos = _dismountPos getPos [25, _inlandDir];
+
+// Reassign passengers to new group with AI re-enabled
+{
+    if (alive _x) then {
+        [_x] joinSilent _passengerGroup;
+        _x enableAI "MOVE";
+        _x enableAI "TARGET";
+        _x enableAI "AUTOTARGET";
+        _x enableAI "FSM";
+        _x setBehaviour "AWARE";
+        _x setCombatMode "YELLOW";
+        if (_debug) then {
+            format["[AMPHIBIOUS_ASSAULT_V2] Unit %1 reassigned to passenger group", name _x] spawn OKS_fnc_LogDebug;
+        };
+    };
+} forEach _passengers;
+
+// Move passengers to inland rally point before starting assault behavior
+private _rallyWP = _passengerGroup addWaypoint [_rallyPos, 0];
+_rallyWP setWaypointType "MOVE";
+_rallyWP setWaypointSpeed "FULL";
+_rallyWP setWaypointCompletionRadius 10;
+
+if (_debug) then {
+    format["[AMPHIBIOUS_ASSAULT_V2] Passengers moving to rally point %1 (25m inland)", _rallyPos] spawn OKS_fnc_LogDebug;
+};
+
+sleep 1; // Brief pause before behavior switch
 
 // Handle dismount behavior
 switch (toUpper _dismountBehavior) do {
     case "HUNT": {
         if (count (units _passengerGroup) > 0) then {
-            _passengerGroup setBehaviour "COMBAT";
-            _passengerGroup setCombatMode "RED";
-            _passengerGroup setSpeedMode "FULL";
-            
-            // Enable aggressive AI settings for hunt mode
-            {
-                if (alive _x) then {
-                    _x setSkill ["aimingAccuracy", 0.6];
-                    _x setSkill ["aimingSpeed", 0.7];
-                    _x setSkill ["spotDistance", 0.8];
-                    _x setSkill ["spotTime", 0.7];
-                    _x setSkill ["courage", 0.9];
-                    _x setSkill ["commanding", 0.8];
+            // Wait for passengers to reach the inland rally point, then activate HUNT
+            [_passengerGroup, _rallyPos, _debug] spawn {
+                params ["_passengerGroup", "_rallyPos", "_debug"];
+                
+                private _huntWaitStart = time;
+                waitUntil {
+                    sleep 1;
+                    private _grpLeader = leader _passengerGroup;
+                    (count (units _passengerGroup) == 0) ||
+                    (!isNull _grpLeader && _grpLeader distance _rallyPos < 30) ||
+                    (time - _huntWaitStart > 60)
                 };
-            } forEach (units _passengerGroup);
-            
-            if (_debug) then {
-                format["[AMPHIBIOUS_ASSAULT_V2] %1 passengers set to HUNT behavior with aggressive settings", count (units _passengerGroup)] spawn OKS_fnc_LogDebug;
+                
+                if (count (units _passengerGroup) > 0) then {
+                    _passengerGroup setBehaviour "COMBAT";
+                    _passengerGroup setCombatMode "RED";
+                    _passengerGroup setSpeedMode "FULL";
+                    
+                    {
+                        if (alive _x) then {
+                            _x setSkill ["aimingAccuracy", 0.6];
+                            _x setSkill ["aimingSpeed", 0.7];
+                            _x setSkill ["spotDistance", 0.8];
+                            _x setSkill ["spotTime", 0.7];
+                            _x setSkill ["courage", 0.9];
+                            _x setSkill ["commanding", 0.8];
+                        };
+                    } forEach (units _passengerGroup);
+                    
+                    if (_debug) then {
+                        format["[AMPHIBIOUS_ASSAULT_V2] %1 passengers engaged HUNT at rally point", count (units _passengerGroup)] spawn OKS_fnc_LogDebug;
+                    };
+                };
             };
         };
     };
@@ -574,8 +611,8 @@ switch (toUpper _postBehavior) do {
             _boat forceSpeed 0;
             
             _mainGroup setBehaviour "SAFE";
-            _mainGroup setCombatMode "BLUE";
-            _mainGroup setSpeedMode "NO CHANGE";
+            _mainGroup setCombatMode "RED";
+            _mainGroup setSpeedMode "NORMAL";
             
             // Ensure crew stays put
             {

@@ -73,4 +73,37 @@ class CfgMagazineWells {
             "GOL_30Rnd_556x45_AP45_Mixed_Yellow"
         };
     };
+
+    // CBA 7.62x39 RPK-type well — registered by 3CB RPK variants.
+    // GOL 75Rnd drum mags go here. RPD has empty well and uses magazines[] += directly.
+    class CBA_762x39_RPK {
+        GOL_762x39_mags[] = {
+            "GOL_75Rnd_762x39",
+            "GOL_75Rnd_762x39_Tracer_Red",
+            "GOL_75Rnd_762x39_Tracer_Green",
+            "GOL_75Rnd_762x39_Tracer_Yellow"
+        };
+    };
+
+    // CBA 5.45x39 RPK-type well — registered by RHS rhs_weap_rpk_base (RPK-74M family).
+    // All RHS RPK-74 variants automatically receive GOL 7N22 AP mags via this well.
+    class CBA_545x39_RPK {
+        GOL_545x39_mags[] = {
+            "GOL_45Rnd_545x39_7N22",
+            "GOL_45Rnd_545x39_7N22_Tracer_Red",
+            "GOL_45Rnd_545x39_7N22_Tracer_Green",
+            "GOL_45Rnd_545x39_7N22_Tracer_Yellow"
+        };
+    };
+
+    // Vanilla A3 MX large-capacity well — used by arifle_MX_SW_F and all color variants.
+    // GOL 100Rnd caseless belts become available to all MX SW weapons (vanilla + GOL).
+    class MX_65x39_Large {
+        GOL_65x39_caseless_mags[] = {
+            "GOL_100Rnd_65x39_caseless",
+            "GOL_100Rnd_65x39_caseless_Tracer_Red",
+            "GOL_100Rnd_65x39_caseless_Tracer_Green",
+            "GOL_100Rnd_65x39_caseless_Tracer_Yellow"
+        };
+    };
 };

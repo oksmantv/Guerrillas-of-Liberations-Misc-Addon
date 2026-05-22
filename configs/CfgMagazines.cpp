@@ -957,4 +957,285 @@ class CfgMagazines {
 		mass = 56;
 		ammo = "GOL_ammo_PG7VR";
 	};
+
+	// ===== UK59N 7.62x51 NATO belts =====
+	// Parent: UK3CB_UK59_100Rnd_762x51_Magazine_R (provides correct model, picture, mass).
+	// count overridden to 100/200 as needed.
+	class UK3CB_UK59_100Rnd_762x51_Magazine_R;
+
+	class GOL_UK59_100Rnd_762x51_M993: UK3CB_UK59_100Rnd_762x51_Magazine_R {
+		scope = 2;
+		scopeArsenal = 2;
+		count = 100;
+		displayName = "7.62mm 100Rnd M993 AP (UK59)";
+		displayNameShort = "M993 100";
+		descriptionShort = "7.62x51mm 100-round belt, M993 tungsten AP, no tracer";
+		ammo = "GOL_B_762x51_M993";
+		tracersEvery = 0;
+		lastRoundsTracer = 0;
+	};
+
+	class GOL_UK59_100Rnd_762x51_M993_Tracer_Red: GOL_UK59_100Rnd_762x51_M993 {
+		displayName = "7.62mm 100Rnd M993 AP Tracer Red (UK59)";
+		displayNameShort = "M993 100 (Red)";
+		descriptionShort = "7.62x51mm 100-round belt, M993 AP, all red tracers";
+		ammo = "GOL_B_762x51_M993_Tracer_Red";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	class GOL_UK59_100Rnd_762x51_M993_Tracer_Green: GOL_UK59_100Rnd_762x51_M993 {
+		displayName = "7.62mm 100Rnd M993 AP Tracer Green (UK59)";
+		displayNameShort = "M993 100 (Green)";
+		descriptionShort = "7.62x51mm 100-round belt, M993 AP, all green tracers";
+		ammo = "GOL_B_762x51_M993_Tracer_Green";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	class GOL_UK59_100Rnd_762x51_M993_Tracer_Yellow: GOL_UK59_100Rnd_762x51_M993 {
+		displayName = "7.62mm 100Rnd M993 AP Tracer Yellow (UK59)";
+		displayNameShort = "M993 100 (Yellow)";
+		descriptionShort = "7.62x51mm 100-round belt, M993 AP, all yellow tracers";
+		ammo = "GOL_B_762x51_M993_Tracer_Yellow";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	class GOL_UK59_200Rnd_762x51_M993: UK3CB_UK59_100Rnd_762x51_Magazine_R {
+		scope = 2;
+		scopeArsenal = 2;
+		count = 200;
+		displayName = "7.62mm 200Rnd M993 AP (UK59)";
+		displayNameShort = "M993 200";
+		descriptionShort = "7.62x51mm 200-round belt, M993 tungsten AP, no tracer";
+		ammo = "GOL_B_762x51_M993";
+		tracersEvery = 0;
+		lastRoundsTracer = 0;
+	};
+
+	class GOL_UK59_200Rnd_762x51_M993_Tracer_Red: GOL_UK59_200Rnd_762x51_M993 {
+		displayName = "7.62mm 200Rnd M993 AP Tracer Red (UK59)";
+		displayNameShort = "M993 200 (Red)";
+		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all red tracers";
+		ammo = "GOL_B_762x51_M993_Tracer_Red";
+		tracersEvery = 1;
+		lastRoundsTracer = 200;
+	};
+
+	class GOL_UK59_200Rnd_762x51_M993_Tracer_Green: GOL_UK59_200Rnd_762x51_M993 {
+		displayName = "7.62mm 200Rnd M993 AP Tracer Green (UK59)";
+		displayNameShort = "M993 200 (Green)";
+		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all green tracers";
+		ammo = "GOL_B_762x51_M993_Tracer_Green";
+		tracersEvery = 1;
+		lastRoundsTracer = 200;
+	};
+
+	class GOL_UK59_200Rnd_762x51_M993_Tracer_Yellow: GOL_UK59_200Rnd_762x51_M993 {
+		displayName = "7.62mm 200Rnd M993 AP Tracer Yellow (UK59)";
+		displayNameShort = "M993 200 (Yellow)";
+		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all yellow tracers";
+		ammo = "GOL_B_762x51_M993_Tracer_Yellow";
+		tracersEvery = 1;
+		lastRoundsTracer = 200;
+	};
+
+	// ===== RPD 7.62x39 100Rnd belts =====
+	// Parent: UK3CB_RPD_100rnd_762x39 — provides RPD belt model, picture, mass 33.7.
+	class UK3CB_RPD_100rnd_762x39;
+
+	class GOL_RPD_100Rnd_762x39: UK3CB_RPD_100rnd_762x39 {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "7.62x39mm 100Rnd Belt (GOL)";
+		displayNameShort = "7.62x39 100";
+		descriptionShort = "7.62x39mm 100-round belt, ball, no tracer";
+	};
+
+	class GOL_RPD_100Rnd_762x39_Tracer_Red: GOL_RPD_100Rnd_762x39 {
+		displayName = "7.62x39mm 100Rnd Belt Tracer Red (GOL)";
+		displayNameShort = "7.62x39 100 (Red)";
+		descriptionShort = "7.62x39mm 100-round belt, all red tracers";
+		ammo = "GOL_B_762x39_Ball_Tracer_Red";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	class GOL_RPD_100Rnd_762x39_Tracer_Green: GOL_RPD_100Rnd_762x39 {
+		displayName = "7.62x39mm 100Rnd Belt Tracer Green (GOL)";
+		displayNameShort = "7.62x39 100 (Green)";
+		descriptionShort = "7.62x39mm 100-round belt, all green tracers";
+		ammo = "GOL_B_762x39_Ball_Tracer_Green";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	class GOL_RPD_100Rnd_762x39_Tracer_Yellow: GOL_RPD_100Rnd_762x39 {
+		displayName = "7.62x39mm 100Rnd Belt Tracer Yellow (GOL)";
+		displayNameShort = "7.62x39 100 (Yellow)";
+		descriptionShort = "7.62x39mm 100-round belt, all yellow tracers";
+		ammo = "GOL_B_762x39_Ball_Tracer_Yellow";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	// ===== 7.62x39 75Rnd drum (RPK-12, 3CB RPK via CBA_762x39_RPK well) =====
+	class rhs_75Rnd_762x39mm;
+
+	class GOL_75Rnd_762x39: rhs_75Rnd_762x39mm {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "7.62x39mm 75Rnd Drum (GOL)";
+		displayNameShort = "7.62x39 75";
+		descriptionShort = "7.62x39mm 75-round drum, ball, no tracer";
+	};
+
+	class GOL_75Rnd_762x39_Tracer_Red: GOL_75Rnd_762x39 {
+		displayName = "7.62x39mm 75Rnd Drum Tracer Red (GOL)";
+		displayNameShort = "7.62x39 75 (Red)";
+		descriptionShort = "7.62x39mm 75-round drum, all red tracers";
+		ammo = "GOL_B_762x39_Ball_Tracer_Red";
+		tracersEvery = 1;
+		lastRoundsTracer = 75;
+	};
+
+	class GOL_75Rnd_762x39_Tracer_Green: GOL_75Rnd_762x39 {
+		displayName = "7.62x39mm 75Rnd Drum Tracer Green (GOL)";
+		displayNameShort = "7.62x39 75 (Green)";
+		descriptionShort = "7.62x39mm 75-round drum, all green tracers";
+		ammo = "GOL_B_762x39_Ball_Tracer_Green";
+		tracersEvery = 1;
+		lastRoundsTracer = 75;
+	};
+
+	class GOL_75Rnd_762x39_Tracer_Yellow: GOL_75Rnd_762x39 {
+		displayName = "7.62x39mm 75Rnd Drum Tracer Yellow (GOL)";
+		displayNameShort = "7.62x39 75 (Yellow)";
+		descriptionShort = "7.62x39mm 75-round drum, all yellow tracers";
+		ammo = "GOL_B_762x39_Ball_Tracer_Yellow";
+		tracersEvery = 1;
+		lastRoundsTracer = 75;
+	};
+
+	// ===== 5.45x39mm 7N22 AP 45Rnd box (RHS RPK-74M via CBA_545x39_RPK well) =====
+	class rhs_45Rnd_545X39_7N22_AK;
+
+	class GOL_45Rnd_545x39_7N22: rhs_45Rnd_545X39_7N22_AK {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "5.45x39mm 45Rnd 7N22 AP (GOL)";
+		displayNameShort = "7N22 45";
+		descriptionShort = "5.45x39mm 45-round box, 7N22 armor-piercing, no tracer";
+	};
+
+	class GOL_45Rnd_545x39_7N22_Tracer_Red: GOL_45Rnd_545x39_7N22 {
+		displayName = "5.45x39mm 45Rnd 7N22 AP Tracer Red (GOL)";
+		displayNameShort = "7N22 45 (Red)";
+		descriptionShort = "5.45x39mm 45-round box, 7N22 AP, all red tracers";
+		ammo = "GOL_B_545x39_7N22_Tracer_Red";
+		tracersEvery = 1;
+		lastRoundsTracer = 45;
+	};
+
+	class GOL_45Rnd_545x39_7N22_Tracer_Green: GOL_45Rnd_545x39_7N22 {
+		displayName = "5.45x39mm 45Rnd 7N22 AP Tracer Green (GOL)";
+		displayNameShort = "7N22 45 (Green)";
+		descriptionShort = "5.45x39mm 45-round box, 7N22 AP, all green tracers";
+		ammo = "GOL_B_545x39_7N22_Tracer_Green";
+		tracersEvery = 1;
+		lastRoundsTracer = 45;
+	};
+
+	class GOL_45Rnd_545x39_7N22_Tracer_Yellow: GOL_45Rnd_545x39_7N22 {
+		displayName = "5.45x39mm 45Rnd 7N22 AP Tracer Yellow (GOL)";
+		displayNameShort = "7N22 45 (Yellow)";
+		descriptionShort = "5.45x39mm 45-round box, 7N22 AP, all yellow tracers";
+		ammo = "GOL_B_545x39_7N22_Tracer_Yellow";
+		tracersEvery = 1;
+		lastRoundsTracer = 45;
+	};
+
+	// ===== 6.5x39mm caseless 100Rnd belt (MX SW via MX_65x39_Large well) =====
+	class 100Rnd_65x39_caseless_mag;
+
+	class GOL_100Rnd_65x39_caseless: 100Rnd_65x39_caseless_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "6.5mm 100Rnd Caseless Belt (GOL)";
+		displayNameShort = "6.5mm 100";
+		descriptionShort = "6.5x39mm caseless 100-round belt, ball, no tracer";
+		ammo = "B_65x39_caseless";
+		tracersEvery = 0;
+		lastRoundsTracer = 0;
+	};
+
+	class GOL_100Rnd_65x39_caseless_Tracer_Red: GOL_100Rnd_65x39_caseless {
+		displayName = "6.5mm 100Rnd Caseless Belt Tracer Red (GOL)";
+		displayNameShort = "6.5mm 100 (Red)";
+		descriptionShort = "6.5x39mm caseless 100-round belt, all red tracers";
+		ammo = "GOL_B_65x39_caseless_Tracer_Red";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	class GOL_100Rnd_65x39_caseless_Tracer_Green: GOL_100Rnd_65x39_caseless {
+		displayName = "6.5mm 100Rnd Caseless Belt Tracer Green (GOL)";
+		displayNameShort = "6.5mm 100 (Green)";
+		descriptionShort = "6.5x39mm caseless 100-round belt, all green tracers";
+		ammo = "GOL_B_65x39_caseless_Tracer_Green";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	class GOL_100Rnd_65x39_caseless_Tracer_Yellow: GOL_100Rnd_65x39_caseless {
+		displayName = "6.5mm 100Rnd Caseless Belt Tracer Yellow (GOL)";
+		displayNameShort = "6.5mm 100 (Yellow)";
+		descriptionShort = "6.5x39mm caseless 100-round belt, all yellow tracers";
+		ammo = "GOL_B_65x39_caseless_Tracer_Yellow";
+		tracersEvery = 1;
+		lastRoundsTracer = 100;
+	};
+
+	// ===== 6.5x39mm cased 200Rnd belt (LMG Mk200) =====
+	// Mk200 has no magazineWell[]; GOL mags are added via magazines[] += in the weapon class.
+	class 200Rnd_65x39_cased_Box;
+
+	class GOL_200Rnd_65x39_cased_Box: 200Rnd_65x39_cased_Box {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "6.5mm 200Rnd Cased Belt (GOL)";
+		displayNameShort = "6.5mm Cased 200";
+		descriptionShort = "6.5x39mm cased 200-round belt, ball, no tracer";
+		ammo = "B_65x39_caseless";
+		tracersEvery = 0;
+		lastRoundsTracer = 0;
+	};
+
+	class GOL_200Rnd_65x39_cased_Box_Tracer_Red: GOL_200Rnd_65x39_cased_Box {
+		displayName = "6.5mm 200Rnd Cased Belt Tracer Red (GOL)";
+		displayNameShort = "6.5mm Cased 200 (Red)";
+		descriptionShort = "6.5x39mm cased 200-round belt, all red tracers";
+		ammo = "GOL_B_65x39_cased_Tracer_Red";
+		tracersEvery = 1;
+		lastRoundsTracer = 200;
+	};
+
+	class GOL_200Rnd_65x39_cased_Box_Tracer_Green: GOL_200Rnd_65x39_cased_Box {
+		displayName = "6.5mm 200Rnd Cased Belt Tracer Green (GOL)";
+		displayNameShort = "6.5mm Cased 200 (Green)";
+		descriptionShort = "6.5x39mm cased 200-round belt, all green tracers";
+		ammo = "GOL_B_65x39_cased_Tracer_Green";
+		tracersEvery = 1;
+		lastRoundsTracer = 200;
+	};
+
+	class GOL_200Rnd_65x39_cased_Box_Tracer_Yellow: GOL_200Rnd_65x39_cased_Box {
+		displayName = "6.5mm 200Rnd Cased Belt Tracer Yellow (GOL)";
+		displayNameShort = "6.5mm Cased 200 (Yellow)";
+		descriptionShort = "6.5x39mm cased 200-round belt, all yellow tracers";
+		ammo = "GOL_B_65x39_cased_Tracer_Yellow";
+		tracersEvery = 1;
+		lastRoundsTracer = 200;
+	};
 };

@@ -93,7 +93,7 @@ private _applyLambsTask = {
 
     switch (toLower _taskType) do {
         case "hunt": {
-            [_grp, _range, 30, [], [], true, false, false] call lambs_wp_fnc_taskHunt;
+            [_grp, _range, 30, [], [], false, false, false] call lambs_wp_fnc_taskHunt;
         };
         case "attack": {
             {

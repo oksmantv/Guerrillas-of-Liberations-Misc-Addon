@@ -508,4 +508,129 @@ class CfgAmmo {
 		submunitionInitialOffset[] = {0, 0, -0.1};
 		submunitionParentSpeedCoef = 0;
 	};
+
+	// ===== 7.62x51 M993 — missing Yellow tracer (completes Red/Green/Yellow set) =====
+	class GOL_B_762x51_M993_Tracer_Yellow: GOL_B_762x51_M993 {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_762x51_M993_SLAP_Tracer_Yellow: GOL_B_762x51_M993_SLAP {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	// ===== 7.62x39mm tracer ammunition (RPD, RPK-12, 3CB RPK) =====
+	class rhs_B_762x39_Ball;
+
+	class GOL_B_762x39_Ball_Tracer_Red: rhs_B_762x39_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_762x39_Ball_Tracer_Green: rhs_B_762x39_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_762x39_Ball_Tracer_Yellow: rhs_B_762x39_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	// ===== 5.45x39mm 7N22 AP tracer ammunition (RHS RPK-74M) =====
+	// Inherits 7N22 AP stats (caliber 0.94, warheadName AP_Level_2) from RHS base.
+	class rhs_B_545x39_7N22_Ball;
+
+	class GOL_B_545x39_7N22_Tracer_Red: rhs_B_545x39_7N22_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_545x39_7N22_Tracer_Green: rhs_B_545x39_7N22_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_545x39_7N22_Tracer_Yellow: rhs_B_545x39_7N22_Ball {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	// ===== 6.5x39mm caseless tracer ammunition (MX SW variants) =====
+	class B_65x39_caseless;
+
+	class GOL_B_65x39_caseless_Tracer_Red: B_65x39_caseless {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_65x39_caseless_Tracer_Green: B_65x39_caseless {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_65x39_caseless_Tracer_Yellow: B_65x39_caseless {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	// ===== 6.5x39mm cased tracer ammunition (LMG Mk200) =====
+	// B_65x39_cased does not exist in vanilla — inherit B_65x39_caseless for ballistics.
+	class GOL_B_65x39_cased_Tracer_Red: B_65x39_caseless {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_65x39_cased_Tracer_Green: B_65x39_caseless {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_65x39_cased_Tracer_Yellow: B_65x39_caseless {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
 };
