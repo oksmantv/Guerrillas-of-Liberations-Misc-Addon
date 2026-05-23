@@ -56,18 +56,6 @@ if(GOL_Core_Enabled isEqualTo true) then {
             missionNamespace setVariable ["GOL_ForceMultiplier", 1, true];
             missionNamespace setVariable ["GOL_ResponseMultiplier", 1, true];
         };
-
-        /*
-            Create Arsenal for Grenadiers & Automatic Riflemen
-        */
-        if (isNil "GOL_Arsenal_LMG") then {
-            GOL_Arsenal_LMG = "Logic" createVehicle [1000,1000,0];
-            publicVariable "GOL_Arsenal_LMG";
-        };   
-        if (isNil "GOL_Arsenal_GL") then {
-            GOL_Arsenal_GL = "Logic" createVehicle [1000,15000,0];
-            publicVariable "GOL_Arsenal_GL";
-        };   
     
         if(isNil "NEKY_Hunt_CurrentCount") then {
             NEKY_Hunt_CurrentCount = [];

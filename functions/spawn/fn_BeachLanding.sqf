@@ -278,6 +278,11 @@ private _restoreUnitAI = {
     _unit enableAI "TARGET";
 };
 
+// Install no-remount handler before dismount begins so the EH is active the moment units exit.
+// Units are still in _boatGroup here; use its owner as the exec target since that is where they are local.
+private _noRemountExecTarget = groupOwner _boatGroup;
+[_unitsToDismountInitial, _boatVehicle] remoteExecCall ["OKS_fnc_BeachLandingInstallNoRemount", _noRemountExecTarget];
+
 {
     unassignVehicle _x;
     // Prevent AI from immediately re-boarding the boat.
@@ -315,15 +320,6 @@ if !(_unitsToDismountInitial isEqualTo []) then {
 } forEach _unitsToDismountInitial;
 
 ["DISMOUNT_DONE", format ["group=%1 units=%2", _dismountGroup, count (units _dismountGroup)]] call _debugLog;
-
-// Prevent dismounted units from trying to re-board the boat.
-if (alive _boatVehicle) then {
-    _boatVehicle lock 2;
-};
-
-// Hard-prevent re-boarding on the machine where these AI are local.
-private _noRemountExecTarget = groupOwner _dismountGroup;
-[(units _dismountGroup), _boatVehicle] remoteExecCall ["OKS_fnc_BeachLandingInstallNoRemount", _noRemountExecTarget];
 
 // Force-dismount any remaining boat crew after a delay, then park the boat.
 // This avoids an unbounded enemy-scan loop and removes beached vehicle physics from the sim.
