@@ -122,17 +122,28 @@ class CfgPatches
             "GOL_MG3_KWS_B",
             "GOL_weap_2a42_HE",
             "GOL_weap_2a42_AP",
-            "GOL_weap_pkt"
+            "GOL_weap_pkt",
+            // TGP Helicopter Variants
+            "GOL_Heli_Transport_01_pylons_laser",
+            "GOL_Heli_Transport_01_laser",
+            "GOL_Heli_Light_01_dynamicLoadout_laser",
+            "GOL_Heli_Light_02_dynamicLoadout_laser",
+            "GOL_Heli_Light_03_dynamicLoadout_laser",
+            // M230 30mm Chain Gun Pod
+            "GOL_weapon_M230_ChainGun"
         };
 		magazines[] = {
+            // 9.3x64mm AP for heavy machine guns.
 			"GOL_150Rnd_93x64_Mag",
 			"GOL_150Rnd_93x64_Mag_Tracer",
 			"GOL_150Rnd_93x64_Mag_Tracer_Red",
 			"GOL_150Rnd_93x64_Mag_Tracer_Green",
 			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
+            // 7.62x54mmR AP for medium machine guns.
 			"GOL_100Rnd_762x54mmR",
 			"GOL_100Rnd_762x54mmR_red",
 			"GOL_100Rnd_762x54mmR_green",
+            // 7.62x51 AP for medium machine guns.
 			"GOL_100Rnd_762x51_M993",
 			"GOL_100Rnd_762x51_M993_Tracer_Red",
 			"GOL_100Rnd_762x51_M993_Tracer_Green",
@@ -175,6 +186,7 @@ class CfgPatches
 			"GOL_FNMAG_200Rnd_762x51_M993_SLAP",
 			"GOL_FNMAG_200Rnd_762x51_M993_SLAP_Tracer_Red",
 			"GOL_FNMAG_200Rnd_762x51_M993_SLAP_Tracer_Green",
+            // .338 AP for medium machine guns.
 			"GOL_130Rnd_338_Mag",
 			"GOL_130Rnd_338_Mag_red",
 			"GOL_130Rnd_338_Mag_green",
@@ -187,6 +199,7 @@ class CfgPatches
 			"GOL_200Rnd_338_AP",
 			"GOL_200Rnd_338_AP_Tracer_Red",
 			"GOL_200Rnd_338_AP_Tracer_Green",
+            // 5.56 AP45 for assault rifles.
 			"GOL_30Rnd_556x45_AP45",
 			"GOL_30Rnd_556x45_AP45_Tracer_Red",
 			"GOL_30Rnd_556x45_AP45_Tracer_Green",
@@ -201,6 +214,7 @@ class CfgPatches
 			"GOL_G36_30Rnd_556x45_AP45_Tracer_Red",
 			"GOL_G36_30Rnd_556x45_AP45_Tracer_Green",
 			"GOL_G36_30Rnd_556x45_AP45_Tracer_Yellow",
+            // 5.56 AP45 for LMGs.
 			"GOL_200Rnd_556x45_AP45_Box",
 			"GOL_200Rnd_556x45_AP45_Box_Tracer_Red",
 			"GOL_200Rnd_556x45_AP45_Box_Tracer_Green",
@@ -212,7 +226,10 @@ class CfgPatches
 			"GOL_rhsusf_200rnd_556x45_AP45",
 			"GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
 			"GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
-			"GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow"
+			"GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow",
+			// M230 30mm Chain Gun Pod magazines
+			"GOL_PylonWeapon_M230_HE",
+			"GOL_PylonWeapon_M230_AP"
 		};
 	};
 

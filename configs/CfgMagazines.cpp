@@ -1238,4 +1238,56 @@ class CfgMagazines {
 		tracersEvery = 1;
 		lastRoundsTracer = 200;
 	};
+
+	// ============================================================
+	// GOL M230 30mm Chain Gun Pod — Pylon Magazines
+	//
+	// Both variants share the same pylon pod model and hardpoints.
+	// They appear as separate loadout options on the pylon screen,
+	// letting crews choose between HE (anti-infantry/soft) or AP
+	// (anti-armour/vehicle) ammunition before flight.
+	//
+	// Hardpoints:
+	//   "DAR"              — covers most vanilla armed helicopters
+	//                        (Hellcat, Pawnee, UH-80 Stub Wings, etc.)
+	//   "GOL_M230_CHAINGUN"— custom hardpoint; add to specific GOL
+	//                        helicopter compat classes as needed
+	// ============================================================
+
+	class 250Rnd_30mm_HE_shells;
+	class 250Rnd_30mm_APDS_shells;
+
+	// HE pylon pod — fragmentation/blast, effective vs infantry and light vehicles
+	class GOL_PylonWeapon_M230_HE: 250Rnd_30mm_HE_shells {
+		scope = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M230 30mm Chain Gun Pod (HE)";
+		displayNameShort = "M230 HE Belt";
+		descriptionShort = "M230 30mm Chain Gun | HE 250 rounds";
+		count = 300;
+		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
+		muzzlePos = "muzzlePos";
+		muzzleEnd = "muzzleEnd";
+		hardpoints[] = {"DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+		pylonWeapon = "GOL_weapon_M230_ChainGun";
+		mass = 200;
+	};
+
+	// AP ammo belt — baked into all GOL pylon-capable helicopter classes.
+	// Provides AP ammo for in-flight cycling (ammo-cycle key) once the
+	// M230 HE pod is loaded. Not visible in the Eden pylon screen.
+	class GOL_PylonWeapon_M230_AP: 250Rnd_30mm_APDS_shells {
+		scope = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M230 30mm Chain Gun Pod (AP)";
+		displayNameShort = "M230 AP Belt";
+		descriptionShort = "M230 30mm Chain Gun | AP 250 rounds";
+		count = 300;
+		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
+		muzzlePos = "muzzlePos";
+		muzzleEnd = "muzzleEnd";
+		hardpoints[] = {"DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+		pylonWeapon = "GOL_weapon_M230_ChainGun";
+		mass = 200;
+	};
 };

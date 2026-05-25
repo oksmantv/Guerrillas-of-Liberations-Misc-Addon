@@ -1641,4 +1641,101 @@ class CfgWeapons {
 		recoilProne = "GOL_recoil_machinegun_prone";
 	};
 
+        // ============================================================
+        // GOL M230 30mm Chain Gun Pod
+        //
+        // A helicopter pylon-mounted single-barrel 30mm chain gun.
+        // Two player-selectable fire modes:
+        //   HighROF — 650 RPM (reloadTime ≈ 0.0923 s)
+        //   LowROF  — 300 RPM (reloadTime = 0.2 s)
+        //
+        // Compatible with any pylon using the "DAR" or
+        // "GOL_M230_CHAINGUN" hardpoint (see CfgMagazines).
+        // ============================================================
+        class rhs_weap_M230;
+
+        class GOL_weapon_M230_ChainGun: rhs_weap_M230 {
+                scope = 2;
+                author = "Guerrillas of Liberation";
+                displayName = "M230 30mm Chain Gun Pod";
+                descriptionShort = "M230 30mm chain gun pod | 650 RPM full-auto / 300 RPM burst | load GOL_PylonWeapon_M230_AP for AP ammo";
+                magazineReloadTime = 1;
+                canLock = 0;
+                ballisticsComputer = 2;
+                aiDispersionCoefY = 0.5;
+                aiDispersionCoefX = 0.5;
+                soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
+                rhs_burstLimiter = 1200;
+                magazines[] = {
+                        "GOL_PylonWeapon_M230_HE",
+                        "GOL_PylonWeapon_M230_AP"
+                };
+                modes[] = {"HighROF", "LowROF", "close", "short", "medium", "far"};
+
+                class GunParticles {
+                        class Effect {
+                                effectName = "MachineGun3";
+                                positionName = "memMuzzle";
+                                directionName = "memGunTip";
+                        };
+                };
+
+                // 650 RPM
+                class HighROF: Mode_FullAuto {
+                        displayName = "650 RPM";
+                        autoFire = 1;
+                        burst = 0;
+                        soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
+                        class StandardSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
+                        flash = "gunfire";
+                        flashSize = 0.1;
+                        recoil = "Empty";
+                        ffMagnitude = 0.25;
+                        ffFrequency = 10;
+                        ffCount = 6;
+                        reloadTime = 0.0923;
+                        dispersion = 0.0012;
+                        showToPlayer = 1;
+                        aiRateOfFire = 1;
+                        aiRateOfFireDistance = 10;
+                        minRange = 0;
+                        minRangeProbab = 0.01;
+                        midRange = 1;
+                        midRangeProbab = 0.01;
+                        maxRange = 2;
+                        maxRangeProbab = 0.01;
+						rhs_burstLimiter = 1200;
+                };
+
+                // 300 RPM
+                class LowROF: Mode_SemiAuto {
+                        displayName = "300 RPM";
+                        autoFire = 1;
+                        burst = 10;
+                        soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
+                        class StandardSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
+                        flash = "gunfire";
+                        flashSize = 0.1;
+                        recoil = "Empty";
+                        ffMagnitude = 0.25;
+                        ffFrequency = 10;
+                        ffCount = 6;
+                        reloadTime = 0.2;
+                        dispersion = 0.0012;
+                        showToPlayer = 1;
+                        aiRateOfFire = 1;
+                        aiRateOfFireDistance = 10;
+                        minRange = 0;
+                        minRangeProbab = 0.01;
+                        midRange = 1;
+                        midRangeProbab = 0.01;
+                        maxRange = 2;
+                        maxRangeProbab = 0.01;
+						rhs_burstLimiter = 1200;
+                };
+        };
+
 };
+

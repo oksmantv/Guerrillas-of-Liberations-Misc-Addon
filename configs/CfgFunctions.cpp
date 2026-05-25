@@ -288,6 +288,8 @@ class CfgFunctions // Defines a function
 			class Interact_DoorGunner {};
 			class Interact_Pilot {};
 			class SetPylonsToTurret {};
+			class M230_SwapAmmo {};
+			class M230_SetPylon {};
 		};
 
 		class OKS_Jets {
