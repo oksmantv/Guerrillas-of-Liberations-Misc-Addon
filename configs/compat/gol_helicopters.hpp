@@ -21,9 +21,7 @@ class Heli_Transport_01_base_F : Helicopter_Base_H {
 	class MFD;
 };
 class Heli_Transport_01_pylons_base_F : Heli_Transport_01_base_F {
-	class MFD : MFD {
-		class AirplaneHUD;
-	};
+	class MFD;
 };
 class B_Heli_Transport_01_F;
 class B_Heli_Light_01_dynamicLoadout_F;
@@ -44,6 +42,17 @@ class I_Heli_Light_03_dynamicLoadout_F : Heli_Light_03_dynamicLoadout_base_F {
 	class MFD : MFD {
 		class AirplaneHUD;
 		class MFD_Pilot_10;
+		class Kimi_HMD_Weapons;
+		class Kimi_HMD_RKT_P;
+		class Kimi_HMD_RKT_C;
+		class Kimi_HMD_Common;
+		class Kimi_HMD_Decluttered;
+		class Kimi_HMD_HAD_Common;
+		class Kimi_HMD_HAD_Pilot_Lynx;
+		class Kimi_HMD_HAD_Pilot_Lynx_2;
+		class Kimi_HMD_Weapons_Lynx_P;
+		class Kimi_HMD_Pilot;
+		class Kimi_HMD_Modes_Pilot;
 	};
 };
 
@@ -55,6 +64,7 @@ class I_Heli_Light_03_dynamicLoadout_F : Heli_Light_03_dynamicLoadout_base_F {
 class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F {
 	author = "GOL";
 	displayName = "UH-80 Ghost Hawk (Stub Wings, Laser)";
+	defaultUserMFDvalues[] = {0,1,0,0,1,0,0.2};
 	laserScanner = 1;
 	showAllTargets = 4;
 	LODDriverOpticsIn = 1000;
@@ -114,7 +124,75 @@ class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F 
 	};
 
 	class MFD : MFD {
-		class AirplaneHUD : AirplaneHUD {};
+		// Kimi HMD classes — embedded directly (pylons MFD override blocks inheritance)
+		#include "kimi_hmd_ghost_hawk.hpp"
+		// Kimi weapon CCIP (rockets + cannon) — extracted from MELB compat
+		#include "kimi_hmd_weapons_ccip.hpp"
+		// Kimi HAD common — provides targetDist range display ("R X.XX km") for all seats
+		#include "kimi_hmd_had_common.hpp"
+
+		// GOL: Cannon / MachineGun CCIP for the pilot seat (turret -1).
+		// Kimi_HMD_Weapons covers turret 0 (copilot) only; this fills the gap
+		// for the pilot so cannon/mgun cross matches the rocket CCIP behaviour.
+		class GOL_HMD_CCIP_Cannon_P
+		{
+			topLeft = "HUD_top_left";
+			topRight = "HUD_top_right";
+			bottomLeft = "HUD_bottom_left";
+			borderLeft = 0;
+			borderRight = 0;
+			borderTop = 0;
+			borderBottom = 0;
+			color[] = {0.212,0.769,0.204,0.2};
+			enableParallax = 0;
+			helmetMountedDisplay = 1;
+			helmetPosition[] = {-0.04,0.04,0.1};
+			helmetRight[] = {0.08,0,0};
+			helmetDown[] = {0,-0.08,0};
+			class Bones
+			{
+				class PlaneOrientation
+				{
+					type = "fixed";
+					pos[] = {0.5,0.5};
+				};
+				class ForwardVec_Center
+				{
+					type = "vector";
+					source = "forward";
+					pos0[] = {0.5,0.5};
+					pos10[] = {"0.500 + 0.2165","0.500 + 0.2165"};
+				};
+				class CCIP: ForwardVec_Center
+				{
+					source = "impactpoint";
+				};
+				class CCIP_2_VIEW: CCIP
+				{
+					source = "impactpointtoview";
+				};
+			};
+			turret[] = {-1};
+			class Draw
+			{
+				color[] = {"user3","user4","user5"};
+				alpha = "user6";
+				condition = "on*user0";
+				class Cannon_Cross
+				{
+					// cannon = 20mm+ cannon type; mgun = minigun/HMG type.
+					// Using sum so either weapon class activates the reticle.
+					condition = "cannon + mgun";
+					type = "group";
+					class CANNON_X
+					{
+						type = "line";
+						width = 5.5;
+						points[] = {{"CCIP_2_VIEW",1,{0.022,-0.03},1},{"CCIP_2_VIEW",1,{-0.022,-0.03},1},{},{"CCIP_2_VIEW",1,{0,-0.03},1},{"CCIP_2_VIEW",1,{0,0.03},1},{},{"CCIP_2_VIEW",1,{0.022,0.03},1},{"CCIP_2_VIEW",1,{-0.022,0.03},1}};
+					};
+				};
+			};
+		};
 
 		// Helmet-mounted TGP reticle — shows camera direction as a circle
 		class GOL_TGP_HMD {
@@ -334,14 +412,14 @@ class GOL_Heli_Transport_01_laser : B_Heli_Transport_01_F {
 };
 
 // ============================================================
-// AH-9 Pawnee (Laser)  — NATO Light Attack
+// AH-6 (Laser)  — NATO Light Attack
 // memoryPointDriverOptics = "light_pos"
 // ============================================================
 class GOL_Heli_Light_01_dynamicLoadout_laser : B_Heli_Light_01_dynamicLoadout_F {
 	scope = 2;
 	scopeCurator = 2;
 	author = "GOL";
-	displayName = "AH-9 Pawnee (Laser)";
+	displayName = "AH-6 (Laser)";
 	_generalMacro = "GOL_Heli_Light_01_dynamicLoadout_laser";
 	forceInGarage = 1;
 
@@ -405,7 +483,7 @@ class GOL_Heli_Light_01_dynamicLoadout_laser : B_Heli_Light_01_dynamicLoadout_F 
 };
 
 // ============================================================
-// PO-30 Orca (Laser)  — OPFOR Light Attack
+// KA-60 Kasatska (Laser)  — OPFOR Light Attack
 // memoryPointDriverOptics = "light_r_pos"
 // Includes TGP HMD reticle in MFD.
 // ============================================================
@@ -413,7 +491,7 @@ class GOL_Heli_Light_02_dynamicLoadout_laser : O_Heli_Light_02_dynamicLoadout_F 
 	scope = 2;
 	scopeCurator = 2;
 	author = "GOL";
-	displayName = "PO-30 Orca (Laser)";
+	displayName = "KA-60 Kasatska (Laser)";
 	_generalMacro = "GOL_Heli_Light_02_dynamicLoadout_laser";
 	forceInGarage = 1;
 
@@ -452,8 +530,8 @@ class GOL_Heli_Light_02_dynamicLoadout_laser : O_Heli_Light_02_dynamicLoadout_F 
 				};
 			};
 			class Draw {
-				alpha = "user3";
-				color[] = {"user0", "user1", "user2"};
+				alpha = "on";
+				color[] = {"user3", "user4", "user5"};
 				condition = "on";
 				class TargetingPodGroup {
 					class TargetingPodDir {
@@ -546,7 +624,7 @@ class GOL_Heli_Light_02_dynamicLoadout_laser : O_Heli_Light_02_dynamicLoadout_F 
 };
 
 // ============================================================
-// WY-55 Hellcat (Laser)  — INDFOR Light Attack
+// AW159 Wildcat (Laser)  — INDFOR Light Attack
 // memoryPointDriverOptics = "laserstart"
 // Includes TGP HMD reticle in MFD.
 // ============================================================
@@ -554,7 +632,7 @@ class GOL_Heli_Light_03_dynamicLoadout_laser : I_Heli_Light_03_dynamicLoadout_F 
 	scope = 2;
 	scopeCurator = 2;
 	author = "GOL";
-	displayName = "WY-55 Hellcat (Laser)";
+	displayName = "AW159 Wildcat (Laser)";
 	_generalMacro = "GOL_Heli_Light_03_dynamicLoadout_laser";
 	forceInGarage = 1;
 
@@ -566,6 +644,17 @@ class GOL_Heli_Light_03_dynamicLoadout_laser : I_Heli_Light_03_dynamicLoadout_F 
 	class MFD : MFD {
 		class AirplaneHUD : AirplaneHUD {};
 		class MFD_Pilot_10 : MFD_Pilot_10 {};
+		class Kimi_HMD_Weapons : Kimi_HMD_Weapons {};
+		class Kimi_HMD_RKT_P : Kimi_HMD_RKT_P {};
+		class Kimi_HMD_RKT_C : Kimi_HMD_RKT_C {};
+		class Kimi_HMD_Common : Kimi_HMD_Common {};
+		class Kimi_HMD_Decluttered : Kimi_HMD_Decluttered {};
+		class Kimi_HMD_HAD_Common : Kimi_HMD_HAD_Common {};
+		class Kimi_HMD_HAD_Pilot_Lynx : Kimi_HMD_HAD_Pilot_Lynx {};
+		class Kimi_HMD_HAD_Pilot_Lynx_2 : Kimi_HMD_HAD_Pilot_Lynx_2 {};
+		class Kimi_HMD_Weapons_Lynx_P : Kimi_HMD_Weapons_Lynx_P {};
+		class Kimi_HMD_Pilot : Kimi_HMD_Pilot {};
+		class Kimi_HMD_Modes_Pilot : Kimi_HMD_Modes_Pilot {};
 		class GOL_TGP_HMD {
 			enableParallax = 0;
 			topLeft = "HUD_top_left";
@@ -594,8 +683,8 @@ class GOL_Heli_Light_03_dynamicLoadout_laser : I_Heli_Light_03_dynamicLoadout_F 
 				};
 			};
 			class Draw {
-				alpha = "user3";
-				color[] = {"user0", "user1", "user2"};
+				alpha = "on";
+				color[] = {"user3", "user4", "user5"};
 				condition = "on";
 				class TargetingPodGroup {
 					class TargetingPodDir {
