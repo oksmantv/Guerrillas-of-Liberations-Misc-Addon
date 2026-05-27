@@ -1659,9 +1659,10 @@ class CfgWeapons {
                 author = "Guerrillas of Liberation";
                 displayName = "M230 30mm Chain Gun Pod";
                 descriptionShort = "M230 30mm chain gun pod | 650 RPM full-auto / 300 RPM burst | load GOL_PylonWeapon_M230_AP for AP ammo";
-                magazineReloadTime = 1;
+                magazineReloadTime = 0.1;
                 canLock = 0;
-                ballisticsComputer = 2;
+                ballisticsComputer = 26;    // 2 (CCIP) + 8 (FCS optics cursor) + 16 (FCS zeroing)
+				showToPlayer = 1;
                 aiDispersionCoefY = 0.5;
                 aiDispersionCoefX = 0.5;
                 soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};

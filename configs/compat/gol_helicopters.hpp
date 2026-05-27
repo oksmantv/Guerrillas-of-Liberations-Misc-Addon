@@ -21,7 +21,9 @@ class Heli_Transport_01_base_F : Helicopter_Base_H {
 	class MFD;
 };
 class Heli_Transport_01_pylons_base_F : Heli_Transport_01_base_F {
-	class MFD;
+	class MFD {
+		class AirplaneHUD;
+	};
 };
 class B_Heli_Transport_01_F;
 class B_Heli_Light_01_dynamicLoadout_F;
@@ -70,6 +72,12 @@ class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F 
 	LODDriverOpticsIn = 1000;
 	editorPreview = "\A3\EditorPreviews_F\Data\CfgVehicles\B_Heli_Transport_01_pylons_F.jpg";
 	availableForSupportTypes[] = {"Drop", "Transport"};
+
+	// Airframe durability — combat role.
+	// armor / armorStructural match RHS AH-64D level (vanilla Ghost Hawk: ~30 / ~6).
+	armor = 40;
+	armorStructural = 35;
+	damageResistance = 0.005;
 
 	class SimpleObject {
 		eden = 1;
@@ -124,6 +132,12 @@ class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F 
 	};
 
 	class MFD : MFD {
+		// Suppress the vanilla AirplaneHUD (Ghost Hawk base class) — turret{-2} makes
+		// it invisible to all seats. Kimi HMD classes provide all equivalent elements.
+		// The vanilla AirplaneHUD > Static element is a boresight + crosshair that
+		// persists on the Kimi HMD when not overridden here.
+		class AirplaneHUD : AirplaneHUD { turret[] = {-2}; };
+
 		// Kimi HMD classes — embedded directly (pylons MFD override blocks inheritance)
 		#include "kimi_hmd_ghost_hawk.hpp"
 		// Kimi weapon CCIP (rockets + cannon) — extracted from MELB compat
@@ -132,8 +146,11 @@ class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F 
 		#include "kimi_hmd_had_common.hpp"
 
 		// GOL: Cannon / MachineGun CCIP for the pilot seat (turret -1).
-		// Kimi_HMD_Weapons covers turret 0 (copilot) only; this fills the gap
-		// for the pilot so cannon/mgun cross matches the rocket CCIP behaviour.
+		// Kimi_HMD_Weapons covers turret 0 (copilot) only; this custom class
+		// fills the gap so the pilot also has a cannon CCIP cross in normal
+		// (non-TGP) flight view.  The vanilla pilotOpticsShowCursor system
+		// handles cannon CCIP inside the TGP camera separately — see note
+		// on pilotOpticsShowCursor below and ballisticsComputer in CfgWeapons.
 		class GOL_HMD_CCIP_Cannon_P
 		{
 			topLeft = "HUD_top_left";
@@ -180,15 +197,40 @@ class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F 
 				condition = "on*user0";
 				class Cannon_Cross
 				{
-					// cannon = 20mm+ cannon type; mgun = minigun/HMG type.
-					// Using sum so either weapon class activates the reticle.
-					condition = "cannon + mgun";
+					// M230 is classified as mgun by Arma 3 (chain gun, auto-fire).
+					condition = "mgun";
 					type = "group";
-					class CANNON_X
+					class GUN_X
 					{
+						// Hollow + cross marking ballistic impact point.
+						// Uses CCIP_2_VIEW (impactpointtoview) — view-relative projection
+						// that lands exactly on the actual ground impact. NOTE: when no
+						// valid impact exists (aiming at sky / level flight) this bone
+						// falls back to canvas center, stacking the cross at boresight.
+						// The AC_Centerline boresight tick is disabled separately to keep
+						// the centre area readable.
 						type = "line";
-						width = 5.5;
-						points[] = {{"CCIP_2_VIEW",1,{0.022,-0.03},1},{"CCIP_2_VIEW",1,{-0.022,-0.03},1},{},{"CCIP_2_VIEW",1,{0,-0.03},1},{"CCIP_2_VIEW",1,{0,0.03},1},{},{"CCIP_2_VIEW",1,{0.022,0.03},1},{"CCIP_2_VIEW",1,{-0.022,0.03},1}};
+						width = 3;
+						points[] = {
+							{"CCIP_2_VIEW",1,{0,-0.026},1},{"CCIP_2_VIEW",1,{0,-0.010},1},{},
+							{"CCIP_2_VIEW",1,{0, 0.010},1},{"CCIP_2_VIEW",1,{0, 0.026},1},{},
+							{"CCIP_2_VIEW",1,{-0.026,0},1},{"CCIP_2_VIEW",1,{-0.010,0},1},{},
+							{"CCIP_2_VIEW",1,{ 0.010,0},1},{"CCIP_2_VIEW",1,{ 0.026,0},1}
+						};
+					};
+					class Distance
+					{
+						// Slant range to ballistic impact point, km, 1 decimal.
+						type = "text";
+						source = "ImpactDistance";
+						sourceScale = 0.001;
+						sourcePrecision = 1;
+						max = 15;
+						align = "center";
+						scale = 1;
+						pos[] = {"CCIP_2_VIEW",{-0.002,0.035},1};
+						right[] = {"CCIP_2_VIEW",{0.028,0.035},1};
+						down[] = {"CCIP_2_VIEW",{-0.002,0.065},1};
 					};
 				};
 			};
@@ -228,7 +270,7 @@ class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F 
 				// (Kimi uses user3 as R-channel, not as an alpha/visibility toggle).
 				alpha = "on";
 				color[] = {"user3", "user4", "user5"};
-				condition = "on";
+				condition = "on*user0";
 				class TargetingPodGroup {
 					class TargetingPodDir {
 						type = "line";
@@ -266,6 +308,10 @@ class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F 
 	};
 
 	memoryPointDriverOptics = "light_l";
+	// RscOptics_CAS_01_TGP is the full-screen RSC overlay drawn when the pilot
+	// enters pilotCamera (TGP) mode.  Side effect: helmetMountedDisplay=1 MFD
+	// elements (Kimi HMD, GOL_HMD_CCIP_Cannon_P) are NOT rendered inside the
+	// TGP camera view — the engine replaces head-space with camera-space.
 	driverWeaponsInfoType = "RscOptics_CAS_01_TGP";
 	magazines[] += {"Laserbatteries"};
 	weapons[] += {"Laserdesignator_pilotCamera"};
@@ -319,6 +365,15 @@ class GOL_Heli_Transport_01_pylons_laser_base : Heli_Transport_01_pylons_base_F 
 		maxYRotSpeed = 1;
 		maxMouseXRotSpeed = 0.5;
 		maxMouseYRotSpeed = 0.5;
+		// Renders the vanilla engine CCIP cursor inside the TGP camera view.
+		// Behavior differs by weapon type:
+		//   LauncherCore (rockets/missiles) — cursor always shown by the engine.
+		//   MGun/Cannon (mgun type)         — cursor shown ONLY when the weapon's
+		//     ballisticsComputer has bit 8 set (FCS optics cursor).  Without bit 8
+		//     the cannon cross is invisible in the TGP view even with this = 1.
+		//     GOL_weapon_M230_ChainGun uses ballisticsComputer=26 (2+8+16) so the
+		//     M230 cursor DOES appear.  Vanilla M134_minigun has no bit 8 and will
+		//     NOT show a cursor here.
 		pilotOpticsShowCursor = 1;
 		controllable = 1;
 	};
@@ -351,6 +406,10 @@ class GOL_Heli_Transport_01_laser : B_Heli_Transport_01_F {
 	displayName = "UH-80 Ghost Hawk (Laser)";
 	_generalMacro = "GOL_Heli_Transport_01_laser";
 	forceInGarage = 1;
+
+	armor = 40;
+	armorStructural = 35;
+	damageResistance = 0.005;
 
 	memoryPointDriverOptics = "light_l_end";
 	driverWeaponsInfoType = "RscOptics_CAS_01_TGP";
@@ -406,6 +465,7 @@ class GOL_Heli_Transport_01_laser : B_Heli_Transport_01_F {
 		maxYRotSpeed = 1;
 		maxMouseXRotSpeed = 0.5;
 		maxMouseYRotSpeed = 0.5;
+		// See stub-wings variant above for pilotOpticsShowCursor behavior notes.
 		pilotOpticsShowCursor = 1;
 		controllable = 1;
 	};
@@ -532,7 +592,7 @@ class GOL_Heli_Light_02_dynamicLoadout_laser : O_Heli_Light_02_dynamicLoadout_F 
 			class Draw {
 				alpha = "on";
 				color[] = {"user3", "user4", "user5"};
-				condition = "on";
+				condition = "on*user0";
 				class TargetingPodGroup {
 					class TargetingPodDir {
 						type = "line";
@@ -685,7 +745,7 @@ class GOL_Heli_Light_03_dynamicLoadout_laser : I_Heli_Light_03_dynamicLoadout_F 
 			class Draw {
 				alpha = "on";
 				color[] = {"user3", "user4", "user5"};
-				condition = "on";
+				condition = "on*user0";
 				class TargetingPodGroup {
 					class TargetingPodDir {
 						type = "line";

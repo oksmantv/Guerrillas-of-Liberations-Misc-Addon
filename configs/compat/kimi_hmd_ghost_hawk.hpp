@@ -845,14 +845,14 @@
 					class HeadingNumber
 					{
 						type = "text";
-						scale = 1;
+						scale = 0.8;
 						source = "heading";
 						sourceScale = 1;
 						sourceLength = 3;
 						align = "center";
-						pos[] = {{0.495,0.045},1};
-						right[] = {{0.555,0.045},1};
-						down[] = {{0.495,"0.045+ 0.06"},1};
+						pos[] = {{0.495,0.005},1};
+						right[] = {{0.555,0.005},1};
+						down[] = {{0.495,"0.005 + 0.048"},1};
 					};
 					class Airspeed_Number_Imperial
 					{

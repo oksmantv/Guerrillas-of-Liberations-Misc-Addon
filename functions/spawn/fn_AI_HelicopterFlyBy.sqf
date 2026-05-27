@@ -162,7 +162,12 @@ private _helicopterFlyBySystem = {
             if (!isNull _x) then {
                 _x allowFleeing 0;
                 _x setBehaviour _flightBehaviour;
-                _x setCombatMode "BLUE";  // Hold fire, defend only
+
+                if(toUpper _flightBehaviour == "COMBAT") then {
+                    _x setCombatMode "RED";   // Engage enemies
+                } else {
+                    _x setCombatMode "BLUE";  // Hold fire, defend only
+                };
                 _x setSkill ["courage", 1.0];
                 _x setSkill ["commanding", 0.1];  // Low commanding to reduce reactive behavior
                 
@@ -227,20 +232,23 @@ private _helicopterFlyBySystem = {
             deleteWaypoint [_group, 0];
         };
         
+        // Determine combat mode: COMBAT behaviour allows engagement; others hold fire
+        private _wpCombatMode = if (toUpper _flightBehaviour == "COMBAT") then {"RED"} else {"BLUE"};
+        
         // Waypoint 1: Fly to endpoint
         private _wp1 = _group addWaypoint [_endPosAlt, 0];
         _wp1 setWaypointType "MOVE";
         _wp1 setWaypointSpeed "NORMAL";
-        _wp1 setWaypointBehaviour _FlightBehaviour;
-        _wp1 setWaypointCombatMode "BLUE";
+        _wp1 setWaypointBehaviour _flightBehaviour;
+        _wp1 setWaypointCombatMode _wpCombatMode;
         _wp1 setWaypointCompletionRadius 200;
         
         // Waypoint 2: Return to spawn
         private _wp2 = _group addWaypoint [_spawnPosAlt, 0];
         _wp2 setWaypointType "MOVE";
         _wp2 setWaypointSpeed "NORMAL";
-        _wp2 setWaypointBehaviour _FlightBehaviour;
-        _wp2 setWaypointCombatMode "BLUE";
+        _wp2 setWaypointBehaviour _flightBehaviour;
+        _wp2 setWaypointCombatMode _wpCombatMode;
         _wp2 setWaypointCompletionRadius 200;
         
         if (missionNamespace getVariable ["GOL_AI_HelicopterFlyBy_Debug", false]) then {

@@ -27,7 +27,8 @@ class CfgPatches
             "UK3CB_BAF_Weapons_L119",
             "UK3CB_BAF_Weapons_L110",
             "UK3CB_Factions_Weapons_G36",
-            "FPV_UA"
+            "FPV_UA",
+            "Kimi_HMDs_Helos"
         };
         requiredVersion = 2.14;
 		author = "OksmanTV";

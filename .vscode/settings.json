@@ -1,0 +1,7 @@
+{
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "Generate commit messages using this EXACT format — no exceptions:\n\nVersion MAJOR.MINOR.PATCHLVL Build BUILDNUMBER\nTitle\n+ [Subsystem] Description\n~ [Subsystem] Description\n- [Subsystem] Description\n\nSTEP 1: Find version.hpp in the diff (or read it). Extract MISC_MAJOR, MISC_MINOR, MISC_PATCHLVL, MISC_BUILD. The very first line of the commit message must be: Version MISC_MAJOR.MISC_MINOR.MISC_PATCHLVL Build MISC_BUILD\n\nSTEP 2: Write one change per line. Each line MUST start with +, ~, or - followed by a subsystem name in square brackets, then a description. The subsystem label is a short name like [HMD], [AI System], [CfgWeapons], [Core], [Medical] — NEVER a filename.\n\nDO NOT write: ~ Adjusted heading scale (kimi_hmd_ghost_hawk.hpp)\nDO write:     ~ [HMD] Adjusted heading number scale and position\n\nCorrect example:\nVersion 3.3.0 Build 270526\nUpdated HMD and AI Systems\n~ [HMD] Adjusted heading number scale and position\n~ [HMD] Updated CCIP weapon display and rocket sight dimensions\n~ [AI System] Updated helicopter combat mode and engagement logic\n+ [Docs] Added comprehensive Ghost Hawk HMD reference"
+    }
+  ]
+}

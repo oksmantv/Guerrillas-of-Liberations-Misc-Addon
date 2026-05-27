@@ -2472,10 +2472,10 @@ Edited by OksmanTV & Bluwolf.
 
   ### Flight Behaviors
 
-  - `"STEALTH"` - Silent, covert flight
-  - `"COMBAT"` - Alert, ready for engagement
-  - `"SAFE"` - Relaxed, low threat awareness  
-  - `"AWARE"` - Cautious, scanning for threats
+  - `"STEALTH"` - Silent, covert flight; holds fire, defend only
+  - `"COMBAT"` - Actively engages enemies; still proceeds to endpoint when not engaged, then returns and despawns
+  - `"SAFE"` - Relaxed, low threat awareness; holds fire, defend only
+  - `"AWARE"` - Cautious, scanning for threats; holds fire, defend only
 
   ### Features
 

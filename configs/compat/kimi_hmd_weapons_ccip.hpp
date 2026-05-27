@@ -71,8 +71,8 @@
 					{
 						type = "vector";
 						source = "wppoint";
-						pos0[] = {0.5,0.128};
-						pos10[] = {"0.500 + 0.037",0.128};
+						pos0[] = {0.5,0.068};
+						pos10[] = {"0.500 + 0.037",0.068};
 					};
 					class Tape_Limit
 					{
@@ -83,8 +83,8 @@
 					{
 						type = "vector";
 						source = "Turret";
-						pos0[] = {0.5,0.128};
-						pos10[] = {"0.500 + 0.037",0.128};
+						pos0[] = {0.5,0.068};
+						pos10[] = {"0.500 + 0.037",0.068};
 						projection = 1;
 					};
 					class GunnerAim
@@ -369,17 +369,27 @@
 					{
 						condition = "mgun";
 						type = "group";
-						class GUN_X
+						// GUN_X hollow-cross removed: drew 4 fixed dashes at boresight
+						// whenever the CCIP projection was invalid (aiming up), and
+						// overlapped the AC_Centerline + and heading indicator.
+						class Distance
 						{
-							type = "line";
-							width = 9;
-							points[] = {{"CCIP_2_VIEW",{0,-0.05},1},{"CCIP_2_VIEW",{0,-0.015},1},{},{"CCIP_2_VIEW",{0,0.015},1},{"CCIP_2_VIEW",{0,0.05},1},{},{"CCIP_2_VIEW",{-0.05,0},1},{"CCIP_2_VIEW",{-0.015,0},1},{},{"CCIP_2_VIEW",{0.015,0},1},{"CCIP_2_VIEW",{0.05,0},1}};
+							type = "text";
+							source = "ImpactDistance";
+							sourceScale = 0.001;
+							sourcePrecision = 1;
+							max = 15;
+							align = "center";
+							scale = 1;
+							pos[] = {"CCIP_2_VIEW",{-0.002,0.035},1};
+							right[] = {"CCIP_2_VIEW",{0.028,0.035},1};
+							down[] = {"CCIP_2_VIEW",{-0.002,0.065},1};
 						};
 					};
 					class Gunner_AIM
 					{
 						type = "group";
-						condition = "(1-mgun)*(2-(abs(cameraHeadingDiffY)<=3)-(abs(cameraHeadingDiffX)<=3))*(1-(abs(weaponHeading-HEADING)<=3))";
+						condition = "off";
 						class CPG_X_Group
 						{
 							type = "group";
@@ -521,8 +531,8 @@
 					{
 						type = "vector";
 						source = "wppoint";
-						pos0[] = {0.5,0.128};
-						pos10[] = {"0.500 + 0.037",0.128};
+						pos0[] = {0.5,0.068};
+						pos10[] = {"0.500 + 0.037",0.068};
 					};
 					class Tape_Limit
 					{
@@ -533,8 +543,8 @@
 					{
 						type = "vector";
 						source = "Turret";
-						pos0[] = {0.5,0.128};
-						pos10[] = {"0.500 + 0.037",0.128};
+						pos0[] = {0.5,0.068};
+						pos10[] = {"0.500 + 0.037",0.068};
 						projection = 1;
 					};
 					class GunnerAim
@@ -806,9 +816,28 @@
 						type = "group";
 						class RocketSight
 						{
+							// Capital-I sight: top cap, vertical bar with gap to caps, bottom cap.
+							// ~69% of original size (+15% from previous 60%).
 							type = "line";
-							width = 5.5;
-							points[] = {{"CCIP_2_VIEW",1,{0.022,-0.03},1},{"CCIP_2_VIEW",1,{-0.022,-0.03},1},{},{"CCIP_2_VIEW",1,{0,-0.03},1},{"CCIP_2_VIEW",1,{0,0.03},1},{},{"CCIP_2_VIEW",1,{0.022,0.03},1},{"CCIP_2_VIEW",1,{-0.022,0.03},1}};
+							width = 6.5;
+							points[] = {
+								{"CCIP_2_VIEW",1,{ 0.015,-0.021},1},{"CCIP_2_VIEW",1,{-0.015,-0.021},1},{},
+								{"CCIP_2_VIEW",1,{0,-0.017},1},{"CCIP_2_VIEW",1,{0, 0.017},1},{},
+								{"CCIP_2_VIEW",1,{ 0.015, 0.021},1},{"CCIP_2_VIEW",1,{-0.015, 0.021},1}
+							};
+						};
+						class Distance
+						{
+							type = "text";
+							source = "ImpactDistance";
+							sourceScale = 0.001;
+							sourcePrecision = 1;
+							max = 15;
+							align = "center";
+							scale = 1;
+							pos[] = {"CCIP_2_VIEW",{-0.002,0.035},1};
+							right[] = {"CCIP_2_VIEW",{0.032,0.035},1};
+							down[] = {"CCIP_2_VIEW",{-0.002,0.069},1};
 						};
 					};
 				};
@@ -886,8 +915,8 @@
 					{
 						type = "vector";
 						source = "wppoint";
-						pos0[] = {0.5,0.128};
-						pos10[] = {"0.500 + 0.037",0.128};
+						pos0[] = {0.5,0.068};
+						pos10[] = {"0.500 + 0.037",0.068};
 					};
 					class Tape_Limit
 					{
@@ -898,8 +927,8 @@
 					{
 						type = "vector";
 						source = "Turret";
-						pos0[] = {0.5,0.128};
-						pos10[] = {"0.500 + 0.037",0.128};
+						pos0[] = {0.5,0.068};
+						pos10[] = {"0.500 + 0.037",0.068};
 						projection = 1;
 					};
 					class GunnerAim
@@ -1171,9 +1200,28 @@
 						type = "group";
 						class RocketSight
 						{
+							// Capital-I sight: top cap, vertical bar with gap to caps, bottom cap.
+							// ~69% of original size (+15% from previous 60%).
 							type = "line";
-							width = 5.5;
-							points[] = {{"CCIP_2_VIEW",1,{0.022,-0.03},1},{"CCIP_2_VIEW",1,{-0.022,-0.03},1},{},{"CCIP_2_VIEW",1,{0,-0.03},1},{"CCIP_2_VIEW",1,{0,0.03},1},{},{"CCIP_2_VIEW",1,{0.022,0.03},1},{"CCIP_2_VIEW",1,{-0.022,0.03},1}};
+							width = 6.5;
+							points[] = {
+								{"CCIP_2_VIEW",1,{ 0.015,-0.021},1},{"CCIP_2_VIEW",1,{-0.015,-0.021},1},{},
+								{"CCIP_2_VIEW",1,{0,-0.017},1},{"CCIP_2_VIEW",1,{0, 0.017},1},{},
+								{"CCIP_2_VIEW",1,{ 0.015, 0.021},1},{"CCIP_2_VIEW",1,{-0.015, 0.021},1}
+							};
+						};
+						class Distance
+						{
+							type = "text";
+							source = "ImpactDistance";
+							sourceScale = 0.001;
+							sourcePrecision = 1;
+							max = 15;
+							align = "center";
+							scale = 1;
+							pos[] = {"CCIP_2_VIEW",{-0.002,0.035},1};
+							right[] = {"CCIP_2_VIEW",{0.032,0.035},1};
+							down[] = {"CCIP_2_VIEW",{-0.002,0.069},1};
 						};
 					};
 				};
