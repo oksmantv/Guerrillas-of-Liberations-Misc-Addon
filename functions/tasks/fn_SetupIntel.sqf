@@ -232,15 +232,20 @@ if(_EnableIntelTaskComplete) then {
 	format ["[SetupIntel] Task %1 created as ASSIGNED (silent).", _TaskId] spawn OKS_fnc_LogDebug;
 
 	if(_IntelPiece isKindOf "Man") then {
-		// Snapshot which players already hold the intel document at registration time.
-		// ACE intel documents can live in magazines _unit (CfgMagazines) rather than
-		// items _unit, so both arrays are checked to ensure detection across ACE versions.
+		// Track per-player acex_intelitems_document COUNT each iteration.
+		// Using a count rather than a boolean snapshot prevents false negatives when a
+		// player holds an existing doc at script-spawn time, later discards it, and then
+		// picks up THIS HVT's document — the boolean "had doc" flag would remain true
+		// from the initial snapshot and the new pickup would never be detected.
+		// Count tracking updates the stored baseline every tick, so a discard (count drops)
+		// is recorded immediately; a subsequent pickup (count rises) is detected on the
+		// very next 0.5 s poll regardless of what the player held earlier in the mission.
 		private _intelDocClass = "acex_intelitems_document";
-		private _snapPlayers = allPlayers select {isPlayer _x};
-		private _snapHasDoc = _snapPlayers apply {
-			_intelDocClass in (items _x) || {_intelDocClass in (magazines _x)}
+		private _trackPlayers = allPlayers select {isPlayer _x};
+		private _trackCounts = _trackPlayers apply {
+			{_x == _intelDocClass} count (items _x + magazines _x)
 		};
-		format ["[SetupIntel] Unit path: snapshot taken for %1 player(s). Polling %2 for pickup.", count _snapPlayers, name _IntelPiece] spawn OKS_fnc_LogDebug;
+		format ["[SetupIntel] Unit path: tracking %1 player(s) for doc count delta. Polling %2 for pickup.", count _trackPlayers, name _IntelPiece] spawn OKS_fnc_LogDebug;
 
 		private _hvtDeadTime = -1;
 		private _capturedTime = -1;
@@ -249,11 +254,11 @@ if(_EnableIntelTaskComplete) then {
 		waitUntil {
 			sleep 0.5;
 
-			// Register any player who joined after the initial snapshot.
+			// Register any player who joined after tracking began.
 			{
-				if ((_snapPlayers find _x) < 0) then {
-					_snapPlayers pushBack _x;
-					_snapHasDoc pushBack (_intelDocClass in (items _x) || {_intelDocClass in (magazines _x)});
+				if ((_trackPlayers find _x) < 0) then {
+					_trackPlayers pushBack _x;
+					_trackCounts pushBack ({_x == _intelDocClass} count (items _x + magazines _x));
 				};
 			} forEach allPlayers;
 
@@ -273,14 +278,24 @@ if(_EnableIntelTaskComplete) then {
 			};
 
 			{
-				private _idx = _snapPlayers find _x;
-				private _hadDoc = if (_idx >= 0) then {_snapHasDoc select _idx} else {false};
-				private _hasDoc = _intelDocClass in (items _x) || {_intelDocClass in (magazines _x)};
-				if (_hasDoc && {!_hadDoc}) exitWith {
-					format ["[SetupIntel] Intel pickup: player=%1 hvtAlive=%2", name _x, alive _IntelPiece] spawn OKS_fnc_LogDebug;
+				private _pIdx = _trackPlayers find _x;
+				private _prevCount = if (_pIdx >= 0) then {_trackCounts select _pIdx} else {0};
+				private _curCount = {_x == _intelDocClass} count (items _x + magazines _x);
+				if (_curCount > _prevCount) exitWith {
+					format ["[SetupIntel] Intel pickup: player=%1 hvtAlive=%2 (count %3->%4)", name _x, alive _IntelPiece, _prevCount, _curCount] spawn OKS_fnc_LogDebug;
 					_Player = _x;
 				};
 			} forEach _checkPlayers;
+
+			// Update stored doc counts for all tracked players so discards are recorded
+			// and don't leave stale baselines that prevent future pickup detection.
+			{
+				private _pIdx = _trackPlayers find _x;
+				private _curCount = {_x == _intelDocClass} count (items _x + magazines _x);
+				if (_pIdx >= 0) then {
+					_trackCounts set [_pIdx, _curCount];
+				};
+			} forEach _trackPlayers;
 
 			// Death window: 60s after unit dies to allow corpse looting.
 			if (!alive _IntelPiece && {_hvtDeadTime < 0}) then {
@@ -305,7 +320,8 @@ if(_EnableIntelTaskComplete) then {
 				format ["[SetupIntel DIAG] alive=%1 docOnHvt=%2 capturedTime=%3 deadTime=%4 checkPlayers=%5", alive _IntelPiece, _docOnHvt, _capturedTime, _hvtDeadTime, count _checkPlayers] spawn OKS_fnc_LogDebug;
 				{
 					private _p = _x;
-					format ["[SetupIntel DIAG] Player %1: hasDoc=%2 magazines=%3", name _p, (_intelDocClass in (magazines _p)), magazines _p select {_x == _intelDocClass}] spawn OKS_fnc_LogDebug;
+					private _diagCur = {_x == _intelDocClass} count (items _p + magazines _p);
+					format ["[SetupIntel DIAG] Player %1: docCount=%2", name _p, _diagCur] spawn OKS_fnc_LogDebug;
 				} forEach _checkPlayers;
 			};
 

@@ -111,10 +111,10 @@ if (alive _intelUnit) then {
             format ["[GiveIntelToNearestPlayer] Alive path — nearest player: %1 (%.0fm).", name _nearestPlayer, _nearestPlayer distance _intelUnit] call OKS_fnc_LogDebug;
         };
 
-        // Give the document directly to the player on their machine.
-        // This mirrors the pattern in OKS_fnc_Request_Intel and adds the document
-        // to the player's ACE items without requiring any interaction.
-        [_nearestPlayer, _intelDocClass, _customText, _customHeader] remoteExecCall ["ace_intelitems_fnc_addIntel", _nearestPlayer];
+        // ace_intelitems_fnc_addIntel must be called on the server (ACE3 docs).
+        // It directly adds the intel magazine to the unit's inventory from server-side.
+        // Do NOT remoteExecCall — running it on the client is incorrect and silently fails.
+        [_nearestPlayer, _intelDocClass, _customText, _customHeader] call ace_intelitems_fnc_addIntel;
 
         // Local hint on the receiving player's machine
         [format ["%1 gave you intel documents.", _unitName]] remoteExec ["hint", _nearestPlayer];

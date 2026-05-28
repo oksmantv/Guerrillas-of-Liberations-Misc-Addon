@@ -210,6 +210,7 @@ if (_debug) then {
 // -------------------------------------------------------------------------
 // 9. Optional guard group
 // -------------------------------------------------------------------------
+private _guardGroup = grpNull;
 if (!isNil "_guardData" && { _guardData isEqualType [] } && { count _guardData >= 2 }) then {
     _guardData params [
         ["_guardCount", 4, [0]],
@@ -220,7 +221,8 @@ if (!isNil "_guardData" && { _guardData isEqualType [] } && { count _guardData >
     private _settings = [_guardSide] call OKS_fnc_Task_Settings;
     _settings params [["_gLeaders", []], ["_gUnits", []]];
 
-    private _guardGroup = createGroup [_guardSide, true];
+    // Assign to outer-scope _guardGroup (no private — avoids shadowing the grpNull sentinel)
+    _guardGroup = createGroup [_guardSide, true];
     private _guardPos = getPosATL _casualtyUnit;
 
     // Leader
@@ -249,8 +251,9 @@ if (!isNil "_guardData" && { _guardData isEqualType [] } && { count _guardData >
 
     _guardGroup setBehaviourStrong "STEALTH";
     _guardGroup setCombatMode "GREEN";
+    { _x setUnitPos "MIDDLE" } forEach units _guardGroup;
 
-    // Switch to COMBAT when any player closes within 100m
+    // Switch to COMBAT and engage at will when any player closes within 100m
     [_guardGroup, _casualtyUnit] spawn {
         params ["_grp", "_unit"];
         waitUntil {
@@ -283,6 +286,12 @@ if (!alive _casualtyUnit) then {
     _casualtyUnit setVariable ["OKS_IsDead", true, true];
     if (_debug) then { "[RescueSurvivor] Casualty died before proximity trigger — task FAILED." call OKS_fnc_LogDebug };
 } else {
+
+// Guards switch to combat now that players have closed to within 50m
+if !(isNull _guardGroup) then {
+    _guardGroup setBehaviourStrong "COMBAT";
+    _guardGroup setCombatMode "RED";
+};
 
 // -------------------------------------------------------------------------
 // 11. Proximity triggered — reveal position, activate damage, create Rescue subtask

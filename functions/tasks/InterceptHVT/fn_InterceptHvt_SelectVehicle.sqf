@@ -38,6 +38,7 @@ private _isCrewCompatibleFn = {
     (_aliveCrew select { !(_x in _allowedCrew) }) isEqualTo []
 };
 
+private _useDesignated = false;
 if ([_designatedVehicle] call _isValidVehicleFn) then {
     private _designatedSeats = [_designatedVehicle] call _seatCountFn;
     _designatedSeats params ["_designatedGuardSeats", "_designatedHasHvtCargo"];
@@ -45,13 +46,17 @@ if ([_designatedVehicle] call _isValidVehicleFn) then {
         _designatedHasHvtCargo &&
         {_designatedGuardSeats > 0} &&
         {[_designatedVehicle, _groupUnits] call _isCrewCompatibleFn}
-    ) exitWith {
-        if (_hvtDebug) then {
-            format ["[INTERCEPT HVT][SELECT_VEH] Using designated vehicle %1 seats=%2", typeOf _designatedVehicle, _designatedGuardSeats] call OKS_fnc_LogDebug;
-        };
-        _designatedVehicle setVariable ["OKS_InterceptHvt_Reserved", true, true];
-        _designatedVehicle
+    ) then {
+        _useDesignated = true;
     };
+};
+
+if (_useDesignated) exitWith {
+    if (_hvtDebug) then {
+        format ["[INTERCEPT HVT][SELECT_VEH] Using designated vehicle %1", typeOf _designatedVehicle] call OKS_fnc_LogDebug;
+    };
+    _designatedVehicle setVariable ["OKS_InterceptHvt_Reserved", true, true];
+    _designatedVehicle
 };
 
 private _candidates = nearestObjects [_spawnPos, ["LandVehicle"], _radius, true];

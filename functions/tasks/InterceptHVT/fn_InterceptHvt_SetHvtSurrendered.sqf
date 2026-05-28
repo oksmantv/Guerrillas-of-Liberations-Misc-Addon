@@ -11,6 +11,16 @@ _hvtUnit setVariable ["OKS_InterceptHvt_Surrendered", true, true];
 _hvtUnit setVariable ["OKS_InterceptHvt_AllowExit", true, true];
 _hvtUnit setCaptive true;
 
+// Stop the HVT from fighting immediately — before any async spawn runs.
+_hvtUnit setBehaviour "CARELESS";
+_hvtUnit setCombatMode "BLUE";
+_hvtUnit disableAI "AUTOTARGET";
+_hvtUnit disableAI "TARGET";
+
+// Disarm now so weapons are gone before the vehicle-stop sequence completes.
+_hvtUnit setVariable ["GOL_ThrownWeaponOnGround", true, true];
+[_hvtUnit, objNull, false] spawn OKS_fnc_ThrowWeaponsOnGround;
+
 // Immediately redirect all overflow groups to SAD at the HVT's current position.
 // Runs unconditionally so it works whether the HVT is mounted or on foot.
 private _sadRallyPos = getPosATL (if (vehicle _hvtUnit != _hvtUnit) then {vehicle _hvtUnit} else {_hvtUnit});
@@ -20,8 +30,8 @@ private _sadRallyPos = getPosATL (if (vehicle _hvtUnit != _hvtUnit) then {vehicl
         [_grp] call OKS_fnc_ClearWaypoints;
         private _sadWp = _grp addWaypoint [_sadRallyPos, 0];
         _sadWp setWaypointType "SAD";
-        _sadWp setWaypointBehaviour "COMBAT";
-        _sadWp setWaypointCombatMode "RED";
+        _sadWp setWaypointBehaviour "SAFE";
+        _sadWp setWaypointCombatMode "YELLOW";
         _grp setCurrentWaypoint _sadWp;
     };
 } forEach (_hvtUnit getVariable ["OKS_InterceptHvt_OverflowGroups", []]);
@@ -40,10 +50,6 @@ if (vehicle _hvtUnit != _hvtUnit) then {
         params ["_hvt", "_veh", "_hvtDebug", "_aceSetSurrendered"];
 
         if (isNull _veh || {!alive _hvt}) exitWith {};
-
-        // Disarm the HVT and transfer weapons into the vehicle cargo.
-        _hvt setVariable ["GOL_ThrownWeaponOnGround", true, true];
-        [_hvt, _veh, false] spawn OKS_fnc_ThrowWeaponsOnGround;
 
         // Ask current crew to stop, then dismount non-HVT first so they can engage.
         {
@@ -73,7 +79,7 @@ if (vehicle _hvtUnit != _hvtUnit) then {
                 unassignVehicle _x;
                 _x enableAI "FSM";
                 _x enableAI "PATH";
-                _x setBehaviour "AWARE";
+                _x setBehaviour "COMBAT";
                 _x setCombatMode "RED";
                 _ejectedGuards pushBack _x;
             };
@@ -108,7 +114,7 @@ if (vehicle _hvtUnit != _hvtUnit) then {
             [_guardGrp] call OKS_fnc_ClearWaypoints;
             private _guardWp = _guardGrp addWaypoint [getPosATL _hvt, 20];
             _guardWp setWaypointType "GUARD";
-            _guardWp setWaypointBehaviour "AWARE";
+            _guardWp setWaypointBehaviour "COMBAT";
             _guardWp setWaypointCombatMode "RED";
             _guardGrp setCurrentWaypoint _guardWp;
         };
@@ -135,10 +141,7 @@ if (vehicle _hvtUnit != _hvtUnit) then {
         };
     };
 } else {
-    // On foot — drop weapons to a ground holder.
-    _hvtUnit setVariable ["GOL_ThrownWeaponOnGround", true, true];
-    [_hvtUnit, objNull, false] spawn OKS_fnc_ThrowWeaponsOnGround;
-
+    // On foot — weapon drop and combat-mode lockout already applied above.
     _hvtUnit disableAI "PATH";
     _hvtUnit setUnitPos "MIDDLE";
     if !(_aceSetSurrendered isEqualTo {}) then {

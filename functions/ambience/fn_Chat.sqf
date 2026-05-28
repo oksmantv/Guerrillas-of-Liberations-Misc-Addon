@@ -124,7 +124,8 @@ Switch (toLower _Channel) do {
 	}
 };
 
-_Color = switch (side player) do {
+private _talkerSide = if (_Talker isEqualType "") then {side player} else {side _Talker};
+_Color = switch (_talkerSide) do {
 	case west: { "0D64EC"};
 	case east: { "AD2707" };
 	case independent: { "06B42E"};

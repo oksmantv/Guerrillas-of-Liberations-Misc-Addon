@@ -43,11 +43,11 @@ _giver addAction [
 
         // Prefer adding intel on the caller's machine.
         if (!isNil "ace_intelitems_fnc_addIntel") then {
-            [_caller, "acex_intelitems_document", _intelText] remoteExecCall ["ace_intelitems_fnc_addIntel", _caller];
+            [_caller, "acex_intelitems_document", _intelText] remoteExecCall ["ace_intelitems_fnc_addIntel", 2];
             systemChat "You have been given a document..";
 
             if !(_intelImagePath isEqualTo "") then {
-                [_caller, "acex_intelitems_photo", _intelImagePath] remoteExecCall ["ace_intelitems_fnc_addIntel", _caller];
+                [_caller, "acex_intelitems_photo", _intelImagePath] remoteExecCall ["ace_intelitems_fnc_addIntel", 2];
                 systemChat "You have been given a photograph..";
             };
         } else {

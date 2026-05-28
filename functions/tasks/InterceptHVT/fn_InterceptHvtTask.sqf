@@ -458,8 +458,11 @@ if (_hvtDebug) then {
                                 _teamAssignedDriver setBehaviour "AWARE";
                                 [_teamAssignedDriver] allowGetIn true;
                                 _teamAssignedDriver assignAsDriver _teamVeh;
-                                [_teamAssignedDriver] orderGetIn true;
-                                _teamAssignedDriver doMove (getPosATL _teamVeh);
+                                // Claim the seat immediately — orderGetIn+doMove is unreliable on
+                                // dedicated servers and leaves the seat open for another guard to
+                                // race in via GETIN NEAREST, causing the same force-claim race
+                                // that affected the main vehicle.
+                                _teamAssignedDriver moveInDriver _teamVeh;
                             };
 
                             if ((_teamVeh emptyPositions "commander") > 0 && {_teamPool isNotEqualTo []} && {isNull commander _teamVeh}) then {
@@ -554,74 +557,90 @@ if (_hvtDebug) then {
                             } forEach (fullCrew _teamVeh);
                             _teamVeh lock 2;
 
-                            // Then move to main destination. Use a wider spread (30-90 m at random angle)
-                            // so multiple overflow teams do not converge at the same road point.
-                            // Snap to the nearest road so the waypoint cannot land inside a building.
-                            private _teamWpPos = [_target, 30 + random 60, random 360] call BIS_fnc_relPos;
-                            private _snapRoads = _teamWpPos nearRoads 50;
-                            if (_snapRoads isNotEqualTo []) then {
-                                _teamWpPos = getPos (_snapRoads select 0);
-                            };
-                            private _moveWp = _teamGrp addWaypoint [_teamWpPos, 0];
-                            _moveWp setWaypointType "MOVE";
-                            _moveWp setWaypointBehaviour "AWARE";
-                            _moveWp setWaypointSpeed "FULL";
-                            _teamGrp setCurrentWaypoint _moveWp;
-                            if (_convoySpeedMS > 0) then {
-                                private _d = driver _teamVeh;
-                                if (!isNull _d && {alive _d}) then { _d forceSpeed _convoySpeedMS; };
-                            };
-
-                            // Watcher: unlock, dismount, and garrison the overflow team on arrival.
-                            [_teamGrp, _teamVeh, _teamWpPos, _endPos, _debug] spawn {
-                                params ["_grp", "_veh", "_wp", "_garrisonPos", "_dbg"];
+                            // Deferred: drive order waits until the main task has been created so
+                            // players have visibility before the overflow vehicles start moving.
+                            [_teamGrp, _teamVeh, _target, _endPos, _convoySpeedMS, _debug, _hvt] spawn {
+                                params ["_grp", "_veh", "_tgt", "_garrisonPos", "_speedMS", "_dbg", "_hvtUnit"];
                                 waitUntil {
                                     sleep 1;
-                                    isNull _veh || {!alive _veh} ||
-                                    ((_veh distance2D _wp) < 60) ||
-                                    (((units _grp) select {alive _x && {vehicle _x == _veh}}) isEqualTo [])
+                                    (_hvtUnit getVariable ["OKS_InterceptHvt_TaskReady", false]) || {!alive _hvtUnit}
                                 };
-                                if (isNull _veh || {!alive _veh}) then {
-                                    // Vehicle destroyed mid-route (ambush): do not continue to garrison destination.
-                                    // Give surviving dismounted units a GUARD order at their current position.
-                                    private _aliveUnits = (units _grp) select {alive _x};
-                                    if (_aliveUnits isNotEqualTo []) then {
-                                        [_grp] call OKS_fnc_ClearWaypoints;
-                                        private _holdWp = _grp addWaypoint [getPos (_aliveUnits select 0), 30];
-                                        _holdWp setWaypointType "GUARD";
-                                        _holdWp setWaypointBehaviour "COMBAT";
-                                        _holdWp setWaypointCombatMode "RED";
-                                        _grp setCurrentWaypoint _holdWp;
+                                if (!alive _hvtUnit) exitWith {};
+
+                                // Build MOVE waypoint now that task is live.
+                                private _teamWpPos = [_tgt, 30 + random 60, random 360] call BIS_fnc_relPos;
+                                private _snapRoads = _teamWpPos nearRoads 50;
+                                if (_snapRoads isNotEqualTo []) then {
+                                    _teamWpPos = getPos (_snapRoads select 0);
+                                };
+                                private _moveWp = _grp addWaypoint [_teamWpPos, 0];
+                                _moveWp setWaypointType "MOVE";
+                                _moveWp setWaypointBehaviour "AWARE";
+                                _moveWp setWaypointSpeed "FULL";
+                                _grp setCurrentWaypoint _moveWp;
+                                if (_speedMS > 0) then {
+                                    private _d = driver _veh;
+                                    if (!isNull _d && {alive _d}) then { _d forceSpeed _speedMS; };
+                                };
+
+                                if (_dbg) then {
+                                    format [
+                                        "[INTERCEPT HVT][OVERFLOW] Drive order issued. grp=%1 veh=%2 waypoints=%3",
+                                        _grp, typeOf _veh, count (waypoints _grp)
+                                    ] call OKS_fnc_LogDebug;
+                                };
+
+                                // Watcher: unlock, dismount, and garrison the overflow team on arrival.
+                                [_grp, _veh, _teamWpPos, _garrisonPos, _dbg] spawn {
+                                    params ["_grp", "_veh", "_wp", "_garrisonPos", "_dbg"];
+                                    waitUntil {
+                                        sleep 1;
+                                        isNull _veh || {!alive _veh} ||
+                                        ((_veh distance2D _wp) < 60) ||
+                                        (((units _grp) select {alive _x && {vehicle _x == _veh}}) isEqualTo [])
                                     };
-                                } else {
-                                    _veh lock 0;
-                                    {
-                                        if (alive _x && {vehicle _x == _veh}) then {
-                                            [_x] allowGetIn false;
-                                            _x leaveVehicle _veh;
-                                            doGetOut _x;
-                                            unassignVehicle _x;
-                                            _x enableAI "FSM";
-                                            _x enableAI "PATH";
-                                            _x setBehaviour "AWARE";
-                                        };
-                                    } forEach (units _grp);
-                                    sleep 2;
-                                    // Use a wider radius and even-distribution fill mode (0) so teams
-                                    // spread across multiple buildings rather than stacking in one.
-                                    private _bld = nearestBuilding _garrisonPos;
-                                    if (!isNull _bld) then {
-                                        private _aliveTeam = (units _grp) select {alive _x};
-                                        if (_aliveTeam isNotEqualTo []) then {
-                                            [_garrisonPos, nil, _aliveTeam, 30, 0, false, false] remoteExec ["ace_ai_fnc_garrison", 0];
-                                            if (_dbg) then {
-                                                format ["[INTERCEPT HVT][OVERFLOW] Garrison triggered. grp=%1 units=%2", _grp, count _aliveTeam] call OKS_fnc_LogDebug;
-                                            };
+                                    if (isNull _veh || {!alive _veh}) then {
+                                        // Vehicle destroyed mid-route (ambush): do not continue to garrison destination.
+                                        // Give surviving dismounted units a GUARD order at their current position.
+                                        private _aliveUnits = (units _grp) select {alive _x};
+                                        if (_aliveUnits isNotEqualTo []) then {
+                                            [_grp] call OKS_fnc_ClearWaypoints;
+                                            private _holdWp = _grp addWaypoint [getPos (_aliveUnits select 0), 30];
+                                            _holdWp setWaypointType "GUARD";
+                                            _holdWp setWaypointBehaviour "COMBAT";
+                                            _holdWp setWaypointCombatMode "RED";
+                                            _grp setCurrentWaypoint _holdWp;
                                         };
                                     } else {
-                                        { if (alive _x) then { _x move _garrisonPos; }; } forEach (units _grp);
-                                        if (_dbg) then {
-                                            "[INTERCEPT HVT][OVERFLOW] No building at garrison pos; guards moving on foot." call OKS_fnc_LogDebug;
+                                        _veh lock 0;
+                                        {
+                                            if (alive _x && {vehicle _x == _veh}) then {
+                                                [_x] allowGetIn false;
+                                                _x leaveVehicle _veh;
+                                                doGetOut _x;
+                                                unassignVehicle _x;
+                                                _x enableAI "FSM";
+                                                _x enableAI "PATH";
+                                                _x setBehaviour "AWARE";
+                                            };
+                                        } forEach (units _grp);
+                                        sleep 2;
+                                        // Use a wider radius and even-distribution fill mode (0) so teams
+                                        // spread across multiple buildings rather than stacking in one.
+                                        private _bld = nearestBuilding _garrisonPos;
+                                        if (!isNull _bld) then {
+                                            private _aliveTeam = (units _grp) select {alive _x};
+                                            if (_aliveTeam isNotEqualTo []) then {
+                                                [_garrisonPos, nil, _aliveTeam, 30, 0, false, false] remoteExec ["ace_ai_fnc_garrison", 0];
+                                                if (_dbg) then {
+                                                    format ["[INTERCEPT HVT][OVERFLOW] Garrison triggered. grp=%1 units=%2", _grp, count _aliveTeam] call OKS_fnc_LogDebug;
+                                                };
+                                            };
+                                        } else {
+                                            { if (alive _x) then { _x move _garrisonPos; }; } forEach (units _grp);
+                                            if (_dbg) then {
+                                                "[INTERCEPT HVT][OVERFLOW] No building at garrison pos; guards moving on foot." call OKS_fnc_LogDebug;
+                                            };
                                         };
                                     };
                                 };
@@ -633,12 +652,11 @@ if (_hvtDebug) then {
 
                             if (_debug) then {
                                 format [
-                                    "[INTERCEPT HVT][OVERFLOW] Team ready. team=%1 veh=%2 units=%3 driver=%4 waypoints=%5",
+                                    "[INTERCEPT HVT][OVERFLOW] Team ready. team=%1 veh=%2 units=%3 driver=%4 (drive order deferred until task ready)",
                                     _teamGrp,
                                     typeOf _teamVeh,
                                     count _teamUnits,
-                                    driver _teamVeh,
-                                    count (waypoints _teamGrp)
+                                    driver _teamVeh
                                 ] call OKS_fnc_LogDebug;
                             };
                         };
@@ -912,7 +930,7 @@ if (_hvtDebug) then {
     };
 
     private _captureTaskArray = [_captureTaskId, _mainTaskId];
-    private _mainTaskPos = if (_showTaskPosition) then {getPosATL _hvtUnit} else {nil};
+    private _mainTaskPos = if (_showTaskPosition) then {getPosATL _hvtUnit} else {[]};
 
     [
         true,
@@ -941,6 +959,9 @@ if (_hvtDebug) then {
     if (_showTaskPosition) then {
         [_mainTaskId, _hvtUnit] spawn OKS_fnc_InterceptHvt_UpdateTrackedTaskPos;
     };
+
+    // Signal deferred overflow spawns that the task is now live and vehicles should move.
+    _hvtUnit setVariable ["OKS_InterceptHvt_TaskReady", true];
 
     // Base the threshold on the actual immediate guard count stored in AllGuards.
     // _initialGuardCount is the total spawned (including overflow), but AllGuards was trimmed
@@ -1015,10 +1036,17 @@ if (_hvtDebug) then {
                         };
                     };
                 } else {
-                    _hvtUnit setVariable ["GOL_HVT_SECURED", true, true];
-                    [_captureTaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
-                    [_mainTaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
-                    _finished = true;
+                    // Do not complete the task immediately — SetHvtSurrendered spawns an async
+                    // vehicle-stop/eject sequence that takes up to 20 s when the HVT is mounted.
+                    // Firing _finished=true on the same tick Surrendered is set means the task
+                    // resolves while the HVT is still mounted and shooting.
+                    // Wait until the HVT has physically exited the vehicle first.
+                    if (vehicle _hvtUnit == _hvtUnit) then {
+                        _hvtUnit setVariable ["GOL_HVT_SECURED", true, true];
+                        [_captureTaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
+                        [_mainTaskId, "SUCCEEDED", true] call BIS_fnc_taskSetState;
+                        _finished = true;
+                    };
                 };
             };
 
