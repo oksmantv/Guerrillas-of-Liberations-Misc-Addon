@@ -1,5 +1,35 @@
-	class rhs_bmp2d_msv;
-	class GOL_BMP2DM: rhs_bmp2d_msv
+	class Tank_F
+	{
+		class HitPoints {};
+		class Turrets {};
+	};
+	class rhs_bmp1tank_base: Tank_F
+	{
+		class HitPoints: HitPoints
+		{
+			class Hit_Ammo;
+			class HitHull;
+			class HitEngine;
+			class HitLTrack;
+			class HitRTrack;
+		};
+	};
+	class rhs_bmp_base: rhs_bmp1tank_base {};
+	class rhs_bmp1_vdv: rhs_bmp_base {};
+	class rhs_bmp2e_vdv: rhs_bmp1_vdv
+	{
+		class Turrets: Turrets
+		{
+			class CargoTurret_01;
+			class CargoTurret_02;
+			class CargoTurret_03;
+			class CargoTurret_04;
+			class CargoTurret_05;
+		};
+	};
+	class rhs_bmp2_vdv: rhs_bmp2e_vdv {};
+	class rhs_bmp2_msv: rhs_bmp2_vdv {};
+	class GOL_BMP2DM: rhs_bmp2_msv
 	{
 		scope = 2;
 		scopeCurator = 2;
@@ -7,8 +37,59 @@
 		displayName = "BMP-2DM";
 		faction = "rhs_faction_msv";
 
-		// --- Armor upgrade (75% increase over RHS stock 300) ---
-		armor = 450;
+		// --- Survivability tuning ---
+		// armor: kept in IFV range (300-500) so AI correctly assesses the vehicle as targetable.
+		// damageResistance: primary survivability knob — 0.15 = vehicle takes 15% of all damage.
+		armor = 500;
+		damageResistance = 0.15;
+		ace_ffv_enabled = 1;
+		incomingMissileDetectionSystem = 16;
+
+		// --- Countermeasures ---
+		// countermeasureActivatedBy: 1=driver, 2=gunner/copilot. Bitmask, so 3=both.
+		// Lets driver deploy smoke via T key and gunner via the rhs_weap_902a turret weapon.
+		countermeasureActivatedBy = 3;
+
+		// --- ACE vehicle damage probabilities ---
+		ace_vehicle_damage_hullFireProb = 0.08;
+		ace_vehicle_damage_hullDetonationProb = 0.05;
+		ace_vehicle_damage_engineFireProb = 0.10;
+		ace_vehicle_damage_engineDetonationProb = 0.05;
+		ace_vehicle_damage_turretFireProb = 0.15;
+		ace_vehicle_damage_turretDetonationProb = 0.08;
+		ace_vehicle_damage_detonationDuringFireProb = 0.15;
+		ace_vehicle_damage_canHaveFireRing = 0;
+
+		// --- HitPoints overrides ---
+		// HitPoint armor = minimum damage threshold to register a hit on that component.
+		// Higher = more durable. RHS stock: HitHull=0.40, HitEngine=0.45.
+		class HitPoints: HitPoints
+		{
+			class Hit_Ammo: Hit_Ammo
+			{
+				explosionShielding = 0.95;
+			};
+			class HitHull: HitHull
+			{
+				armor = 0.8;
+				explosionShielding = 0.90;
+			};
+			class HitEngine: HitEngine
+			{
+				armor = 2.5;
+				explosionShielding = 0.85;
+			};
+			class HitLTrack: HitLTrack
+			{
+				armor = 1.0;
+				explosionShielding = 0.8;
+			};
+			class HitRTrack: HitRTrack
+			{
+				armor = 1.0;
+				explosionShielding = 0.8;
+			};
+		};
 
 		// --- Built-in info panels (GPS, crew list, vehicle info) ---
 		enableGPS = 1;
@@ -225,6 +306,11 @@
 		// Driver sees: Gunner camera + Commander camera
 		class Components
 		{
+			// Empty class — the engine recognises this by name and enables
+			// the C-key countermeasure deploy action (countermeasureActivatedBy = 3).
+			class TransportCountermeasuresComponent {};
+
+
 			class VehicleSystemsDisplayManagerComponentLeft: VehicleSystemsTemplateLeftDriver
 			{
 				class Components: components
@@ -259,7 +345,7 @@
 			};
 		};
 
-		class Turrets
+		class Turrets: Turrets
 		{
 			class MainTurret
 			{
@@ -313,10 +399,10 @@
 				// --- Weapons (GOL wrappers enable vanilla FCS auto-range) ---
 				// HE/AP split into separate single-muzzle weapons (weapon-switch to toggle ammo type)
 				weapons[] = {"GOL_weap_2a42_HE","GOL_weap_2a42_AP","GOL_weap_pkt","rhs_weap_9m113","rhs_weap_902a"};
-				magazines[] = {"rhs_mag_3uof8_340","rhs_mag_3uof8_340","rhs_mag_3uof8_340","rhs_mag_3ubr8_160","rhs_mag_3ubr8_160","rhs_mag_3ubr8_160","rhs_mag_9m113M","rhs_mag_9m113M","rhs_mag_9m113M","rhs_mag_9m113M","rhs_mag_762x54mm_2000","rhs_mag_3d17_6"};
+				magazines[] = {"rhs_mag_3uof8_340","rhs_mag_3uof8_340","rhs_mag_3uof8_340","rhs_mag_3ubr8_160","rhs_mag_3ubr8_160","rhs_mag_3ubr8_160","rhs_mag_9m113M","rhs_mag_9m113M","rhs_mag_9m113M","rhs_mag_9m113M","rhs_mag_762x54mm_2000","rhs_mag_3d17_6","rhs_mag_3d17_6","rhs_mag_3d17_6"};
 
 				// --- Turret movement ---
-				minElev = -5;
+				minElev = -8;
 				maxElev = 74;
 				initElev = 0;
 				minTurn = -360;
@@ -331,8 +417,8 @@
 				minCamElev = -90;
 				maxCamElev = 90;
 				initCamElev = 0;
-				maxhorizontalrotspeed = 0.61;
-				maxverticalrotspeed = 0.104;
+				maxhorizontalrotspeed = 0.91;
+				maxverticalrotspeed = 0.304;
 				stabilizedInAxes = 3;
 
 				// --- Optics behavior ---
@@ -777,6 +863,33 @@
 						};
 					};
 				};
+			};
+
+			// --- ACE FFV: Interior cargo seats (firing port positions) ---
+			class CargoTurret_01: CargoTurret_01
+			{
+				outGunnerMayFire = 1;
+				inGunnerMayFire = 0;
+			};
+			class CargoTurret_02: CargoTurret_02
+			{
+				outGunnerMayFire = 1;
+				inGunnerMayFire = 0;
+			};
+			class CargoTurret_03: CargoTurret_03
+			{
+				outGunnerMayFire = 1;
+				inGunnerMayFire = 0;
+			};
+			class CargoTurret_04: CargoTurret_04
+			{
+				outGunnerMayFire = 1;
+				inGunnerMayFire = 0;
+			};
+			class CargoTurret_05: CargoTurret_05
+			{
+				outGunnerMayFire = 1;
+				inGunnerMayFire = 0;
 			};
 		};
 	};

@@ -398,3 +398,12 @@ diag_log "OKS_GOL_Misc: XEH_preInit_core.sqf executed";
     true,
     1
 ] call CBA_fnc_addSetting;
+
+[
+    "GOL_BMP2_Debug",
+    "CHECKBOX",
+    ["Enable BMP-2 Debug", "Enables [BMP2] debug logging for GOL_BMP2DM crew protection, animation state capture/restore, ACE unconscious events, and vehicle damage observation."],
+    ["GOL DEBUG", "Module Specific"],
+    true,
+    1
+] call CBA_fnc_addSetting;

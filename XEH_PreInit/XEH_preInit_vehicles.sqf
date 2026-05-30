@@ -157,3 +157,13 @@ missionNamespace setVariable [
 ["GOL Custom Controls", "OKS_SatCam_VisionMode", ["Camera Vision Mode", "Cycle camera vision mode: Normal -> Night Vision -> Thermal."], {
     [] call OKS_fnc_SatCamPipCycleVisionMode;
 }, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
+
+// Missile Warning display mode
+[
+    "GOL_MissileWarning_DisplayMode",
+    "LIST",
+    ["Missile Warning Display", "Controls what feedback players receive when an ATGM is detected. Requires Missile Warning to be enabled."],
+    ["GOL Vehicle", "Missile Warning"],
+    [[0, 1, 2, 3], ["Both (Sound + Text)", "Sound Only", "Text Only", "None"], 0],
+    1
+] call CBA_fnc_addSetting;

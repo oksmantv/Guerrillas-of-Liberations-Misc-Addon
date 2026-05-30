@@ -425,5 +425,96 @@ if (hasInterface) then {
 ["GOL_BMP2DM", "init", {
 	params ["_vehicle"];
 	_vehicle removeWeaponTurret ["rhs_weap_9k11", [0]];
-	_vehicle removeWeaponTurret ["rhs_weap_9k111", [0]];
 }, true, [], true] call CBA_fnc_addClassEventHandler;
+
+// --- GOL_BMP2DM: Crew damage protection while inside ---
+// Driver gets a high threshold (20) to prevent ACE Medical unconscious animation
+// clipping through the driver hatch. Other crew get moderate protection (4).
+// Deferred 0-frame so our value overrides the SetDifficulty framework's x1.5 multiplier.
+// Also captures the actual animationState after the vehicle anim has settled.
+// On exit: resets threshold to 1 and clears the saved animation.
+// Debug: enable GOL_BMP2_Debug (+ GOL_Core_Debug master) for [BMP2] tagged log output.
+["GOL_BMP2DM", "getInMan", {
+	params ["_vehicle", "_role", "_unit"];
+	if (!isPlayer _unit) exitWith {};
+
+	private _debug = missionNamespace getVariable ["GOL_BMP2_Debug", false];
+	if (_debug) then {
+		format ["[BMP2] getIn | unit: %1 | role: %2 | vehicle: %3",
+			name _unit, _role, typeOf _vehicle
+		] spawn OKS_fnc_LogDebug;
+	};
+
+	// Set damage threshold immediately (0-frame defer so SetDifficulty x1.5 doesn't overwrite us)
+	[{
+		params ["_role", "_unit"];
+		if (vehicle _unit == _unit) exitWith {};
+		ace_medical_playerDamageThreshold = if (_role == "driver" || _role == "gunner" || _role == "commander") then {20} else {4};
+		if (missionNamespace getVariable ["GOL_BMP2_Debug", false]) then {
+			format ["[BMP2] threshold set | unit: %1 | role: %2 | threshold: %3",
+				name _unit, _role, ace_medical_playerDamageThreshold
+			] spawn OKS_fnc_LogDebug;
+		};
+	}, [_role, _unit], 0] call CBA_fnc_waitAndExecute;
+}, true, [], false] call CBA_fnc_addClassEventHandler;
+
+["GOL_BMP2DM", "getOutMan", {
+	params ["_vehicle", "_role", "_unit"];
+	if (!isPlayer _unit) exitWith {};
+	ace_medical_playerDamageThreshold = 1;
+	_unit setVariable ["GOL_BMP2DM_preUnconsciousAnim", nil];
+	if (missionNamespace getVariable ["GOL_BMP2_Debug", false]) then {
+		format ["[BMP2] getOut | unit: %1 | role: %2 | threshold reset to 1",
+			name _unit, _role
+		] spawn OKS_fnc_LogDebug;
+	};
+}, true, [], false] call CBA_fnc_addClassEventHandler;
+
+// --- GOL_BMP2DM: Restore correct crew animation after ACE unconscious recovery ---
+// Captures animationState at the moment the unit goes unconscious (the seat they are
+// in at that exact moment, regardless of seat changes since getIn). Restores it on
+// recovery. This avoids any timing issues with getIn animation settling.
+["ace_unconscious", {
+	params ["_unit", "_unconscious"];
+	if (_unit != player) exitWith {};                        // local player only
+	if (vehicle _unit == _unit) exitWith {};                 // not in a vehicle
+	if (!((vehicle _unit) isKindOf "GOL_BMP2DM")) exitWith {};
+
+	private _debug = missionNamespace getVariable ["GOL_BMP2_Debug", false];
+
+	if (_unconscious) exitWith {
+		// Save the animation the player is currently playing — this is what we restore.
+		private _anim = animationState _unit;
+		_unit setVariable ["GOL_BMP2DM_preUnconsciousAnim", _anim];
+		if (_debug) then {
+			format ["[BMP2] UNCONSCIOUS | unit: %1 | role: %2 | savedAnim: %3 | vehicle: %4",
+				name _unit, (assignedVehicleRole _unit) select 0, _anim, typeOf (vehicle _unit)
+			] spawn OKS_fnc_LogDebug;
+		};
+	};
+
+	// Recovery path
+	private _savedAnim = _unit getVariable ["GOL_BMP2DM_preUnconsciousAnim", ""];
+	private _currentAnim = animationState _unit;
+
+	if (_debug) then {
+		format ["[BMP2] RECOVERED | unit: %1 | savedAnim: %2 | currentAnim: %3",
+			name _unit, _savedAnim, _currentAnim
+		] spawn OKS_fnc_LogDebug;
+	};
+
+	if (_savedAnim == "") exitWith {
+		if (_debug) then { "[BMP2] RECOVERED | no savedAnim — skipping switchMove" spawn OKS_fnc_LogDebug; };
+	};
+
+	if (_currentAnim == _savedAnim) exitWith {
+		if (_debug) then {
+			format ["[BMP2] RECOVERED | anim already correct (%1) — switchMove skipped", _savedAnim] spawn OKS_fnc_LogDebug;
+		};
+	};
+
+	_unit switchMove _savedAnim;
+	if (_debug) then {
+		format ["[BMP2] RECOVERED | switchMove called: %1 (was: %2)", _savedAnim, _currentAnim] spawn OKS_fnc_LogDebug;
+	};
+}] call CBA_fnc_addEventHandler;
