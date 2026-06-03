@@ -2,14 +2,19 @@
 params ["_target","_missile","_instigator"];
 
 private _debug = missionNamespace getVariable ["GOL_MissileDeflect_Debug", false];
+// Forward all debug logs to the server when running on a client (e.g. player-fired missiles).
+private _log = {
+	_this call OKS_fnc_LogDebug;
+	if (!isServer) then { [_this] remoteExec ["OKS_fnc_LogDebug", 2]; };
+};
 private _ticks = 40; // active steering for ~3 s (40 × 0.075 s); converges well before impact
 private _angleMax = 60; // max angle to deflect missile
 private _inDeadlyRange = false;
 if (_debug) then {
-	"[MISSILEDEFLECT] Waiting for Smoke or Missile destruction.." call OKS_fnc_LogDebug;
+	"[MISSILEDEFLECT] Waiting for Smoke or Missile destruction.." call _log;
 	format ["[MISSILEDEFLECT] INIT | Target: %1 | MissileType: %2 | Instigator: %3 | MissileLocal: %4 | MissileOwner: %5",
 		_target, typeOf _missile, _instigator, local _missile, owner _missile
-	] call OKS_fnc_LogDebug;
+	] call _log;
 };
 private _waitTick = 0;
 
@@ -35,7 +40,7 @@ _GetDirectionAndAngle = {
 		_dirToMissile = _turretWorldPos getDir (getPosWorld _missile);
 
 		if (_debug) then {
-			"[MISSILEDEFLECT] Turret based Direction selected" call OKS_fnc_LogDebug;
+			"[MISSILEDEFLECT] Turret based Direction selected" call _log;
 		};			
 	};
 	if (_vehicleClass find "I_APC_Wheeled_03_cannon_F" != -1) then {
@@ -70,7 +75,7 @@ waitUntil {
             "[MISSILEDEFLECT][T%1] Smoke:%2 | InFront:%3 | AngleDiff:%4 | VehicleDir:%5 | Dist2DTarget:%6 | Dist2DInstigator:%7 | DeadlyRange:%8 | MissileAlive:%9",
 			_waitTick, _firedSmoke, _missileInFront, _angleDiff, _vehicleDir,
 			_dist2DTarget, _dist2DInstigator, _inDeadlyRange, alive _missile
-        ] call OKS_fnc_LogDebug;
+        ] call _log;
     };
 
 	if (_dist2DTarget < 100) then {
@@ -87,16 +92,16 @@ if (_debug) then {
 		_waitTick, !_exitByFail, alive _missile, _inDeadlyRange,
 		_target getVariable ["GOL_FiredSmoke", false],
 		_missile distance2D _target
-	] call OKS_fnc_LogDebug;
+	] call _log;
 };
 if (_exitByFail) exitWith {
 	if (_debug) then {
-		"[MISSILEDEFLECT] Missile passed or destroyed — no deflect applied" call OKS_fnc_LogDebug;
+		"[MISSILEDEFLECT] Missile passed or destroyed — no deflect applied" call _log;
 	};
 };
 
 if (_debug) then {
-	"[MISSILEDEFLECT] Missile Deflected" call OKS_fnc_LogDebug;
+	"[MISSILEDEFLECT] Missile Deflected" call _log;
 };
 
 // --- Compute miss point: above and to one shoulder of the vehicle ---
@@ -125,24 +130,14 @@ private _missOffset = [
 ];
 
 if (_debug) then {
-	format ["[MISSILEDEFLECT] Miss offset: lateral %1 m, height %2 m", _lateralOffset * _sideDir, _heightOffset] call OKS_fnc_LogDebug;
+	format ["[MISSILEDEFLECT] Miss offset: lateral %1 m, height %2 m", _lateralOffset * _sideDir, _heightOffset] call _log;
 };
 
 // setVelocity only has effect on the machine where the missile is local.
 // SetupMissileWarning already remoteExec'd this function to owner _missile,
 // but guard here as a safety net in case locality transferred mid-flight.
 if (local _missile) then {
-	// Disable SACLOS guidance: clear the operator's target so the engine stops
-	// applying corrective forces that would fight our velocity steering.
-	if (local _instigator) then {
-		private _gunner = gunner _instigator;
-		if (!isNull _gunner) then {
-			_gunner doTarget objNull;
-			_gunner commandTarget objNull;
-		};
-		_instigator doTarget objNull;
-	};
-	if (_debug) then { "[MISSILEDEFLECT] Guidance cleared - beginning steering loop" call OKS_fnc_LogDebug; };
+	if (_debug) then { "[MISSILEDEFLECT] Beginning steering loop" call _log; };
 
 	// Each tick: steer velocity toward the miss point using lerp.
 	// lerpT = 0.3 with 0.025 s sleep → fast enough to overcome residual guidance,
@@ -199,23 +194,23 @@ if (local _missile) then {
 
 		if (_debug) then {
 			format ["[MISSILEDEFLECT] Tick %1 | Speed: %2 | MissDir: [%3,%4,%5] | VehicleDot: %6",
-				_i, _curSpeed, (_dx/_d), (_dy/_d), (_dz/_d), _velDotVehicle] call OKS_fnc_LogDebug;
+				_i, _curSpeed, (_dx/_d), (_dy/_d), (_dz/_d), _velDotVehicle] call _log;
 		};
 
 		if (_velDotVehicle < 0) exitWith {
-			if (_debug) then { "[MISSILEDEFLECT] Missile past target — coasting" call OKS_fnc_LogDebug; };
+			if (_debug) then { "[MISSILEDEFLECT] Missile past target — coasting" call _log; };
 		};
 
 		sleep 0.025;
 	};
 } else {
 	if (_debug) then {
-		"[MISSILEDEFLECT] Missile not local on this machine - deflect skipped" call OKS_fnc_LogDebug;
+		"[MISSILEDEFLECT] Missile not local on this machine - deflect skipped" call _log;
 	};
 };
 
 waitUntil {sleep 0.1; !alive _missile};
 
 if (_debug) then {
-	"[MISSILEDEFLECT] Missile Destroyed" call OKS_fnc_LogDebug;
+	"[MISSILEDEFLECT] Missile Destroyed" call _log;
 };

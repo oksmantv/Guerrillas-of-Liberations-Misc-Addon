@@ -164,6 +164,36 @@ class CfgAmmo {
 		nvgOnly = 0;
 	};
 
+	// 9.3x64mm SLAP — Saboted Light Armor Penetrator
+	// Proportionally stronger than 7.62 SLAP: heavier caliber = larger sub-caliber penetrator.
+	// Slightly more hit than vanilla ball, major AP boost, sabot adds ~6% velocity.
+	class GOL_B_93x64_Ball_SLAP: B_93x64_Ball {
+		hit = 20;               // +~11% over vanilla ball — penetrator concentrates energy
+		caliber = 5.0;          // major AP boost — defeats BTR/APC class light armor
+		typicalSpeed = 870;     // sabot increases muzzle velocity (~+6%)
+		airFriction = -0.00065; // sub-caliber penetrator, good BC
+		// Suppress tracer — SLAP ball rounds are non-tracer by default
+		tracerScale = 0;
+		tracerStartTime = 100;
+		tracerEndTime = 100;
+	};
+
+	class GOL_B_93x64_Ball_SLAP_Tracer_Red: GOL_B_93x64_Ball_SLAP {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_red";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
+	class GOL_B_93x64_Ball_SLAP_Tracer_Green: GOL_B_93x64_Ball_SLAP {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_green";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
 	// Custom 7.62x54mmR tracer ammunition (RHS PKM/PKP)
 	class rhs_B_762x54_Ball;
 	
@@ -632,5 +662,18 @@ class CfgAmmo {
 		tracerStartTime = 0.05;
 		tracerEndTime = 2.5;
 		nvgOnly = 0;
+	};
+
+	// M230 30x113mm AP round for the GOL Ghost Hawk chain gun pod.
+	// Based on B_30mm_APFSDS: hit=120, caliber=6.0 (336->720 effective armor damage vs vanilla B_30mm_AP).
+	// Effective against APCs and IFVs; marginal against MBTs.
+	class B_30mm_APFSDS;
+	class GOL_ammo_M230_AP: B_30mm_APFSDS
+	{
+		hit = 120;
+		indirectHit = 8;
+		indirectHitRange = 0.2;
+		caliber = 6;
+		typicalSpeed = 1320;
 	};
 };

@@ -134,12 +134,23 @@ class CfgPatches
             "GOL_weapon_M230_ChainGun"
         };
 		magazines[] = {
-            // 9.3x64mm AP for heavy machine guns.
+			// 9.3x64mm for heavy machine guns — ball, tracer, SLAP, and 200-round variants.
 			"GOL_150Rnd_93x64_Mag",
 			"GOL_150Rnd_93x64_Mag_Tracer",
 			"GOL_150Rnd_93x64_Mag_Tracer_Red",
 			"GOL_150Rnd_93x64_Mag_Tracer_Green",
 			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
+			"GOL_150Rnd_93x64_Mag_SLAP",
+			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red",
+			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green",
+			"GOL_200Rnd_93x64_Mag",
+			"GOL_200Rnd_93x64_Mag_Tracer",
+			"GOL_200Rnd_93x64_Mag_Tracer_Red",
+			"GOL_200Rnd_93x64_Mag_Tracer_Green",
+			"GOL_200Rnd_93x64_Mag_Tracer_Yellow",
+			"GOL_200Rnd_93x64_Mag_SLAP",
+			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red",
+			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green",
             // 7.62x54mmR AP for medium machine guns.
 			"GOL_100Rnd_762x54mmR",
 			"GOL_100Rnd_762x54mmR_red",

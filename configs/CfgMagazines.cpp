@@ -143,6 +143,100 @@ class CfgMagazines {
         ammo = "GOL_B_93x64_Ball_Tracer_Yellow";
     };
 
+    // 9.3x64mm SLAP belt magazines — 150-round
+    class GOL_150Rnd_93x64_Mag_SLAP: GOL_150Rnd_93x64_Mag {
+        scope = 2;
+        displayName = "9.3 mm 150Rnd SLAP Belt";
+        displayNameShort = "SLAP";
+        descriptionShort = "9.3x64mm 150-round belt, SLAP armor-piercing";
+        ammo = "GOL_B_93x64_Ball_SLAP";
+        tracersEvery = 0;
+    };
+
+    class GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red: GOL_150Rnd_93x64_Mag_SLAP {
+        displayName = "9.3 mm 150Rnd SLAP Tracer (Red)";
+        displayNameShort = "SLAP/T";
+        descriptionShort = "9.3x64mm 150-round belt, SLAP with red tracers";
+        ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 150;
+    };
+
+    class GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green: GOL_150Rnd_93x64_Mag_SLAP {
+        displayName = "9.3 mm 150Rnd SLAP Tracer (Green)";
+        displayNameShort = "SLAP/T (Green)";
+        descriptionShort = "9.3x64mm 150-round belt, SLAP with green tracers";
+        ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 150;
+    };
+
+    // 9.3x64mm extended belt magazines — 200-round
+    class GOL_200Rnd_93x64_Mag: GOL_150Rnd_93x64_Mag {
+        scope = 2;
+        displayName = "9.3 mm 200Rnd Belt";
+        displayNameShort = "9.3mm 200";
+        descriptionShort = "9.3x64mm 200-round belt, ball ammunition";
+        count = 200;
+        mass = 93;
+    };
+
+    class GOL_200Rnd_93x64_Mag_Tracer: GOL_200Rnd_93x64_Mag {
+        displayName = "9.3 mm 200Rnd Tracer (Red)";
+        displayNameShort = "200 Tracer";
+        descriptionShort = "9.3x64mm 200-round belt, all red tracers";
+        ammo = "GOL_B_93x64_Ball_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_93x64_Mag_Tracer_Red: GOL_200Rnd_93x64_Mag_Tracer {
+        displayName = "9.3 mm 200Rnd Tracer (Red)";
+        ammo = "GOL_B_93x64_Ball_Tracer_Red";
+    };
+
+    class GOL_200Rnd_93x64_Mag_Tracer_Green: GOL_200Rnd_93x64_Mag_Tracer {
+        displayName = "9.3 mm 200Rnd Tracer (Green)";
+        displayNameShort = "200 Tracer (Green)";
+        descriptionShort = "9.3x64mm 200-round belt, all green tracers";
+        ammo = "GOL_B_93x64_Ball_Tracer_Green";
+    };
+
+    class GOL_200Rnd_93x64_Mag_Tracer_Yellow: GOL_200Rnd_93x64_Mag_Tracer {
+        displayName = "9.3 mm 200Rnd Tracer (Yellow)";
+        displayNameShort = "200 Tracer (Yellow)";
+        descriptionShort = "9.3x64mm 200-round belt, all yellow tracers";
+        ammo = "GOL_B_93x64_Ball_Tracer_Yellow";
+    };
+
+    // 9.3x64mm SLAP belt magazines — 200-round
+    class GOL_200Rnd_93x64_Mag_SLAP: GOL_200Rnd_93x64_Mag {
+        scope = 2;
+        displayName = "9.3 mm 200Rnd SLAP Belt";
+        displayNameShort = "200 SLAP";
+        descriptionShort = "9.3x64mm 200-round belt, SLAP armor-piercing";
+        ammo = "GOL_B_93x64_Ball_SLAP";
+        tracersEvery = 0;
+    };
+
+    class GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red: GOL_200Rnd_93x64_Mag_SLAP {
+        displayName = "9.3 mm 200Rnd SLAP Tracer (Red)";
+        displayNameShort = "200 SLAP/T";
+        descriptionShort = "9.3x64mm 200-round belt, SLAP with red tracers";
+        ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Red";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green: GOL_200Rnd_93x64_Mag_SLAP {
+        displayName = "9.3 mm 200Rnd SLAP Tracer (Green)";
+        displayNameShort = "200 SLAP/T (Green)";
+        descriptionShort = "9.3x64mm 200-round belt, SLAP with green tracers";
+        ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
     // RHS PKM/PKP 7.62x54mmR magazines with red tracers
     class rhs_100Rnd_762x54mmR;
     
@@ -1282,6 +1376,7 @@ class CfgMagazines {
 		displayName = "M230 30mm Chain Gun Pod (AP)";
 		displayNameShort = "M230 AP Belt";
 		descriptionShort = "M230 30mm Chain Gun | AP 250 rounds";
+		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
 		count = 300;
 		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
 		muzzlePos = "muzzlePos";

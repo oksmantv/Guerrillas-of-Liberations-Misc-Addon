@@ -28,15 +28,15 @@ class CfgRecoils {
 		muzzleOuter[] = {0.075, 0.54, 0.09, 0.17};
 		temporary     = 0.0075;
 	};
-	// Heavy MG preset — 9.3mm/.338 class (HK121, LWMMG)
+	// Heavy MG preset — 9.3mm/.338 class (HK121, LWMMG) — reduced 15% from original
 	class GOL_recoil_machinegun_heavy: recoil_default {
-		kickBack[]    = {0.025, 0.055};
-		muzzleOuter[] = {0.1, 0.9, 0.12, 0.24};
-		temporary     = 0.0125;
+		kickBack[]    = {0.021, 0.047};
+		muzzleOuter[] = {0.085, 0.765, 0.102, 0.204};
+		temporary     = 0.0106;
 	};
 	class GOL_recoil_machinegun_heavy_prone: recoil_default {
-		kickBack[]    = {0.02, 0.04};
-		muzzleOuter[] = {0.075, 0.66, 0.09, 0.18};
-		temporary     = 0.009;
+		kickBack[]    = {0.017, 0.034};
+		muzzleOuter[] = {0.064, 0.561, 0.077, 0.153};
+		temporary     = 0.0077;
 	};
 };

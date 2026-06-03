@@ -1067,6 +1067,35 @@ class CfgWeapons {
 		// Custom recoil presets — heavy tier (9.3mm)
 		recoil = "GOL_recoil_machinegun_heavy";
 		recoilProne = "GOL_recoil_machinegun_heavy_prone";
+
+		// Tightened from vanilla (~0.00069) — still looser than FN MAG (RHS ~0.0003)
+		dispersion = 0.0005;
+
+		// Two full-auto modes — 800 RPM (standard) and 600 RPM (sustained)
+		modes[] = {"GOL_HK121_FullAuto_800", "GOL_HK121_FullAuto_600"};
+		class GOL_HK121_FullAuto_800: Mode_FullAuto {
+			reloadTime = 0.075;
+			autoFire = 1;
+			burst = 0;
+			class StandardSound {
+				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
+			};
+			class SilencedSound {
+				soundSetShot[] = {"MMG01_silencerShot_SoundSet","MMG01_silencerTail_SoundSet","MMG01_silencerInteriorTail_SoundSet"};
+			};
+		};
+		class GOL_HK121_FullAuto_600: Mode_FullAuto {
+			reloadTime = 0.1;
+			autoFire = 1;
+			burst = 0;
+			textureType = "burst";
+			class StandardSound {
+				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
+			};
+			class SilencedSound {
+				soundSetShot[] = {"MMG01_silencerShot_SoundSet","MMG01_silencerTail_SoundSet","MMG01_silencerInteriorTail_SoundSet"};
+			};
+		};
 		
 		// Clear linkedItems to show in arsenal
 		linkedItems[] = {};
@@ -1078,6 +1107,17 @@ class CfgWeapons {
 			"GOL_150Rnd_93x64_Mag_Tracer_Red",
 			"GOL_150Rnd_93x64_Mag_Tracer_Green",
 			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
+			"GOL_150Rnd_93x64_Mag_SLAP",
+			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red",
+			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green",
+			"GOL_200Rnd_93x64_Mag",
+			"GOL_200Rnd_93x64_Mag_Tracer",
+			"GOL_200Rnd_93x64_Mag_Tracer_Red",
+			"GOL_200Rnd_93x64_Mag_Tracer_Green",
+			"GOL_200Rnd_93x64_Mag_Tracer_Yellow",
+			"GOL_200Rnd_93x64_Mag_SLAP",
+			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red",
+			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green",
 			// Vanilla compatibility
 			"150Rnd_93x64_Mag"
 		};
@@ -1093,6 +1133,34 @@ class CfgWeapons {
 		// Custom recoil presets — heavy tier (9.3mm)
 		recoil = "GOL_recoil_machinegun_heavy";
 		recoilProne = "GOL_recoil_machinegun_heavy_prone";
+
+		// Tightened from vanilla (~0.00069) — still looser than FN MAG (RHS ~0.0003)
+		dispersion = 0.0005;
+
+		// Two full-auto modes — 800 RPM (standard) and 600 RPM (sustained)
+		modes[] = {"GOL_HK121_FullAuto_800", "GOL_HK121_FullAuto_600"};
+		class GOL_HK121_FullAuto_800: Mode_FullAuto {
+			reloadTime = 0.075;
+			autoFire = 1;
+			burst = 0;
+			class StandardSound {
+				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
+			};
+			class SilencedSound {
+				soundSetShot[] = {"MMG01_silencerShot_SoundSet","MMG01_silencerTail_SoundSet","MMG01_silencerInteriorTail_SoundSet"};
+			};
+		};
+		class GOL_HK121_FullAuto_600: Mode_FullAuto {
+			reloadTime = 0.1;
+			autoFire = 1;
+			burst = 0;
+			class StandardSound {
+				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
+			};
+			class SilencedSound {
+				soundSetShot[] = {"MMG01_silencerShot_SoundSet","MMG01_silencerTail_SoundSet","MMG01_silencerInteriorTail_SoundSet"};
+			};
+		};
 		
 		// Clear linkedItems to show in arsenal
 		linkedItems[] = {};
@@ -1103,6 +1171,17 @@ class CfgWeapons {
 			"GOL_150Rnd_93x64_Mag_Tracer_Red",
 			"GOL_150Rnd_93x64_Mag_Tracer_Green",
 			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
+			"GOL_150Rnd_93x64_Mag_SLAP",
+			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red",
+			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green",
+			"GOL_200Rnd_93x64_Mag",
+			"GOL_200Rnd_93x64_Mag_Tracer",
+			"GOL_200Rnd_93x64_Mag_Tracer_Red",
+			"GOL_200Rnd_93x64_Mag_Tracer_Green",
+			"GOL_200Rnd_93x64_Mag_Tracer_Yellow",
+			"GOL_200Rnd_93x64_Mag_SLAP",
+			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red",
+			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green",
 			"150Rnd_93x64_Mag"
 		};
 	};

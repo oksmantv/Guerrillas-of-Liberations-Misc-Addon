@@ -3,6 +3,9 @@
 
 params ["_Vehicle"];
 
+if (_Vehicle getVariable ["GOL_MissileWarning_Setup", false]) exitWith {};
+_Vehicle setVariable ["GOL_MissileWarning_Setup", true];
+
 if (missionNamespace getVariable ["GOL_MissileWarning_Enabled", false]) then {
 	_Vehicle addEventHandler ["Fired", {
 		params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile"];
