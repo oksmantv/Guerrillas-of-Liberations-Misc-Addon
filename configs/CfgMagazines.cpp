@@ -155,7 +155,7 @@ class CfgMagazines {
 
     class GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red: GOL_150Rnd_93x64_Mag_SLAP {
         displayName = "9.3 mm 150Rnd SLAP Tracer (Red)";
-        displayNameShort = "SLAP/T";
+        displayNameShort = "SLAP-T (Red)";
         descriptionShort = "9.3x64mm 150-round belt, SLAP with red tracers";
         ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Red";
         tracersEvery = 1;
@@ -164,9 +164,18 @@ class CfgMagazines {
 
     class GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green: GOL_150Rnd_93x64_Mag_SLAP {
         displayName = "9.3 mm 150Rnd SLAP Tracer (Green)";
-        displayNameShort = "SLAP/T (Green)";
+        displayNameShort = "SLAP-T (Green)";
         descriptionShort = "9.3x64mm 150-round belt, SLAP with green tracers";
         ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 150;
+    };
+
+    class GOL_150Rnd_93x64_Mag_SLAP_Tracer_Yellow: GOL_150Rnd_93x64_Mag_SLAP {
+        displayName = "9.3 mm 150Rnd SLAP Tracer (Yellow)";
+        displayNameShort = "SLAP-T (Yellow)";
+        descriptionShort = "9.3x64mm 150-round belt, SLAP with yellow tracers";
+        ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Yellow";
         tracersEvery = 1;
         lastRoundsTracer = 150;
     };
@@ -175,7 +184,7 @@ class CfgMagazines {
     class GOL_200Rnd_93x64_Mag: GOL_150Rnd_93x64_Mag {
         scope = 2;
         displayName = "9.3 mm 200Rnd Belt";
-        displayNameShort = "9.3mm 200";
+        displayNameShort = "9.3mm";
         descriptionShort = "9.3x64mm 200-round belt, ball ammunition";
         count = 200;
         mass = 93;
@@ -183,7 +192,7 @@ class CfgMagazines {
 
     class GOL_200Rnd_93x64_Mag_Tracer: GOL_200Rnd_93x64_Mag {
         displayName = "9.3 mm 200Rnd Tracer (Red)";
-        displayNameShort = "200 Tracer";
+        displayNameShort = "Tracer";
         descriptionShort = "9.3x64mm 200-round belt, all red tracers";
         ammo = "GOL_B_93x64_Ball_Tracer_Red";
         tracersEvery = 1;
@@ -197,14 +206,14 @@ class CfgMagazines {
 
     class GOL_200Rnd_93x64_Mag_Tracer_Green: GOL_200Rnd_93x64_Mag_Tracer {
         displayName = "9.3 mm 200Rnd Tracer (Green)";
-        displayNameShort = "200 Tracer (Green)";
+        displayNameShort = "Tracer (Green)";
         descriptionShort = "9.3x64mm 200-round belt, all green tracers";
         ammo = "GOL_B_93x64_Ball_Tracer_Green";
     };
 
     class GOL_200Rnd_93x64_Mag_Tracer_Yellow: GOL_200Rnd_93x64_Mag_Tracer {
         displayName = "9.3 mm 200Rnd Tracer (Yellow)";
-        displayNameShort = "200 Tracer (Yellow)";
+        displayNameShort = "Tracer (Yellow)";
         descriptionShort = "9.3x64mm 200-round belt, all yellow tracers";
         ammo = "GOL_B_93x64_Ball_Tracer_Yellow";
     };
@@ -213,7 +222,7 @@ class CfgMagazines {
     class GOL_200Rnd_93x64_Mag_SLAP: GOL_200Rnd_93x64_Mag {
         scope = 2;
         displayName = "9.3 mm 200Rnd SLAP Belt";
-        displayNameShort = "200 SLAP";
+        displayNameShort = "SLAP";
         descriptionShort = "9.3x64mm 200-round belt, SLAP armor-piercing";
         ammo = "GOL_B_93x64_Ball_SLAP";
         tracersEvery = 0;
@@ -221,7 +230,7 @@ class CfgMagazines {
 
     class GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red: GOL_200Rnd_93x64_Mag_SLAP {
         displayName = "9.3 mm 200Rnd SLAP Tracer (Red)";
-        displayNameShort = "200 SLAP/T";
+        displayNameShort = "SLAP-T (Red)";
         descriptionShort = "9.3x64mm 200-round belt, SLAP with red tracers";
         ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Red";
         tracersEvery = 1;
@@ -230,9 +239,18 @@ class CfgMagazines {
 
     class GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green: GOL_200Rnd_93x64_Mag_SLAP {
         displayName = "9.3 mm 200Rnd SLAP Tracer (Green)";
-        displayNameShort = "200 SLAP/T (Green)";
+        displayNameShort = "SLAP-T (Green)";
         descriptionShort = "9.3x64mm 200-round belt, SLAP with green tracers";
         ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Green";
+        tracersEvery = 1;
+        lastRoundsTracer = 200;
+    };
+
+    class GOL_200Rnd_93x64_Mag_SLAP_Tracer_Yellow: GOL_200Rnd_93x64_Mag_SLAP {
+        displayName = "9.3 mm 200Rnd SLAP Tracer (Yellow)";
+        displayNameShort = "SLAP-T (Yellow)";
+        descriptionShort = "9.3x64mm 200-round belt, SLAP with yellow tracers";
+        ammo = "GOL_B_93x64_Ball_SLAP_Tracer_Yellow";
         tracersEvery = 1;
         lastRoundsTracer = 200;
     };
@@ -304,7 +322,7 @@ class CfgMagazines {
     class GOL_150Rnd_762x51_M993: UK3CB_BAF_762_200Rnd {
         scope = 2;
         displayName = "7.62mm 150Rnd M993 AP";
-        displayNameShort = "M993 150";
+        displayNameShort = "M993";
         descriptionShort = "7.62x51mm NATO 150-round belt, M993 tungsten AP";
         ammo = "GOL_B_762x51_M993";
         count = 150;
@@ -314,7 +332,7 @@ class CfgMagazines {
 
     class GOL_150Rnd_762x51_M993_Tracer_Red: GOL_150Rnd_762x51_M993 {
         displayName = "7.62mm 150Rnd M993 AP Tracer (Red)";
-        displayNameShort = "M993 150 (Red)";
+        displayNameShort = "M993 (Red)";
         descriptionShort = "7.62x51mm NATO 150-round belt, M993 AP, all red tracers";
         ammo = "GOL_B_762x51_M993_Tracer_Red";
         tracersEvery = 1;
@@ -323,7 +341,7 @@ class CfgMagazines {
 
     class GOL_150Rnd_762x51_M993_Tracer_Green: GOL_150Rnd_762x51_M993 {
         displayName = "7.62mm 150Rnd M993 AP Tracer (Green)";
-        displayNameShort = "M993 150 (Green)";
+        displayNameShort = "M993 (Green)";
         descriptionShort = "7.62x51mm NATO 150-round belt, M993 AP, all green tracers";
         ammo = "GOL_B_762x51_M993_Tracer_Green";
         tracersEvery = 1;
@@ -334,7 +352,7 @@ class CfgMagazines {
     class GOL_200Rnd_762x51_M993: UK3CB_BAF_762_200Rnd {
         scope = 2;
         displayName = "7.62mm 200Rnd M993 AP";
-        displayNameShort = "M993 200";
+        displayNameShort = "M993";
         descriptionShort = "7.62x51mm NATO 200-round belt, M993 tungsten AP";
         ammo = "GOL_B_762x51_M993";
         count = 200;
@@ -344,7 +362,7 @@ class CfgMagazines {
 
     class GOL_200Rnd_762x51_M993_Tracer_Red: GOL_200Rnd_762x51_M993 {
         displayName = "7.62mm 200Rnd M993 AP Tracer (Red)";
-        displayNameShort = "M993 200 (Red)";
+        displayNameShort = "M993 (Red)";
         descriptionShort = "7.62x51mm NATO 200-round belt, M993 AP, all red tracers";
         ammo = "GOL_B_762x51_M993_Tracer_Red";
         tracersEvery = 1;
@@ -353,7 +371,7 @@ class CfgMagazines {
 
     class GOL_200Rnd_762x51_M993_Tracer_Green: GOL_200Rnd_762x51_M993 {
         displayName = "7.62mm 200Rnd M993 AP Tracer (Green)";
-        displayNameShort = "M993 200 (Green)";
+        displayNameShort = "M993 (Green)";
         descriptionShort = "7.62x51mm NATO 200-round belt, M993 AP, all green tracers";
         ammo = "GOL_B_762x51_M993_Tracer_Green";
         tracersEvery = 1;
@@ -547,21 +565,21 @@ class CfgMagazines {
         scope = 2;
         count = 150;
         displayName = "7.62mm 150Rnd M993 AP (FN MAG)";
-        displayNameShort = "M993 150";
+        displayNameShort = "M993";
         descriptionShort = "7.62x51mm NATO 150-round belt, M993 tungsten AP";
         ammo = "GOL_B_762x51_M993";
         tracersEvery = 0;
     };
     class GOL_FNMAG_150Rnd_762x51_M993_Tracer_Red: GOL_FNMAG_150Rnd_762x51_M993 {
         displayName = "7.62mm 150Rnd M993 AP Tracer (Red) (FN MAG)";
-        displayNameShort = "M993 150 (Red)";
+        displayNameShort = "M993 (Red)";
         ammo = "GOL_B_762x51_M993_Tracer_Red";
         tracersEvery = 1;
         lastRoundsTracer = 150;
     };
     class GOL_FNMAG_150Rnd_762x51_M993_Tracer_Green: GOL_FNMAG_150Rnd_762x51_M993 {
         displayName = "7.62mm 150Rnd M993 AP Tracer (Green) (FN MAG)";
-        displayNameShort = "M993 150 (Green)";
+        displayNameShort = "M993 (Green)";
         ammo = "GOL_B_762x51_M993_Tracer_Green";
         tracersEvery = 1;
         lastRoundsTracer = 150;
@@ -570,21 +588,21 @@ class CfgMagazines {
         scope = 2;
         count = 200;
         displayName = "7.62mm 200Rnd M993 AP (FN MAG)";
-        displayNameShort = "M993 200";
+        displayNameShort = "M993";
         descriptionShort = "7.62x51mm NATO 200-round belt, M993 tungsten AP";
         ammo = "GOL_B_762x51_M993";
         tracersEvery = 0;
     };
     class GOL_FNMAG_200Rnd_762x51_M993_Tracer_Red: GOL_FNMAG_200Rnd_762x51_M993 {
         displayName = "7.62mm 200Rnd M993 AP Tracer (Red) (FN MAG)";
-        displayNameShort = "M993 200 (Red)";
+        displayNameShort = "M993 (Red)";
         ammo = "GOL_B_762x51_M993_Tracer_Red";
         tracersEvery = 1;
         lastRoundsTracer = 200;
     };
     class GOL_FNMAG_200Rnd_762x51_M993_Tracer_Green: GOL_FNMAG_200Rnd_762x51_M993 {
         displayName = "7.62mm 200Rnd M993 AP Tracer (Green) (FN MAG)";
-        displayNameShort = "M993 200 (Green)";
+        displayNameShort = "M993 (Green)";
         ammo = "GOL_B_762x51_M993_Tracer_Green";
         tracersEvery = 1;
         lastRoundsTracer = 200;
@@ -1101,7 +1119,7 @@ class CfgMagazines {
 		scopeArsenal = 2;
 		count = 200;
 		displayName = "7.62mm 200Rnd M993 AP (UK59)";
-		displayNameShort = "M993 200";
+		displayNameShort = "M993";
 		descriptionShort = "7.62x51mm 200-round belt, M993 tungsten AP, no tracer";
 		ammo = "GOL_B_762x51_M993";
 		tracersEvery = 0;
@@ -1110,7 +1128,7 @@ class CfgMagazines {
 
 	class GOL_UK59_200Rnd_762x51_M993_Tracer_Red: GOL_UK59_200Rnd_762x51_M993 {
 		displayName = "7.62mm 200Rnd M993 AP Tracer Red (UK59)";
-		displayNameShort = "M993 200 (Red)";
+		displayNameShort = "M993 (Red)";
 		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all red tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Red";
 		tracersEvery = 1;
@@ -1119,7 +1137,7 @@ class CfgMagazines {
 
 	class GOL_UK59_200Rnd_762x51_M993_Tracer_Green: GOL_UK59_200Rnd_762x51_M993 {
 		displayName = "7.62mm 200Rnd M993 AP Tracer Green (UK59)";
-		displayNameShort = "M993 200 (Green)";
+		displayNameShort = "M993 (Green)";
 		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all green tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Green";
 		tracersEvery = 1;
@@ -1128,7 +1146,7 @@ class CfgMagazines {
 
 	class GOL_UK59_200Rnd_762x51_M993_Tracer_Yellow: GOL_UK59_200Rnd_762x51_M993 {
 		displayName = "7.62mm 200Rnd M993 AP Tracer Yellow (UK59)";
-		displayNameShort = "M993 200 (Yellow)";
+		displayNameShort = "M993 (Yellow)";
 		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all yellow tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Yellow";
 		tracersEvery = 1;

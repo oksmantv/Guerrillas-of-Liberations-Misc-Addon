@@ -149,6 +149,7 @@ class CfgFunctions // Defines a function
 			class EdenAttackSpawnGroup {};
 			class EdenMechanizedSpawn {};
 			class EdenVehicleOnRails {};
+			class EdenSearchLight {};
 			class EdenOpenDocs {};
 			class EdenExtractGearFromAI {};
 			class EdenCopyAircraftLoadout {};
@@ -195,6 +196,7 @@ class CfgFunctions // Defines a function
 			class EnablePath {};
 			class SetStatic {};
 			class AbandonVehicle {};
+			class SearchLight {};
 			class AdjustDamage {};
 			class ForceVehicleSpeed {};	
 			class RemoveVehicleHE {};					

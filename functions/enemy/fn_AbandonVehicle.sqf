@@ -15,6 +15,7 @@ if(isNull _vehicle) exitWith {
     };
 };
 if(_vehicle isKindOf "StaticWeapon") exitWith {};
+if(_vehicle getVariable ["OKS_SearchLight", false]) exitWith {};
 if((["vehicle_", vehicleVarName _vehicle] call BIS_fnc_inString) || (["mhq_", vehicleVarName _vehicle] call BIS_fnc_inString)) exitWith {
 	if(_Debug) then {
 		format ["AbandonVehicle Script, Vehicle_ or MHQ_ , exiting.."] spawn OKS_fnc_LogDebug;

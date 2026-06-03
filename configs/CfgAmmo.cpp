@@ -194,6 +194,14 @@ class CfgAmmo {
 		nvgOnly = 0;
 	};
 
+	class GOL_B_93x64_Ball_SLAP_Tracer_Yellow: GOL_B_93x64_Ball_SLAP {
+		model = "\A3\Weapons_f\Data\bullettracer\tracer_yellow";
+		tracerScale = 1.2;
+		tracerStartTime = 0.05;
+		tracerEndTime = 2.5;
+		nvgOnly = 0;
+	};
+
 	// Custom 7.62x54mmR tracer ammunition (RHS PKM/PKP)
 	class rhs_B_762x54_Ball;
 	

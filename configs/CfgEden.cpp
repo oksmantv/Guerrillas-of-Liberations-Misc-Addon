@@ -25,12 +25,11 @@ class Display3DEN {
                     "GOL_SCRIPTS_QRF_BASES",
 					"GOL_SCRIPTS_BEACH_LANDING",
                     "GOL_SCRIPTS_MECHANIZED_SPAWN",
-                    "GOL_SCRIPTS_VEHICLE_ON_RAILS",
+                    "GOL_SCRIPTS_SEARCHLIGHT",
                     "GOL_SCRIPTS_CONVOY",
                     "GOL_SCRIPTS_ATTACK_SPAWNGROUP",
                     "GOL_SCRIPTS_AI_BATTLE",
-                    "GOL_SCRIPTS_ADD_VEHICLE_CREW",
-                    "GOL_SCRIPTS_BUILDING_RESTCAMP"
+                    "GOL_SCRIPTS_ADD_VEHICLE_CREW"
                 };
             };
 
@@ -342,43 +341,7 @@ class Display3DEN {
                 conditionShow = "1";
             };
 
-            class GOL_SCRIPTS_BUILDING_RESTCAMP {
-                text = "Building RestCamp";
-                value = 0;
-                items[] = {
-                    "GOL_SCRIPTS_BUILDING_RESTCAMP_GARRISON",
-                    "GOL_SCRIPTS_BUILDING_RESTCAMP_RUSH",
-                    "GOL_SCRIPTS_BUILDING_RESTCAMP_HUNT",
-                    "GOL_SCRIPTS_BUILDING_RESTCAMP_PATROL",
-                    "GOL_SCRIPTS_BUILDING_RESTCAMP_OPENFUNC"
-                };
-            };
-            class GOL_SCRIPTS_BUILDING_RESTCAMP_OPENFUNC {
-                text = "Open Function";
-                picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
-                action = "['OKS_fnc_BuildingRestCamp'] call OKS_fnc_EdenOpenDocs;";
-                conditionShow = "1";
-            };
-            class GOL_SCRIPTS_BUILDING_RESTCAMP_GARRISON {
-                text = "GARRISON";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'',-1,-1,'GARRISON'] call OKS_fnc_EdenBuildingRestCamp;";
-                conditionShow = "1";
-            };
-            class GOL_SCRIPTS_BUILDING_RESTCAMP_RUSH {
-                text = "RUSH";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'',-1,-1,'RUSH'] call OKS_fnc_EdenBuildingRestCamp;";
-                conditionShow = "1";
-            };
-            class GOL_SCRIPTS_BUILDING_RESTCAMP_HUNT {
-                text = "HUNT";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'',-1,-1,'HUNT'] call OKS_fnc_EdenBuildingRestCamp;";
-                conditionShow = "1";
-            };
-            class GOL_SCRIPTS_BUILDING_RESTCAMP_PATROL {
-                text = "PATROL";
-                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'',-1,-1,'PATROL'] call OKS_fnc_EdenBuildingRestCamp;";
-                conditionShow = "1";
-            };
+
 
             class GOL_SCRIPTS_AI_BATTLE {
                 text = "AI Battle";
@@ -466,23 +429,35 @@ class Display3DEN {
                 conditionShow = "1";
             };
 
-            class GOL_SCRIPTS_VEHICLE_ON_RAILS {
-                text = "Vehicle on Rails";
+            class GOL_SCRIPTS_SEARCHLIGHT {
+                text = "Searchlight";
                 value = 0;
                 items[] = {
-                    "GOL_SCRIPTS_VEHICLE_ON_RAILS_CREATE",
-                    "GOL_SCRIPTS_VEHICLE_ON_RAILS_OPENFUNC"
+                    "GOL_SCRIPTS_SEARCHLIGHT_EAST",
+                    "GOL_SCRIPTS_SEARCHLIGHT_WEST",
+                    "GOL_SCRIPTS_SEARCHLIGHT_INDEP",
+                    "GOL_SCRIPTS_SEARCHLIGHT_OPENFUNC"
                 };
             };
-            class GOL_SCRIPTS_VEHICLE_ON_RAILS_OPENFUNC {
+            class GOL_SCRIPTS_SEARCHLIGHT_OPENFUNC {
                 text = "Open Function";
                 picture = "\a3\ui_f\data\IGUI\Cfg\simpleTasks\types\documents_ca.paa";
-                action = "['OKS_fnc_RailVehicle_Spawn'] call OKS_fnc_EdenOpenDocs;";
+                action = "['OKS_fnc_SearchLight'] call OKS_fnc_EdenOpenDocs;";
                 conditionShow = "1";
             };
-            class GOL_SCRIPTS_VEHICLE_ON_RAILS_CREATE {
-                text = "Create";
-                action = "(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data') call OKS_fnc_EdenVehicleOnRails;";
+            class GOL_SCRIPTS_SEARCHLIGHT_EAST {
+                text = "EAST";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'east'] call OKS_fnc_EdenSearchLight;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_SEARCHLIGHT_WEST {
+                text = "WEST";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'west'] call OKS_fnc_EdenSearchLight;";
+                conditionShow = "1";
+            };
+            class GOL_SCRIPTS_SEARCHLIGHT_INDEP {
+                text = "INDEPENDENT";
+                action = "[(uiNamespace getVariable 'BIS_fnc_3DENEntityMenu_data'),'independent'] call OKS_fnc_EdenSearchLight;";
                 conditionShow = "1";
             };
 

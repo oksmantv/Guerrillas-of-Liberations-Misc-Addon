@@ -1126,6 +1126,8 @@ class CfgWeapons {
 			reloadTime = 0.075;
 			autoFire = 1;
 			burst = 1;
+			textureType = "fullAuto";
+			useActionTitle = "800 RPM";
 			class StandardSound {
 				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
 			};
@@ -1136,7 +1138,9 @@ class CfgWeapons {
 		class GOL_HK121_FullAuto_600: Mode_FullAuto {
 			reloadTime = 0.1;
 			autoFire = 1;
-			burst = 1;
+			burst = 0;
+			textureType = "burst";
+			useActionTitle = "600 RPM";
 			class StandardSound {
 				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
 			};
@@ -1158,6 +1162,7 @@ class CfgWeapons {
 			"GOL_150Rnd_93x64_Mag_SLAP",
 			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red",
 			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green",
+			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Yellow",
 			"GOL_200Rnd_93x64_Mag",
 			"GOL_200Rnd_93x64_Mag_Tracer",
 			"GOL_200Rnd_93x64_Mag_Tracer_Red",
@@ -1166,6 +1171,7 @@ class CfgWeapons {
 			"GOL_200Rnd_93x64_Mag_SLAP",
 			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red",
 			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green",
+			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Yellow",
 			// Vanilla compatibility
 			"150Rnd_93x64_Mag"
 		};
@@ -1223,6 +1229,7 @@ class CfgWeapons {
 			"GOL_150Rnd_93x64_Mag_SLAP",
 			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red",
 			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green",
+			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Yellow",
 			"GOL_200Rnd_93x64_Mag",
 			"GOL_200Rnd_93x64_Mag_Tracer",
 			"GOL_200Rnd_93x64_Mag_Tracer_Red",
@@ -1231,6 +1238,7 @@ class CfgWeapons {
 			"GOL_200Rnd_93x64_Mag_SLAP",
 			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red",
 			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green",
+			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Yellow",
 			"150Rnd_93x64_Mag"
 		};
 	};
