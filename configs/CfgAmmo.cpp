@@ -676,4 +676,16 @@ class CfgAmmo {
 		caliber = 6;
 		typicalSpeed = 1320;
 	};
+
+	// ACE NLAW penetrator — boosted for reliable top-attack kills against MBTs.
+	// ACE hardcodes "ACE_NLAW_Penetrator" in fnc_seeker.sqf, so this is the only
+	// way to increase damage. Affects all NLAW variants.
+	// Vanilla ACE: caliber=33.333 (~500mm RHA), hit=450.
+	// GOL: caliber=55 (~825mm RHA), hit=700 — defeats any current MBT top armor.
+	class ammo_Penetrator_NLAW;
+	class ACE_NLAW_Penetrator: ammo_Penetrator_NLAW {
+		caliber = 55;    // ~825mm RHA pen via ACE formula (typicalSpeed*caliber*15/1000)
+		hit = 700;
+		warheadName = "HEAT";
+	};
 };

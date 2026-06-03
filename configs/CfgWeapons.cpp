@@ -249,6 +249,55 @@ class CfgWeapons {
 		};
 	};
 
+	// ==================== GOL NLAW (lightweight, backpack-portable) ====================
+	// Uses CBA Disposable Framework: base (Arsenal-visible) → ready (loaded) → used (spent tube).
+	class launch_NLAW_F;
+	class GOL_launch_NLAW_F: launch_NLAW_F {
+		author = "Guerrillas of Liberation";
+		displayName = "NLAW (GOL)";
+		ace_overpressure_damage = 0.4;
+		descriptionShort = "NLAW — Next Generation Light Anti-Tank Weapon. Backpack-portable variant.";
+		scope = 2;
+		scopeArsenal = 2;
+		baseWeapon = "GOL_launch_NLAW_F";
+		magazines[] = {"CBA_FakeLauncherMagazine"};
+		magazineWell[] = {};
+		magazineReloadTime = 0.1;
+		reloadMagazineSound[] = {"",1,1};
+		class WeaponSlotsInfo {
+			mass = 45; // 4.5 kg — empty tube only
+			allowedSlots[] = {901};
+		};
+	};
+
+	class GOL_launch_NLAW_ready_F: GOL_launch_NLAW_F {
+		scope = 1;
+		scopeArsenal = 1;
+		baseWeapon = "GOL_launch_NLAW_F";
+		magazines[] = {"NLAW_F"};
+		magazineWell[] = {"NLAW"};
+		class EventHandlers {
+			fired = "_this call CBA_fnc_firedDisposable";
+		};
+		class WeaponSlotsInfo: WeaponSlotsInfo {
+			mass = 125; // 4.5 kg launcher + 8.0 kg magazine
+			allowedSlots[] = {901};
+		};
+	};
+
+	class GOL_launch_NLAW_used_F: GOL_launch_NLAW_F {
+		scope = 1;
+		scopeArsenal = 1;
+		baseWeapon = "GOL_launch_NLAW_used_F";
+		displayName = "NLAW (GOL) (Used)";
+		descriptionShort = "Spent NLAW tube. Disposable — cannot be reloaded.";
+		weaponPoolAvailable = 0;
+		class WeaponSlotsInfo: WeaponSlotsInfo {
+			mass = 45; // 4.5 kg — empty tube only
+			allowedSlots[] = {901};
+		};
+	};
+
 	class UK3CB_V_Invisible_Plate;
 	class UK3CB_V_Invisible_Plate_Low : UK3CB_V_Invisible_Plate {
 		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
@@ -1076,7 +1125,7 @@ class CfgWeapons {
 		class GOL_HK121_FullAuto_800: Mode_FullAuto {
 			reloadTime = 0.075;
 			autoFire = 1;
-			burst = 0;
+			burst = 1;
 			class StandardSound {
 				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
 			};
@@ -1087,8 +1136,7 @@ class CfgWeapons {
 		class GOL_HK121_FullAuto_600: Mode_FullAuto {
 			reloadTime = 0.1;
 			autoFire = 1;
-			burst = 0;
-			textureType = "burst";
+			burst = 1;
 			class StandardSound {
 				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
 			};
@@ -1153,7 +1201,8 @@ class CfgWeapons {
 		class GOL_HK121_FullAuto_600: Mode_FullAuto {
 			reloadTime = 0.1;
 			autoFire = 1;
-			burst = 0;
+			burst = 1;
+			textureType = "burst";
 			class StandardSound {
 				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
 			};

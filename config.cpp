@@ -131,7 +131,11 @@ class CfgPatches
             "GOL_Heli_Light_02_dynamicLoadout_laser",
             "GOL_Heli_Light_03_dynamicLoadout_laser",
             // M230 30mm Chain Gun Pod
-            "GOL_weapon_M230_ChainGun"
+            "GOL_weapon_M230_ChainGun",
+            // NLAW lightweight variant (CBA Disposable: base / ready / used)
+            "GOL_launch_NLAW_F",
+            "GOL_launch_NLAW_ready_F",
+            "GOL_launch_NLAW_used_F"
         };
 		magazines[] = {
 			// 9.3x64mm for heavy machine guns — ball, tracer, SLAP, and 200-round variants.
@@ -280,6 +284,14 @@ class RscTitles {
 
 #include "configs\CfgJammerUILayout.cpp"
 #include "configs\CfgOrbat.cfg"
+
+// CBA Disposable Framework registration.
+// Maps ready_variant[] = {base_classname, used_classname}.
+// CBA intercepts addWeapon of base, gives player the ready variant;
+// after firing, swaps to the used variant.
+class CBA_DisposableLaunchers {
+    GOL_launch_NLAW_ready_F[] = {"GOL_launch_NLAW_F", "GOL_launch_NLAW_used_F"};
+};
 
 class CfgMods {
     class GOL_MISC_ADDON {
