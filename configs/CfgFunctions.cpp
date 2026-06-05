@@ -204,7 +204,8 @@ class CfgFunctions // Defines a function
 			class GetEthnicity {};
 			class GetEthnicityFromFace {};
 			class Has_Sight {};
-			class AddVehicleCrew {};	
+			class AddVehicleCrew {};
+			class ActivateHiddenVehicle {};
 			class CreateVehicleWithCrew {};
 			class UndercoverAI {};	
 			class UndercoverAI_Activate {};	
