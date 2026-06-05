@@ -173,5 +173,85 @@ class OKS_SatCamHUD {
 			text = "";
 			colorBackground[] = {0,1,0,0.5};
 		};
+
+		// Commander view: live compass bearing text (e.g. "West North-West - 270°"), top-center of tablet screen
+		class CompassText: RscText {
+			idc = 9530;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			sizeEx = 0.035;
+			style = 2;
+			colorText[] = {0,1,0,0.95};
+			colorBackground[] = {0,0,0,0};
+			shadow = 1;
+		};
+
+		// Commander view: bearing widget — hull outline outer (white border box)
+		class HullOuterBox: RscText {
+			idc = 9531;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {1,1,1,0.90};
+		};
+
+		// Commander view: bearing widget — hull outline inner (opaque dark centre, creates visible white border)
+		class HullInnerBox: RscText {
+			idc = 9532;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,0,0,0.85};
+		};
+
+		// Commander view: bearing widget — hull front nub (narrow white rectangle above hull top, marks vehicle front)
+		class HullFrontNub: RscText {
+			idc = 9533;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {1,1,1,0.90};
+		};
+
+		// Commander view: bearing widget — gunner turret indicator (repositioned on orbit each frame via ctrlSetPosition)
+		class GunnerDot: RscText {
+			idc = 9534;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0.7,0.8,1,0.85};
+		};
+
+		// Commander view: bearing widget — commander turret indicator (repositioned on orbit each frame via ctrlSetPosition)
+		class CommanderDot: RscText {
+			idc = 9535;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.95};
+		};
+
+		// Commander view: bearing widget — hull compass bearing number (hidden at runtime)
+		class BearingDeg: RscText {
+			idc = 9536;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "---";
+			sizeEx = 0.022;
+			style = 1;
+			colorText[] = {1,1,1,0.85};
+			colorBackground[] = {0,0,0,0};
+			shadow = 1;
+		};
+
+		// Commander view: bearing widget — gunner inner dot (near-hub end of dotted line)
+		class GunnerDotInner: RscText {
+			idc = 9537;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0.7,0.8,1,0.60};
+		};
+
+		// Commander view: bearing widget — commander inner dot (near-hub end of dotted line)
+		class CommanderDotInner: RscText {
+			idc = 9538;
+			x = 0; y = 0; w = 0; h = 0;
+			text = "";
+			colorBackground[] = {0,1,0,0.65};
+		};
 	};
 };

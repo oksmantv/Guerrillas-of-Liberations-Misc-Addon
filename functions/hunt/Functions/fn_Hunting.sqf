@@ -75,7 +75,7 @@ While {
 		_WPs Apply {[(WaypointPosition _x) distance2D _Leader]};
 		_WPs sort True;
 		_Grp setCurrentWaypoint (_WPs select 0);
-		_Grp setFormation "WEDGE";
+		_Grp setFormation (_Grp getVariable ["OKS_Hunt_Formation", "WEDGE"]);
 	};
 
 	// Reveal prey and its group.

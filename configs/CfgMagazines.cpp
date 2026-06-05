@@ -1376,6 +1376,7 @@ class CfgMagazines {
 		displayName = "M230 30mm Chain Gun Pod (HE)";
 		displayNameShort = "M230 HE Belt";
 		descriptionShort = "M230 30mm Chain Gun | HE 250 rounds";
+		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
 		count = 300;
 		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
 		muzzlePos = "muzzlePos";
@@ -1395,6 +1396,7 @@ class CfgMagazines {
 		displayNameShort = "M230 AP Belt";
 		descriptionShort = "M230 30mm Chain Gun | AP 250 rounds";
 		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
+		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
 		count = 300;
 		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
 		muzzlePos = "muzzlePos";

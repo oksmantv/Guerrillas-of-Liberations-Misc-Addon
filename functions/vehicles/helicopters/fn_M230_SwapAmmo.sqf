@@ -42,6 +42,4 @@ if (_targetAmmo <= 0) exitWith {
 // Index is 1-based. addAmmo=false — we manage ammo counts manually via variables.
 [_target, _currentIdx + 1, _targetMag, _targetAmmo] remoteExec ["OKS_fnc_M230_SetPylon", _target];
 
-// Confirm to pilot
-private _label = if (_targetMag == "GOL_PylonWeapon_M230_HE") then {"HE (Fragmentation)"} else {"AP (Armor-Piercing)"};
-systemChat format ["M230: Loaded %1 — %2 rnd remaining.", _label, _targetAmmo];
+

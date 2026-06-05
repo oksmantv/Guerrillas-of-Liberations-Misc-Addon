@@ -542,6 +542,14 @@ cutRsc ["OKS_SatCamHUD", "PLAIN", 0, false];
         private _total = (count _levels) max 1;
         _hint ctrlSetText format ["ESC to exit | Zoom %1/%2", _idx + 1, _total];
     };
+
+    // Compass heading text — second row, centered
+    private _compassCtrl = _display displayCtrl 9530;
+    if (!isNull _compassCtrl) then {
+        _compassCtrl ctrlSetPosition [_screenX, _screenY + 0.042, _screenW, 0.035];
+        _compassCtrl ctrlSetFontHeight 0.035;
+        _compassCtrl ctrlCommit 0;
+    };
 }, [_uiLabel]] call CBA_fnc_execNextFrame;
 
 missionNamespace setVariable ["OKS_SatCamPip_Camera", _camera];
@@ -713,6 +721,34 @@ private _pfhId = [{
     _camera camSetFov (missionNamespace getVariable ["OKS_SatCamPip_CommanderFov", _fov]);
     _camera camSetTarget _targetWorld;
     _camera camCommit 0;
+
+    // Update bearing display
+    private _display = uiNamespace getVariable ["OKS_SatCamHUD_Display", displayNull];
+    if (!isNull _display) then {
+        // Commander turret world bearing derived from _dirWorld
+        private _cmdrYaw = ((_dirWorld#0) atan2 (_dirWorld#1) + 360) mod 360;
+
+        // Compass heading text
+        private _compassCtrl = _display displayCtrl 9530;
+        if (!isNull _compassCtrl) then {
+            private _hdgDeg = round _cmdrYaw;
+            private _cardinals = ["North","North North-East","North-East","East North-East","East","East South-East","South-East","South South-East","South","South South-West","South-West","West South-West","West","West North-West","North-West","North North-West"];
+            private _cardinal = _cardinals select ((round (_cmdrYaw / 22.5)) mod 16);
+            _compassCtrl ctrlSetText format ["%1 - %2°", _cardinal, _hdgDeg];
+        };
+
+        // Bearing widget — rotate lines relative to hull
+        private _hullYaw = getDir _vehicle;
+        private _cmdrRel = (_cmdrYaw - _hullYaw + 360) mod 360;
+
+        private _gunnerYaw = _hullYaw;
+        private _gAngles = [_vehicle, [0]] call CBA_fnc_turretDir;
+        if (_gAngles isEqualType [] && {(count _gAngles) >= 1}) then {
+            _gunnerYaw = _gAngles#0;
+        };
+        private _gunnerRel = (_gunnerYaw - _hullYaw + 360) mod 360;
+
+    };
 }, 0, [_camera, _vehicle, _viewer, _fov, _durationSec, _startT, _anchorSpec, _commanderVerticalOffset, _memPoint, _uiLabel, _trackTurretPath]] call CBA_fnc_addPerFrameHandler;
 
 missionNamespace setVariable ["OKS_SatCamPip_PFH", _pfhId];

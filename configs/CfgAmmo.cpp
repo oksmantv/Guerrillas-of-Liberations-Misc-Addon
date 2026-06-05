@@ -673,27 +673,27 @@ class CfgAmmo {
 	};
 
 	// M230 30x113mm AP round for the GOL Ghost Hawk chain gun pod.
-	// Based on B_30mm_APFSDS: hit=120, caliber=6.0 (336->720 effective armor damage vs vanilla B_30mm_AP).
-	// Effective against APCs and IFVs; marginal against MBTs.
+	// Based on B_30mm_APFSDS. hit=80, caliber=4 — effective against APCs and IFVs; marginal against MBTs.
+	// typicalSpeed matches real M230 muzzle velocity: 805 m/s (reduced to 650 here for flatter gameplay balance).
 	class B_30mm_APFSDS;
 	class GOL_ammo_M230_AP: B_30mm_APFSDS
 	{
-		hit = 120;
+		hit = 80;
 		indirectHit = 8;
 		indirectHitRange = 0.2;
-		caliber = 6;
-		typicalSpeed = 1320;
+		caliber = 4;
+		typicalSpeed = 650;
 	};
 
 	// ACE NLAW penetrator — boosted for reliable top-attack kills against MBTs.
 	// ACE hardcodes "ACE_NLAW_Penetrator" in fnc_seeker.sqf, so this is the only
 	// way to increase damage. Affects all NLAW variants.
 	// Vanilla ACE: caliber=33.333 (~500mm RHA), hit=450.
-	// GOL: caliber=55 (~825mm RHA), hit=700 — defeats any current MBT top armor.
+	// GOL: caliber=65 (~825mm RHA), hit=750
 	class ammo_Penetrator_NLAW;
 	class ACE_NLAW_Penetrator: ammo_Penetrator_NLAW {
-		caliber = 55;    // ~825mm RHA pen via ACE formula (typicalSpeed*caliber*15/1000)
-		hit = 700;
+		caliber = 65;    // ~825mm RHA pen via ACE formula (typicalSpeed*caliber*15/1000)
+		hit = 750;
 		warheadName = "HEAT";
 	};
 };

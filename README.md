@@ -1855,37 +1855,64 @@ Edited by OksmanTV & Bluwolf.
   <summary>OKS_fnc_HuntBase</summary>
 
   ### Description
-  Spawns waves of infantry or vehicles from a destructible "base" object, using a specified spawn point and trigger zone to define the hunting area.  
-  Units or vehicles will only spawn and hunt when players are detected inside the trigger zone and the base object is alive.  
-  Supports both infantry groups and vehicle crews, with customizable wave count, respawn delay, side, and refresh rate.
+  Spawns waves of ground reinforcements from a destructible base object that hunt players detected within a trigger area.  
+  Supports infantry groups, single vehicles, random vehicle pools, and multi-vehicle convoys. All logic runs server-side only.
 
   ### Parameters
 
-  | Name               | Type             | Default      | Description                                                                                       |
-  |--------------------|------------------|--------------|---------------------------------------------------------------------------------------------------|
-  | `_Base`            | Object           | —            | The destructible base object. If destroyed, no further waves will spawn.                          |
-  | `_SpawnPos`        | Object           | —            | The object at which units/vehicles spawn (use a small object for best results).                   |
-  | `_HuntZone`        | Object           | —            | Trigger area that defines the hunting zone for spawned units.                                     |
-  | `_Waves`           | Number           | `0`          | Number of waves to spawn (0–999).                                                                |
-  | `_RespawnDelay`    | Number           | `0`          | Delay (in seconds) between each wave spawn.                                                       |
-  | `_Side`            | Side             | `east`       | Side of the spawned units or vehicles.                                                            |
-  | `_Soldiers`        | Number/String/Array | `0`       | Number of infantry per group (scalar), vehicle classname (string), or array of classnames.        |
-  | `_RefreshRate`     | Number           | `0`          | Time (in seconds) between checks for players in the hunt zone (lower = faster response).          |
-  | `_ShouldDeployFlare`| Boolean         | `true`       | If true, units may deploy flares during CQB or at night (optional, default true).                 |
+  | Name                 | Type                    | Default  | Description                                                                                  |
+  |----------------------|-------------------------|----------|----------------------------------------------------------------------------------------------|
+  | `_Base`              | Object                  | —        | Destructible base object. When destroyed, no further waves spawn.                            |
+  | `_SpawnPos`          | Object                  | —        | Spawn object — units/vehicles spawn here. Face the direction vehicles should drive out.      |
+  | `_HuntZone`          | Object (Trigger)        | —        | Trigger defining the hunt area. Set to "Any Players", repeatable.                            |
+  | `_Waves`             | Number                  | `0`      | Maximum number of waves (0–999). Scaled by `GOL_ForceMultiplier` at runtime.                 |
+  | `_RespawnDelay`      | Number                  | `0`      | Seconds between wave spawns. Scaled by `GOL_ResponseMultiplier`.                             |
+  | `_Side`              | Side                    | `east`   | Faction side of spawned units.                                                               |
+  | `_SpawnConfig`       | Number / String / Array | `0`      | Defines what spawns each wave. See types below.                                              |
+  | `_RefreshRate`       | Number                  | `0`      | Seconds between player detection checks. Lower = faster response.                            |
+  | `_ShouldDeployFlare` | Boolean                 | `true`   | Fire illumination flares at night when players are detected. *(optional)*                    |
+  | `_WaypointBehaviour` | String                  | `nil`    | AI waypoint behaviour. Defaults to `"AWARE"` for infantry, `"SAFE"` for vehicles. *(optional)* |
+
+  ### SpawnConfig Types
+
+  | Value | Type | Behaviour |
+  |-------|------|-----------|
+  | `6` | Number | Spawns 6 infantry in one group |
+  | `"T72_TK"` | String | Spawns one specific vehicle, crewed by the faction |
+  | `["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_T72A","UK3CB_ARD_O_T72B"]` | Array of strings | **Random pick** — one vehicle chosen per wave |
+  | `[["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_BMP1"]]` | Array with one array entry | **Fixed convoy** — always spawns T72BM + BMP1 in one group |
+  | `[[["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_T72A"],"UK3CB_ARD_O_BMP1"]]` | Array, inner array for random slot | **Convoy with random slot** — lead is randomly T72BM or T72A, followed by BMP1 |
+  | `[["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_BMP1"],["UK3CB_ARD_O_T72A","UK3CB_ARD_O_BMP2"]]` | Array of convoy entries | **Random convoy** — picks convoy A or convoy B each wave |
+  | `[["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_BMP1"],"UK3CB_ARD_O_Ural_Zu23"]` | Mixed array | **Mixed pool** — each wave either spawns the convoy or a single Zu-23 truck |
+
+  **Outer array rule:** The top-level array is always a random selection pool — one entry is picked per wave. A string entry = single vehicle. An array entry = convoy definition.
+
+  **Convoy behaviour:**
+  - All vehicles are placed in one AI group and hunt together in **COLUMN** formation.
+  - Vehicles are spaced 20 m apart behind the spawn object, aligned to its facing direction.
+  - Transport vehicles (no gunner seats) are automatically filled with cargo infantry, capped by `GOL_MaxCargoSeats`.
 
   ### Example Usage
 
-      [Object_1, Spawn_1, HuntTrigger_1, 10, 300, east, 6, 60] spawn OKS_fnc_HuntBase;
-      [Object_1, Spawn_1, HuntTrigger_1, 10, 450, east, "CUP_O_BTR40_MG_TKM", 30] spawn OKS_fnc_HuntBase;
-      [Object_1, Spawn_1, HuntTrigger_1, 10, 450, east, ["CUP_O_MTLB_pk_TK_MILITIA", "CUP_O_BTR40_MG_TKM"], 30] spawn OKS_fnc_HuntBase;
+  ```sqf
+  // Infantry
+  [Object_1, Spawn_1, HuntTrigger_1, 10, 300, east, 6, 60] spawn OKS_fnc_HuntBase;
 
-  - Place destructible "base" and spawn objects in the editor, and set up a trigger for the hunt zone.
-  - Units/vehicles spawn only if the base is alive and players are detected within the trigger.
-  - Supports both infantry and vehicle waves, with random selection if an array of classnames is provided.
-  - Refresh rate controls how quickly the script responds to player presence in the zone.
-  - Designed for robust, dynamic reinforcement and hunting behaviors in Arma 3 missions.
+  // Single specific vehicle
+  [Object_1, Spawn_1, HuntTrigger_1, 10, 450, east, "UK3CB_ARD_O_BMP1", 30] spawn OKS_fnc_HuntBase;
 
-</details>
+  // Random vehicle pick (one of three chosen per wave)
+  [Object_1, Spawn_1, HuntTrigger_1, 10, 450, east, ["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_T72A","UK3CB_ARD_O_T72B"], 30] spawn OKS_fnc_HuntBase;
+
+  // Fixed convoy — tank leads, IFV follows, same group
+  [Object_1, Spawn_1, HuntTrigger_1, 6, 600, east, [["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_BMP1"]], 120] spawn OKS_fnc_HuntBase;
+
+  // Convoy with random lead vehicle
+  [Object_1, Spawn_1, HuntTrigger_1, 6, 600, east, [[["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_T72A"],"UK3CB_ARD_O_BMP1"]], 120] spawn OKS_fnc_HuntBase;
+
+  // Mixed pool — two convoy options and a solo vehicle, one chosen per wave
+  [Object_1, Spawn_1, HuntTrigger_1, 8, 600, east, [["UK3CB_ARD_O_T72BM","UK3CB_ARD_O_BMP1"],["UK3CB_ARD_O_T72A","UK3CB_ARD_O_BMP2"],"UK3CB_ARD_O_Ural_Zu23"], 120] spawn OKS_fnc_HuntBase;
+  ```
 <details>
   <summary>OKS_fnc_Airbase</summary>
 
