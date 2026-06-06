@@ -28,6 +28,13 @@ params [
 	["_variableName", "Rush_WaveSpawn_Variable", [""]]
 ];
 
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_LambsChargeSpawn", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+if (_oks_applyMultiplier) then {
+	_unitsPerWave = (ceil (_unitsPerWave * _oks_multiplier / 100)) max 2;
+};
+
 if (_unitsPerWave <= 0 || { _amountOfWaves <= 0 }) exitWith {};
 
 private _allSpawnedUnits = [];

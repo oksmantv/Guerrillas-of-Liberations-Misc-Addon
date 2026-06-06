@@ -437,6 +437,9 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_SAM {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_sam.sqf'";
     };
+    class OKS_PreInit_SpawnMultiplier {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_spawnMultiplier.sqf'";
+    };
 };
 
 class Extended_PostInit_EventHandlers {

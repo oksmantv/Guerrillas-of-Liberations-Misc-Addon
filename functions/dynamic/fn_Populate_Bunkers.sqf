@@ -11,6 +11,13 @@ _Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 _Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian"];
 _UnitArray Params ["_Leaders","_Units","_Officer"];
 
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_PopulateBunkers", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+if (_oks_applyMultiplier) then {
+	_InfantryNumber = (ceil (_InfantryNumber * _oks_multiplier / 100)) max 2;
+};
+
 	_Group = CreateGroup _Side;
 	for "_i" from 1 to (_InfantryNumber - 1) do
 	{

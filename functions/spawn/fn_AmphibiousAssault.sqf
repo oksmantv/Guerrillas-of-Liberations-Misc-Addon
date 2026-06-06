@@ -54,6 +54,13 @@ params [
     ["_debug", false, [false]]
 ];
 
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_AmphibiousAssault", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+if (_oks_applyMultiplier) then {
+    _numUnits = (ceil (_numUnits * _oks_multiplier / 100)) max 3;
+};
+
 // Convert objects to positions
 if (_spawnPos isEqualType objNull) then { _spawnPos = getPosASL _spawnPos; };
 if (_dismountPos isEqualType objNull) then { _dismountPos = getPosASL _dismountPos; };

@@ -48,6 +48,13 @@ _wakeMode = toUpper _wakeMode;
 
 if (!isServer) exitWith {};
 
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_BuildingRestCamp", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+if (_oks_applyMultiplier && { _maxUnits != -1 }) then {
+    _maxUnits = (_maxUnits * _oks_multiplier / 100) max 1;
+};
+
 private _debug = missionNamespace getVariable ["GOL_Enemy_Debug", false];
 
 if (isNull _logic) exitWith {

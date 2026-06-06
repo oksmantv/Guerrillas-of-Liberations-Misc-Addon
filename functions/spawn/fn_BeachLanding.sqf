@@ -44,6 +44,13 @@ params [
     ["_publicVariableName", "", [""]]
 ];
 
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_BeachLanding", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+if (_oks_applyMultiplier) then {
+    _cargoUnitCount = (ceil (_cargoUnitCount * _oks_multiplier / 100)) max 3;
+};
+
 private _spawnPositionASL = [0,0,0];
 private _targetPositionASL = [0,0,0];
 

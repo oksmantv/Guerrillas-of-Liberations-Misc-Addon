@@ -19,6 +19,13 @@
 		["_Variable","Rush_WaveSpawn_Variable",[""]]
 	];
 
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_LambsWavespawn", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier) then {
+		_UnitsPerWave = (ceil (_UnitsPerWave * _oks_multiplier / 100)) max 2;
+	};
+
 	private ["_RandomPos","_Center","_AllSpawnedUnits","_SpawnThreads"];
 	_AllSpawnedUnits = [];
 	_SpawnThreads = [];

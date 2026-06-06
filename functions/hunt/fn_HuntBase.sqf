@@ -92,6 +92,13 @@ Params
 	["_WaypointBehaviour",nil,[""]]
 ];
 
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_HuntBase", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+if (_oks_applyMultiplier && { _SpawnConfig isEqualType 0 }) then {
+	_SpawnConfig = (ceil (_SpawnConfig * _oks_multiplier / 100)) max 1;
+};
+
 Private ["_Group","_Leaders","_Units","_Vehicle","_VehicleClass",
 "_MaxCargoSeats","_Trigger","_MaxUnits","_KnowsAboutValue",
 "_DetectDelay","_ShouldDeployFlare","_CurrentHuntCount","_AliveCurrentCount"];

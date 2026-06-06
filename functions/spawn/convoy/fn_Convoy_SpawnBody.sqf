@@ -105,6 +105,15 @@ _CargoParams Params [
 	["_ShouldHaveCargo", true, [false]],
 	["_CargoCount", 4, [0]]
 ];
+
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_Convoy", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+if (_oks_applyMultiplier) then {
+	_Count = (ceil (_Count * _oks_multiplier / 100)) max 1;
+	_CargoCount = (ceil (_CargoCount * _oks_multiplier / 100)) max 3;
+};
+
 if (isNil "_ConvoyGroupArray") then {
 	_ConvoyGroupArray = [];
 };
@@ -338,6 +347,20 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
     };
 	_CargoGroup setBehaviour "CARELESS"; _CargoGroup setCombatMode "BLUE";
     _ConvoyGroupArray pushBackUnique _Group; _ConvoyGroupArray pushBackUnique _CargoGroup;
+
+	// Fallback: delete any crew member that failed to board the vehicle.
+	// Some modded vehicles have seat offsets that eject units on creation.
+	[_Vehicle] spawn {
+		params ["_veh"];
+		sleep 3;
+		if (!alive _veh) exitWith {};
+		{
+			if (vehicle _x != _veh) then {
+				diag_log format ["[CONVOY-SPAWN] Removing crew member outside vehicle (modded vehicle compat): %1 in %2", _x, typeOf _veh];
+				deleteVehicle _x;
+			};
+		} forEach (crew _veh);
+	};
 
 	if(_ForcedCareless) then {
 		_Vehicle setCaptive true;

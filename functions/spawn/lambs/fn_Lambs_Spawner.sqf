@@ -15,6 +15,14 @@
 		["_ActivatedToDisableSpawner",objNull,[objNull,""]],
 		["_RespawnDelay",180,[0]]
 	];
+
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_LambsSpawner", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier) then {
+		_NumberInfantry = (ceil (_NumberInfantry * _oks_multiplier / 100)) max 2;
+	};
+
 	private ["_RandomPos","_Center","_Condition1","_Condition2"];
 
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;
