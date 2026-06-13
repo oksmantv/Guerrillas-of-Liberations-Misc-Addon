@@ -238,10 +238,7 @@ switch (_TypeOfObjective) do {
 		_Crate allowDamage true;
 		_Crate enableSimulation true;
 
-		_AmmoCamp = selectRandom ["AmmoCampSite_1","AmmoCampSite_2","AmmoCampSite_3","AmmoCampSite_4","Bunker_2","Bunker_3","Bunker_4","ArtilleryNest","ArtilleryNest_3","ArtilleryNest_4","ArtilleryNest_5","ArtilleryNest_6"];
-		
 		if(_ShouldAddObjects) then {
-			[_AmmoCamp,getPos _Crate, [0,0,0], getDir _Crate] call LARs_fnc_spawnComp;
 			[_SpawnPos,_Side,(3 + (random 3)),15] spawn OKS_fnc_Populate_Sandbag;
 		};
 
@@ -296,9 +293,7 @@ switch (_TypeOfObjective) do {
 		_Crate allowDamage true;
 		_Crate enableSimulation true;
 
-		_AmmoCamp = selectRandom ["AmmoCampSite_3","ArtilleryNest","ArtilleryNest_3","ArtilleryNest_4","ArtilleryNest_5","ArtilleryNest_6"];
 		if(_ShouldAddObjects) then {
-			[_AmmoCamp,getPos _Crate, [0,0,0], _Dir] call LARs_fnc_spawnComp;
 			[_SpawnPos,_Side,(3 + (random 3)),15] spawn OKS_fnc_Populate_Sandbag;
 		};
 		//SystemChat str _SpawnPos;
@@ -417,12 +412,9 @@ switch (_TypeOfObjective) do {
 		if(_ShouldAddObjects) then {
 			if(isNil "_Dir") then {
 				_Dir = (random 360);
-			};	
-			_towerclass = selectRandom ["radiotower_1","radiotower_2","ArtilleryNest_2"];
-			[_towerclass,[_SpawnPos select 0,_SpawnPos select 1,0], [0,0,0], _Dir] call LARs_fnc_spawnComp;
-			sleep 2;
-			_Tower = nearestObject [_SpawnPos, "Land_Vysilac_FM2"];
-			//systemChat str _Tower;
+			};
+			_Tower = "Land_Vysilac_FM2" createVehicle [_SpawnPos select 0,_SpawnPos select 1,0];
+			_Tower setDir _Dir;
 			_Tower setVehicleVarName format["OKS_RadioTower_%1",round(random 9999)];
 			_Tower allowDamage true;
 			_Tower enableSimulation true;
@@ -630,11 +622,7 @@ switch (_TypeOfObjective) do {
 		} else {
 			_Group = [_Arty,_Side] call OKS_fnc_AddVehicleCrew;
 		};
-		_ArtilleryNest = selectRandom ["ArtilleryNest","ArtilleryNest_3","ArtilleryNest_4","ArtilleryNest_5","ArtilleryNest_6"];
-
 		if(_ShouldAddObjects) then {
-			[_ArtilleryNest,getPos _Arty, [0,0,0], getDir _Arty] call LARs_fnc_spawnComp;
-			sleep 5;
 			[getPos _Arty,_Side,(round random 4),15] spawn OKS_fnc_Populate_Sandbag;
 			[getPos _Arty,40,_Side] spawn OKS_fnc_Populate_StaticWeapons;
 		};
@@ -697,11 +685,7 @@ switch (_TypeOfObjective) do {
 			_Group = [_AA,_Side] call OKS_fnc_AddVehicleCrew;
 		};
 		sleep 2;
-		_AntiAirComp = selectRandom ["AntiAir_1","ArtilleryNest","ArtilleryNest_3","ArtilleryNest_4","ArtilleryNest_5","ArtilleryNest_6"];
-
 		if(_ShouldAddObjects) then {
-			[_AntiAirComp,getPos _AA, [0,0,0], getDir _AA] call LARs_fnc_spawnComp;
-			sleep 3;
 			[getPos _AA,_Side,(round random 4),15] spawn OKS_fnc_Populate_Sandbag;
 			[getPos _AA,40,_Side] spawn OKS_fnc_Populate_StaticWeapons;
 			_Objects = nearestObjects [getpos _AA,[],35];

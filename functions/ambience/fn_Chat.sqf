@@ -4,7 +4,8 @@ Params [
 	"_Message",
 	["_Callsign","",[""]],
 	["_RadioRange", 25000, [0]],
-	["_LocalRange", 20, [0]]];
+	["_LocalRange", 20, [0]],
+	["_TargetSide", sideUnknown]];
 /* 
  Local Execution - Requires to be run on all Clients (Globally) to show everyone a message.
    
@@ -12,6 +13,7 @@ Params [
  _Talker = Entity (Person) or String (Custom Callsign)
  _Channel = "side" or "local" defaults to "side". "Side" is a radio message, and must be sent by the same side as the player to be visible (Cannot be captive).
             "local" can be sent by any entity however cannot be sent by Preset callsigns. Local range is 20m, Radio range is 25000m.
+ _TargetSide = Optional side filter. If provided (west/east/independent/civilian), only players on that side will see the message.
  
  --["HQ","side","Test"] spawn OKS_fnc_Chat--; - DO NOT DO THIS! It sas to be executed globally, for example using a trigger.
    [person1,"local","Hello World!"] remoteExec ["OKS_fnc_Chat",0]; - Has to be executed server/1 client ONLY, for example using a trigger with "Server Only" or use the spawnlist.
@@ -20,6 +22,8 @@ Params [
 */ 
 
 if(!HasInterface) exitWith {false};
+
+if (!(_TargetSide isEqualTo sideUnknown) && {(side group player) != _TargetSide}) exitWith {false};
 
 Private _Code = {};
 Private ["_Range","_Color","_SideCode","_LocalCode"];
@@ -124,7 +128,11 @@ Switch (toLower _Channel) do {
 	}
 };
 
-private _talkerSide = if (_Talker isEqualType "") then {side player} else {side _Talker};
+private _talkerSide = if (_Talker isEqualType "") then {
+	if (_TargetSide isEqualTo sideUnknown) then {side player} else {_TargetSide}
+} else {
+	side _Talker
+};
 _Color = switch (_talkerSide) do {
 	case west: { "0D64EC"};
 	case east: { "AD2707" };

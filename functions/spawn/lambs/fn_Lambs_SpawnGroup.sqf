@@ -146,11 +146,22 @@
 		case "ambushattack": {		
 			{_X setBehaviour "STEALTH"; _X setCombatMode "YELLOW"; } foreach units _Group;
 			_Group setBehaviour "STEALTH";
-			_Group setCombatMode "YELLOW";			
-			waitUntil {sleep 5; ([_Group,_Range] call _KnowsAboutTargets) select 0};
+			_Group setCombatMode "YELLOW";
+			private _detectionResult = [];
+			waitUntil {sleep 5; _detectionResult = [_Group,_Range] call _KnowsAboutTargets; _detectionResult select 0};
 			{_X setBehaviour "AWARE"; _X setCombatMode "RED"; } foreach units _Group;
-			_SADWaypoint = _Group addWaypoint [getPos (([_Group,_Range] call _KnowsAboutTargets) select 1),0];
+			_detectionResult params ["_KnowsAboutTarget","_NearPlayers"];
+			private _randomNearPlayer = if (count _NearPlayers > 0) then {
+				selectRandom _NearPlayers
+			} else {
+				// Targets detected but no player within range filter — fall back to nearest player
+				private _fallback = [getPos leader _Group] call _GetDirToNearestPlayer;
+				_fallback select 1
+			};
+			_SADWaypoint = _Group addWaypoint [getPos _randomNearPlayer,0];
 			_SADWaypoint setWaypointType "SAD";
+			_SADWaypoint setWaypointBehaviour "AWARE";
+			_SADWaypoint setWaypointCombatMode "RED";
 			_Group setBehaviour "AWARE";
 			_Group setCombatMode "RED";
 		};

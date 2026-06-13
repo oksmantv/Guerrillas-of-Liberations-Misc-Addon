@@ -95,18 +95,6 @@ For "_i" from 1 to _RoadblockCount do {
 		private _can = createVehicle ["Land_Compass_F", _RoadPos, [], 0, "NONE"];
 		_can setDir _BaseDir;
 
-		if(["tarmac", _RoadTexture] call BIS_fnc_inString) then {
-
-			if(_Debug_Variable) then {systemChat "Roadblock is Wide: Spawn Comp"};
-			[ "roadblock_basic_wide", _RoadPos, [0,0,0], _BaseDir] call LARs_fnc_spawnComp;
-			_typeString = "roadblock_basic_wide";
-		} else {
-
-			if(_Debug_Variable) then {systemChat "Roadblock is Small: Spawn Comp"};
-			[ "roadblock_basic_small", _RoadPos, [0,0,0], _BaseDir] call LARs_fnc_spawnComp;
-			_typeString = "roadblock_basic_small";
-		};
-
 		OKS_RoadBlock_Positions pushBackUnique _RoadPos;
 		publicVariable "OKS_RoadBlock_Positions";
 
