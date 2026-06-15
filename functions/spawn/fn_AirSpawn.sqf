@@ -56,10 +56,10 @@ params [
     ["_RevealAirRadius", 10000, [0]]
 ];
 
-private _toPosATL = {
+private _toPosASL = {
     params ["_positionOrObject"];
     if (_positionOrObject isEqualType objNull) exitWith {
-        if (isNull _positionOrObject) then {[0,0,0]} else {getPosATL _positionOrObject}
+        if (isNull _positionOrObject) then {[0,0,0]} else {getPosASL _positionOrObject}
     };
     if (_positionOrObject isEqualType []) exitWith {
         if ((count _positionOrObject) < 3) then {[_positionOrObject param [0,0], _positionOrObject param [1,0], 0]} else {_positionOrObject}
@@ -75,8 +75,8 @@ private _debugLog = {
     [_message, false, false, true] spawn OKS_fnc_LogDebug;
 };
 
-private _spawnPositionATL = [_SpawnPos] call _toPosATL;
-private _moveToPositionATL = [_MoveToPos] call _toPosATL;
+private _spawnPositionATL = [_SpawnPos] call _toPosASL;
+private _moveToPositionATL = [_MoveToPos] call _toPosASL;
 
 // Waypoint/target positions for AirSpawn are intended to be ground-referenced.
 // Eden context menus can sometimes pass a clicked entity (at altitude) instead of a ground click.

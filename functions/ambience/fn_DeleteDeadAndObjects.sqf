@@ -56,7 +56,7 @@ if ({_X inArea _Trigger} count allPlayers > 0) then {
         (_VehicleSideFilter isEqualTo [] || side _vehicle in _VehicleSideFilter) &&
         (crew _vehicle) findIf { isPlayer _X } == -1 &&
         !({[(_X), str (vehicleVarName _vehicle)] call BIS_fnc_inString} count ["Vehicle_","Mhq_"] > 0) &&
-        (_DeleteStaticVehicles || count waypoints (group _vehicle) > 0)
+        (_DeleteStaticVehicles || (!(_vehicle isKindOf "StaticWeapon") && !(_vehicle getVariable ["GOL_IsStatic", false]) && count waypoints (group _vehicle) > 0))
     ) then {
         deleteVehicle _vehicle;
         sleep _DeleteDelayPerDelete;
@@ -74,7 +74,16 @@ if ({_X inArea _Trigger} count allPlayers > 0) then {
 {
     deleteVehicle _X;
     sleep _DeleteDelayPerDelete;
-} foreach ((allUnits inAreaArray _Trigger) select { !isPlayer _X && (vehicle _X == _X || _DeleteStaticVehicles || count waypoints (group (vehicle _X)) > 0) });
+} foreach ((allUnits inAreaArray _Trigger) select {
+    !isPlayer _X &&
+    !(
+        !_DeleteStaticVehicles &&
+        vehicle _X != _X &&
+        gunner (vehicle _X) == _X &&
+        (vehicle _X isKindOf "StaticWeapon" || vehicle _X getVariable ["GOL_IsStatic", false] || count waypoints (group _X) == 0)
+    ) &&
+    (vehicle _X == _X || _DeleteStaticVehicles || count waypoints (group _X) > 0)
+});
 
 
 // Deletes all objects placed in editor or Zeus.

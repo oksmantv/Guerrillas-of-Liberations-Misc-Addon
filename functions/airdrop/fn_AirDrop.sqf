@@ -1,4 +1,4 @@
-//	null = [side, "heli type", Search and Destroy or Egress and despawn, "unload/paradrop", "Spawn position", "unload/paradrop position", "Egress/SAD position", [number of groups, % of cargo to be filled], ["unit waypoints", "last waypoint SAD"], override] spawn OKS_fnc_Airdrop;
+//	null = [side, "heli type", Search and Destroy or Egress and despawn, "unload/paradrop/fastrope", "Spawn position", "insertion target position", "Egress/SAD position", [number of groups, % of cargo to be filled], ["unit waypoints", "last waypoint SAD"], override] spawn OKS_fnc_AirDrop;
 ////////////////////////
 //	Parameters
 ////////////////////////
@@ -6,9 +6,10 @@
 //	1. Side: 	Side of heli crew. (West/BLUFOR,East/OPFOR or Independent works fine)
 //	2. String: 	Class name of the type of heli you want to spawn. Type   nil   for default values.
 //	3. Boolean:	Whether the heli should go on a Search And Destroy task after unloading troops. True = SAD, False = Egress and despawn.
-//	4. String:	Select whether the heli will unload or paradrop. "Unload" or "Paradrop" available.
+//	4. String:	Select insertion mode. "Unload", "Paradrop" or "FastRope" available.
+//			Legacy alias "Drop" is accepted and mapped to "Paradrop" for backwards compatibility.
 //	5. Array/String:  Spawn position for heli, can be [X,Y,Z] or "Markername".
-//	6. Array/String:  Unload / Paradrop position, can be [X,Y,Z] or "Markername".
+//	6. Array/String:  Insertion target position (Unload / Paradrop / FastRope), can be [X,Y,Z] or "Markername".
 //	7. Array/String:  Search and Destroy or Egress and despawn position, can be [X,Y,Z] or "Markername".
 //	8. Array: [number of groups, % of total cargo to be filled with units]. [2,1] will spawn 2 groups and fill 100% available cargo seats. [4,0.5] will spawn 4 groups and fill 50% available cargo seats.
 //	9. Array of [X,Y,Z] or Strings:  Unit waypoints to follow when disembarking, last waypoint is a "Search and Destroy" waypoint. ["FirstWaypoint","SecondWaypoint",[Third,Way,Point]]
@@ -53,6 +54,10 @@ Params
 #include "fn_AirDrop_Settings.sqf"
 
 _UnloadOrDrop = (toLower _UnloadOrDrop);
+
+if (_UnloadOrDrop isEqualTo "drop") then {
+	_UnloadOrDrop = "paradrop";
+};
 
 _AirDropUnits = [];
 _Index = 2;
@@ -452,7 +457,7 @@ if ((_Units Select 0) > 0) then
 			if (_SpareIndex < 0) then {_SpareIndex = _SpareIndex +1};
 			sleep 0.5;
 		};
-		[units _Group] remoteExec [{ { [_x] call GW_SetDifficulty_fnc_setSkill } forEach _this }, 0];
+		{ [_x] call GW_SetDifficulty_fnc_setSkill } forEach (units _Group);
 		_Groups PushBack _Group;
 		{_x disableCollisionWith _Heli} forEach (units _Group);
 

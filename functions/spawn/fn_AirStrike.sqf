@@ -5,7 +5,8 @@
         Spawns a crewed jet that performs a bombing run on a target position, then exits
         and deletes. The aircraft flies from the spawn position toward a strike anchor
         point (using the anchor's direction for attack heading), releases ordnance when
-        within 500m, then continues to the exit waypoint where it is cleaned up.
+        within 500m of the run-in point (700m before the anchor), then continues to the
+        exit waypoint where it is cleaned up.
         Supports guided bombs (GBU-12) and cluster munitions. For cluster strikes,
         unexploded ordnance (UXO) is automatically force-detonated after a short delay
         to prevent persistent ground hazards. The bomb ammo class can be overridden
@@ -19,13 +20,17 @@
         4: _side          - SIDE            - Faction side for the crew (default: east)
         5: _height        - NUMBER          - Flight altitude in meters (default: 250)
         6: _munitionSpec  - STRING          - Munition type: "BOMB" for guided bombs, "CLUSTER" for cluster munitions (default: "BOMB")
+        7: _bombCount     - NUMBER          - Number of guided bombs to drop in a carpet sequence (default: 1, BOMB mode only)
 
     Returns:
         Nothing
 
     Example:
-        // Guided bomb strike
+        // Single guided bomb strike
         [getPos jetspawn_1, jetstrike_1, getPos jetexit_1, "B_Plane_Fighter_01_Stealth_F", west, 250] spawn OKS_fnc_AirStrike;
+
+        // Three-bomb carpet strike
+        [getPos jetspawn_1, jetstrike_1, getPos jetexit_1, "B_Plane_Fighter_01_Stealth_F", west, 250, "BOMB", 3] spawn OKS_fnc_AirStrike;
 
         // Cluster bomb strike
         [getPos jetspawn_1, jetstrike_1, getPos jetexit_1, "B_Plane_Fighter_01_Stealth_F", west, 250, "CLUSTER"] spawn OKS_fnc_AirStrike;
@@ -51,7 +56,8 @@ params [
     // Backward compatible: default to guided bombs.
     // Supported formats (case-insensitive):
     //   "BOMB" | "CLUSTER"
-    ["_munitionSpec", "BOMB", [""]]
+    ["_munitionSpec", "BOMB", [""]],
+    ["_bombCount", 1, [0]]
 ];
 
 private _spawnPos = if (_spawnIn isEqualType objNull) then { getPosATL _spawnIn } else { _spawnIn };
@@ -62,11 +68,10 @@ private _strikeAnchorPos = if (!isNull _strikeObj) then { getPosATL _strikeObj }
 
 private _direction = if (!isNull _strikeObj) then { getDir _strikeObj } else { _spawnPos getDir _strikeAnchorPos };
 
-private _strikePos = if (!isNull _strikeObj) then {
-    _strikeObj getPos [350, (getDir _strikeObj - 180)]
-} else {
-    [_strikeAnchorPos, 350, (_direction - 180)] call BIS_fnc_relPos
-};
+// Run-in point: placed 700m toward spawn from the anchor using the spawn→anchor vector.
+// This guarantees the waypoint is always on the approach side regardless of how the
+// anchor object is rotated in Eden.  (Bomb spacing direction still uses _direction/getDir.)
+private _strikePos = [_strikeAnchorPos, 700, (_spawnPos getDir _strikeAnchorPos) + 180] call BIS_fnc_relPos;
 
 private _spawnPos3d = [_spawnPos#0, _spawnPos#1, _height];
 
@@ -96,7 +101,7 @@ _exitWp setWaypointType "MOVE";
 _exitWp setWaypointCompletionRadius 1000;
 _exitWp setWaypointStatements ["true", "deleteVehicle (vehicle this); {deleteVehicle _x} forEach (units group this);"];
 
-waitUntil { sleep 0.2; _aircraft distance2D _strikePos < 500 || !alive _aircraft };
+waitUntil { sleep 0.2; _aircraft distance2D _strikeAnchorPos < 1000 || !alive _aircraft };
 if (!alive _aircraft) exitWith {};
 
 sleep 1;
@@ -203,9 +208,7 @@ if (_munitionType == "CLUSTER") then {
     if !(_spacing isEqualType 0) then { _spacing = 40; };
     _spacing = (_spacing max 5) min 150;
 
-    private _bombCount = missionNamespace getVariable ["OKS_AirStrike_BombCount", 3];
-    if !(_bombCount isEqualType 0) then { _bombCount = 3; };
-    _bombCount = (round _bombCount) max 1 min 4;
+    _bombCount = (round _bombCount) max 1 min 8;
 
     private _targetATL0 = [_strikeAnchorPos#0, _strikeAnchorPos#1, 0];
     private _bombTargetsATL0 = [];
@@ -231,7 +234,7 @@ if (_munitionType == "CLUSTER") then {
         private _targetASL = ATLToASL _targetATL0;
         // No initial sleep here: we do an immediate first-step orientation at spawn time.
 
-        private _tick = 0.02;
+        private _tick = 0.05;
         private _maxTime = 45;
         private _t0 = diag_tickTime;
         private _lastLog = -1;
@@ -286,6 +289,15 @@ if (_munitionType == "CLUSTER") then {
             private _alpha = (_elapsed / _rampDuration) min 1;
             private _speedCmdXY = (_speedNowXY + (_maxSpeedXY - _speedNowXY) * _alpha) max _minSpeedXY;
 
+            // Cap XY speed so the required descent rate never silently saturates against _maxVZ.
+            // When a bomb is too high for the remaining horizontal distance, reducing XY speed gives
+            // it more time to descend instead of flying past the target still airborne.
+            // Formula: speedXY_max = |maxVZ| * dist2D / altATL  (rearranged from altATL/tGo <= |maxVZ|)
+            if (_altATL > 1 && {_dist2D > 1}) then {
+                private _maxSpeedForDescent = (abs _maxVZ) * _dist2D / _altATL;
+                _speedCmdXY = _speedCmdXY min (_maxSpeedForDescent max _minSpeedXY);
+            };
+
             // Effective speed for tGo: blend current speed and command (helps stability when drag limits acceleration).
             private _speedForTgo = ((_speedNowXY max 1) + (_speedCmdXY max 1)) / 2;
 
@@ -316,20 +328,20 @@ if (_munitionType == "CLUSTER") then {
         };
     };
 
+    private _bb = boundingBoxReal _aircraft;
+    private _bbMin = _bb param [0, [0,0,0]];
+    private _bbMinZ = _bbMin param [2, -2.5];
+    private _clearanceMeters = (abs _bbMinZ) + 2;
+    private _rearOffsetMeters = 10;
+
     {
         private _thisTargetATL0 = _x;
         private _bombIndex = _forEachIndex;
         if (_bombIndex > 0) then { sleep 0.15; };
 
-        private _bb = boundingBoxReal _aircraft;
-        private _bbMin = _bb param [0, [0,0,0]];
-        private _bbMinZ = _bbMin param [2, -2.5];
         private _aircraftASL = getPosASL _aircraft;
         private _aircraftATL = getPosATL _aircraft;
         private _dirDeg = getDir _aircraft;
-
-        private _clearanceMeters = (abs _bbMinZ) + 2;
-        private _rearOffsetMeters = 10;
 
         private _dropPosASL = [
             (_aircraftASL select 0) - (sin _dirDeg) * _rearOffsetMeters,
