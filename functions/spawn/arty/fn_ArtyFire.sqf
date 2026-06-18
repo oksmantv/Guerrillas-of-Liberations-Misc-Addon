@@ -217,29 +217,34 @@ if (!HasInterface || isServer) then
 	*/
 
 	if (_Debug == 1) then {SystemChat "Disable AI"};
-	[_arty,["Fired",{
-		params ["","","","","","","_projectile"];
+	[_arty, "Fired", {
+		params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
+
+		if (!isServer) exitWith {};  // Only run monitoring on server
+
 		[_projectile] spawn {
 			params ["_projectile"];
 			private _prevAlt = -1;
-			private _timeout = time + 30;
-			
+			private _timeout = time + 30;  // adjust as needed
+
 			waitUntil {
 				sleep 0.1;
+				if (isNull _projectile) exitWith {true};  // safety
+
 				private _currentAlt = getPosASL _projectile select 2;
-				
+
 				// Delete when descending, timeout, or destroyed
 				if (_prevAlt > 0 && _currentAlt < _prevAlt) exitWith {true};
 				if (time > _timeout) exitWith {true};
 				if (!alive _projectile) exitWith {true};
-				
+
 				_prevAlt = _currentAlt;
 				false
 			};
-			
-			[_projectile] remoteExec ["deleteVehicle", 0];
+
+			deleteVehicle _projectile;  // Direct delete on server is sufficient
 		};
-	}]] remoteExec ["addEventHandler",0];
+	}] remoteExec ["addEventHandler", 0, true];  // JIP = true for persistence
 	_arty spawn {
 		waitUntil{sleep 5; { _X distance2d _this < 30 && (side _this) getFriend (side _X) < 0.5} count AllPlayers > 0};
 		systemChat "Enemy Players nearby, exiting artillery..";
@@ -313,5 +318,4 @@ if (!HasInterface || isServer) then
 	};
 	if(!Alive (gunner _Arty)) exitWith { if(_Debug == 1) then { systemChat "Gunner dead. Exiting and removing Eventhandler"}};
 	_arty removeAllEventHandlers "Fired";
-
 };

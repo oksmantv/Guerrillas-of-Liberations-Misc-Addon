@@ -146,7 +146,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 
 	_PlayerKnownToSpawner = ({
 		((_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)) ||
-		((_ThirdSide knowsAbout _X > _KnowsAboutValue || _ThirdSide knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X) && _ThirdSide getFriend (side group _X) < 0.6 ) 
+		((_ThirdSide knowsAbout _X > _KnowsAboutValue || _ThirdSide knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X) && (_ThirdSide getFriend (side group _X) <= 0.6) ) 
 	} count list _HuntZone > 0);
 	if(_PlayerKnownToSpawner) then {
 		_DetectDelay = round((_RefreshRate * _ResponseMultiplier) + (Random _RefreshRate * _ResponseMultiplier));
@@ -168,7 +168,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 		{
 			_PlayerKnownToSpawner = ({
 				((_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)) ||
-				((_ThirdSide knowsAbout _X > _KnowsAboutValue || _ThirdSide knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X) && _ThirdSide getFriend (side group _X) < 0.6 ) 
+				((_ThirdSide knowsAbout _X > _KnowsAboutValue || _ThirdSide knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X) && (_ThirdSide getFriend (side group _X) <= 0.6) ) 
 			} count list _HuntZone > 0);
 			if(_PlayerKnownToSpawner) then {
 				if(_Debug) then {

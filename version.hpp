@@ -2,10 +2,10 @@
 // This is the single source of truth for the addon version
 // Edit this value to update the addon version across all files
 
-#define MISC_MAJOR 3
-#define MISC_MINOR 3
-#define MISC_PATCHLVL 9
-#define MISC_BUILD 150626
+#define MISC_MAJOR 3 // 0-10
+#define MISC_MINOR 4 // 0-10
+#define MISC_PATCHLVL 0 // 0-10
+#define MISC_BUILD 180626
 
 #define MISC_VERSION MISC_MAJOR.MISC_MINOR.MISC_PATCHLVL.MISC_BUILD
 #define MISC_VERSION_AR MISC_MAJOR,MISC_MINOR,MISC_PATCHLVL,MISC_BUILD
