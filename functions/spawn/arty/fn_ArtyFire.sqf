@@ -217,34 +217,57 @@ if (!HasInterface || isServer) then
 	*/
 
 	if (_Debug == 1) then {SystemChat "Disable AI"};
-	[_arty, "Fired", {
-		params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
+	private _handledProjectiles = [];
+	private _firedEH = {
+		params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile"];
 
 		if (!isServer) exitWith {};  // Only run monitoring on server
+
+		if (isNull _projectile) exitWith {
+			[format ["[ArtyFire] ERROR - Projectile is NULL after fire event from %1", _unit]] spawn OKS_fnc_LogDebug;
+		};
+
+		if (_projectile in _handledProjectiles) exitWith {};
+		_handledProjectiles pushBack _projectile;
+
+		[format ["[ArtyFire] Artillery fired - Source: %1, Weapon: %2, Magazine: %3, Projectile: %4", _unit, _weapon, _magazine, _projectile]] spawn OKS_fnc_LogDebug;
 
 		[_projectile] spawn {
 			params ["_projectile"];
 			private _prevAlt = -1;
+			private _startTime = time;
 			private _timeout = time + 30;  // adjust as needed
+
+			[format ["[ArtyFire] Starting projectile monitor for: %1 (%2), Timeout: %3s", _projectile, typeName _projectile, 30]] spawn OKS_fnc_LogDebug;
 
 			waitUntil {
 				sleep 0.1;
 				if (isNull _projectile) exitWith {true};  // safety
+				if (!alive _projectile) exitWith {true};
 
 				private _currentAlt = getPosASL _projectile select 2;
 
 				// Delete when descending, timeout, or destroyed
 				if (_prevAlt > 0 && _currentAlt < _prevAlt) exitWith {true};
 				if (time > _timeout) exitWith {true};
-				if (!alive _projectile) exitWith {true};
 
 				_prevAlt = _currentAlt;
 				false
 			};
 
-			deleteVehicle _projectile;  // Direct delete on server is sufficient
+			if (!isNull _projectile) then {
+				[format ["[ArtyFire] Deleting projectile: %1 (%2), Alt: %3, Elapsed: %4s", _projectile, typeName _projectile, getPosASL _projectile select 2, time - _startTime]] spawn OKS_fnc_LogDebug;
+				deleteVehicle _projectile;  // Direct delete on server is sufficient
+			} else {
+				[format ["[ArtyFire] Projectile already null at delete time"]] spawn OKS_fnc_LogDebug;
+			};
 		};
-	}] remoteExec ["addEventHandler", 0, true];  // JIP = true for persistence
+	};
+	_arty addEventHandler ["Fired", _firedEH];
+	private _artyGunner = gunner _arty;
+	if (!isNull _artyGunner) then {
+		_artyGunner addEventHandler ["Fired", _firedEH];
+	};
 	_arty spawn {
 		waitUntil{sleep 5; { _X distance2d _this < 30 && (side _this) getFriend (side _X) < 0.5} count AllPlayers > 0};
 		systemChat "Enemy Players nearby, exiting artillery..";
