@@ -45,24 +45,6 @@ _Helicopter addItemCargoGlobal ["Toolkit",2];
 _Helicopter addMagazineCargoGlobal ["SatchelCharge_Remote_Mag",5];
 _Helicopter addItemCargoGlobal ["ACE_rope36",4];
 
-// M230 Chain Gun pod — add ammo swap actions unconditionally.
-// Condition strings gate visibility: only shown to the pilot when a pod is loaded.
-// Preserves round counts across swaps via GOL_M230_HE_Ammo / GOL_M230_AP_Ammo vehicle variables.
-_Helicopter addAction [
-	"M230: Switch to <t color='#FF6666'>AP</t>",
-	{ _this call OKS_fnc_M230_SwapAmmo },
-	["GOL_PylonWeapon_M230_AP", "GOL_PylonWeapon_M230_HE"],
-	6, false, true, "",
-	"driver _target == player && currentWeapon _target == 'GOL_weapon_M230_ChainGun' && 'GOL_PylonWeapon_M230_HE' in (getPylonMagazines _target) && (_target getVariable ['GOL_M230_AP_Ammo', 250]) > 0"
-];
-_Helicopter addAction [
-	"M230: Switch to <t color='#66FF66'>HE</t>",
-	{ _this call OKS_fnc_M230_SwapAmmo },
-	["GOL_PylonWeapon_M230_HE", "GOL_PylonWeapon_M230_AP"],
-	6, false, true, "",
-	"driver _target == player && currentWeapon _target == 'GOL_weapon_M230_ChainGun' && 'GOL_PylonWeapon_M230_AP' in (getPylonMagazines _target) && (_target getVariable ['GOL_M230_HE_Ammo', 250]) > 0"
-];
-
 if(_ShouldAddExtraFlares) then {
 	_CMWeapons = (_Helicopter weaponsTurret [-1]) select {["CM", _X,false] call BIS_fnc_inString};
 	{

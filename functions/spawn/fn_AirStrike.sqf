@@ -89,6 +89,8 @@ _aircraft flyInHeight _height;
     _x disableAI "AUTOTARGET";
     _x disableAI "LIGHTS";
 } forEach units _crewGroup;
+_aircraft setPilotLight false;
+_aircraft setCollisionLight false;
 
 _crewGroup setBehaviour "CARELESS";
 _crewGroup setCombatMode "BLUE";

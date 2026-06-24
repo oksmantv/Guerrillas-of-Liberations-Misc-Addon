@@ -1,11 +1,12 @@
 /*
-    [guardGroup, hvtUnit, endPos] call OKS_fnc_InterceptHvt_GarrisonEnd;
+    [guardGroup, hvtUnit, endPos, overflowGroup, debug] call OKS_fnc_InterceptHvt_GarrisonEnd;
 */
 params [
     ["_guardGroup", grpNull, [grpNull]],
     ["_hvtUnit", objNull, [objNull]],
     ["_endPos", [0,0,0], [[]]],
-    ["_overflowGroup", grpNull, [grpNull]]
+    ["_overflowGroup", grpNull, [grpNull]],
+    ["_debug", false, [false]]
 ];
 
 if (isNull _guardGroup) exitWith {false};
@@ -84,10 +85,7 @@ waitUntil {
 _guardGroup setSpeedMode "FULL";
 
 if (_dismountGuards isNotEqualTo []) then {
-    waitUntil {sleep 1; !(isNil "ace_ai_fnc_garrison")};
-    // Args: [position, building type filter, units, radius, fill mode, top-to-bottom, teleport]
-    // Fill mode 1 = building by building. Radius 30 covers surrounding buildings if one fills up.
-    [getPosATL _targetBuilding, nil, _dismountGuards, 30, 1, false, false] remoteExec ["ace_ai_fnc_garrison", 0];
+    [getPosATL _targetBuilding, 150, _dismountGuards, 0.75, _debug] spawn OKS_fnc_GarrisonBuildingsInArea;
 };
 
 

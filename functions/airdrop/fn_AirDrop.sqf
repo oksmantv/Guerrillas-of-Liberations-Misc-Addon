@@ -152,9 +152,12 @@ if (_UnloadOrDrop isEqualTo "paradrop") then
 		_Pilot = CreateAgent [(_PilotClasses call BIS_FNC_selectRandom), [0,0,0], [], 0, "NONE"];
 		_Pilot MoveInDriver _Heli;
 		_Pilot setRank "SERGEANT";
-		_Pilot SetBehaviour "STEALTH";
+		_Pilot SetBehaviour "CARELESS";
 		_Pilot setCombatMode "BLUE";
 		_Pilot disableAI "FSM";
+		_Pilot disableAI "LIGHTS";
+		_Heli setPilotLight false;
+		_Heli setCollisionLight false;
 		_Pilot setVariable ["oks_disable_hunt",true];
 	};
 } else {

@@ -29,8 +29,10 @@
         Optional. If defined, adds an Extract phase after rescue.
         Casualty must reach within 50m of this position to complete.
     4: _guardData (NIL|ARRAY)
-        Optional. [guardCount (NUMBER), guardSide (SIDE)] — spawns an enemy guard
-        group near the casualty using OKS_fnc_Task_Settings classnames.
+        Optional. [guardCount (NUMBER), guardSide (SIDE), guardBehaviour (STRING)]
+        Spawns an enemy group near the casualty using OKS_fnc_Task_Settings classnames.
+        guardBehaviour: "guard"  — static GUARD waypoint at casualty position (default).
+                        "patrol" — patrol route around the casualty (BIS_fnc_taskPatrol).
 
     Returns: Nothing — hook outcomes via waitUntil on unit variables.
 
@@ -213,8 +215,9 @@ if (_debug) then {
 private _guardGroup = grpNull;
 if (!isNil "_guardData" && { _guardData isEqualType [] } && { count _guardData >= 2 }) then {
     _guardData params [
-        ["_guardCount", 4, [0]],
-        ["_guardSide",  east, [sideUnknown]]
+        ["_guardCount",     4,       [0]],
+        ["_guardSide",      east,    [sideUnknown]],
+        ["_guardBehaviour", "guard", [""]]
     ];
     _guardCount = _guardCount max 1;
 
@@ -243,15 +246,29 @@ if (!isNil "_guardData" && { _guardData isEqualType [] } && { count _guardData >
         _guard setRank "PRIVATE";
     };
 
-    // GUARD waypoint at casualty position — start stealthy, return fire only
-    private _wp = _guardGroup addWaypoint [_guardPos, 15];
-    _wp setWaypointType "GUARD";
-    _wp setWaypointBehaviour "STEALTH";
-    _wp setWaypointCombatMode "GREEN";
-
+    // Initial posture — stealthy, return-fire only (all modes)
     _guardGroup setBehaviourStrong "STEALTH";
     _guardGroup setCombatMode "GREEN";
     { _x setUnitPos "MIDDLE" } forEach units _guardGroup;
+
+    switch (toLower _guardBehaviour) do {
+        case "guard": {
+            // Static GUARD waypoint at casualty position
+            private _wp = _guardGroup addWaypoint [_guardPos, 40];
+            _wp setWaypointType "HOLD";
+            _wp setWaypointBehaviour "STEALTH";
+            _wp setWaypointCombatMode "GREEN";
+        };
+        case "patrol": {
+            // Patrol route around the casualty
+            // Swap for: [_guardGroup, _guardPos, 80, 6] call lambs_wp_fnc_patrol
+            [_guardGroup, _guardPos, 50, 6] call BIS_fnc_taskPatrol;
+        };
+        default {
+            // Fallback — patrol guard
+            [_guardGroup, _guardPos, 50, 6] call BIS_fnc_taskPatrol;
+        };
+    };
 
     // Switch to COMBAT and engage at will when any player closes within 100m
     [_guardGroup, _casualtyUnit] spawn {

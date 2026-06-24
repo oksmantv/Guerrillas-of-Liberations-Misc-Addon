@@ -34,6 +34,8 @@ private _isFrontWheelDisabledFn = {
     ({_x >= 0.95} count _frontWheelDamage) > 0
 };
 
+private _driverInvalidSince = -1;
+
 waitUntil {
     sleep 1;
 
@@ -41,7 +43,28 @@ waitUntil {
 
     if (isNull _vehicle || {!alive _vehicle}) exitWith {true};
 
-    private _driverInvalid = isNull driver _vehicle || {!alive driver _vehicle};
+    private _driverInvalidNow = isNull driver _vehicle || {!alive driver _vehicle};
+    if (_driverInvalidNow) then {
+        if (_driverInvalidSince < 0) then {
+            _driverInvalidSince = time;
+            if (missionNamespace getVariable ["GOL_HVT_Debug", false]) then {
+                "[INTERCEPT HVT] HandleDisabled: driver became invalid." call OKS_fnc_LogDebug;
+            };
+        };
+    } else {
+        if (_driverInvalidSince >= 0) then {
+            if (missionNamespace getVariable ["GOL_HVT_Debug", false]) then {
+                "[INTERCEPT HVT] HandleDisabled: driver restored." call OKS_fnc_LogDebug;
+            };
+        };
+        _driverInvalidSince = -1;
+    };
+
+    // Ignore short seat-swap gaps; only treat persistent no-driver state as disabled.
+    private _driverInvalid = (_driverInvalidSince >= 0) && {(time - _driverInvalidSince) >= 5};
+    if (_driverInvalid && {missionNamespace getVariable ["GOL_HVT_Debug", false]}) then {
+        format ["[INTERCEPT HVT] HandleDisabled: persistent no-driver threshold reached (%1 s elapsed)", round (time - _driverInvalidSince)] call OKS_fnc_LogDebug;
+    };
     private _disabled = (!canMove _vehicle) || _driverInvalid || ([_vehicle] call _isFrontWheelDisabledFn);
 
     if (_disabled) then {
@@ -90,7 +113,8 @@ waitUntil {
         // When the main convoy vehicle is first disabled, redirect each overflow team to a
         // unique spread position around the ambush site. Without this, all teams drive to the
         // same road waypoint and pile their vehicles at the garrison entrance.
-        if (!(_vehicle getVariable ["OKS_InterceptHvt_OverflowRedirected", false])) then {
+        private _mainVehicle = _hvtUnit getVariable ["OKS_InterceptHvt_MainVehicle", objNull];
+        if (!(_vehicle getVariable ["OKS_InterceptHvt_OverflowRedirected", false]) && {_vehicle == _mainVehicle}) then {
             _vehicle setVariable ["OKS_InterceptHvt_OverflowRedirected", true];
             private _overflowGroups = _hvtUnit getVariable ["OKS_InterceptHvt_OverflowGroups", []];
             if (_overflowGroups isNotEqualTo []) then {

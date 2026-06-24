@@ -140,6 +140,9 @@ _aircraft setVelocityModelSpace [0, 20, 0];
 _aircraft flyInHeight _Height;
 
 private _crewGroup = [_aircraft, _Side] call OKS_fnc_AddVehicleCrew;
+_aircraft setPilotLight false;
+_aircraft setCollisionLight false;
+{ _x disableAI "LIGHTS"; } forEach (units _crewGroup);
 
 [format ["[AIRSPAWN] Spawned aircraft=%1 group=%2 crew=%3", _aircraft, _crewGroup, units _crewGroup]] call _debugLog;
 
@@ -188,7 +191,7 @@ if !(isNil { _effectiveLoadout }) then {
 };
 
 if (_ShouldBeCareless) then {
-    _crewGroup setBehaviour "STEALTH";
+    _crewGroup setBehaviour "CARELESS";
     _crewGroup setCombatMode "BLUE";
 } else {
     _crewGroup setBehaviour "COMBAT";
@@ -200,7 +203,7 @@ _waypoint setWaypointType _WaypointType;
 
 // Mirror engagement settings on the waypoint (helps when group inherits other defaults).
 if (_ShouldBeCareless) then {
-    _waypoint setWaypointBehaviour "STEALTH";
+    _waypoint setWaypointBehaviour "CARELESS";
     _waypoint setWaypointCombatMode "BLUE";
 } else {
     _waypoint setWaypointBehaviour "COMBAT";

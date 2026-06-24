@@ -24,7 +24,9 @@ class CfgFunctions // Defines a function
 		class OKS_Tasks {
 			file = "\OKS_GOL_Misc\functions\tasks";
 			class AddAction {};
+			class AddSearchIntelAction {};
 			class AttachTo {};
+			class ClaimIntel {};
 			class ClearImmediateArea {};
 			class Defuse_Explosive {};
 			class Destroy_Barricade {};
@@ -49,8 +51,10 @@ class CfgFunctions // Defines a function
 			class InterceptHvtTask {};
 			class InterceptHvt_SelectVehicle {};
 			class InterceptHvt_MountGroup {};
+			class InterceptHvt_StartEscortTrail {};
 			class InterceptHvt_HandleDisabledVehicle {};
 			class InterceptHvt_GarrisonEnd {};
+			class InterceptHvt_HandleMountedSurrender {};
 			class InterceptHvt_SetHvtSurrendered {};
 			class InterceptHvt_UpdateTrackedTaskPos {};
 		};
@@ -211,6 +215,7 @@ class CfgFunctions // Defines a function
 			class UndercoverAI_Activate {};	
 			class RestCamp {};
 			class RestCamp_WakeUp {};
+			class GarrisonBuildingsInArea {};
 		};	
 		
 		class OKS_Suppression {
