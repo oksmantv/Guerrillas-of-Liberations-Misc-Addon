@@ -1,5 +1,5 @@
 /*
-	Example Short: [intel_1,nil,nil,"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello","Special Intel",nil,false,nil,false] spawn OKS_fnc_SetupIntel;
+	Example Short: [intel_1,nil,nil,"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello","Special Intel",nil,false,nil,false,"Search for Intel"] spawn OKS_fnc_SetupIntel;
 
 	Example Detailed:
 	[
@@ -11,7 +11,8 @@
 		nil,																	// Custom Details (Text inserted as %2 in Custom Text, "" for none)
 		nil,																	// Enable Intel Task Complete (true/false)
 		["marker1","marker2"],													// Turn Markers from Array to (Visibility 0 on start) and when completed (Visibility 1)
-		false																	// Show Task Position on map when ASSIGNED (false = no map marker until task completes)
+		false,																	// Show Task Position on map when ASSIGNED (false = no map marker until task completes)
+		"Download Harddrive"													// Custom ACE interact action title ("" or omit for default "Search for Intel")
 	] spawn OKS_fnc_SetupIntel;
 
 	"ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n%2"
@@ -35,7 +36,9 @@ Params [
 	["_CustomDetails","", [""]],
 	["_EnableIntelTaskComplete",true, [false]],
 	["_MarkerArray",[""],[[]]],
-	["_ShowTaskPosition",true,[false]]
+	["_ShowTaskPosition",true,[false]],
+	["_CustomActionTitle","Search for Intel",[""]]
+
 ];
 
 if(!isServer) exitWith {
@@ -180,31 +183,35 @@ if(!isNil "_Target") then {
 };
 
 _MergedText = format[_CustomText, _AssetList, _CustomDetails];
-if(isNil "_CustomHeader") then {
+if(isNil "_CustomHeader" || {_CustomHeader isEqualTo ""}) then {
 	_CustomHeader = format["Intel #%1",(count _AllIntel + 1)];
 };
 
-if(_IntelPiece isKindOf "Man") then {
+if ((typeof _IntelPiece) == "acex_intelitems_document") then {
+	// Native ACE document object — ACE adds its own interact action via setObjectData.
+	format ["[SetupIntel] ACE document object, delegating to setObjectData: %1", typeOf _IntelPiece] spawn OKS_fnc_LogDebug;
+	[_IntelPiece, _MergedText, _CustomHeader] call ace_intelitems_fnc_setObjectData;
+} else {
+	// Man, vehicle, prop, or any other world object — attach the GOL custom interact action.
 	_IntelPiece setVariable ["GOL_IntelSearchText", _MergedText, true];
 	_IntelPiece setVariable ["GOL_IntelSearchHeader", _CustomHeader, true];
 	_IntelPiece setVariable ["GOL_IntelClaimed", false, true];
 	_IntelPiece setVariable ["GOL_IntelClaimedBy", objNull, true];
-	format ["[SetupIntel] Registering Search for Intel action on: %1 (alive: %2)", name _IntelPiece, alive _IntelPiece] spawn OKS_fnc_LogDebug;
-	// Allow players to loot and interact with this unit.
-	// The Framework InventoryOpened handler blocks access to any AI unit that does
-	// not have GW_Common_isPlayer set. HVT intel units must be exempt.
-	_IntelPiece setVariable ["GW_Common_isPlayer", true, true];
-	[_IntelPiece] call OKS_fnc_AddSearchIntelAction;
-	format ["[SetupIntel] Search for Intel action registered on %1. GW_Common_isPlayer set to allow looting.", name _IntelPiece] spawn OKS_fnc_LogDebug;
-} else {
-	format ["[SetupIntel] Setting object intel data on: %1", typeOf _IntelPiece] spawn OKS_fnc_LogDebug;
-	[_IntelPiece, _MergedText, _CustomHeader] call ace_intelitems_fnc_setObjectData;
+	if (_IntelPiece isKindOf "Man") then {
+		// Allow players to loot and interact with this unit.
+		// The Framework InventoryOpened handler blocks access to any AI unit that does
+		// not have GW_Common_isPlayer set. HVT intel units must be exempt.
+		_IntelPiece setVariable ["GW_Common_isPlayer", true, true];
+	};
+	private _pieceLabel = if (_IntelPiece isKindOf "Man") then {name _IntelPiece} else {typeOf _IntelPiece};
+	format ["[SetupIntel] Registering Search for Intel action on: %1", _pieceLabel] spawn OKS_fnc_LogDebug;
+	[_IntelPiece, _CustomActionTitle] call OKS_fnc_AddSearchIntelAction;
 };
 
 if(_EnableIntelTaskComplete) then {
 	private _TaskId = format["IntelTask_%1", floor (random 9999999)];
 	private _TaskArray = _TaskId;
-	if(!isNil "_Parent") then {
+	if(!isNil "_Parent" && {_Parent != ""}) then {
 		_TaskArray = [_TaskId, _Parent];
 	};
 
@@ -294,20 +301,27 @@ if(_EnableIntelTaskComplete) then {
 					};
 				} forEach _nearby;
 			};
-			!alive _IntelPiece
+			(_IntelPiece getVariable ["GOL_IntelClaimed", false]) || {!alive _IntelPiece}
 		};
 
 		_TaskPosition = getPos _IntelPiece;
 
-		{
-			private _snapIdx = _snapPlayers find _X;
-			private _prev = if (_snapIdx >= 0) then {_snapMags select _snapIdx} else {[]};
-			private _gained = (magazines _X) - _prev;
-			if (_gained isNotEqualTo []) exitWith {
-				format ["[SetupIntel] Object path: magazine delta detected for %1: gained %2", name _X, _gained] spawn OKS_fnc_LogDebug;
-				_Player = _X;
-			};
-		} forEach _lastNearPlayers;
+		// GOL interact action sets GOL_IntelClaimedBy directly — use it if available.
+		// Fall back to magazine snapshot for ACE document objects that are destroyed on pickup.
+		if (_IntelPiece getVariable ["GOL_IntelClaimed", false]) then {
+			_Player = _IntelPiece getVariable ["GOL_IntelClaimedBy", objNull];
+			format ["[SetupIntel] Object path: claimed via GOL interact by %1", if (!isNull _Player) then {name _Player} else {"unknown"}] spawn OKS_fnc_LogDebug;
+		} else {
+			{
+				private _snapIdx = _snapPlayers find _X;
+				private _prev = if (_snapIdx >= 0) then {_snapMags select _snapIdx} else {[]};
+				private _gained = (magazines _X) - _prev;
+				if (_gained isNotEqualTo []) exitWith {
+					format ["[SetupIntel] Object path: magazine delta detected for %1: gained %2", name _X, _gained] spawn OKS_fnc_LogDebug;
+					_Player = _X;
+				};
+			} forEach _lastNearPlayers;
+		};
 
 		_TaskSucceeded = !isNull _Player;
 	};
@@ -342,7 +356,7 @@ if(_EnableIntelTaskComplete) then {
 			_X setMarkerAlpha 1;
 		} forEach _MarkerArray;
 
-		if(!isNil "_Target") then {
+		if(!isNil "_Target" && {(_Target isEqualType objNull && {!isNull _Target}) || (_Target isEqualType [] && {count _Target > 0})}) then {
 			// Clean up any existing intel pieces with the same target to prevent duplicates.
 			// Do NOT delete Man units — the intel piece may be a live HVT character.
 			// Only delete non-Man objects (physical document props, spawned intel objects, etc).

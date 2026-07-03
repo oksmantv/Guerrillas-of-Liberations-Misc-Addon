@@ -60,8 +60,12 @@ waitUntil {
         _driverInvalidSince = -1;
     };
 
-    // Ignore short seat-swap gaps; only treat persistent no-driver state as disabled.
-    private _driverInvalid = (_driverInvalidSince >= 0) && {(time - _driverInvalidSince) >= 5};
+    // Ignore short seat-swap gaps; but if the vehicle is already stationary skip the timer —
+    // a stopped vehicle with no driver should eject crew immediately.
+    private _vehicleStopped = vectorMagnitude velocity _vehicle < 0.5;
+    private _driverInvalid = (_driverInvalidSince >= 0) && {
+        _vehicleStopped || {(time - _driverInvalidSince) >= 15}
+    };
     if (_driverInvalid && {missionNamespace getVariable ["GOL_HVT_Debug", false]}) then {
         format ["[INTERCEPT HVT] HandleDisabled: persistent no-driver threshold reached (%1 s elapsed)", round (time - _driverInvalidSince)] call OKS_fnc_LogDebug;
     };

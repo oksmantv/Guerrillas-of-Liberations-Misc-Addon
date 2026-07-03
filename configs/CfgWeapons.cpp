@@ -232,7 +232,10 @@ class CfgWeapons {
 		magazines[] = {
 			// LEFT reticle (VM markings)
 			"GOL_mag_rpg7_Modern",
+ver			"GOL_mag_rpg7_Type59",
+			"GOL_mag_rpg7_Type69",
 			// RIGHT reticle (VL markings)
+			"GOL_mag_rpg7_Type69II",
 			"GOL_mag_rpg7_OG7V",
 			"GOL_mag_rpg7_TBG7V",
 			"GOL_mag_rpg7_VR"
@@ -247,6 +250,140 @@ class CfgWeapons {
 				weaponSoundEffect = "DefaultRifle";
 			};
 		};
+	};
+
+	// ==================== GOL RPG-7 RHS (standard, AI-use variant) ====================
+	// Standard dispersion, accepts all known RHS mags + GOL rounds. Use for enemy/ally AI.
+	// PSRL-1 is the precision (zero-dispersion) player variant.
+	class GOL_weap_RPG7_RHS: rhs_weap_rpg7 {
+		author = "Guerrillas of Liberation";
+		displayName = "RPG-7V2 (GOL)";
+		descriptionShort = "Standard RPG-7. Accepts GOL rounds including Type-69 reduced-charge.";
+		scope = 2;
+		scopeArsenal = 2;
+		baseWeapon = "GOL_weap_RPG7_RHS";
+		magazines[] = {
+			// Standard RHS rounds
+			"rhs_rpg7_PG7V_mag",
+			"rhs_rpg7_PG7VM_mag",
+			"rhs_rpg7_PG7VL_mag",
+			"rhs_rpg7_PG7VR_mag",
+			// GOL rounds
+			"GOL_mag_rpg7_Type59",
+			"GOL_mag_rpg7_Type69",
+			"GOL_mag_rpg7_Type69II",
+			"GOL_mag_rpg7_Modern",
+			"GOL_mag_rpg7_OG7V",
+			"GOL_mag_rpg7_TBG7V",
+			"GOL_mag_rpg7_VR"
+		};
+	};
+
+	// ==================== GOL RPG-7 Vanilla (BIS launcher variant) ====================
+	// Inherits from launch_RPG7_F. Adds Type-69 alongside the standard BIS round.
+	class launch_RPG7_F;
+	class GOL_weap_RPG7_F: launch_RPG7_F {
+		author = "Guerrillas of Liberation";
+		displayName = "RPG-7 (GOL)";
+		descriptionShort = "Standard RPG-7. Accepts vanilla and Type-69 reduced-charge rounds.";
+		scope = 2;
+		scopeArsenal = 2;
+		baseWeapon = "GOL_weap_RPG7_F";
+		magazines[] = {
+			"RPG7_F",
+			"GOL_mag_rpg7_Type59",
+			"GOL_mag_rpg7_Type69",
+			"GOL_mag_rpg7_Type69II"
+		};
+	};
+
+	// ==================== GOL RPG-17 (Type 59) — disposable single-shot ====================
+	// Weakest tier. Anti-personnel HEAT, minimal structural blast.
+	class rhs_weap_rpg18;
+	class GOL_weap_RPG17_Type59: rhs_weap_rpg18 {
+		author = "Guerrillas of Liberation";
+		displayName = "RPG-17 (Type 59)";
+		descriptionShort = "Disposable RPG. Pre-loaded with Type-59 anti-personnel HEAT round.";
+		scope = 2;
+		scopeArsenal = 2;
+		baseWeapon = "GOL_weap_RPG17_Type59";
+		magazines[] = {"GOL_mag_rpg7_Type59"};
+		magazineWell[] = {};
+		magazineReloadTime = 0.1;
+		reloadMagazineSound[] = {"",1,1};
+		class EventHandlers {
+			fired = "_this call CBA_fnc_firedDisposable";
+		};
+	};
+
+	class GOL_weap_RPG17_Type59_used: GOL_weap_RPG17_Type59 {
+		scope = 1;
+		scopeArsenal = 1;
+		baseWeapon = "GOL_weap_RPG17_Type59"; // must match base — CBA lookup
+		displayName = "RPG-17 (Type 59) (Used)";
+		descriptionShort = "Spent tube. Disposable — cannot be reloaded.";
+		weaponPoolAvailable = 0;
+		magazines[] = {};
+		class EventHandlers {}; // clear inherited fired EH
+	};
+
+	// ==================== GOL RPG-17 (Type 69) — disposable single-shot ====================
+	// CBA Disposable: Arsenal class is loaded. On fire → transitions to _used (spent tube).
+	// baseWeapon on _used MUST match base class — that's how CBA locates it.
+	class GOL_weap_RPG17_Type69: rhs_weap_rpg18 {
+		author = "Guerrillas of Liberation";
+		displayName = "RPG-17 (Type 69)";
+		descriptionShort = "Disposable RPG. Pre-loaded with Type-69 reduced-charge HEAT round.";
+		scope = 2;
+		scopeArsenal = 2;
+		baseWeapon = "GOL_weap_RPG17_Type69";
+		magazines[] = {"GOL_mag_rpg7_Type69"};
+		magazineWell[] = {};
+		magazineReloadTime = 0.1;
+		reloadMagazineSound[] = {"",1,1};
+		class EventHandlers {
+			fired = "_this call CBA_fnc_firedDisposable";
+		};
+	};
+
+	class GOL_weap_RPG17_Type69_used: GOL_weap_RPG17_Type69 {
+		scope = 1;
+		scopeArsenal = 1;
+		baseWeapon = "GOL_weap_RPG17_Type69"; // must match base — CBA lookup
+		displayName = "RPG-17 (Type 69) (Used)";
+		descriptionShort = "Spent tube. Disposable — cannot be reloaded.";
+		weaponPoolAvailable = 0;
+		magazines[] = {};
+		class EventHandlers {}; // clear inherited fired EH
+	};
+
+	// ==================== GOL RPG-17 (Type 69-II) — disposable single-shot ====================
+	// Improved Type-69. VL trajectory. Type-69 damage +30%.
+	class GOL_weap_RPG17_Type69II: rhs_weap_rpg18 {
+		author = "Guerrillas of Liberation";
+		displayName = "RPG-17 (Type 69-II)";
+		descriptionShort = "Disposable RPG. Pre-loaded with Type 69-II improved HEAT round.";
+		scope = 2;
+		scopeArsenal = 2;
+		baseWeapon = "GOL_weap_RPG17_Type69II";
+		magazines[] = {"GOL_mag_rpg7_Type69II"};
+		magazineWell[] = {};
+		magazineReloadTime = 0.1;
+		reloadMagazineSound[] = {"",1,1};
+		class EventHandlers {
+			fired = "_this call CBA_fnc_firedDisposable";
+		};
+	};
+
+	class GOL_weap_RPG17_Type69II_used: GOL_weap_RPG17_Type69II {
+		scope = 1;
+		scopeArsenal = 1;
+		baseWeapon = "GOL_weap_RPG17_Type69II"; // must match base — CBA lookup
+		displayName = "RPG-17 (Type 69-II) (Used)";
+		descriptionShort = "Spent tube. Disposable — cannot be reloaded.";
+		weaponPoolAvailable = 0;
+		magazines[] = {};
+		class EventHandlers {}; // clear inherited fired EH
 	};
 
 	// ==================== GOL NLAW (lightweight, backpack-portable) ====================

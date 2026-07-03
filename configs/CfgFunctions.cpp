@@ -25,6 +25,7 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\tasks";
 			class AddAction {};
 			class AddSearchIntelAction {};
+			class AddMultipleSearchIntelActions {};
 			class AttachTo {};
 			class ClaimIntel {};
 			class ClearImmediateArea {};

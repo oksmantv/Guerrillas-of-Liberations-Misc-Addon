@@ -196,6 +196,7 @@ if (_leaders isEqualTo [] || {_units isEqualTo []}) exitWith {
 
 private _guardGroup = createGroup [_guardSide, true];
 _guardGroup setVariable ["lambs_danger_disableGroupAI", true, true];
+_guardGroup setVariable ["acex_headless_blacklist",     true, true];
 
 // Create group leader first (Colonel rank) to establish hierarchy and prevent HVT from becoming leader
 private _leaderUnit = _guardGroup createUnit [selectRandom _leaders, _spawnPosition, [], 0, "NONE"];
@@ -306,6 +307,9 @@ if (_hvtDebug) then {
     private _immediateGuards = +_allGuards;
 
     if (!isNull _vehicle) then {
+        // Keep locality on server: LAMBS and ACE HC must not take ownership of convoy vehicles.
+        _vehicle setVariable ["acex_headless_blacklist", true, true];
+
         private _driverSeats = _vehicle emptyPositions "driver";
         private _commanderSeats = _vehicle emptyPositions "commander";
         private _gunnerSeats = _vehicle emptyPositions "gunner";
@@ -339,6 +343,7 @@ if (_hvtDebug) then {
         while {_overflowPool isNotEqualTo []} do {
             private _grp = createGroup [side _guardGroup, true];
             _grp setVariable ["lambs_danger_disableGroupAI", true, true];
+            _grp setVariable ["acex_headless_blacklist",     true, true];
 
             private _designatedOverflowVeh = if (_designatedQueue isEqualTo []) then {objNull} else {_designatedQueue deleteAt 0};
             private _veh = [_spawnPosition, _designatedOverflowVeh, _grp, _hvtUnit, 250] call OKS_fnc_InterceptHvt_SelectVehicle;
@@ -349,6 +354,7 @@ if (_hvtDebug) then {
                 _overflowPool = [];
                 deleteGroup _grp;
             };
+            _veh setVariable ["acex_headless_blacklist", true, true];
 
             private _teamCapacity = (
                 (_veh emptyPositions "driver") +
@@ -567,6 +573,10 @@ if (_hvtDebug) then {
                     format ["[INTERCEPT HVT][OVERFLOW] %1 alive units could not mount in %2", _missing, typeOf _veh] call OKS_fnc_LogDebug;
                 };
             };
+
+            // Suppress AI targeting during transit to prevent reaction to air threats.
+            // Re-enabled on arrival when units dismount and garrison.
+            { _x disableAI "TARGET"; _x disableAI "AUTOTARGET"; } forEach _units;
         } forEach _overflowAssignments;
 
         // Ensure each vehicle has a driver after direct insertion.
@@ -826,9 +836,14 @@ if (_hvtDebug) then {
                             _x leaveVehicle _veh;
                             doGetOut _x;
                             unassignVehicle _x;
+                            // Re-enable targeting now that the unit is on the ground.
+                            // SAFE + autocombat: reacts to ground threats without hunting;
+                            // ignored helicopters during transit because TARGET was disabled.
+                            _x enableAI "TARGET";
+                            _x enableAI "AUTOTARGET";
                             _x enableAI "FSM";
                             _x enableAI "PATH";
-                            _x setBehaviour "AWARE";
+                            _x setBehaviourStrong "SAFE";
                         };
                     } forEach _units;
                     sleep 1;

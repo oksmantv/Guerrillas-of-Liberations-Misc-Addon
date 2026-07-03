@@ -458,18 +458,72 @@ class CfgAmmo {
 	// LEFT   reticle (VM markings) : PG-7VM (HEAT+)
 	// RIGHT  reticle (VL markings) : OG-7V
 	// CENTER reticle (VR markings) : TBG-7V, PG-7VR
+	class rhs_rpg7v2_pg7v;
+	class rhs_rpg7v2_pg7v_penetrator;
 	class rhs_rpg7v2_pg7vm;
 	class rhs_rpg7v2_pg7vl;
 	class rhs_rpg7v2_pg7vr;
+	// Note: rhs_ammo_spall is inherited via rhs_rpg7v2_pg7v_penetrator — do NOT forward-declare it here.
+	// Doing so creates a local empty stub that breaks custom subclass inheritance.
 
 	// Improved HEAT (HEAT+) — VM base +25% main charge. Inherits VM submunition (penetrator hit=290).
 	class GOL_ammo_Modern: rhs_rpg7v2_pg7vm {
 		deflecting = 0;
 		hit = 275;        // VM original (220) +25%
-		explosive = 0.35;
+		explosive = 0.15; // reduced: component/crew damage without cook-off
+	};
+
+	// --- LEFT reticle group (PG-7V trajectory) ---
+
+	// Type 59 HEAT penetrator — lighter jet. Inherits rhs_ammo_spall chain from parent.
+	class GOL_ammo_Type59HEAT_penetrator: rhs_rpg7v2_pg7v_penetrator {
+		hit = 15;
+	};
+
+	// Type 59 HEAT — weakest AI round. Chain: main (hit=50) → penetrator (hit=15) → rhs_ammo_spall.
+	class GOL_ammo_Type59HEAT: rhs_rpg7v2_pg7v {
+		deflecting = 0;
+		hit = 50;
+		indirectHit = 5;
+		indirectHitRange = 1.5;
+		explosive = 0.12;
+		warheadName = "HEAT";
+		submunitionAmmo = "GOL_ammo_Type59HEAT_penetrator";
+	};
+
+	// Type 69 HEAT penetrator — proven config. Inherits rhs_ammo_spall chain from parent.
+	class GOL_ammo_Type69HEAT_penetrator: rhs_rpg7v2_pg7v_penetrator {
+		hit = 29; // 22 × 1.3
+	};
+
+	// Type 69 HEAT — light APC round. Chain: main (hit=114) → penetrator (hit=29) → rhs_ammo_spall.
+	class GOL_ammo_Type69HEAT: rhs_rpg7v2_pg7v {
+		deflecting = 0;
+		hit = 114;       // 88 × 1.3
+		indirectHit = 8; // 6 × 1.3
+		indirectHitRange = 2;
+		explosive = 0.15;
+		warheadName = "HEAT";
+		submunitionAmmo = "GOL_ammo_Type69HEAT_penetrator";
 	};
 
 	// --- RIGHT reticle group (VL trajectory) ---
+
+	// Type 69-II HEAT penetrator — stronger jet. Inherits rhs_ammo_spall chain from parent.
+	class GOL_ammo_Type69II_penetrator: rhs_rpg7v2_pg7v_penetrator {
+		hit = 38; // 29 × 1.3
+	};
+
+	// Type 69-II HEAT — medium APC round. Chain: main (hit=148) → penetrator (hit=38) → rhs_ammo_spall.
+	class GOL_ammo_Type69II: rhs_rpg7v2_pg7vl {
+		deflecting = 0;
+		hit = 148;       // 114 × 1.3
+		indirectHit = 9; // 7 × 1.3
+		indirectHitRange = 2.5;
+		explosive = 0.2;
+		warheadName = "HEAT";
+		submunitionAmmo = "GOL_ammo_Type69II_penetrator";
+	};
 
 	// OG-7V — HE fragmentation
 	class GOL_ammo_OG7V: rhs_rpg7v2_pg7vl {
