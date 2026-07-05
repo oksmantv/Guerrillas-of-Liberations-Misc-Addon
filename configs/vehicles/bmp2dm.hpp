@@ -38,10 +38,10 @@
 		faction = "rhs_faction_msv";
 
 		// --- Survivability tuning ---
-		// armor: kept in IFV range (300-500) so AI correctly assesses the vehicle as targetable.
+		// armor: realistic IFV value — AI engagement threshold scales with this, not damageResistance.
 		// damageResistance: primary survivability knob — 0.15 = vehicle takes 15% of all damage.
-		armor = 500;
-		damageResistance = 0.15;
+		armor = 150;
+		damageResistance = 0.05;
 		ace_ffv_enabled = 1;
 		incomingMissileDetectionSystem = 16;
 
@@ -51,14 +51,14 @@
 		countermeasureActivatedBy = 3;
 
 		// --- ACE vehicle damage probabilities ---
-		ace_vehicle_damage_hullFireProb = 0.08;
-		ace_vehicle_damage_hullDetonationProb = 0.05;
-		ace_vehicle_damage_engineFireProb = 0.10;
-		ace_vehicle_damage_engineDetonationProb = 0.05;
-		ace_vehicle_damage_turretFireProb = 0.15;
-		ace_vehicle_damage_turretDetonationProb = 0.08;
-		ace_vehicle_damage_detonationDuringFireProb = 0.15;
-		ace_vehicle_damage_canHaveFireRing = 0;
+		ace_vehicle_damage_hullFireProb = 0.01;
+		ace_vehicle_damage_hullDetonationProb = 0.01;
+		ace_vehicle_damage_engineFireProb = 0.02;
+		ace_vehicle_damage_engineDetonationProb = 0;
+		ace_vehicle_damage_turretFireProb = 0.01;
+		ace_vehicle_damage_turretDetonationProb = 0.01;
+		ace_vehicle_damage_detonationDuringFireProb = 0.01;
+		ace_vehicle_damage_canHaveFireRing = 0.1;
 
 		// --- HitPoints overrides ---
 		// HitPoint armor = minimum damage threshold to register a hit on that component.
@@ -287,7 +287,7 @@
 		{
 			class OpticView
 			{
-				initAngleX = 0;
+				initAngleX = 10;    // +10 = tilt up; counters the downward angle baked into the driverview memory point
 				minAngleX = -30;
 				maxAngleX = 30;
 				initAngleY = 0;

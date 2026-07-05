@@ -1020,6 +1020,7 @@ class CfgMagazines {
 	class rhs_rpg7_PG7VM_mag;
 	class rhs_rpg7_PG7VL_mag;
 	class rhs_rpg7_PG7VR_mag;
+	class rhs_rpg18_mag;
 
 	class GOL_mag_rpg7_Modern: rhs_rpg7_PG7VM_mag {
 		scope = 2;
@@ -1060,6 +1061,37 @@ class CfgMagazines {
 		descriptionShort = "Improved reduced-charge HEAT. Aim using RIGHT reticle.";
 		mass = 22;
 		ammo = "GOL_ammo_Type69II";
+	};
+
+	// ==================== RPG-17 magazines (rhs_rpg18_mag base) ====================
+	class GOL_mag_rpg17_Type59: rhs_rpg18_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type-59 HEAT (RPG-17)";
+		displayNameShort = "Type-59";
+		descriptionShort = "Pre-loaded Type-59 HEAT round for RPG-17 disposable launcher.";
+		mass = 18;
+		ammo = "GOL_ammo_rpg17_Type59";
+	};
+
+	class GOL_mag_rpg17_Type69: rhs_rpg18_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type-69 HEAT (RPG-17)";
+		displayNameShort = "Type-69";
+		descriptionShort = "Pre-loaded Type-69 HEAT round for RPG-17 disposable launcher.";
+		mass = 20;
+		ammo = "GOL_ammo_rpg17_Type69";
+	};
+
+	class GOL_mag_rpg17_Type69II: rhs_rpg18_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type 69-II HEAT (RPG-17)";
+		displayNameShort = "Type-69-II";
+		descriptionShort = "Pre-loaded Type 69-II HEAT round for RPG-17 disposable launcher.";
+		mass = 22;
+		ammo = "GOL_ammo_rpg17_Type69II";
 	};
 
 	class GOL_mag_rpg7_OG7V: rhs_rpg7_PG7VL_mag {

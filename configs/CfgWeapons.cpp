@@ -278,7 +278,7 @@ ver			"GOL_mag_rpg7_Type59",
 			"GOL_mag_rpg7_VR"
 		};
 	};
-
+	
 	// ==================== GOL RPG-7 Vanilla (BIS launcher variant) ====================
 	// Inherits from launch_RPG7_F. Adds Type-69 alongside the standard BIS round.
 	class launch_RPG7_F;
@@ -307,7 +307,7 @@ ver			"GOL_mag_rpg7_Type59",
 		scope = 2;
 		scopeArsenal = 2;
 		baseWeapon = "GOL_weap_RPG17_Type59";
-		magazines[] = {"GOL_mag_rpg7_Type59"};
+		magazines[] = {"GOL_mag_rpg17_Type59"};
 		magazineWell[] = {};
 		magazineReloadTime = 0.1;
 		reloadMagazineSound[] = {"",1,1};
@@ -337,7 +337,7 @@ ver			"GOL_mag_rpg7_Type59",
 		scope = 2;
 		scopeArsenal = 2;
 		baseWeapon = "GOL_weap_RPG17_Type69";
-		magazines[] = {"GOL_mag_rpg7_Type69"};
+		magazines[] = {"GOL_mag_rpg17_Type69"};
 		magazineWell[] = {};
 		magazineReloadTime = 0.1;
 		reloadMagazineSound[] = {"",1,1};
@@ -366,7 +366,7 @@ ver			"GOL_mag_rpg7_Type59",
 		scope = 2;
 		scopeArsenal = 2;
 		baseWeapon = "GOL_weap_RPG17_Type69II";
-		magazines[] = {"GOL_mag_rpg7_Type69II"};
+		magazines[] = {"GOL_mag_rpg17_Type69II"};
 		magazineWell[] = {};
 		magazineReloadTime = 0.1;
 		reloadMagazineSound[] = {"",1,1};

@@ -463,8 +463,31 @@ class CfgAmmo {
 	class rhs_rpg7v2_pg7vm;
 	class rhs_rpg7v2_pg7vl;
 	class rhs_rpg7v2_pg7vr;
-	// Note: rhs_ammo_spall is inherited via rhs_rpg7v2_pg7v_penetrator — do NOT forward-declare it here.
-	// Doing so creates a local empty stub that breaks custom subclass inheritance.
+	class rhs_ammo_spall;
+	class rhs_rpg18_rocket;
+
+	// Type-XX custom spall tiers: low / mid / high.
+	// Mid is the current baseline; low and high bracket it for consistent progression.
+	class GOL_ammo_spall_low: rhs_ammo_spall {
+		hit = 7;
+		caliber = 4;
+		indirectHit = 0;
+		indirectHitRange = 0.08;
+	};
+
+	class GOL_ammo_spall_mid: rhs_ammo_spall {
+		hit = 10;
+		caliber = 6;
+		indirectHit = 0;
+		indirectHitRange = 0.1;
+	};
+
+	class GOL_ammo_spall_high: rhs_ammo_spall {
+		hit = 13;
+		caliber = 8;
+		indirectHit = 0;
+		indirectHitRange = 0.12;
+	};
 
 	// Improved HEAT (HEAT+) — VM base +25% main charge. Inherits VM submunition (penetrator hit=290).
 	class GOL_ammo_Modern: rhs_rpg7v2_pg7vm {
@@ -475,9 +498,10 @@ class CfgAmmo {
 
 	// --- LEFT reticle group (PG-7V trajectory) ---
 
-	// Type 59 HEAT penetrator — lighter jet. Inherits rhs_ammo_spall chain from parent.
+	// Type 59 HEAT penetrator — lighter jet. Uses low spall tier.
 	class GOL_ammo_Type59HEAT_penetrator: rhs_rpg7v2_pg7v_penetrator {
 		hit = 15;
+		submunitionAmmo = "GOL_ammo_spall_low";
 	};
 
 	// Type 59 HEAT — weakest AI round. Chain: main (hit=50) → penetrator (hit=15) → rhs_ammo_spall.
@@ -487,13 +511,19 @@ class CfgAmmo {
 		indirectHit = 5;
 		indirectHitRange = 1.5;
 		explosive = 0.12;
+		passThrough = 0.3;
 		warheadName = "HEAT";
 		submunitionAmmo = "GOL_ammo_Type59HEAT_penetrator";
+		aiAmmoUsageFlags = "64 + 128 + 256 + 512";
+		airLock = 1;
+		allowAgainstInfantry = 1;
+		cost = 40;
 	};
 
-	// Type 69 HEAT penetrator — proven config. Inherits rhs_ammo_spall chain from parent.
+	// Type 69 HEAT penetrator — proven config. Uses mid spall tier.
 	class GOL_ammo_Type69HEAT_penetrator: rhs_rpg7v2_pg7v_penetrator {
 		hit = 29; // 22 × 1.3
+		submunitionAmmo = "GOL_ammo_spall_mid";
 	};
 
 	// Type 69 HEAT — light APC round. Chain: main (hit=114) → penetrator (hit=29) → rhs_ammo_spall.
@@ -503,15 +533,21 @@ class CfgAmmo {
 		indirectHit = 8; // 6 × 1.3
 		indirectHitRange = 2;
 		explosive = 0.15;
+		passThrough = 0.3;
 		warheadName = "HEAT";
 		submunitionAmmo = "GOL_ammo_Type69HEAT_penetrator";
+		aiAmmoUsageFlags = "64 + 128 + 256 + 512";
+		airLock = 1;
+		allowAgainstInfantry = 1;
+		cost = 40;
 	};
 
 	// --- RIGHT reticle group (VL trajectory) ---
 
-	// Type 69-II HEAT penetrator — stronger jet. Inherits rhs_ammo_spall chain from parent.
+	// Type 69-II HEAT penetrator — stronger jet. Uses high spall tier.
 	class GOL_ammo_Type69II_penetrator: rhs_rpg7v2_pg7v_penetrator {
 		hit = 38; // 29 × 1.3
+		submunitionAmmo = "GOL_ammo_spall_high";
 	};
 
 	// Type 69-II HEAT — medium APC round. Chain: main (hit=148) → penetrator (hit=38) → rhs_ammo_spall.
@@ -521,8 +557,58 @@ class CfgAmmo {
 		indirectHit = 9; // 7 × 1.3
 		indirectHitRange = 2.5;
 		explosive = 0.2;
+		passThrough = 0.3;
 		warheadName = "HEAT";
 		submunitionAmmo = "GOL_ammo_Type69II_penetrator";
+		aiAmmoUsageFlags = "64 + 128 + 256 + 512";
+		airLock = 1;
+		allowAgainstInfantry = 1;
+		cost = 40;
+	};
+
+	// ==================== RPG-17 ammo (rhs_rpg18_rocket base) ====================
+	// Disposable player-only launcher. Same damage tiers as RPG-7 variants.
+
+	class GOL_ammo_rpg17_Type59: rhs_rpg18_rocket {
+		deflecting = 0;
+		hit = 50;
+		indirectHit = 5;
+		indirectHitRange = 1.5;
+		explosive = 0.12;
+		passThrough = 0.3;
+		warheadName = "HEAT";
+		aiAmmoUsageFlags = "64 + 128 + 256 + 512";
+		airLock = 1;
+		allowAgainstInfantry = 1;
+		cost = 40;
+	};
+
+	class GOL_ammo_rpg17_Type69: rhs_rpg18_rocket {
+		deflecting = 0;
+		hit = 114;
+		indirectHit = 8;
+		indirectHitRange = 2;
+		explosive = 0.15;
+		passThrough = 0.3;
+		warheadName = "HEAT";
+		aiAmmoUsageFlags = "64 + 128 + 256 + 512";
+		airLock = 1;
+		allowAgainstInfantry = 1;
+		cost = 40;
+	};
+
+	class GOL_ammo_rpg17_Type69II: rhs_rpg18_rocket {
+		deflecting = 0;
+		hit = 148;
+		indirectHit = 9;
+		indirectHitRange = 2.5;
+		explosive = 0.2;
+		passThrough = 0.3;
+		warheadName = "HEAT";
+		aiAmmoUsageFlags = "64 + 128 + 256 + 512";
+		airLock = 1;
+		allowAgainstInfantry = 1;
+		cost = 40;
 	};
 
 	// OG-7V — HE fragmentation

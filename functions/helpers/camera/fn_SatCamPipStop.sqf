@@ -35,11 +35,25 @@ missionNamespace setVariable ["OKS_SatCamPip_EHs", []];
 private _camera = missionNamespace getVariable ["OKS_SatCamPip_Camera", objNull];
 missionNamespace setVariable ["OKS_SatCamPip_Camera", objNull];
 
+// Save rear camera pivot for this vehicle class (persisted to profileNamespace)
+private _rearClass = missionNamespace getVariable ["OKS_SatCamPip_RearVehicleClass", ""];
+if (_rearClass isNotEqualTo "") then {
+    private _pitch = missionNamespace getVariable ["OKS_SatCamPip_RearPitchDeg", 0];
+    private _yaw   = missionNamespace getVariable ["OKS_SatCamPip_RearYawDeg", 0];
+    private _pivots = profileNamespace getVariable ["OKS_SatCamPip_RearPivots", createHashMap];
+    _pivots set [_rearClass, [_pitch, _yaw]];
+    profileNamespace setVariable ["OKS_SatCamPip_RearPivots", _pivots];
+    saveProfileNamespace;
+    missionNamespace setVariable ["OKS_SatCamPip_RearVehicleClass", ""];
+};
+
 // Clear mode-specific state
 missionNamespace setVariable ["OKS_SatCamPip_Mode", ""];
 missionNamespace setVariable ["OKS_SatCamPip_CommanderZoomLevels", nil];
 missionNamespace setVariable ["OKS_SatCamPip_CommanderZoomIndex", nil];
 missionNamespace setVariable ["OKS_SatCamPip_CommanderFov", nil];
+missionNamespace setVariable ["OKS_SatCamPip_RearPitchDeg", 0];
+missionNamespace setVariable ["OKS_SatCamPip_RearYawDeg", 0];
 
 // Remove overlay
 cutText ["", "PLAIN"]; 

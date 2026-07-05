@@ -39,6 +39,15 @@ if (player isNotEqualTo driver _vehicle) exitWith { objNull };
 
 [] call OKS_fnc_SatCamPipStop;
 
+// Store vehicle class and restore saved pivot from profileNamespace (persists across sessions)
+private _className = toLower typeOf _vehicle;
+missionNamespace setVariable ["OKS_SatCamPip_RearVehicleClass", _className];
+
+private _savedPivots = profileNamespace getVariable ["OKS_SatCamPip_RearPivots", createHashMap];
+private _savedPivot  = _savedPivots getOrDefault [_className, [0, 0]];
+missionNamespace setVariable ["OKS_SatCamPip_RearPitchDeg", _savedPivot#0];
+missionNamespace setVariable ["OKS_SatCamPip_RearYawDeg",   _savedPivot#1];
+
 private _fov = _opts param [0, 0.35, [0]];
 private _durationSec = _opts param [1, -1, [0]];
 
@@ -487,12 +496,64 @@ private _ehIds = [];
 private _d46 = findDisplay 46;
 if (!isNull _d46) then {
     private _idKey = _d46 displayAddEventHandler ["KeyDown", {
-        params ["_disp", "_key"];
+        params ["_disp", "_key", "_shift", "_ctrl", "_alt"];
         if (_key == 1) then {
             [] call OKS_fnc_SatCamPipStop;
             true
         } else {
-            false
+            if (_ctrl) then {
+                private _step = 5;
+                private _handled = true;
+                switch (_key) do {
+                    case 72: { // Ctrl+Numpad 8 — tilt camera UP
+                        private _v = (missionNamespace getVariable ["OKS_SatCamPip_RearPitchDeg", 0]) - _step;
+                        missionNamespace setVariable ["OKS_SatCamPip_RearPitchDeg", _v max -60];
+                    };
+                    case 80: { // Ctrl+Numpad 2 — tilt camera DOWN
+                        private _v = (missionNamespace getVariable ["OKS_SatCamPip_RearPitchDeg", 0]) + _step;
+                        missionNamespace setVariable ["OKS_SatCamPip_RearPitchDeg", _v min 60];
+                    };
+                    case 75: { // Ctrl+Numpad 4 — pan camera LEFT
+                        private _v = (missionNamespace getVariable ["OKS_SatCamPip_RearYawDeg", 0]) + _step;
+                        missionNamespace setVariable ["OKS_SatCamPip_RearYawDeg", _v min 90];
+                    };
+                    case 77: { // Ctrl+Numpad 6 — pan camera RIGHT
+                        private _v = (missionNamespace getVariable ["OKS_SatCamPip_RearYawDeg", 0]) - _step;
+                        missionNamespace setVariable ["OKS_SatCamPip_RearYawDeg", _v max -90];
+                    };
+                    case 76: { // Ctrl+Numpad 5 — reset pivot to zero and persist
+                        missionNamespace setVariable ["OKS_SatCamPip_RearPitchDeg", 0];
+                        missionNamespace setVariable ["OKS_SatCamPip_RearYawDeg", 0];
+                        private _cls = missionNamespace getVariable ["OKS_SatCamPip_RearVehicleClass", ""];
+                        if (_cls isNotEqualTo "") then {
+                            private _pivots = profileNamespace getVariable ["OKS_SatCamPip_RearPivots", createHashMap];
+                            _pivots set [_cls, [0, 0]];
+                            profileNamespace setVariable ["OKS_SatCamPip_RearPivots", _pivots];
+                            saveProfileNamespace;
+                        };
+                    };
+                    default { _handled = false; };
+                };
+                if (_handled) then {
+                    private _pitch = missionNamespace getVariable ["OKS_SatCamPip_RearPitchDeg", 0];
+                    private _yaw   = missionNamespace getVariable ["OKS_SatCamPip_RearYawDeg", 0];
+                    private _display = uiNamespace getVariable ["OKS_SatCamHUD_Display", displayNull];
+                    if (!isNull _display) then {
+                        private _hintCtrl = _display displayCtrl 9514;
+                        if (!isNull _hintCtrl) then {
+                            _hintCtrl ctrlSetText (if (_pitch == 0 && {_yaw == 0}) then {
+                                "ESC to exit"
+                            } else {
+                                format ["P:%1d Y:%2d | ESC exit", _pitch, _yaw]
+                            });
+                            _hintCtrl ctrlCommit 0;
+                        };
+                    };
+                };
+                _handled
+            } else {
+                false
+            };
         };
     }];
     _ehIds pushBack ["display46", "KeyDown", _idKey];
@@ -624,17 +685,16 @@ private _pfhId = [{
     private _bboxInset = (_profile getOrDefault ["driverRear_bboxInset", 0.30]) max 0 min 2;
     private _pAnchorModel = (_pModel vectorAdd _offset) vectorAdd [0, _bboxInset, 0];
     
-    // Manual transformation: modelToWorldVisualWorld doesn't correctly apply negative Z offsets
-    private _vehForward = vectorDir _vehicle;
-    private _vehUp = vectorUp _vehicle;
-    private _vehRight = _vehForward vectorCrossProduct _vehUp;
+    // Use visual position and orientation to match what gets rendered (prevents clipping at speed)
+    private _vehForward = vectorDirVisual _vehicle;
+    private _vehUp      = vectorUpVisual _vehicle;
+    private _vehRight   = _vehForward vectorCrossProduct _vehUp;
     private _worldOffset = ((_vehRight vectorMultiply (_pAnchorModel#0)) vectorAdd 
                             (_vehForward vectorMultiply (_pAnchorModel#1)) vectorAdd 
                             (_vehUp vectorMultiply (_pAnchorModel#2)));
-    private _pos = (getPosASL _vehicle) vectorAdd _worldOffset;
-    
-    private _fwd = vectorDirVisual _vehicle;
-    private _dir = _fwd vectorMultiply -1;
+    private _pos = (getPosASLVisual _vehicle) vectorAdd _worldOffset;
+
+    private _dir = _vehForward vectorMultiply -1;
 
     private _rearSurface = _pos;
     if (_useGeomRear) then {
@@ -652,13 +712,13 @@ private _pfhId = [{
             private _offsetInside = ((_vehRight vectorMultiply (_mInside#0)) vectorAdd 
                                      (_vehForward vectorMultiply (_mInside#1)) vectorAdd 
                                      (_vehUp vectorMultiply (_mInside#2)));
-            private _inside = (getPosASL _vehicle) vectorAdd _offsetInside;
+            private _inside = (getPosASLVisual _vehicle) vectorAdd _offsetInside;
             
             // Manual transformation for outside point
             private _offsetOutside = ((_vehRight vectorMultiply (_mOutside#0)) vectorAdd 
                                       (_vehForward vectorMultiply (_mOutside#1)) vectorAdd 
                                       (_vehUp vectorMultiply (_mOutside#2)));
-            private _outside = (getPosASL _vehicle) vectorAdd _offsetOutside;
+            private _outside = (getPosASLVisual _vehicle) vectorAdd _offsetOutside;
 
             private _hitsVeh = lineIntersectsSurfaces [_inside, _outside, objNull, objNull, true, 5, "GEOM", "NONE"];
             {
@@ -684,9 +744,35 @@ private _pfhId = [{
     // Convert to ATL because camSetPos uses ATL coordinates
     private _camPosATL = ASLToATL _camPos;
 
+    // Apply manual pivot offsets (Ctrl+Numpad controls)
+    private _pitchDeg = missionNamespace getVariable ["OKS_SatCamPip_RearPitchDeg", 0];
+    private _yawDeg   = missionNamespace getVariable ["OKS_SatCamPip_RearYawDeg", 0];
+    private _targetDir = _dir;
+    if (_pitchDeg isNotEqualTo 0 || {_yawDeg isNotEqualTo 0}) then {
+        // Rodrigues' rotation: v_rot = v*cos(t) + (k x v)*sin(t) + k*(k.v)*(1-cos(t))
+        if (_pitchDeg isNotEqualTo 0) then {
+            // Rotate around right axis: positive = tilt down, negative = tilt up
+            private _k = _vehRight;
+            private _cosA = cos _pitchDeg;
+            private _sinA = sin _pitchDeg;
+            _targetDir = ((_targetDir vectorMultiply _cosA) vectorAdd
+                         ((_k vectorCrossProduct _targetDir) vectorMultiply _sinA)) vectorAdd
+                         (_k vectorMultiply ((_k vectorDotProduct _targetDir) * (1 - _cosA)));
+        };
+        if (_yawDeg isNotEqualTo 0) then {
+            // Rotate around up axis: positive = pan left (camera-space), negative = pan right
+            private _k = _vehUp;
+            private _cosA = cos _yawDeg;
+            private _sinA = sin _yawDeg;
+            _targetDir = ((_targetDir vectorMultiply _cosA) vectorAdd
+                         ((_k vectorCrossProduct _targetDir) vectorMultiply _sinA)) vectorAdd
+                         (_k vectorMultiply ((_k vectorDotProduct _targetDir) * (1 - _cosA)));
+        };
+    };
+
     _camera camSetFov _fov;
     _camera camSetPos _camPosATL;
-    _camera camSetTarget (_pos vectorAdd (_dir vectorMultiply 2000));
+    _camera camSetTarget (_pos vectorAdd (_targetDir vectorMultiply 2000));
     _camera camCommit 0;
 }, 0.05, [_camera, _vehicle, _anchorSpec, _fov, _durationSec, _startT, _camBackDistance, _camHeightAGL]] call CBA_fnc_addPerFrameHandler;
 
