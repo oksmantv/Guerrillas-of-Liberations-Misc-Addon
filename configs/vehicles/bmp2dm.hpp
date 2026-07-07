@@ -39,9 +39,9 @@
 
 		// --- Survivability tuning ---
 		// armor: realistic IFV value — AI engagement threshold scales with this, not damageResistance.
-		// damageResistance: primary survivability knob — 0.15 = vehicle takes 15% of all damage.
+		// damageResistance: primary survivability knob — 0.04 = vehicle takes 4% of all damage.
 		armor = 150;
-		damageResistance = 0.05;
+		damageResistance = 0.04;
 		ace_ffv_enabled = 1;
 		incomingMissileDetectionSystem = 16;
 

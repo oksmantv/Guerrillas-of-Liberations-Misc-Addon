@@ -469,24 +469,24 @@ class CfgAmmo {
 	// Type-XX custom spall tiers: low / mid / high.
 	// Mid is the current baseline; low and high bracket it for consistent progression.
 	class GOL_ammo_spall_low: rhs_ammo_spall {
-		hit = 7;
-		caliber = 4;
+		hit = 4.9;
+		caliber = 2.8;
 		indirectHit = 0;
-		indirectHitRange = 0.08;
+		indirectHitRange = 0.056;
 	};
 
 	class GOL_ammo_spall_mid: rhs_ammo_spall {
-		hit = 10;
-		caliber = 6;
+		hit = 7;
+		caliber = 4.2;
 		indirectHit = 0;
-		indirectHitRange = 0.1;
+		indirectHitRange = 0.07;
 	};
 
 	class GOL_ammo_spall_high: rhs_ammo_spall {
-		hit = 13;
-		caliber = 8;
+		hit = 9.1;
+		caliber = 5.6;
 		indirectHit = 0;
-		indirectHitRange = 0.12;
+		indirectHitRange = 0.084;
 	};
 
 	// Improved HEAT (HEAT+) — VM base +25% main charge. Inherits VM submunition (penetrator hit=290).
