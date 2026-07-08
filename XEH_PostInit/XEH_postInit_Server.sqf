@@ -67,5 +67,10 @@ if(GOL_Core_Enabled isEqualTo true) then {
         if(_EnableNekyTasks) then {
             [] spawn OKS_fnc_NekyTasks;
         };
+
+        private _stealthEnabled = missionNamespace getVariable ["GOL_Stealth_Enabled", false];
+        if (_stealthEnabled) then {
+            [] call OKS_fnc_Stealth_Init;
+        };
     };  
 };

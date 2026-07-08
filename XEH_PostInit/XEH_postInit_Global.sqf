@@ -271,8 +271,8 @@ if(GOL_Core_Enabled isEqualTo true) then {
     [] spawn OKS_fnc_VehicleDropSetup;
 
     /* Setup ACE Carrying Limits */
-    ACE_maxWeightCarry = 1900; 
-    ACE_maxWeightDrag = 2500;
+    ACE_maxWeightCarry = 3500; 
+    ACE_maxWeightDrag = 4500;
 
     if (hasInterface) then {
         

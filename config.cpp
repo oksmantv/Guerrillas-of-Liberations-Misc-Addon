@@ -260,6 +260,29 @@ class CfgPatches
 		};
 		magazines[] = {};
 	};
+
+    class GOL_MISC_COMPAT_BETTIR {
+        requiredAddons[] = {"BettIR_Core"};
+        requiredVersion = 2.14;
+        author = "OksmanTV";
+        skipWhenMissingDependencies = 1;
+        units[] = {};
+        weapons[] = {};
+        magazines[] = {};
+    };
+
+    class GOL_MISC_COMPAT_ACE_IRLIGHT {
+        requiredAddons[] = {"ace_irlight"};
+        requiredVersion = 2.14;
+        author = "OksmanTV";
+        skipWhenMissingDependencies = 1;
+        units[] = {};
+        weapons[] = {
+            "GOL_OX3000",
+            "GOL_OX3000_LR"
+        };
+        magazines[] = {};
+    };
 };
 
 #include "version.hpp"
@@ -284,6 +307,8 @@ class RscTitles {
 
 #include "configs\CfgJammerUILayout.cpp"
 #include "configs\CfgOrbat.cfg"
+#include "configs\compat\compat_bettir.hpp"
+#include "configs\compat\compat_ace_irlight_slots.hpp"
 
 // CBA Disposable Framework registration.
 // Maps ready_variant[] = {base_classname, used_classname}.
@@ -436,6 +461,9 @@ class Extended_PreInit_EventHandlers {
     };
     class OKS_PreInit_SAM {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_sam.sqf'";
+    };
+    class OKS_PreInit_Stealth {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_stealth.sqf'";
     };
 };
 

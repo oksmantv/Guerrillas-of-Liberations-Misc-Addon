@@ -218,6 +218,36 @@ class CfgFunctions // Defines a function
 			class RestCamp_WakeUp {};
 			class GarrisonBuildingsInArea {};
 		};	
+
+		class OKS_Stealth_Core {
+			file = "\OKS_GOL_Misc\functions\stealth\core";
+			class Stealth_Init {};
+			class Stealth_EnemyRadio {};
+			class Stealth_EnemyTalk {};
+			class Stealth_FindNearRadioMen {};
+			class Stealth_CallRadioHelp {};
+			class Stealth_SentryAlert {};
+		};
+
+		class OKS_Stealth_Sentry {
+			file = "\OKS_GOL_Misc\functions\stealth\sentry";
+			class Stealth_EnemySentry {};
+			class Stealth_EnemySentry_CreateUnit {};
+			class Stealth_EnemySentry_SetupUnit {};
+			class Stealth_EnemySentry_Yell {};
+			class Stealth_EnemySentry_IgnoreAir {};
+			class Stealth_EnemySentry_Call_Hunters {};
+			class Stealth_EnemySentry_Call_Hunters_Lambs {};
+		};
+
+		class OKS_Stealth_Tracking {
+			file = "\OKS_GOL_Misc\functions\stealth\tracking";
+			class Stealth_SendDetectionFlare {};
+			class Stealth_InitiateHunterResponse {};
+			class Stealth_FindNearestRadioAndCallForHelp {};
+			class Stealth_Hunted {};
+			class Stealth_Tracker {};
+		};
 		
 		class OKS_Suppression {
 			file = "\OKS_GOL_Misc\functions\enemy\suppression";
@@ -631,6 +661,11 @@ class CfgFunctions // Defines a function
 		class OKS_Intercom {
 			file = "\OKS_GOL_Misc\functions\playersetup";
 			class CollectIntercomHeadgear {};
+		};
+
+		class ace_irlight {
+			file = "\OKS_GOL_Misc\functions\compat\ace_irlight";
+			class initItemContextMenu {};
 		};
 	};
 };

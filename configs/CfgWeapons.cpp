@@ -145,7 +145,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\60mm_HE.paa";
 		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
+			mass = 10;
 		};
 	};
 	class GOL_Packed_60mm_HEAB: ACE_ItemCore {
@@ -158,7 +158,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\60mm_HEAB.paa";
 		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
+			mass = 10;
 		};
 	};
 	class GOL_Packed_60mm_FLARE: ACE_ItemCore {
@@ -171,7 +171,7 @@ class CfgWeapons {
 		picture = "\OKS_GOL_Misc\Data\UI\60mm_Flare.paa";
 		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
+			mass = 10;
 		};
 	};
 	class GOL_Packed_60mm_Smoke: ACE_ItemCore {
@@ -1723,6 +1723,7 @@ ver			"GOL_mag_rpg7_Type59",
 	#include "compat\compat_uk3cb.hpp"
 	#include "compat\compat_uk3cb_factions.hpp"
 	#include "compat\compat_jca.hpp"
+	#include "compat\compat_ace_irlight.hpp"
 
 	class GOL_weap_m249_pip: rhs_weap_m249_pip {
 		scope = 2;
