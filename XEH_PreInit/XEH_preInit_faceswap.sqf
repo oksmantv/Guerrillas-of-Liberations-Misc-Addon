@@ -1,5 +1,14 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_faceswap.sqf executed";
 
+[
+    "GOL_FaceSwap_Debug",
+    "CHECKBOX",
+    ["Enable FaceSwap Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL FaceSwap", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // Settings for OKS FaceSwap
 // CheckBox: Enable OKS Face Swap.
 [

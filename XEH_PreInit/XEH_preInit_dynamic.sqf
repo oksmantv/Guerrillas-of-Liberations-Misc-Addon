@@ -1,5 +1,14 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
 
+[
+    "GOL_Dynamic_Debug",
+    "CHECKBOX",
+    ["Enable Dynamic Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL Dynamic", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // CBA Settings for Dynamic
 [
     "GOL_Dynamic_Faction",

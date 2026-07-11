@@ -1,5 +1,23 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_enemy.sqf executed";
 
+[
+    "GOL_Enemy_Debug",
+    "CHECKBOX",
+    ["Enable Enemy DEBUG", "Enables debugging for enemy scripts such as AdjustDamage, ForceVehicleSpeed, EnablePath etc."],
+    ["GOL Enemy", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_UndercoverAI_Debug",
+    "CHECKBOX",
+    ["Enable UndercoverAI DEBUG", "Enables debugging for undercover AI scripts."],
+    ["GOL Enemy", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // Settings for OKS Enemy
 // SLIDER: Max Speed of AI Cars
 [

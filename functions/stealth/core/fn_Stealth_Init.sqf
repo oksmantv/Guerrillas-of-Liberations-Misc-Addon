@@ -34,60 +34,68 @@ private _buildNumberedPaths = {
     _out
 };
 
-private _arabRadio = ["\\OKS_GOL_Misc\\functions\\stealth\\audio\\Arab\\Radio", 1, 5] call _buildNumberedPaths;
-private _russianRadio = ["\\OKS_GOL_Misc\\functions\\stealth\\audio\\Russian\\Radio", 1, 20] call _buildNumberedPaths;
-private _vietRadio = [
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-radio-y-05.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-radio-y-09.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-radio-y-17.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-radio-y-18.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-radio-y-19.ogg"
-];
+private _russianRadio = ["\OKS_GOL_Misc\functions\stealth\audio\Russian\Radio", 1, 20] call _buildNumberedPaths;
 
-private _arabTalk = ["\\OKS_GOL_Misc\\functions\\stealth\\audio\\Arab\\talk_", 1, 27] call _buildNumberedPaths;
+private _arabTalk = ["\OKS_GOL_Misc\functions\stealth\audio\Arab\talk_", 1, 27] call _buildNumberedPaths;
+private _arabYell = ["\OKS_GOL_Misc\functions\stealth\audio\Arab\yell_", 1, 9] call _buildNumberedPaths;
+private _arabRadio = ["\OKS_GOL_Misc\functions\stealth\audio\Arab\Radio", 1, 5] call _buildNumberedPaths;
 
-private _vietTalkN = ["\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-talks-n-", 1, 30, true] call _buildNumberedPaths;
+private _vietTalkN = ["\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-n-", 1, 30, true] call _buildNumberedPaths;
 private _vietTalkY = [
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-talks-y-07.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-talks-y-08.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-talks-y-09.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-talks-y-17.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-talks-y-20.ogg",
-    "\\OKS_GOL_Misc\\functions\\stealth\\audio\\Vietnamese\\vn-talks-y-26.ogg"
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-07.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-08.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-09.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-17.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-20.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-26.ogg"
+];
+private _vietRadio = [
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-05.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-09.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-17.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-18.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-19.ogg"
 ];
 
-private _arabYell = ["\\OKS_GOL_Misc\\functions\\stealth\\audio\\Arab\\yell_", 1, 9] call _buildNumberedPaths;
-private _russianReactionRadio = ["\\OKS_GOL_Misc\\functions\\stealth\\audio\\Russian\\Radio", 6, 10] call _buildNumberedPaths;
 
-private _profileRadioPatrol = createHashMapFromArray [
+private _languageRadio = createHashMapFromArray [
     ["NONE", []],
     ["ARAB", _arabRadio],
     ["RUSSIAN", _russianRadio],
     ["VIETNAMESE", _vietRadio]
 ];
 
-private _profileTalkCalm = createHashMapFromArray [
+private _languageTalk = createHashMapFromArray [
     ["NONE", []],
     ["ARAB", _arabTalk],
     ["RUSSIAN", _russianRadio],
     ["VIETNAMESE", _vietTalkN]
 ];
 
-private _profileTalkReaction = createHashMapFromArray [
+private _languageReaction = createHashMapFromArray [
     ["NONE", []],
-    ["YELL_GENERIC", _arabYell],
     ["ARAB", _arabYell],
-    ["RUSSIAN", _russianReactionRadio],
-    ["VIETNAMESE_Y", _vietTalkY]
+    ["RUSSIAN", _russianRadio],
+    ["VIETNAMESE", _vietTalkY]
 ];
 
-private _profileRadioHelp = createHashMapFromArray [
-    ["NONE", []],
-    ["LEGACY_HELP", _arabRadio],
-    ["ARAB", _arabRadio],
-    ["RUSSIAN", _russianRadio],
-    ["VIETNAMESE", _vietRadio]
-];
+private _resolveSideLanguage = {
+    params ["_sideTag"];
+
+    private _lang = missionNamespace getVariable [format ["GOL_Stealth_Language_%1", _sideTag], ""];
+
+    // Backward compatibility for missions that still have old profile settings persisted.
+    if (_lang isEqualTo "") then {
+        _lang = missionNamespace getVariable [format ["GOL_Stealth_ProfileRadio_%1", _sideTag], "RUSSIAN"];
+    };
+
+    _lang = toUpper _lang;
+    if !(_lang in ["NONE", "ARAB", "RUSSIAN", "VIETNAMESE"]) then {
+        _lang = "NONE";
+    };
+
+    _lang
+};
 
 private _radioPatrolBySide = createHashMap;
 private _talkCalmBySide = createHashMap;
@@ -97,15 +105,12 @@ private _radioHelpBySide = createHashMap;
 {
     _x params ["_sideValue", "_sideTag"];
 
-    private _radioPatrolProfile = missionNamespace getVariable [format ["GOL_Stealth_ProfileRadio_%1", _sideTag], "NONE"];
-    private _talkCalmProfile = missionNamespace getVariable [format ["GOL_Stealth_ProfileTalk_%1", _sideTag], "NONE"];
-    private _talkReactionProfile = missionNamespace getVariable [format ["GOL_Stealth_ProfileReaction_%1", _sideTag], "NONE"];
-    private _radioHelpProfile = missionNamespace getVariable [format ["GOL_Stealth_ProfileRadioHelp_%1", _sideTag], "NONE"];
+    private _sideLanguage = [_sideTag] call _resolveSideLanguage;
 
-    private _radioPatrolPaths = _profileRadioPatrol getOrDefault [toUpper _radioPatrolProfile, []];
-    private _talkCalmPaths = _profileTalkCalm getOrDefault [toUpper _talkCalmProfile, []];
-    private _talkReactionPaths = _profileTalkReaction getOrDefault [toUpper _talkReactionProfile, []];
-    private _radioHelpPaths = _profileRadioHelp getOrDefault [toUpper _radioHelpProfile, []];
+    private _radioPatrolPaths = _languageRadio getOrDefault [_sideLanguage, []];
+    private _talkCalmPaths = _languageTalk getOrDefault [_sideLanguage, []];
+    private _talkReactionPaths = _languageReaction getOrDefault [_sideLanguage, []];
+    private _radioHelpPaths = _languageRadio getOrDefault [_sideLanguage, []];
 
     _radioPatrolBySide set [str _sideValue, _radioPatrolPaths];
     _talkCalmBySide set [str _sideValue, _talkCalmPaths];
@@ -123,7 +128,10 @@ missionNamespace setVariable ["GOL_Stealth_TalkReactionBySide", _talkReactionByS
 missionNamespace setVariable ["GOL_Stealth_RadioHelpBySide", _radioHelpBySide];
 
 if (_debug) then {
-    [format ["[Stealth] Init complete. Patrol=%1 Calm=%2 Reaction=%3 Help=%4", _radioPatrolBySide, _talkCalmBySide, _talkReactionBySide, _radioHelpBySide], false, false, true] spawn OKS_fnc_LogDebug;
+    if !(missionNamespace getVariable ["GOL_Stealth_InitDebugLogged", false]) then {
+        missionNamespace setVariable ["GOL_Stealth_InitDebugLogged", true];
+        [format ["[Stealth] Init complete. BLUFOR=%1 OPFOR=%2 INDEP=%3", _radioPatrolBySide getOrDefault [str west, []], _radioPatrolBySide getOrDefault [str east, []], _radioPatrolBySide getOrDefault [str independent, []]], false, false, true] spawn OKS_fnc_LogDebug;
+    };
 };
 
 true

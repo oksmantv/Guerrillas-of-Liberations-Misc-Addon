@@ -1,5 +1,23 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_airdrop.sqf executed";
 
+[
+    "GOL_AirDrop_Debug",
+    "CHECKBOX",
+    ["Enable AirDrop Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL AirDrop", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Paradrop_Debug",
+    "CHECKBOX",
+    ["Enable Paradrop DEBUG", "Enables debugging for paradrop scripts such as Hook, Static Jump, Eject etc."],
+    ["GOL AirDrop", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // CBA Settings for AirDrop
 
 [

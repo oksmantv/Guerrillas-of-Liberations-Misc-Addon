@@ -51,6 +51,15 @@ diag_log "OKS_GOL_Misc: XEH_preInit_jets.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "OKS_AIRSPAWN_DEBUG",
+    "CHECKBOX",
+    ["Enable AirSpawn DEBUG", "Enables extra logging for OKS_fnc_AirSpawn (spawn positions, selected templates, reveal counts)."],
+    ["GOL Jets", "AirStrike"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     "OKS_AirStrike_BombSpacing",
     "SLIDER",
     ["Bomb spacing (m)", "Spacing increment per bomb when using bomb carpet."],

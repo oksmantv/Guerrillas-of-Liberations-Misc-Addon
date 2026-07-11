@@ -67,6 +67,22 @@ private _enemyKnowsPlayers = {
     } != -1
 };
 
+private _nearestPlayerDistanceForCorpse = {
+    params ["_corpse"];
+
+    private _nearestDistance = 125;
+    {
+        if (alive _x) then {
+            private _distanceToPlayer = _corpse distance _x;
+            if (_distanceToPlayer < _nearestDistance) then {
+                _nearestDistance = _distanceToPlayer;
+            };
+        };
+    } forEach allPlayers;
+
+    _nearestDistance
+};
+
 while { true } do {
     private _allDead = allDeadMen;
     private _enemyCorpses = _allDead select { [_x, _enemyFaction] call _isEnemyCorpse };
@@ -109,8 +125,10 @@ while { true } do {
 
                         if (_radioSounds isEqualType [] && { count _radioSounds > 0 }) then {
                             private _soundPath = selectRandom _radioSounds;
-                            playSound3D [_soundPath, _corpse, false, getPosASL _corpse, 2.5, 1, 12];
-                            [format ["Played radio sound: %1", _soundPath]] call _log;
+                            private _soundRange = 200;
+                            private _volume = 5;
+                            playSound3D [_soundPath, _corpse, false, getPosASL _corpse, _volume, 1, _soundRange];
+                            [format ["Voice line used: %1", _soundPath]] call _log;
                         } else {
                             [format ["No radio sounds configured for side %1", _enemyFaction]] call _log;
                         };

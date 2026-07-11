@@ -31,10 +31,22 @@ private _side = side group _unit;
 private _reactionBySide = missionNamespace getVariable ["GOL_Stealth_TalkReactionBySide", createHashMap];
 private _reactionSounds = _reactionBySide getOrDefault [str _side, []];
 
+private _nearestPlayerDistance = 125;
+{
+    if (alive _x) then {
+        private _distanceToPlayer = _unit distance _x;
+        if (_distanceToPlayer < _nearestPlayerDistance) then {
+            _nearestPlayerDistance = _distanceToPlayer;
+        };
+    };
+} forEach allPlayers;
+
 if !(_reactionSounds isEqualTo []) then {
     private _soundPath = selectRandom _reactionSounds;
-    playSound3D [_soundPath, _unit, false, getPosASL _unit, 5, 1, 120];
-    [format ["Reaction sound played: %1", _soundPath]] call _log;
+    private _soundRange = 200;
+    private _volume = 5;
+    playSound3D [_soundPath, _unit, false, getPosASL _unit, _volume, 1, _soundRange];
+    [format ["Voice line used: %1", _soundPath]] call _log;
 };
 
 if (_setCombat) then {

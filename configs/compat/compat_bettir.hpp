@@ -1,9 +1,12 @@
 // BettIR NVG compatibility extension.
 //
-// This file appends additional NVG classnames to BettIR's compatible list.
+// This file appends additional NVG classnames to BettIR's compatible list
+// and patches BettIR's light objects for stronger illumination.
+//
 // It is loaded through GOL_MISC_COMPAT_BETTIR, which uses
 // skipWhenMissingDependencies = 1 so the patch is ignored when BettIR is absent.
 
+// PART 1: Add GOL items to BettIR's compatibility lists
 class BettIR_Config {
     class CompatibleNightvisionGoggles {
         // Common bino offset used by BettIR defaults.
@@ -79,9 +82,39 @@ class BettIR_Config {
         class JCA_acc_LaserModule_sand_Pointer {
             offset[] = {0.05, 0.28, 0.06};
         };
+        
+        // GOL_OX3000 - All IR modes (excluding visible flashlight)
+        class GOL_OX3000 {
+            offset[] = {0.05, 0.28, 0.06};
+        };
+
+        class GOL_OX3000_II {
+            offset[] = {0.05, 0.28, 0.06};
+        };
+
+        class GOL_OX3000_IP {
+            offset[] = {0.05, 0.28, 0.06};
+        };
+
+        // Compatibility stubs for saved loadouts (redirect to standard versions)
+        class GOL_OX3000_LR {
+            offset[] = {0.05, 0.28, 0.06};
+        };
+
+        class GOL_OX3000_LR_IP {
+            offset[] = {0.05, 0.28, 0.06};
+        };
+
+        class GOL_OX3000_LR_II {
+            offset[] = {0.05, 0.28, 0.06};
+        };
 
         class rhs_acc_perst1ik {
             offset[] = {0.032, 0.32, 0.105};
         };
     };
 };
+
+// PART 2: BettIR light object patches are in CfgVehicles.cpp
+// (See configs/compat/compat_bettir_vehicles.hpp included from CfgVehicles.cpp)
+

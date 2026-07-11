@@ -1,5 +1,14 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_hunt.sqf executed";
 
+[
+    "GOL_Hunt_Debug",
+    "CHECKBOX",
+    ["Enable Hunt Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL Hunt", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // Settings for NEKY Hunt
 [
     "GOL_Hunt_MaxCount",

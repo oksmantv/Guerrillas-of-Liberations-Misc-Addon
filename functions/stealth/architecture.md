@@ -77,42 +77,57 @@ Curated profile values:
 - ARAB
 - RUSSIAN
 - VIETNAMESE
-- YELL_GENERIC
-- VIETNAMESE_Y
-- LEGACY_HELP
+
+Language behavior mapping:
+
+- NONE
+  - Excludes that side from auto-enabled stealth behavior.
+  - No patrol/sentry auto-attach is performed for that faction.
+
+- ARAB
+  - Radio: Arab radio files
+  - Talk: Arab talk files
+  - Reaction: Arab yell files
+- RUSSIAN
+  - Radio: Russian radio files
+  - Talk: Russian radio files (current asset limitation)
+  - Reaction: Russian radio files (current asset limitation)
+- VIETNAMESE
+  - Radio: Vietnamese radio files
+  - Talk: Vietnamese calm talk files
+  - Reaction: Vietnamese reaction talk files
 
 Per-side CBA settings:
 
-- GOL_Stealth_ProfileRadio_BLUFOR
-- GOL_Stealth_ProfileRadio_OPFOR
-- GOL_Stealth_ProfileRadio_INDEPENDENT
-- GOL_Stealth_ProfileTalk_BLUFOR
-- GOL_Stealth_ProfileTalk_OPFOR
-- GOL_Stealth_ProfileTalk_INDEPENDENT
-- GOL_Stealth_ProfileReaction_BLUFOR
-- GOL_Stealth_ProfileReaction_OPFOR
-- GOL_Stealth_ProfileReaction_INDEPENDENT
-- GOL_Stealth_ProfileRadioHelp_BLUFOR
-- GOL_Stealth_ProfileRadioHelp_OPFOR
-- GOL_Stealth_ProfileRadioHelp_INDEPENDENT
+- GOL_Stealth_Language_BLUFOR
+- GOL_Stealth_Language_OPFOR
+- GOL_Stealth_Language_INDEPENDENT
+- GOL_Stealth_AutoEnablePatrols
+- GOL_Stealth_AutoEnableStatics
 - GOL_Stealth_RadioHelpCooldown
 
 ## Runtime Topology
 
 1. PreInit registers CBA settings via XEH_preInit_stealth.sqf.
 2. Server postInit calls fn_Stealth_Init when GOL_Stealth_Enabled is true.
-3. Missions opt in to each behavior by spawning the relevant function.
-4. Hunted and tracker functions communicate through group track arrays and OKS_HuntedGroups.
+3. Server postInit starts fn_Stealth_AutoEnable when GOL_Stealth_Enabled is true.
+4. Auto-enable checks CBA settings and attaches behavior to patrol/static groups.
+5. Hunted and tracker functions communicate through group track arrays and OKS_HuntedGroups.
 
 ## Suggested Mission Usage
 
 ```sqf
-// Select side audio profiles in Addon Options first.
+// Select side languages in Addon Options first.
 // Then start corpse radio handling for enemy side.
 [east] spawn OKS_fnc_Stealth_EnemyRadio;
 
 // Start chatter for a specific enemy group.
 [group someEnemyLeader] spawn OKS_fnc_Stealth_EnemyTalk;
+
+// Mark a group as static and start sentry behavior (no hunter escalation).
+private _g = group someSentryUnit;
+_g setVariable ["GOL_IsStatic", true, true];
+[_g, side _g, 0.35, true, false, 500, 500] spawn OKS_fnc_Stealth_EnemySentry;
 
 // Manual sentry alert call (reaction yell + optional radio help).
 [someSentryUnit, true, true, true] call OKS_fnc_Stealth_SentryAlert;
@@ -121,6 +136,19 @@ Per-side CBA settings:
 [group huntedLead, triggerAreaObject] spawn OKS_fnc_Stealth_Hunted;
 [group trackerLead] spawn OKS_fnc_Stealth_Tracker;
 ```
+
+## Patrol and Sentry Test Quick Start
+
+For addon-option driven testing:
+
+- Enable GOL_Stealth_Enabled
+- Enable GOL_Stealth_AutoEnablePatrols
+- Enable GOL_Stealth_AutoEnableStatics
+
+With these enabled, server postInit runs auto-detection:
+
+- Patrol groups: non-static groups with waypoints -> fn_Stealth_EnemyTalk
+- Static groups: groups with GOL_IsStatic or GOL_isStatic -> fn_Stealth_EnemySentry
 
 ## Extension Points
 

@@ -1,5 +1,14 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_sam.sqf executed";
 
+[
+    "GOL_AA_Debug",
+    "CHECKBOX",
+    ["Enable AA Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL SAM", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // GOL SAM Network — shared CBA settings for SAM + SHORAD systems
 
 [

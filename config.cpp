@@ -10,6 +10,8 @@ class CfgPatches
             "A3_Modules_F",
             "A3_Structures_F",
             "A3_Weapons_F",
+            "A3_Weapons_F_Exp",
+            "A3_Weapons_F_Tank",         
             "cba_main",
             "cba_ui",
             "cba_xeh_a3",
@@ -18,6 +20,7 @@ class CfgPatches
             "rhs_weapons",
             "rhs_c_weapons",
             "rhs_c_bmp",
+            
             "rhsusf_main",
             "rhsusf_c_airweapons",
             "rhsusf_c_heavyweapons",
@@ -288,6 +291,7 @@ class CfgPatches
 #include "version.hpp"
 #include "BIS_AddonInfo.hpp"
 #include "configs\CfgAmmo.cpp"
+#include "configs\CfgBrains.cpp"
 #include "configs\CfgEden.cpp"
 #include "configs\CfgMagazines.cpp"
 #include "configs\CfgMagazineWells.cpp"

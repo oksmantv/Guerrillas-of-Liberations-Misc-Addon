@@ -8,11 +8,14 @@ if (count units group _Unit > 1) then {
 	private _SingleGroup = createGroup (side _Unit);
 	[_Unit] joinSilent _SingleGroup;
 };
-group _Unit setVariable ["GOL_IsStatic", true, true];
-group _Unit setVariable ["acex_headless_blacklist", true, true];
-[group _Unit, 70] spawn OKS_fnc_Stealth_EnemyTalk;
+private _group = group _Unit;
+_group setVariable ["GOL_IsStatic", true, true];
+_group setVariable ["OKS_Stealth_SentryPriority", true, true];
+_group setVariable ["acex_headless_blacklist", true, true];
+_group setVariable ["lambs_danger_disableGroupAI", true, true];
+
+[_group, 70] spawn OKS_fnc_Stealth_EnemyTalk;
 _Unit setVariable ["GOL_IsSentry", true, true];
-_Unit setVariable ["ace_captives_issurrendering", true, true];
 _Unit setCombatMode "GREEN";
 
 if (count waypoints _Unit <= 1) then {
@@ -23,7 +26,8 @@ if (toLower (unitPos _Unit) isEqualTo "auto" && count waypoints _Unit <= 1) then
 	_Unit setUnitPos selectRandom ["UP", "UP", "UP", "UP", "UP", "MIDDLE"];
 };
 _Unit setSkill ["commanding", 0];
-_Unit setSkill ["spotTime", 0];
+_Unit setSkill ["spotDistance", ((_Unit skill "spotDistance") min 0.15)];
+_Unit setSkill ["spotTime", ((_Unit skill "spotTime") min 0.15)];
 _Unit disableAI "AUTOCOMBAT";
 
 _Unit spawn {
@@ -56,7 +60,11 @@ _Unit addEventHandler ["Fired", {
 	private _knowsAbout = _unit knowsAbout _target;
 	private _nearbyUnits = (_unit nearEntities ["Man", 300]) select { _X getVariable ["GOL_IsSentry", false] };
 	{
-		_X reveal [_target, _knowsAbout];
+		if(_X getVariable ["GOL_SentrySharedTarget", false]) then {
+			_X reveal [_target, _knowsAbout];
+			_X setBehaviour "COMBAT";
+			_X setVariable ["GOL_SentrySharedTarget", true, true];
+		};
 	} forEach _nearbyUnits;
 	_unit removeEventHandler [_thisEvent, _thisEventHandler];
 }];

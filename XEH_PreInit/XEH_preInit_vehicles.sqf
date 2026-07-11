@@ -1,5 +1,41 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_vehicles.sqf executed";
 
+[
+    "GOL_MissileWarning_Debug",
+    "CHECKBOX",
+    ["Enable Missile Warning DEBUG", "Enables debugging for missile warnings."],
+    ["GOL Vehicles", "Missile Warning"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_MissileDeflect_Debug",
+    "CHECKBOX",
+    ["Enable Missile Deflect DEBUG", "Enables debugging for missile deflection."],
+    ["GOL Vehicles", "Missile Warning"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_GroundVehicles_Debug",
+    "CHECKBOX",
+    ["Enable Ground Vehicles DEBUG", "Enables debugging for ground vehicle setup scripts such as Mechanized, SetupCargoSpace, etc. (excludes damage system)"],
+    ["GOL Ground Vehicles", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_BMP2_Debug",
+    "CHECKBOX",
+    ["Enable BMP-2 Debug", "Enables [BMP2] debug logging for GOL_BMP2DM crew protection, animation state capture/restore, ACE unconscious events, and vehicle damage observation."],
+    ["GOL Ground Vehicles", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // Vehicle-related CBA settings.
 // This file is intended for settings that affect vehicle systems (ground/air/sea).
 
@@ -135,7 +171,7 @@ missionNamespace setVariable [
     "OKS_SatCamPip_ThermalEnabled",
     "CHECKBOX",
     ["PiP Camera Thermal", "When enabled, vision mode cycling includes Thermal in addition to Normal and Night Vision."],
-    ["OKS Vehicles", "PiP Camera"],
+    ["GOL Vehicles", "PiP Camera"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -163,7 +199,7 @@ missionNamespace setVariable [
     "GOL_MissileWarning_DisplayMode",
     "LIST",
     ["Missile Warning Display", "Controls what feedback players receive when an ATGM is detected. Requires Missile Warning to be enabled."],
-    ["GOL Vehicle", "Missile Warning"],
+    ["GOL Vehicles", "Missile Warning"],
     [[0, 1, 2, 3], ["Both (Sound + Text)", "Sound Only", "Text Only", "None"], 0],
     1
 ] call CBA_fnc_addSetting;

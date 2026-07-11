@@ -222,6 +222,10 @@ class CfgFunctions // Defines a function
 		class OKS_Stealth_Core {
 			file = "\OKS_GOL_Misc\functions\stealth\core";
 			class Stealth_Init {};
+			class Stealth_AutoEnable {};
+			class Stealth_PlayerVisibility {};
+			class Stealth_GetLightingServer {};
+			class Stealth_ReceiveLighting {};
 			class Stealth_EnemyRadio {};
 			class Stealth_EnemyTalk {};
 			class Stealth_FindNearRadioMen {};
@@ -247,6 +251,12 @@ class CfgFunctions // Defines a function
 			class Stealth_FindNearestRadioAndCallForHelp {};
 			class Stealth_Hunted {};
 			class Stealth_Tracker {};
+		};
+		
+		class OKS_IRIlluminator {
+			file = "\OKS_GOL_Misc\functions\irilluminator";
+			class IRIlluminator_Monitor {};
+			class IRIlluminator_InitSettings {};
 		};
 		
 		class OKS_Suppression {
@@ -667,5 +677,9 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\compat\ace_irlight";
 			class initItemContextMenu {};
 		};
-	};
+
+                class compat {
+                        file = "\OKS_GOL_Misc\functions\compat";
+                        class BettIR_AutoWeaponIlluminator {};
+                };        };
 };

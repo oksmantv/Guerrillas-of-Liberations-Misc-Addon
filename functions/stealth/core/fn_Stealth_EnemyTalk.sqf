@@ -31,6 +31,13 @@ private _log = {
     };
 };
 
+// Guard against duplicate talk loops for the same group.
+if (_group getVariable ["OKS_Stealth_EnemyTalkLoop", false]) exitWith {
+    [format ["Skipped duplicate loop for group %1", _group]] call _log;
+    false
+};
+_group setVariable ["OKS_Stealth_EnemyTalkLoop", true, true];
+
 private _canSpeak = {
     params ["_group", "_distance", "_shouldTalkAsStaticUnits"];
 
@@ -95,10 +102,10 @@ while { !isNull _group && { { alive _x } count units _group > 0 } } do {
 
         if (_talkSounds isEqualType [] && { count _talkSounds > 0 }) then {
             private _soundPath = selectRandom _talkSounds;
-            private _soundRange = if (_enemyDistance > 50) then { 150 } else { 100 };
-            private _volume = if (_enemyDistance > 50) then { 5 } else { 2.5 };
+            private _soundRange = 200;
+            private _volume = 5;
             playSound3D [_soundPath, _enemy, false, getPosASL _enemy, _volume, 1, _soundRange];
-            [format ["Group %1 spoke near %2 with %3", _group, _player, _soundPath]] call _log;
+            [format ["Voice line used: %1", _soundPath]] call _log;
         } else {
             [format ["No talk sounds configured for side %1", _groupSide]] call _log;
         };
@@ -113,4 +120,6 @@ while { !isNull _group && { { alive _x } count units _group > 0 } } do {
     sleep _loopDelayToCheckNearby;
 };
 
+_group setVariable ["OKS_Stealth_EnemyTalkLoop", false, true];
+_group setVariable ["OKS_Talking_Currently", false, true];
 true

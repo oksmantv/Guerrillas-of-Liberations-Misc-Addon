@@ -1,5 +1,14 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_suppression.sqf executed";
 
+[
+    "GOL_Suppression_Debug",
+    "CHECKBOX",
+    ["Enable Suppression Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL Suppression", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // Settings for OKS Suppression
 [
     "GOL_Suppression_Enabled",

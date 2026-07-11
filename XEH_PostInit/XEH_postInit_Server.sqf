@@ -71,6 +71,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
         private _stealthEnabled = missionNamespace getVariable ["GOL_Stealth_Enabled", false];
         if (_stealthEnabled) then {
             [] call OKS_fnc_Stealth_Init;
+            [] spawn OKS_fnc_Stealth_AutoEnable;
         };
     };  
 };

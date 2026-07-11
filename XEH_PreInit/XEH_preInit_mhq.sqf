@@ -1,5 +1,32 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
 
+[
+    "MHQ_Debug",
+    "CHECKBOX",
+    ["Enable MHQ DEBUG", "Enable DEBUG messages for MHQ code."],
+    ["GOL MHQ", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_RotorProtection_Debug",
+    "CHECKBOX",
+    ["Enable Rotor DEBUG", "Enables debugging for the handleDamage scripts for Mi-8/Mi-24 rotors."],
+    ["GOL Helicopters", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_AI_HelicopterFlyBy_Debug",
+    "CHECKBOX",
+    ["Enable AI Helicopter FlyBy Debug", "Enables debug messages for AI Helicopter FlyBy scripts including flight missions, waypoint tracking, and spawn management."],
+    ["GOL Helicopters", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // CBA Settings for MHQ
 [
     "MHQSAFEZONE",
@@ -23,7 +50,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_MissileWarning_Enabled",
     "CHECKBOX",
     ["Enable Missile Warning", "If enabled vehicles will have a missile warning system that will alert the crew of incoming missiles."],
-    ["GOL Vehicle", "General"],
+    ["GOL Vehicles", "General"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -32,7 +59,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_MissileWarningSound_Enabled",
     "CHECKBOX",
     ["Enable Missile Warning Sound", "If enabled vehicles will have a missile warning sound effects that will alert the crew of incoming missiles."],
-    ["GOL Vehicle", "General"],
+    ["GOL Vehicles", "General"],
     false,
     1
 ] call CBA_fnc_addSetting;
@@ -41,7 +68,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_mhq.sqf executed";
     "GOL_Vehicle_Flag",
     "EDITBOX",
     ["Vehicle Flag Texture", "If defined will put a flag texture on the vehicle. Use the full path to the texture, e.g. a3\ui_f\data\flag_usa_co.paa. (No quotation marks)"],
-    ["GOL Vehicle", "General"],
+    ["GOL Vehicles", "General"],
     "",
     1
 ] call CBA_fnc_addSetting;

@@ -18,6 +18,17 @@ if(GOL_Core_Enabled isEqualTo true) then {
 
 	/* Amphibious IFV water boost (client-only, locality-safe) */
 	if (hasInterface) then {
+        [] spawn OKS_fnc_Stealth_PlayerVisibility;
+        
+        // BettIR auto-activation for GOL_OX3000 (disables scripted lights when present)
+        if (isClass (configFile >> "CfgPatches" >> "BettIR_Core")) then {
+            [] call OKS_fnc_BettIR_AutoWeaponIlluminator;
+            ["[PostInit] BettIR detected - using BettIR illuminators for GOL_OX3000", false, false, true] spawn OKS_fnc_LogDebug;
+        } else {
+            [] spawn OKS_fnc_IRIlluminator_Monitor;
+            ["[PostInit] BettIR not detected - using scripted illuminators for GOL_OX3000", false, false, true] spawn OKS_fnc_LogDebug;
+        };
+        
         [] spawn {
             ["[AMPHIB_IFV_BOOST] PostInit: client init thread started", false, false, true] spawn OKS_fnc_LogDebug;
 
