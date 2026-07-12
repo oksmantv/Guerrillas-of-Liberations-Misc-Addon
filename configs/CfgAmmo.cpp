@@ -9,16 +9,16 @@ class CfgAmmo {
 		ambient[] = {3.2, 3.0, 2.5, 1.0};
 		flareSize = 10;
 		flareMaxDistance = 20000;
-		coefGravity = 0.08;     // Slower drop for longer effective illumination
-		timeToLive = 180;       // Extended burn time for persistent illumination
+		coefGravity = 0.04;     // Slower drop for longer effective illumination
+		timeToLive = 160;       // Extended burn time for persistent illumination
 	};
 
 	class GOL_40mm_Flare_ir_Subtle: ACE_40mm_Flare_ir {
 		displayName = "40mm IR Flare (GOL)";
 		intensity = 150000;
 		nvgOnly = 1;         // NVG-only illumination (standard ACE IR behavior)
-		coefGravity = 0.08;  // Slower fall rate
-		timeToLive = 180;     // Longer burn time
+		coefGravity = 0.04;  // Slower fall rate
+		timeToLive = 160;     // Longer burn time
 		flareSize = 10;
 		flareMaxDistance = 15000;	
 	};
@@ -26,8 +26,8 @@ class CfgAmmo {
 	class GOL_40mm_Flare_ir_UGL: ACE_40mm_Flare_ir {
 		displayName = "40mm IR Flare (GOL)";
 		nvgOnly = 1;         // NVG-only illumination (standard ACE IR behavior)
-		coefGravity = 0.07;  // Slower fall rate
-		timeToLive = 100;     // Longer burn time
+		coefGravity = 0.05;  // Slower fall rate
+		timeToLive = 90;     // Longer burn time
 	};	
 
     class rhs_ammo_9k38;
