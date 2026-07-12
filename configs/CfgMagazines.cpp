@@ -1,4 +1,32 @@
 class CfgMagazines {
+    class UGL_FlareWhite_F;
+    class GOL_1Rnd_UGL_FlareIR_Subtle: UGL_FlareWhite_F {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        displayName = "40mm IR Flare (GOL)";
+        displayNameShort = "IR Flare";
+        descriptionShort = "40mm parachute IR flare. NVG-visible with minimal naked-eye signature.";
+        ammo = "GOL_40mm_Flare_ir_UGL";
+    };
+
+    class 120Rnd_CMFlare_Chaff_Magazine;
+    class GOL_250Rnd_CMFlare_Visible_Mag: 120Rnd_CMFlare_Chaff_Magazine {
+        displayName = "250Rnd Support Flares (Visible)";
+        displayNameShort = "VIS Flare";
+        ammo = "GOL_40mm_Flare_Visible_CM";
+        initSpeed = 0;
+        count = 250;
+    };
+
+    class GOL_250Rnd_CMFlare_IR_Mag: 120Rnd_CMFlare_Chaff_Magazine {
+        displayName = "250Rnd Support Flares (IR)";
+        displayNameShort = "IR Flare";
+        ammo = "GOL_40mm_Flare_ir_Subtle";
+        initSpeed = 0;
+        count = 250;
+    };
+
     class rhs_mag_9k38_rocket; // Reference the base class (no body)
     class gol_mag_9k38_rocket: rhs_mag_9k38_rocket {
         displayName = "9K38 (Disabled ACE Guidance)";

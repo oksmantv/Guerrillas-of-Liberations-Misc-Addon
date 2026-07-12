@@ -1,6 +1,55 @@
 class Mode_FullAuto;
 class Mode_SemiAuto;
 class CfgWeapons {
+	class CMFlareLauncher;
+	class GOL_CMFlareLauncher_Visible: CMFlareLauncher {
+		scope = 2;
+		displayName = "Support Flare Launcher (Visible)";
+		descriptionShort = "Visible support flare dropper. Single flare every 2 seconds.";
+		muzzles[] = {"this"};
+		magazines[] = {"GOL_250Rnd_CMFlare_Visible_Mag"};
+		modes[] = {"Single"};
+
+		class Single: Mode_SemiAuto {
+			displayName = "Visible Single";
+			burst = 1;
+			reloadTime = 2.0;
+			autoFire = 0;
+			soundBurst = 0;
+			sounds[] = {"StandardSound"};
+			class StandardSound {
+				soundSetShot[] = {"UGL_shot_SoundSet","UGL_Tail_SoundSet","UGL_InteriorTail_SoundSet"};
+			};
+			class SilencedSound {
+				soundSetShot[] = {"UGL_shot_SoundSet","UGL_Tail_SoundSet","UGL_InteriorTail_SoundSet"};
+			};
+		};
+	};
+
+	class GOL_CMFlareLauncher_IR: CMFlareLauncher {
+		scope = 2;
+		displayName = "Support Flare Launcher (IR)";
+		descriptionShort = "IR support flare dropper. Single flare every 2 seconds.";
+		muzzles[] = {"this"};
+		magazines[] = {"GOL_250Rnd_CMFlare_IR_Mag"};
+		modes[] = {"Single"};
+
+		class Single: Mode_SemiAuto {
+			displayName = "IR Single";
+			burst = 1;
+			reloadTime = 2.0;
+			autoFire = 0;
+			soundBurst = 0;
+			sounds[] = {"StandardSound"};
+			class StandardSound {
+				soundSetShot[] = {"UGL_shot_SoundSet","UGL_Tail_SoundSet","UGL_InteriorTail_SoundSet"};
+			};
+			class SilencedSound {
+				soundSetShot[] = {"UGL_shot_SoundSet","UGL_Tail_SoundSet","UGL_InteriorTail_SoundSet"};
+			};
+		};
+	};
+
 	#include "CfgWeapons_AIStatics.hpp"
 	#include "CfgWeapons_Items.hpp"
 	#include "CfgWeapons_Launchers.hpp"
@@ -290,10 +339,7 @@ class CfgWeapons {
 	#include "compat\compat_uk3cb_factions.hpp"
 	#include "compat\compat_jca.hpp"
 	#include "compat\compat_ace_irlight.hpp"
-
 	#include "CfgWeapons_MachineGuns.hpp"
-
-
 
         // ============================================================
         // GOL M230 30mm Chain Gun Pod

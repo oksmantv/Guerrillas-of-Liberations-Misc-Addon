@@ -23,6 +23,7 @@ sleep 1;
 [_Helicopter] remoteExec ["OKS_fnc_HeliActions",0];
 [_Helicopter] remoteExec ["OKS_fnc_Interact_Apply",0];
 [_Helicopter] spawn OKS_fnc_Helicopter_Protection;
+[_Helicopter] call OKS_fnc_AircraftFlareSupportInit;
 
 _Helicopter enableSimulationGlobal true;
 sleep 5;

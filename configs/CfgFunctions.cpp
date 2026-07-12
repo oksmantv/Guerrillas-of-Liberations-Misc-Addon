@@ -347,7 +347,10 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\vehicles\jets";
 			class Jet {};
 			class JetAWSInit {};
+			class AircraftFlareSupportInit {};
 			class AWSNoop {};
+			class VisibleFlareOnFired {};
+			class VisibleFlareAttachLight {};
 		};		
 
 		class OKS_RescueFriendly {

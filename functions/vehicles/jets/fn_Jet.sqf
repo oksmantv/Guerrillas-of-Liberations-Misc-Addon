@@ -15,6 +15,9 @@ private _minSpeedKph = missionNamespace getVariable ["GOL_JetSuppression_MinSpee
 private _multiplier = missionNamespace getVariable ["GOL_JetSuppression_Multiplier", 3];
 private _minSpeed = (_minSpeedKph / 3.6); // Convert km/h to m/s
 
+// Setup Flare Support Counter-measure
+[_aircraft] call OKS_fnc_AircraftFlareSupportInit;
+
 private _fnc_HasPassedUnit = {
     params ["_aircraft", "_unit"];
 
