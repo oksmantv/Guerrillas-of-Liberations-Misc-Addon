@@ -15,26 +15,6 @@
 ] call CBA_fnc_addSetting;
 
 [
-    "GOL_IRIlluminator_Intensity",
-    "SLIDER",
-    ["IR Illuminator Intensity", "Light intensity for GOL_OX3000_II. Higher = brighter and longer range through NVGs. BettIR default ~1000-2000, we use ~4000 for stronger effect."],
-    ["GOL Nightvision", "IR Illuminator"],
-    [1000, 10000, 4000, 0],
-    0,
-    {}
-] call CBA_fnc_addSetting;
-
-[
-    "GOL_IRIlluminator_Brightness",
-    "SLIDER",
-    ["IR Illuminator Brightness", "Overall brightness multiplier. Affects how bright the light appears through NVGs."],
-    ["GOL Nightvision", "IR Illuminator"],
-    [1, 20, 8, 0],
-    0,
-    {}
-] call CBA_fnc_addSetting;
-
-[
     "GOL_IRIlluminator_MaxDistance",
     "SLIDER",
     ["Max Render Distance", "Maximum distance (meters) to render other players' IR illuminators. Higher = see more teammates, lower = better performance."],

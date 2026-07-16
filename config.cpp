@@ -142,7 +142,8 @@ class CfgPatches
             "GOL_launch_NLAW_used_F"
         };
 		magazines[] = {
-            "GOL_1Rnd_UGL_FlareIR_Subtle",
+            "GOL_1Rnd_UGL_FlareIR",
+            "GOL_1Rnd_UGL_FlareWhite",
 			// 9.3x64mm for heavy machine guns — ball, tracer, SLAP, and 200-round variants.
 			"GOL_150Rnd_93x64_Mag",
 			"GOL_150Rnd_93x64_Mag_Tracer",

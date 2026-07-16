@@ -115,24 +115,6 @@ missionNamespace setVariable ["OKS_IRIlluminator_Monitor_Started", true];
                     // Get unit's strength setting (default 1% - minimum)
                     private _strengthMultiplier = (_unit getVariable ["GOL_IRIlluminator_Strength", 1]) / 100;
                     
-                    // Calculate intensity and brightness based on mode and strength
-                    private _baseIntensity = if (_isIIMode) then {
-                        missionNamespace getVariable ["GOL_IRIlluminator_Intensity", 4000]
-                    } else {
-                        250  // Dual mode
-                    };
-                    
-                    private _intensity = _baseIntensity * _strengthMultiplier;
-                    
-                    private _baseBrightness = if (_isIIMode) then {
-                        missionNamespace getVariable ["GOL_IRIlluminator_Brightness", 8]
-                    } else {
-                        4  // Dual mode
-                    };
-                    
-                    private _brightness = _baseBrightness * _strengthMultiplier;
-                    private _range = 250;  // Fixed range for all modes
-                    
                     // ** BettIR Integration: Replace BettIR's light with our adjustable variant **
                     if (_hasBettIR) then {
                         // BettIR stores weapon light in 'BettIR_weapon_illuminator_object'

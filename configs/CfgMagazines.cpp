@@ -1,6 +1,6 @@
 class CfgMagazines {
     class UGL_FlareWhite_F;
-    class GOL_1Rnd_UGL_FlareIR_Subtle: UGL_FlareWhite_F {
+    class GOL_1Rnd_UGL_FlareIR: UGL_FlareWhite_F {
         scope = 2;
         scopeArsenal = 2;
         scopeCurator = 2;
@@ -10,11 +10,21 @@ class CfgMagazines {
         ammo = "GOL_40mm_Flare_ir_UGL";
     };
 
+    class GOL_1Rnd_UGL_FlareWhite: UGL_FlareWhite_F {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        displayName = "40mm White Flare (GOL)";
+        displayNameShort = "White Flare";
+        descriptionShort = "40mm parachute white illumination flare. High-intensity visible light.";
+        ammo = "GOL_40mm_Flare_White_UGL";
+    };   
+
     class 120Rnd_CMFlare_Chaff_Magazine;
     class GOL_250Rnd_CMFlare_Visible_Mag: 120Rnd_CMFlare_Chaff_Magazine {
         displayName = "250Rnd Support Flares (Visible)";
         displayNameShort = "VIS Flare";
-        ammo = "GOL_40mm_Flare_Visible_CM";
+        ammo = "GOL_40mm_Flare_White_air";
         initSpeed = 0;
         count = 250;
     };
@@ -22,7 +32,7 @@ class CfgMagazines {
     class GOL_250Rnd_CMFlare_IR_Mag: 120Rnd_CMFlare_Chaff_Magazine {
         displayName = "250Rnd Support Flares (IR)";
         displayNameShort = "IR Flare";
-        ammo = "GOL_40mm_Flare_ir_Subtle";
+        ammo = "GOL_40mm_Flare_ir_air";
         initSpeed = 0;
         count = 250;
     };

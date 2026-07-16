@@ -15,7 +15,7 @@ params [
     ["_gunner", objNull, [objNull]]
 ];
 
-if (_ammo != "GOL_40mm_Flare_ir_Subtle") exitWith {};
+if (_ammo != "GOL_40mm_Flare_ir_air") exitWith {};
 if (isNull _projectile) exitWith {};
 
 if (_projectile getVariable ["GOL_IRFlareLightAttached", false]) exitWith {};

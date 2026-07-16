@@ -77,7 +77,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
         /*
             Flare Altitude Failsafe - Delete flares below 50m AGL to prevent ground clutter
         */
-        ["GOL_40mm_Flare_Visible_CM", "init", {
+        ["GOL_40mm_Flare_White_air", "init", {
             params ["_projectile"];
             [_projectile] spawn {
                 params ["_flare"];
@@ -90,7 +90,7 @@ if(GOL_Core_Enabled isEqualTo true) then {
             };
         }, true, [], true] call CBA_fnc_addClassEventHandler;
 
-        ["GOL_40mm_Flare_ir_Subtle", "init", {
+        ["GOL_40mm_Flare_ir_air", "init", {
             params ["_projectile"];
             [_projectile] spawn {
                 params ["_flare"];
