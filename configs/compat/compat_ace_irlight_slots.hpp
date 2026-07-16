@@ -8,10 +8,12 @@ class PointerSlot: SlotInfo {
         "GOL_OX3000_IP",
         "GOL_OX3000_II",
         "GOL_OX3000_FL",
+        "GOL_OX3000_FL_Low",
         "GOL_OX3000_LR",
         "GOL_OX3000_LR_IP",
         "GOL_OX3000_LR_II",
-        "GOL_OX3000_LR_FL"
+        "GOL_OX3000_LR_FL",
+        "GOL_OX3000_LR_FL_Low"
     };
 };
 
@@ -43,10 +45,12 @@ class PointerSlot_Rail: PointerSlot {
         GOL_OX3000_IP = 1;
         GOL_OX3000_II = 1;
         GOL_OX3000_FL = 1;
+        GOL_OX3000_FL_Low = 1;
         GOL_OX3000_LR = 1;
         GOL_OX3000_LR_IP = 1;
         GOL_OX3000_LR_II = 1;
         GOL_OX3000_LR_FL = 1;
+        GOL_OX3000_LR_FL_Low = 1;
     };
 };
 
@@ -79,9 +83,11 @@ class asdg_FrontSideRail: asdg_SlotInfo {
         GOL_OX3000_IP = 1;
         GOL_OX3000_II = 1;
         GOL_OX3000_FL = 1;
+        GOL_OX3000_FL_Low = 1;
         GOL_OX3000_LR = 1;
         GOL_OX3000_LR_IP = 1;
         GOL_OX3000_LR_II = 1;
         GOL_OX3000_LR_FL = 1;
+        GOL_OX3000_LR_FL_Low = 1;
     };
 };

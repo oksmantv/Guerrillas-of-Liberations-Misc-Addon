@@ -4,14 +4,14 @@ class CfgWeapons {
 	class CMFlareLauncher;
 	class GOL_CMFlareLauncher_Visible: CMFlareLauncher {
 		scope = 2;
-		displayName = "Support Flare Launcher (Visible)";
-		descriptionShort = "Visible support flare dropper. Single flare every 2 seconds.";
+		displayName = "Parachute Flare Launcher";
+		descriptionShort = "Parachute Flare support. Single flare every 2 seconds.";
 		muzzles[] = {"this"};
 		magazines[] = {"GOL_250Rnd_CMFlare_Visible_Mag"};
 		modes[] = {"Single"};
 
 		class Single: Mode_SemiAuto {
-			displayName = "Visible Single";
+			displayName = "Parachute Flare";
 			burst = 1;
 			reloadTime = 2.0;
 			autoFire = 0;
@@ -28,14 +28,14 @@ class CfgWeapons {
 
 	class GOL_CMFlareLauncher_IR: CMFlareLauncher {
 		scope = 2;
-		displayName = "Support Flare Launcher (IR)";
+		displayName = "Parachute Flare Launcher (IR)";
 		descriptionShort = "IR support flare dropper. Single flare every 2 seconds.";
 		muzzles[] = {"this"};
 		magazines[] = {"GOL_250Rnd_CMFlare_IR_Mag"};
 		modes[] = {"Single"};
 
 		class Single: Mode_SemiAuto {
-			displayName = "IR Single";
+			displayName = "Parachute Flare (IR)";
 			burst = 1;
 			reloadTime = 2.0;
 			autoFire = 0;

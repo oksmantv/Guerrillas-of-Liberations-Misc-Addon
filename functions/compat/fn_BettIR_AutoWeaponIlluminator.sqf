@@ -39,8 +39,10 @@ private _pointerModes = [
 ];
 
 private _flashlightModes = [
-    "gol_ox3000_fl",        // Visible flashlight
-    "gol_ox3000_lr_fl"      // Compat stub (same as standard)
+    "gol_ox3000_fl",        // Visible flashlight (High)
+    "gol_ox3000_fl_low",    // Visible flashlight (Low)
+    "gol_ox3000_lr_fl",     // Compat stub (same as standard)
+    "gol_ox3000_lr_fl_low"  // Compat stub low
 ];
 
 private _allIRModes = _illuminatorModes + _dualModes + _pointerModes;
@@ -110,12 +112,21 @@ private _laserCapableModes = _dualModes + _pointerModes;
             [format ["[BettIR_Auto] Mode switch: %1 → %2 (laser was: %3)", _lastAttachment, _attachment, _laserWasOn], false, false, true] spawn OKS_fnc_LogDebug;
         };
         
-        // Switching TO flashlight → turn off BettIR illuminator (safety)
+        // Switching TO flashlight → turn off BettIR illuminator AND flashlight (prevent auto-on)
         if (_isFlashlightMode && _bettirWeaponOn) then {
             [player] call BettIR_fnc_weaponIlluminatorOff;
             player setVariable ["OKS_BettIR_AutoActive", false];
+            
+            // Force flashlight OFF to prevent auto-activation
+            [{
+                params ["_unit", "_weapon"];
+                if (_unit isFlashlightOn _weapon) then {
+                    _unit action ["gunLightOff", _unit];
+                };
+            }, [player, currentWeapon player], 0.1] call CBA_fnc_waitAndExecute;
+            
             if (missionNamespace getVariable ["GOL_Stealth_PlayerVisibilityDebug", false]) then {
-                ["[BettIR_Auto] Switched to flashlight: disabled BettIR illuminator", false, false, true] spawn OKS_fnc_LogDebug;
+                ["[BettIR_Auto] Switched to flashlight: disabled BettIR illuminator and forced flashlight OFF", false, false, true] spawn OKS_fnc_LogDebug;
             };
         };
         
@@ -210,7 +221,8 @@ private _laserCapableModes = _dualModes + _pointerModes;
     
     // Auto-activate when conditions met
     if (_shouldBeOn && !_bettirWeaponOn) then {
-        [player] call BettIR_fnc_weaponIlluminatorOn;
+        // Use GOL's wrapper to create light with correct strength from the start
+        [player] call OKS_fnc_IRIlluminator_WeaponIlluminatorOn;
         player setVariable ["OKS_BettIR_AutoActive", true];
         
         if (missionNamespace getVariable ["GOL_Stealth_PlayerVisibilityDebug", false]) then {

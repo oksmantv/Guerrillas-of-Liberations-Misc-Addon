@@ -20,13 +20,34 @@ if(GOL_Core_Enabled isEqualTo true) then {
 	if (hasInterface) then {
         [] spawn OKS_fnc_Stealth_PlayerVisibility;
         
-        // BettIR auto-activation for GOL_OX3000 (disables scripted lights when present)
+        // BettIR auto-activation for GOL_OX3000 (proper beam lights)
         if (isClass (configFile >> "CfgPatches" >> "BettIR_Core")) then {
             [] call OKS_fnc_BettIR_AutoWeaponIlluminator;
-            ["[PostInit] BettIR detected - using BettIR illuminators for GOL_OX3000", false, false, true] spawn OKS_fnc_LogDebug;
-        } else {
-            [] spawn OKS_fnc_IRIlluminator_Monitor;
-            ["[PostInit] BettIR not detected - using scripted illuminators for GOL_OX3000", false, false, true] spawn OKS_fnc_LogDebug;
+            ["[PostInit] BettIR detected - using BettIR beam lights with adjustable strength", false, false, true] spawn OKS_fnc_LogDebug;
+        };
+        
+        // IR Illuminator strength monitor (adjusts BettIR intensity or creates fallback lights)
+        [] spawn OKS_fnc_IRIlluminator_Monitor;
+        ["[PostInit] IR Illuminator strength monitor started", false, false, true] spawn OKS_fnc_LogDebug;
+        
+        // Initialize IR illuminator strength (persistent across respawns)
+        [] spawn {
+            waitUntil { sleep 0.25; !isNull player };
+            
+            // Load saved strength from profile or use default 1% (minimum)
+            private _savedStrength = profileNamespace getVariable ["GOL_IRIlluminator_Strength", 1];
+            player setVariable ["GOL_IRIlluminator_Strength", _savedStrength, true];
+            
+            // Add respawn handler to restore strength setting
+            player addEventHandler ["Respawn", {
+                params ["_unit", "_corpse"];
+                private _savedStrength = profileNamespace getVariable ["GOL_IRIlluminator_Strength", 1];
+                _unit setVariable ["GOL_IRIlluminator_Strength", _savedStrength, true];
+            }];
+            
+            if (missionNamespace getVariable ["GOL_IRIlluminator_Debug", false]) then {
+                systemChat format ["[IR Illuminator] Initialized strength at %1%%", _savedStrength];
+            };
         };
         
         [] spawn {

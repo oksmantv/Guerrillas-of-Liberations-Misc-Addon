@@ -257,6 +257,9 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\irilluminator";
 			class IRIlluminator_Monitor {};
 			class IRIlluminator_InitSettings {};
+			class IRIlluminator_AdjustStrength {};
+			class IRIlluminator_DebugTest {};
+			class IRIlluminator_WeaponIlluminatorOn {};
 		};
 		
 		class OKS_Suppression {
@@ -681,8 +684,8 @@ class CfgFunctions // Defines a function
 			class initItemContextMenu {};
 		};
 
-                class compat {
-                        file = "\OKS_GOL_Misc\functions\compat";
-                        class BettIR_AutoWeaponIlluminator {};
-                };        };
+		class compat {
+				file = "\OKS_GOL_Misc\functions\compat";
+				class BettIR_AutoWeaponIlluminator {};		};
+        };
 };

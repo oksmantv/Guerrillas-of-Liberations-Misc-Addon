@@ -38,6 +38,7 @@ class BettIR_Illuminator_NVG: Lamps_base_F {
 
 // Weapon-mounted illuminator - PATCHED FOR STRONGER FOCUSED BEAM
 // This is what GOL_OX3000 will use via auto-activation
+// Base class at 100% strength
 class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
     class Reflectors: Reflectors {
 		/*
@@ -70,11 +71,11 @@ class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
             // Enhanced from BettIR defaults - wider solid beam, extended range
             // Original: color {160,120,80}, inner 3, outer 15, intensity 35, quadratic 1, hardLimit 350
             color[] = {180, 130, 90};         // Brighter than original
-            innerAngle = 5;                   // Wider than original (3) - fills center
-            outerAngle = 15;                  // Wider spread for larger circle
-            coneFadeCoef = 5;                 // Softer edge - helps fill center
+            innerAngle = 3;                   // Smaller solid center for more gradient zone
+            outerAngle = 15;                  // Wider outer edge for smooth bleed
+            coneFadeCoef = 2;                 // Very soft edge - smooth transition (was 5)
             ambient[] = {0.1, 0.14, 0.1};     // Subtle ambient
-            intensity = 70;                  // 75% increase from 60
+            intensity = 60;                   // Reduced by 15% from 70 (100% strength)
             useFlare = 1;
             size = 1.3;
             flareSize = 0.6;
@@ -88,6 +89,57 @@ class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
                 hardLimitStart = 150;
                 hardLimitEnd = 200;           // 75% increase from 95m
             };
+        };
+    };
+};
+
+// Adjustable strength variants (1%, 1.5%, 2%, 2.5%, 3%)
+class BettIR_Illuminator_Weapon_1: BettIR_Illuminator_Weapon {
+    class Reflectors: Reflectors {
+        class Light_1: Light_1 {
+            intensity = 0.6;    // 1% of 60 - Low mode
+            size = 0.2;         // Minimal size for ultra-low bloom
+            ambient[] = {0.003, 0.003, 0.003};  // Ultra-minimal ambient
+        };
+    };
+};
+
+class BettIR_Illuminator_Weapon_1_5: BettIR_Illuminator_Weapon {
+    class Reflectors: Reflectors {
+        class Light_1: Light_1 {
+            intensity = 0.9;    // 1.5% of 60 - Medium mode
+            size = 0.25;        // Very small for minimal bloom
+            ambient[] = {0.005, 0.005, 0.005};  // Minimal ambient
+        };
+    };
+};
+
+class BettIR_Illuminator_Weapon_2: BettIR_Illuminator_Weapon {
+    class Reflectors: Reflectors {
+        class Light_1: Light_1 {
+            intensity = 1.2;    // 2% of 60 - High mode
+            size = 0.3;         // Small size
+            ambient[] = {0.007, 0.007, 0.007};  // Low ambient
+        };
+    };
+};
+
+class BettIR_Illuminator_Weapon_2_5: BettIR_Illuminator_Weapon {
+    class Reflectors: Reflectors {
+        class Light_1: Light_1 {
+            intensity = 1.5;    // 2.5% of 60 - Very High mode (extended)
+            size = 0.35;        // Small-medium size
+            ambient[] = {0.01, 0.01, 0.01};  // Low-medium ambient
+        };
+    };
+};
+
+class BettIR_Illuminator_Weapon_3: BettIR_Illuminator_Weapon {
+    class Reflectors: Reflectors {
+        class Light_1: Light_1 {
+            intensity = 1.8;    // 3% of 60 - Maximum mode (extended)
+            size = 0.4;         // Medium size
+            ambient[] = {0.012, 0.012, 0.012};  // Medium ambient
         };
     };
 };

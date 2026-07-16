@@ -7,7 +7,7 @@ class GOL_OX3000: ACE_DBAL_A3_Red {
     scope = 2;
     scopeArsenal = 2;
     displayName = "OX3000 (GOL)";
-    MRT_SwitchItemNextClass = "GOL_OX3000_FL";
+    MRT_SwitchItemNextClass = "GOL_OX3000_FL_Low";
     MRT_SwitchItemPrevClass = "GOL_OX3000_IP";
     MRT_SwitchItemHintText = "OX3000 IR Dual";
     baseWeapon = "GOL_OX3000";
@@ -28,8 +28,9 @@ class GOL_OX3000: ACE_DBAL_A3_Red {
 
 class GOL_OX3000_IP: GOL_OX3000 {
     scope = 1;
+    baseWeapon = "GOL_OX3000";
     MRT_SwitchItemNextClass = "GOL_OX3000";
-    MRT_SwitchItemPrevClass = "GOL_OX3000_II";
+    MRT_SwitchItemPrevClass = "GOL_OX3000_FL_Low";
     MRT_SwitchItemHintText = "OX3000 IR Pointer";
 
     class ItemInfo: InventoryFlashLightItem_Base_F {
@@ -43,9 +44,10 @@ class GOL_OX3000_IP: GOL_OX3000 {
 };
 
 class GOL_OX3000_II: GOL_OX3000 {
-    scope = 1;
-    MRT_SwitchItemNextClass = "GOL_OX3000_IP";
-    MRT_SwitchItemPrevClass = "GOL_OX3000_FL";
+    scope = 0;  // Hidden - removed from cycle, kept for compatibility
+    baseWeapon = "GOL_OX3000";
+    MRT_SwitchItemNextClass = "GOL_OX3000";
+    MRT_SwitchItemPrevClass = "GOL_OX3000";
     MRT_SwitchItemHintText = "OX3000 IR Illuminator";
 
     class ItemInfo: InventoryFlashLightItem_Base_F {
@@ -84,33 +86,71 @@ class GOL_OX3000_II: GOL_OX3000 {
     };
 };
 
+class GOL_OX3000_FL_Low: GOL_OX3000 {
+    scope = 1;
+    baseWeapon = "GOL_OX3000";
+    MRT_SwitchItemNextClass = "GOL_OX3000_IP";
+    MRT_SwitchItemPrevClass = "GOL_OX3000";
+    MRT_SwitchItemHintText = "OX3000 Flashlight (Low)";
+
+    class ItemInfo: InventoryFlashLightItem_Base_F {
+        class Flashlight {
+            color[] = {1, 1, 1};
+            ambient[] = {0.1, 0.1, 0.1};
+            size = 0.75;
+            innerAngle = 8;
+            outerAngle = 39;  // 30% narrower (was 55)
+            position = "laser pos";
+            direction = "laser dir";
+            useFlare = 0;
+            flareSize = 1.2;
+            flareMaxDistance = 180;
+            coneFadeCoef = 9;
+            intensity = 190;  // 50% of original 380
+            irLight = 0;
+            volumeShape = "a3\data_f\VolumeLightFlashlight.p3d";
+            scale[] = {0.3, 0.3, 0.85};  // 15% narrower width/length
+            class Attenuation {
+                constant = 0.05;
+                linear = 0.008;
+                quadratic = 0.0006;  // Increased for more natural falloff
+                start = 0.5;
+                hardLimitStart = 100;
+                hardLimitEnd = 180;
+            };
+        };
+        class Pointer {};
+    };
+};
+
 class GOL_OX3000_FL: GOL_OX3000 {
     scope = 1;
-    MRT_SwitchItemNextClass = "GOL_OX3000_II";
+    baseWeapon = "GOL_OX3000";
+    MRT_SwitchItemNextClass = "GOL_OX3000_FL_Low";
     MRT_SwitchItemPrevClass = "GOL_OX3000";
-    MRT_SwitchItemHintText = "OX3000 Flashlight";
+    MRT_SwitchItemHintText = "OX3000 Flashlight (High)";
 
     class ItemInfo: InventoryFlashLightItem_Base_F {
         class Flashlight {
             color[] = {1, 1, 1};
             ambient[] = {0.15, 0.15, 0.15};
-            size = 1;
+            size = 0.75;
             innerAngle = 8;
-            outerAngle = 60;
+            outerAngle = 42;  // 30% narrower (was 60)
             position = "laser pos";
             direction = "laser dir";
             useFlare = 0;
             flareSize = 1.4;
             flareMaxDistance = 250;
             coneFadeCoef = 7;
-            intensity = 825;
+            intensity = 413;  // 50% of original 825
             irLight = 0;
             volumeShape = "a3\data_f\VolumeLightFlashlight.p3d";
-            scale[] = {0.35, 0.35, 1};
+            scale[] = {0.3, 0.3, 0.85};  // 15% narrower width/length
             class Attenuation {
                 constant = 0.03;
                 linear = 0.005;
-                quadratic = 0.0003;
+                quadratic = 0.0005;  // Increased for more natural falloff
                 start = 0.5;
                 hardLimitStart = 135;
                 hardLimitEnd = 225;
@@ -125,19 +165,39 @@ class GOL_OX3000_FL: GOL_OX3000 {
 class GOL_OX3000_LR: GOL_OX3000 {
     scope = 1;
     scopeArsenal = 0;
+    baseWeapon = "GOL_OX3000";
+    MRT_SwitchItemNextClass = "GOL_OX3000_LR_FL";
+    MRT_SwitchItemPrevClass = "GOL_OX3000_LR_IP";
 };
 
 class GOL_OX3000_LR_IP: GOL_OX3000_IP {
     scope = 1;
     scopeArsenal = 0;
+    baseWeapon = "GOL_OX3000";
+    MRT_SwitchItemNextClass = "GOL_OX3000_LR";
+    MRT_SwitchItemPrevClass = "GOL_OX3000_LR_FL_Low";
 };
 
 class GOL_OX3000_LR_II: GOL_OX3000_II {
+    scope = 0;  // Hidden - removed from cycle
+    scopeArsenal = 0;
+    baseWeapon = "GOL_OX3000";
+    MRT_SwitchItemNextClass = "GOL_OX3000_LR";
+    MRT_SwitchItemPrevClass = "GOL_OX3000_LR";
+};
+
+class GOL_OX3000_LR_FL_Low: GOL_OX3000_FL_Low {
     scope = 1;
     scopeArsenal = 0;
+    baseWeapon = "GOL_OX3000";
+    MRT_SwitchItemNextClass = "GOL_OX3000_LR_IP";
+    MRT_SwitchItemPrevClass = "GOL_OX3000_LR_FL";
 };
 
 class GOL_OX3000_LR_FL: GOL_OX3000_FL {
     scope = 1;
     scopeArsenal = 0;
+    baseWeapon = "GOL_OX3000";
+    MRT_SwitchItemNextClass = "GOL_OX3000_LR_FL_Low";
+    MRT_SwitchItemPrevClass = "GOL_OX3000_LR";
 };
