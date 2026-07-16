@@ -11,7 +11,7 @@ class CfgWeapons {
 		modes[] = {"Single"};
 
 		class Single: Mode_SemiAuto {
-			displayName = "Parachute Flare";
+			displayName = "Illumination (White)";
 			burst = 1;
 			reloadTime = 2.0;
 			autoFire = 0;
@@ -35,7 +35,7 @@ class CfgWeapons {
 		modes[] = {"Single"};
 
 		class Single: Mode_SemiAuto {
-			displayName = "Parachute Flare (IR)";
+			displayName = "Illumination (IR)";
 			burst = 1;
 			reloadTime = 2.0;
 			autoFire = 0;

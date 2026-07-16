@@ -3,31 +3,77 @@ class CfgAmmo {
 	class F_40mm_White;
 	class GOL_40mm_Flare_Visible_CM: F_40mm_White {
 		displayName = "40mm Visible CM Flare (GOL)";
-		intensity = 150000;
-		brightness = 12;
+		intensity = 150000;     // 18.75× increase for proper ground illumination
+		brightness = 20;        // Increased from 12 for brighter area coverage
 		lightColor[] = {1.0, 0.95, 0.85, 1.0};
-		ambient[] = {3.2, 3.0, 2.5, 1.0};
+		ambient[] = {5.0, 4.5, 4.0, 1.0};  // Increased ambient light
 		flareSize = 10;
-		flareMaxDistance = 20000;
+		flareMaxDistance = 20000;  // Flare visible from 20km away
+		useFlare = 1;
 		coefGravity = 0.04;     // Slower drop for longer effective illumination
 		timeToLive = 160;       // Extended burn time for persistent illumination
+		
+		// Immediate parachute deployment
+		triggerTime = 0.01;     // Deploy parachute almost instantly
+		submunitionParentSpeedCoef = 0;  // No forward velocity inheritance from aircraft
+		
+		// Light attenuation for extended illumination range
+		class Attenuation {
+			start = 0;
+			constant = 0;
+			linear = 0;
+			quadratic = 0.0005;      // Very slow falloff for wide area illumination
+			hardLimitStart = 800;    // Starts fading at 800m
+			hardLimitEnd = 1500;     // Complete cutoff at 1200m
+		};
 	};
 
 	class GOL_40mm_Flare_ir_Subtle: ACE_40mm_Flare_ir {
 		displayName = "40mm IR Flare (GOL)";
-		intensity = 150000;
+		intensity = 8000;
+		brightness = 12;
 		nvgOnly = 1;         // NVG-only illumination (standard ACE IR behavior)
 		coefGravity = 0.04;  // Slower fall rate
 		timeToLive = 160;     // Longer burn time
 		flareSize = 10;
-		flareMaxDistance = 15000;	
+		flareMaxDistance = 500;  // Flare visible from 5km away
+		useFlare = 1;
+
+		// Immediate parachute deployment
+		triggerTime = 0.01;     // Deploy parachute almost instantly
+		submunitionParentSpeedCoef = 0;  // No forward velocity inheritance from aircraft
+		
+		// Light attenuation for extended IR illumination range
+		class Attenuation {
+			start = 0;
+			constant = 0;
+			linear = 0;
+			quadratic = 0.00015;      // Very slow falloff for wide area illumination
+			hardLimitStart = 800;    // Starts fading at 800m
+			hardLimitEnd = 1500;     // Complete cutoff at 1200m
+		};
 	};
 
 	class GOL_40mm_Flare_ir_UGL: ACE_40mm_Flare_ir {
 		displayName = "40mm IR Flare (GOL)";
+		intensity = 100000;     // High intensity for proper ground illumination
+		brightness = 20;        // Strong brightness for ambient lighting
 		nvgOnly = 1;         // NVG-only illumination (standard ACE IR behavior)
 		coefGravity = 0.05;  // Slower fall rate
+		flareSize = 0.1;
+		flareMaxDistance = 50;		
 		timeToLive = 90;     // Longer burn time
+
+		// Light attenuation: strong up to 200m, then fades to 500m
+		class Attenuation {
+			start = 0;
+			constant = 0;
+			linear = 0;
+			quadratic = 0.0005;      // Slow falloff for extended range
+			hardLimitStart = 200;    // Starts fading at 200m
+			hardLimitEnd = 500;      // Complete cutoff at 500m
+		};
+
 	};	
 
     class rhs_ammo_9k38;

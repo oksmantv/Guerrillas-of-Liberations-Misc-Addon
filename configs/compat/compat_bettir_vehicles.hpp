@@ -10,10 +10,10 @@ class BettIR_Illuminator_NVG: Lamps_base_F {
         class Light_1 {
             // Increased from default: color {70,40,60}, intensity 0.9, range 22m
             color[] = {100, 60, 80};          // Brighter pink/purple IR color
-            ambient[] = {0.08, 0.12, 0.08};   // Slightly more ambient
+            ambient[] = {0.8, 0.12, 0.08};   // Slightly more ambient
             intensity = 1.4;                  // +55% brightness (was 0.9)
             size = 1.2;                       // Slightly larger light
-            innerAngle = 25;                  // Same tight beam
+            innerAngle = 35;                  // Same tight beam
             outerAngle = 85;                  // Same wide spread
             coneFadeCoef = 4;                 // Same edge sharpness
             position = "Light_1_pos";
@@ -21,16 +21,16 @@ class BettIR_Illuminator_NVG: Lamps_base_F {
             hitpoint = "";
             selection = "";
             useFlare = 1;
-            flareSize = 0.15;                 // Slightly more visible flare
+            flareSize = 0.05;                 // Slightly more visible flare
             flareMaxDistance = 45;            // Flare visible further
             
             class Attenuation {
                 start = 0;
                 constant = 0;
                 linear = 0;
-                quadratic = 0.55;             // Slower falloff (was 1)
-                hardLimitStart = 20;          // Starts fading further out (was 8)
-                hardLimitEnd = 45;            // +59% range (was 22m)
+                quadratic = 0.40;             // Slower falloff (was 1)
+                hardLimitStart = 15;          // Starts fading further out (was 8)
+                hardLimitEnd = 55;            // +59% range (was 22m)
             };
         };
     };
@@ -41,39 +41,14 @@ class BettIR_Illuminator_NVG: Lamps_base_F {
 // Base class at 100% strength
 class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
     class Reflectors: Reflectors {
-		/*
-			Original Light
-
-			class Light_1: Light_1
-			{
-				color[] = {160,120,80};
-				innerAngle = 3;
-				outerAngle = 15;
-				coneFadeCoef = 6;
-				intensity = 35;
-				useFlare = 1;
-				flareSize = 0.6;
-				flareMaxDistance = 350;
-				class Attenuation: Attenuation
-				{
-					start = 0.85;
-					constant = 0;
-					linear = 0;
-					quadratic = 1;
-					hardLimitStart = 280;
-					hardLimitEnd = 350;
-				};
-			};
-
-		*/
 
         class Light_1: Light_1 {
             // Enhanced from BettIR defaults - wider solid beam, extended range
             // Original: color {160,120,80}, inner 3, outer 15, intensity 35, quadratic 1, hardLimit 350
             color[] = {180, 130, 90};         // Brighter than original
-            innerAngle = 3;                   // Smaller solid center for more gradient zone
+            innerAngle = 3.5;                   // Smaller solid center for more gradient zone
             outerAngle = 15;                  // Wider outer edge for smooth bleed
-            coneFadeCoef = 2;                 // Very soft edge - smooth transition (was 5)
+            coneFadeCoef = 1.5;                 // Very soft edge - smooth transition (was 5)
             ambient[] = {0.1, 0.14, 0.1};     // Subtle ambient
             intensity = 60;                   // Reduced by 15% from 70 (100% strength)
             useFlare = 1;
@@ -85,9 +60,9 @@ class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
                 start = 0.85;
                 constant = 0;
                 linear = 0;
-                quadratic = 0.05;             // Slower falloff for extended range
-                hardLimitStart = 150;
-                hardLimitEnd = 200;           // 75% increase from 95m
+                quadratic = 0.0015;             // Slower falloff for extended range
+                hardLimitStart = 15;
+                hardLimitEnd = 50;           // 75% increase from 95m
             };
         };
     };
@@ -100,6 +75,12 @@ class BettIR_Illuminator_Weapon_1: BettIR_Illuminator_Weapon {
             intensity = 0.6;    // 1% of 60 - Low mode
             size = 0.2;         // Minimal size for ultra-low bloom
             ambient[] = {0.003, 0.003, 0.003};  // Ultra-minimal ambient
+            
+            class Attenuation: Attenuation {
+                quadratic = 0.006;          // Very high falloff - CQB range only
+                hardLimitStart = 15;
+                hardLimitEnd = 30;          // Short range for stealth
+            };
         };
     };
 };
@@ -110,6 +91,12 @@ class BettIR_Illuminator_Weapon_1_5: BettIR_Illuminator_Weapon {
             intensity = 0.9;    // 1.5% of 60 - Medium mode
             size = 0.25;        // Very small for minimal bloom
             ambient[] = {0.005, 0.005, 0.005};  // Minimal ambient
+            
+            class Attenuation: Attenuation {
+                quadratic = 0.004;          // High falloff - short-medium range
+                hardLimitStart = 20;
+                hardLimitEnd = 35;
+            };
         };
     };
 };
@@ -120,6 +107,12 @@ class BettIR_Illuminator_Weapon_2: BettIR_Illuminator_Weapon {
             intensity = 1.2;    // 2% of 60 - High mode
             size = 0.3;         // Small size
             ambient[] = {0.007, 0.007, 0.007};  // Low ambient
+            
+            class Attenuation: Attenuation {
+                quadratic = 0.003;          // Medium falloff - medium range
+                hardLimitStart = 25;
+                hardLimitEnd = 40;
+            };
         };
     };
 };
@@ -130,6 +123,12 @@ class BettIR_Illuminator_Weapon_2_5: BettIR_Illuminator_Weapon {
             intensity = 1.5;    // 2.5% of 60 - Very High mode (extended)
             size = 0.35;        // Small-medium size
             ambient[] = {0.01, 0.01, 0.01};  // Low-medium ambient
+            
+            class Attenuation: Attenuation {
+                quadratic = 0.002;          // Medium-low falloff - extended range
+                hardLimitStart = 30;
+                hardLimitEnd = 45;
+            };
         };
     };
 };
@@ -137,9 +136,15 @@ class BettIR_Illuminator_Weapon_2_5: BettIR_Illuminator_Weapon {
 class BettIR_Illuminator_Weapon_3: BettIR_Illuminator_Weapon {
     class Reflectors: Reflectors {
         class Light_1: Light_1 {
-            intensity = 1.8;    // 3% of 60 - Maximum mode (extended)
-            size = 0.4;         // Medium size
-            ambient[] = {0.012, 0.012, 0.012};  // Medium ambient
+            intensity = 1.5;    // 2.5% of 60 - reduced from 1.8 to reduce bloom
+            size = 0.35;        // Reduced from 0.4 to reduce washout
+            ambient[] = {0.01, 0.01, 0.01};  // Reduced from 0.012
+            
+            class Attenuation: Attenuation {
+                quadratic = 0.0015;         // Low falloff - maximum range
+                hardLimitStart = 35;
+                hardLimitEnd = 50;
+            };
         };
     };
 };

@@ -91,7 +91,7 @@ class GOL_OX3000_FL_Low: GOL_OX3000 {
     baseWeapon = "GOL_OX3000";
     MRT_SwitchItemNextClass = "GOL_OX3000_IP";
     MRT_SwitchItemPrevClass = "GOL_OX3000";
-    MRT_SwitchItemHintText = "OX3000 Flashlight (Low)";
+    MRT_SwitchItemHintText = "OX3000 Flashlight";
 
     class ItemInfo: InventoryFlashLightItem_Base_F {
         class Flashlight {
@@ -124,7 +124,7 @@ class GOL_OX3000_FL_Low: GOL_OX3000 {
 };
 
 class GOL_OX3000_FL: GOL_OX3000 {
-    scope = 1;
+    scope = 0;  // Hidden - removed from cycle
     baseWeapon = "GOL_OX3000";
     MRT_SwitchItemNextClass = "GOL_OX3000_FL_Low";
     MRT_SwitchItemPrevClass = "GOL_OX3000";
@@ -166,7 +166,7 @@ class GOL_OX3000_LR: GOL_OX3000 {
     scope = 1;
     scopeArsenal = 0;
     baseWeapon = "GOL_OX3000";
-    MRT_SwitchItemNextClass = "GOL_OX3000_LR_FL";
+    MRT_SwitchItemNextClass = "GOL_OX3000_LR_FL_Low";
     MRT_SwitchItemPrevClass = "GOL_OX3000_LR_IP";
 };
 
@@ -190,12 +190,12 @@ class GOL_OX3000_LR_FL_Low: GOL_OX3000_FL_Low {
     scope = 1;
     scopeArsenal = 0;
     baseWeapon = "GOL_OX3000";
-    MRT_SwitchItemNextClass = "GOL_OX3000_LR_IP";
+    MRT_SwitchItemNextClass = "GOL_OX3000_LR";
     MRT_SwitchItemPrevClass = "GOL_OX3000_LR_FL";
 };
 
 class GOL_OX3000_LR_FL: GOL_OX3000_FL {
-    scope = 1;
+    scope = 0;  // Hidden - removed from cycle
     scopeArsenal = 0;
     baseWeapon = "GOL_OX3000";
     MRT_SwitchItemNextClass = "GOL_OX3000_LR_FL_Low";

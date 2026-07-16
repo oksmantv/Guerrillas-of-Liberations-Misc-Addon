@@ -48,9 +48,9 @@ if (_debugEnabled) then {
 // Strength levels with descriptive names (conditionally add extended levels)
 private _extendedEnabled = missionNamespace getVariable ["GOL_IRIlluminator_ExtendedStrength", false];
 private _strengthLevels = if (_extendedEnabled) then {
-    [1, 2, 2.5, 3, 4]  // Extended levels for dark/stealth missions
+    [1, 1.5, 2, 2.5, 3]  // Extended levels for dark/stealth missions
 } else {
-    [1, 2, 2.5]  // Standard levels
+    [1, 1.5, 2]  // Standard levels
 };
 private _strengthNames = if (_extendedEnabled) then {
     ["Low", "Medium", "High", "Very High", "Maximum"]

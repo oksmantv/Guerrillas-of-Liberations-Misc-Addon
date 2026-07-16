@@ -73,5 +73,34 @@ if(GOL_Core_Enabled isEqualTo true) then {
             [] call OKS_fnc_Stealth_Init;
             [] spawn OKS_fnc_Stealth_AutoEnable;
         };
+
+        /*
+            Flare Altitude Failsafe - Delete flares below 50m AGL to prevent ground clutter
+        */
+        ["GOL_40mm_Flare_Visible_CM", "init", {
+            params ["_projectile"];
+            [_projectile] spawn {
+                params ["_flare"];
+                while {!isNull _flare && alive _flare} do {
+                    if ((getPosATL _flare select 2) < 50) exitWith {
+                        deleteVehicle _flare;
+                    };
+                    sleep 5;
+                };
+            };
+        }, true, [], true] call CBA_fnc_addClassEventHandler;
+
+        ["GOL_40mm_Flare_ir_Subtle", "init", {
+            params ["_projectile"];
+            [_projectile] spawn {
+                params ["_flare"];
+                while {!isNull _flare && alive _flare} do {
+                    if ((getPosATL _flare select 2) < 50) exitWith {
+                        deleteVehicle _flare;
+                    };
+                    sleep 5;
+                };
+            };
+        }, true, [], true] call CBA_fnc_addClassEventHandler;
     };  
 };
