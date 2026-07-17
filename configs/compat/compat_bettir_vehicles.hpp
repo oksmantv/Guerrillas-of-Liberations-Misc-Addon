@@ -45,11 +45,15 @@ class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
         class Light_1: Light_1 {
             // Enhanced from BettIR defaults - wider solid beam, extended range
             // Original: color {160,120,80}, inner 3, outer 15, intensity 35, quadratic 1, hardLimit 350
-            color[] = {180, 130, 90};         // Brighter than original
+            
+            // V1: Updated to soft greenish IR for smoother appearance (2026-07-16)
+            // Original: color {180, 130, 90} (warm orange), ambient {0.1, 0.14, 0.1}
+            color[] = {100, 160, 100};        // Soft greenish IR glow (matches flare appearance)
+            ambient[] = {0.15, 0.25, 0.15};   // Higher ambient for softer shadows
+            
             innerAngle = 3.5;                   // Smaller solid center for more gradient zone
             outerAngle = 15;                  // Wider outer edge for smooth bleed
             coneFadeCoef = 1.5;                 // Very soft edge - smooth transition (was 5)
-            ambient[] = {0.1, 0.14, 0.1};     // Subtle ambient
             intensity = 60;                   // Reduced by 15% from 70 (100% strength)
             useFlare = 1;
             size = 1.3;

@@ -3,7 +3,7 @@ class CfgAmmo {
 	class F_40mm_White;
 	class GOL_40mm_Flare_White_air: F_40mm_White {
 		displayName = "Aircraft White Flare (GOL)";
-		intensity = 6000;     // 18.75× increase for proper ground illumination
+		intensity = 5000;     // 18.75× increase for proper ground illumination
 		brightness = 4;        // Increased from 12 for brighter area coverage
 		lightColor[] = {1.0, 0.95, 0.85, 1.0};
 		ambient[] = {5.0, 4.5, 4.0, 1.0};  // Increased ambient light
@@ -30,7 +30,7 @@ class CfgAmmo {
 
 	class GOL_40mm_Flare_ir_air: ACE_40mm_Flare_ir {
 		displayName = "Aircraft IR Flare (GOL)";
-		intensity = 4000;
+		intensity = 5000;
 		brightness = 6;
 		nvgOnly = 1;         // NVG-only illumination (standard ACE IR behavior)
 		coefGravity = 0.04;  // Slower fall rate
@@ -38,6 +38,11 @@ class CfgAmmo {
 		flareSize = 10;
 		flareMaxDistance = 500;  // Flare visible from 5km away
 		useFlare = 1;
+		
+		// V1: Added lightColor and ambient for smoother IR illumination (2026-07-16)
+		// Original: no lightColor/ambient defined (inherited from ACE base)
+		lightColor[] = {0.5, 0.8, 0.5, 1.0};  // Soft greenish IR glow
+		ambient[] = {0.15, 0.25, 0.15, 1.0};  // Ambient contribution for softer shadows
 
 		// Immediate parachute deployment
 		triggerTime = 0.01;     // Deploy parachute almost instantly
@@ -63,6 +68,11 @@ class CfgAmmo {
 		flareSize = 0.1;
 		flareMaxDistance = 50;		
 		timeToLive = 90;     // Longer burn time
+		
+		// V1: Added lightColor and ambient for smoother IR illumination (2026-07-16)
+		// Original: no lightColor/ambient defined (inherited from ACE base)
+		lightColor[] = {0.5, 0.8, 0.5, 1.0};  // Soft greenish IR glow
+		ambient[] = {0.15, 0.25, 0.15, 1.0};  // Ambient contribution for softer shadows
 
 		// Light attenuation: strong up to 200m, then fades to 500m
 		class Attenuation {
@@ -70,8 +80,8 @@ class CfgAmmo {
 			constant = 0;
 			linear = 0;
 			quadratic = 0.00045;      // Slow falloff for extended range
-			hardLimitStart = 350;    // Starts fading at 200m
-			hardLimitEnd = 750;      // Complete cutoff at 500m
+			hardLimitStart = 250;    // Starts fading at 200m
+			hardLimitEnd = 650;      // Complete cutoff at 500m
 		};
 	};	
 
@@ -91,7 +101,7 @@ class CfgAmmo {
 			linear = 0;
 			quadratic = 0.00045;      // Slow falloff for extended range
 			hardLimitStart = 250;    // Starts fading at 200m
-			hardLimitEnd = 550;      // Complete cutoff at 500m
+			hardLimitEnd = 450;      // Complete cutoff at 500m
 		};
 	};		
 
