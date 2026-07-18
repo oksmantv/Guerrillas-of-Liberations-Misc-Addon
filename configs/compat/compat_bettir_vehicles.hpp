@@ -38,7 +38,7 @@ class BettIR_Illuminator_NVG: Lamps_base_F {
 
 // Weapon-mounted illuminator - PATCHED FOR STRONGER FOCUSED BEAM
 // This is what GOL_OX3000 will use via auto-activation
-// Base class at 100% strength
+// Base class at LOWEST strength (1%) - BettIR's default keybind uses this
 class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
     class Reflectors: Reflectors {
 
@@ -49,14 +49,14 @@ class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
             // V1: Updated to soft greenish IR for smoother appearance (2026-07-16)
             // Original: color {180, 130, 90} (warm orange), ambient {0.1, 0.14, 0.1}
             color[] = {100, 160, 100};        // Soft greenish IR glow (matches flare appearance)
-            ambient[] = {0.15, 0.25, 0.15};   // Higher ambient for softer shadows
+            ambient[] = {0.003, 0.003, 0.003};  // Ultra-minimal ambient (1% strength)
             
             innerAngle = 3.5;                   // Smaller solid center for more gradient zone
             outerAngle = 15;                  // Wider outer edge for smooth bleed
             coneFadeCoef = 1.5;                 // Very soft edge - smooth transition (was 5)
-            intensity = 60;                   // Reduced by 15% from 70 (100% strength)
+            intensity = 0.6;                  // 1% strength - Low mode (default for BettIR keybind)
             useFlare = 1;
-            size = 1.3;
+            size = 0.2;                       // Minimal size for ultra-low bloom
             flareSize = 0.6;
             flareMaxDistance = 200;
             
@@ -64,9 +64,9 @@ class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
                 start = 0.85;
                 constant = 0;
                 linear = 0;
-                quadratic = 0.0015;             // Slower falloff for extended range
+                quadratic = 0.006;              // Very high falloff - CQB range only
                 hardLimitStart = 15;
-                hardLimitEnd = 50;           // 75% increase from 95m
+                hardLimitEnd = 30;              // Short range for stealth (1% strength)
             };
         };
     };

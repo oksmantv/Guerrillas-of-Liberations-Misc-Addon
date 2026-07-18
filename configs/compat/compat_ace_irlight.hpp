@@ -44,7 +44,7 @@ class GOL_OX3000_IP: GOL_OX3000 {
 };
 
 class GOL_OX3000_II: GOL_OX3000 {
-    scope = 0;  // Hidden - removed from cycle, kept for compatibility
+    scope = 1;  // Hidden but valid (not in cycle - prevents config errors)
     baseWeapon = "GOL_OX3000";
     MRT_SwitchItemNextClass = "GOL_OX3000";
     MRT_SwitchItemPrevClass = "GOL_OX3000";
@@ -124,7 +124,7 @@ class GOL_OX3000_FL_Low: GOL_OX3000 {
 };
 
 class GOL_OX3000_FL: GOL_OX3000 {
-    scope = 0;  // Hidden - removed from cycle
+    scope = 1;  // Hidden from arsenal but valid for compatibility (prevents config errors)
     baseWeapon = "GOL_OX3000";
     MRT_SwitchItemNextClass = "GOL_OX3000_FL_Low";
     MRT_SwitchItemPrevClass = "GOL_OX3000";
@@ -179,7 +179,7 @@ class GOL_OX3000_LR_IP: GOL_OX3000_IP {
 };
 
 class GOL_OX3000_LR_II: GOL_OX3000_II {
-    scope = 0;  // Hidden - removed from cycle
+    scope = 1;  // Hidden but valid for compatibility (prevents config errors)
     scopeArsenal = 0;
     baseWeapon = "GOL_OX3000";
     MRT_SwitchItemNextClass = "GOL_OX3000_LR";
@@ -190,12 +190,12 @@ class GOL_OX3000_LR_FL_Low: GOL_OX3000_FL_Low {
     scope = 1;
     scopeArsenal = 0;
     baseWeapon = "GOL_OX3000";
-    MRT_SwitchItemNextClass = "GOL_OX3000_LR";
-    MRT_SwitchItemPrevClass = "GOL_OX3000_LR_FL";
+    MRT_SwitchItemNextClass = "GOL_OX3000_LR_IP";
+    MRT_SwitchItemPrevClass = "GOL_OX3000_LR";
 };
 
 class GOL_OX3000_LR_FL: GOL_OX3000_FL {
-    scope = 0;  // Hidden - removed from cycle
+    scope = 1;  // Hidden but valid for compatibility (prevents config errors)
     scopeArsenal = 0;
     baseWeapon = "GOL_OX3000";
     MRT_SwitchItemNextClass = "GOL_OX3000_LR_FL_Low";
