@@ -172,6 +172,36 @@ if(GOL_Core_Enabled isEqualTo true) then {
         };
     }, true, [], true] call CBA_fnc_addClassEventHandler;
 
+    // M6 Mortar auto-reload from nearby containers
+    ["StaticWeapon", "Fired", {
+        params ["_vehicle"];
+        
+        if (typeOf _vehicle == "UK3CB_BAF_Static_M6") then {
+            _this call OKS_fnc_M6_Auto_Reload_Handler;
+        };
+    }, true, [], true] call CBA_fnc_addClassEventHandler;
+
+    // M6 Mortar flare altitude deployment system
+    ["StaticWeapon", "Fired", {
+        params ["_vehicle", "_weapon", "_muzzle", "_mode", "_ammoType"];
+        
+        if (typeOf _vehicle == "UK3CB_BAF_Static_M6" && {_ammoType == "OKS_60mm_Flare_Dummy"}) then {
+            _this call OKS_fnc_M6_Flare_Altitude_Deploy;
+        };
+    }, true, [], true] call CBA_fnc_addClassEventHandler;
+
+    // M6 Mortar - Add unpack actions when player enters
+    ["UK3CB_BAF_Static_M6", "GetIn", {
+        params ["_vehicle", "_role", "_unit"];
+        [_unit] call OKS_fnc_M6_Add_Unpack_Actions;
+    }] call CBA_fnc_addClassEventHandler;
+
+    // M6 Mortar - Remove unpack actions when player exits
+    ["UK3CB_BAF_Static_M6", "GetOut", {
+        params ["_vehicle", "_role", "_unit"];
+        [_unit] call OKS_fnc_M6_Remove_Unpack_Actions;
+    }] call CBA_fnc_addClassEventHandler;
+
     /*
         Add code to spawned units.
     */

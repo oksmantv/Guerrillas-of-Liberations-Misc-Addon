@@ -1,6 +1,67 @@
 class CfgAmmo {
 	class ACE_40mm_Flare_ir;
 	class F_40mm_White;
+	class Flare_82mm_AMOS_White;
+	class Sh_82mm_AMOS;
+	
+	// Actual illumination flare - spawned by script at 150-200m altitude
+	class OKS_60mm_Flare_Spawned : F_40mm_White {
+		timeToLive = 120;
+		intensity = 8400;
+		brightness = 2;
+		coefGravity = 0.0625;
+		flareSize = 10;
+		flareMaxDistance = 1500;
+		
+		// Immediate deployment - already at correct altitude when spawned
+		triggerTime = 0.1;
+		triggerSpeedCoef = 1;
+		
+		class Attenuation {
+			start = 0;
+			constant = 0;
+			linear = 0;
+			quadratic = 0.0012;
+			hardLimitStart = 300;
+			hardLimitEnd = 600;
+		};
+	};
+	
+	// Dummy ballistic carrier - flies like normal mortar shell, no explosion
+	// Script tracks altitude and spawns white or IR flare at 150-200m AGL based on GOL_IRFlaresEnabled
+	class OKS_60mm_Flare_Dummy : Sh_82mm_AMOS {
+		hit = 0;
+		indirectHit = 0;
+		explosionEffects = "";
+		CraterEffects = "";
+		soundHit[] = {"", 0, 1};
+		model = "\A3\weapons_f\empty.p3d";
+	};
+	
+	// IR illumination flare - spawned by script when GOL_IRFlaresEnabled is true
+	class OKS_60mm_Flare_IR_Spawned : ACE_40mm_Flare_ir {
+		timeToLive = 120;
+		intensity = 8400;
+		brightness = 2;
+		coefGravity = 0.0625;
+		flareSize = 10;
+		flareMaxDistance = 1500;
+		nvgOnly = 1;
+		
+		// Immediate deployment - already at correct altitude when spawned
+		triggerTime = 0.1;
+		triggerSpeedCoef = 1;
+		
+		class Attenuation {
+			start = 0;
+			constant = 0;
+			linear = 0;
+			quadratic = 0.0012;
+			hardLimitStart = 300;
+			hardLimitEnd = 600;
+		};
+	};
+	
 	class GOL_40mm_Flare_White_air: F_40mm_White {
 		displayName = "Aircraft White Flare (GOL)";
 		intensity = 5000;     // 18.75× increase for proper ground illumination
@@ -10,7 +71,7 @@ class CfgAmmo {
 		flareSize = 10;
 		flareMaxDistance = 20000;  // Flare visible from 20km away
 		useFlare = 1;
-		coefGravity = 0.04;     // Slower drop for longer effective illumination
+		coefGravity = 0.05;     // 25% more gravity (0.04 * 1.25)
 		timeToLive = 160;       // Extended burn time for persistent illumination
 		
 		// Immediate parachute deployment
@@ -33,7 +94,7 @@ class CfgAmmo {
 		intensity = 5000;
 		brightness = 6;
 		nvgOnly = 1;         // NVG-only illumination (standard ACE IR behavior)
-		coefGravity = 0.04;  // Slower fall rate
+		coefGravity = 0.05;  // 25% more gravity (0.04 * 1.25)
 		timeToLive = 160;     // Longer burn time
 		flareSize = 10;
 		flareMaxDistance = 500;  // Flare visible from 5km away
@@ -61,10 +122,10 @@ class CfgAmmo {
 
 	class GOL_40mm_Flare_ir_UGL: ACE_40mm_Flare_ir {
 		displayName = "IR Illumination Flare (GOL)";
-		intensity = 3000;     // High intensity for proper ground illumination
-		brightness = 3;        // Strong brightness for ambient lighting
+		intensity = 900;          // Reduced for less intense center
+		brightness = 0.75;        // Reduced for softer NVG bloom
 		nvgOnly = 1;         // NVG-only illumination (standard ACE IR behavior)
-		coefGravity = 0.05;  // Slower fall rate
+		coefGravity = 0.0625;  // 25% more gravity (0.05 * 1.25)
 		flareSize = 0.1;
 		flareMaxDistance = 50;		
 		timeToLive = 90;     // Longer burn time
@@ -74,34 +135,34 @@ class CfgAmmo {
 		lightColor[] = {0.5, 0.8, 0.5, 1.0};  // Soft greenish IR glow
 		ambient[] = {0.15, 0.25, 0.15, 1.0};  // Ambient contribution for softer shadows
 
-		// Light attenuation: strong up to 200m, then fades to 500m
+		// Light attenuation: slower falloff for extended range
 		class Attenuation {
 			start = 0;
 			constant = 0;
 			linear = 0;
-			quadratic = 0.00045;      // Slow falloff for extended range
-			hardLimitStart = 250;    // Starts fading at 200m
-			hardLimitEnd = 650;      // Complete cutoff at 500m
+			quadratic = 0.0003;       // Slower falloff to maintain range
+			hardLimitStart = 300;     // Extended bright zone
+			hardLimitEnd = 650;       // Extended max range
 		};
 	};	
 
 	class GOL_40mm_Flare_White_UGL: F_40mm_White {
 		displayName = "White Illumination Flare (GOL)";
-		intensity = 4000;     // High intensity for proper ground illumination
-		brightness = 5;        // Strong brightness for ambient lighting
-		coefGravity = 0.05;  // Slower fall rate
+		intensity = 1200;         // Reduced for less intense center
+		brightness = 1.5;         // Reduced for softer overall lighting
+		coefGravity = 0.0625;  // 25% more gravity (0.05 * 1.25)
 		flareSize = 0.1;
 		flareMaxDistance = 50;		
 		timeToLive = 90;     // Longer burn time
 
-		// Light attenuation: strong up to 200m, then fades to 500m
+		// Light attenuation: slower falloff for extended range
 		class Attenuation {
 			start = 0;
 			constant = 0;
 			linear = 0;
-			quadratic = 0.00045;      // Slow falloff for extended range
-			hardLimitStart = 250;    // Starts fading at 200m
-			hardLimitEnd = 450;      // Complete cutoff at 500m
+			quadratic = 0.0003;       // Slower falloff to maintain range
+			hardLimitStart = 300;     // Extended bright zone
+			hardLimitEnd = 500;       // Extended max range
 		};
 	};		
 

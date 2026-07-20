@@ -10,7 +10,7 @@
 		"Special Intel",														// Custom Header (Text when opening intel on map, nil for "Intel #X")
 		nil,																	// Custom Details (Text inserted as %2 in Custom Text, "" for none)
 		nil,																	// Enable Intel Task Complete (true/false)
-		["marker1","marker2"],													// Turn Markers from Array to (Visibility 0 on start) and when completed (Visibility 1)
+		["marker1","marker2"],													// Turn Markers from Array or String to (Visibility 0 on start) and when completed (Visibility 1)
 		false,																	// Show Task Position on map when ASSIGNED (false = no map marker until task completes)
 		"Download Harddrive"													// Custom ACE interact action title ("" or omit for default "Search for Intel")
 	] spawn OKS_fnc_SetupIntel;
@@ -35,7 +35,7 @@ Params [
 	["_CustomHeader",nil, [""]],
 	["_CustomDetails","", [""]],
 	["_EnableIntelTaskComplete",true, [false]],
-	["_MarkerArray",[""],[[]]],
+	["_MarkerArray",[""],[[],""]],
 	["_ShowTaskPosition",true,[false]],
 	["_CustomActionTitle","Search for Intel",[""]]
 
@@ -47,9 +47,20 @@ if(!isServer) exitWith {
 
 Private _AssetText = "";
 Private _AssetList = "";
-{
-	_X setMarkerAlpha 0;
-} foreach _MarkerArray;
+
+if(typename _MarkerArray == "ARRAY") then {
+	{
+		_X setMarkerAlpha 0;
+	} foreach _MarkerArray;
+};
+if(typename _MarkerArray == "STRING") then {
+	_MarkerArray setMarkerAlpha 0;
+};
+if(!(typeName _MarkerArray in ["STRING","ARRAY"])) then {
+	// Invalid types
+	format ["[SetupIntel] ERROR: Invalid _MarkerArray type %1. Must be STRING or ARRAY.", typeName _MarkerArray] spawn OKS_fnc_LogDebug;
+};
+
 
 _AllIntel = missionNamespace getVariable ["GOL_IntelPieces",[]];
 _AllIntel pushBack _IntelPiece;
@@ -352,9 +363,14 @@ if(_EnableIntelTaskComplete) then {
 	] call BIS_fnc_taskCreate;
 
 	if (_TaskSucceeded) then {
-		{
-			_X setMarkerAlpha 1;
-		} forEach _MarkerArray;
+		if(typename _MarkerArray == "ARRAY") then {
+			{
+				_X setMarkerAlpha 1;
+			} foreach _MarkerArray;
+		};
+		if(typename _MarkerArray == "STRING") then {
+			_MarkerArray setMarkerAlpha 1;
+		};
 
 		if(!isNil "_Target" && {(_Target isEqualType objNull && {!isNull _Target}) || (_Target isEqualType [] && {count _Target > 0})}) then {
 			// Clean up any existing intel pieces with the same target to prevent duplicates.

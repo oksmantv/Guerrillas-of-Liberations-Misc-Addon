@@ -26,6 +26,7 @@ private _attachForGroup = {
     if (isNull _group) exitWith {};
     if (side _group in [civilian, sideLogic, sideUnknown]) exitWith {};
     if ({ alive _x } count units _group == 0) exitWith {};
+    if ({ isPlayer _x } count units _group > 0) exitWith {}; // Never apply to player groups
     if !(missionNamespace getVariable ["GOL_Stealth_Enabled", false]) exitWith {};
 
     private _patrolEnabled = missionNamespace getVariable ["GOL_Stealth_AutoEnablePatrols", false];

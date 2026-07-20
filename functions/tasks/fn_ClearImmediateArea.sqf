@@ -2,8 +2,8 @@
 /*
  	Add clear task to clear an area
 
-	[house_1,"EAST",nil,45,"Clear Area","attack"] spawn OKS_fnc_ClearImmediateArea;
-	[house_1,"EAST",nil,15,"Clear Building","kill"] spawn OKS_fnc_ClearImmediateArea;
+	_TaskId = [house_1,"EAST",nil,45,"Clear Area","attack"] call OKS_fnc_ClearImmediateArea;
+	_TaskId = [house_1,"EAST",nil,15,"Clear Building","kill"] call OKS_fnc_ClearImmediateArea;
 */
 
 if(!isServer) exitWith {};
@@ -55,12 +55,18 @@ _TaskInfo = [
 	_TaskIcon
 ] call BIS_fnc_taskCreate;
 
-_trigger = createTrigger ["EmptyDetector", getPos _target];
-_trigger setTriggerArea [_Range, _Range, 0, true];
-_trigger setTriggerActivation [_Side, "PRESENT", true];
-_trigger setTriggerStatements ["this", "", ""];
+[_target,_Range,_Side,_TaskId] spawn {
 
-waitUntil {sleep 1; triggerActivated _trigger};
-waitUntil {sleep 1; {Alive _Target || [_X] call ace_common_fnc_isAwake} count list _trigger == 0};
-_Target setVariable ["ObjectiveComplete",true,true];
-[_TaskId,"SUCCEEDED",true] call BIS_fnc_taskSetState;
+	params ["_Target","_Range","_Side","_TaskId"];
+	_trigger = createTrigger ["EmptyDetector", getPos _target];
+	_trigger setTriggerArea [_Range, _Range, 0, true];
+	_trigger setTriggerActivation [_Side, "PRESENT", true];
+	_trigger setTriggerStatements ["this", "", ""];
+
+	waitUntil {sleep 1; triggerActivated _trigger};
+	waitUntil {sleep 1; {Alive _Target || [_X] call ace_common_fnc_isAwake} count list _trigger == 0};
+	_Target setVariable ["ObjectiveComplete",true,true];
+	[_TaskId,"SUCCEEDED",true] call BIS_fnc_taskSetState;
+};
+
+_TaskId;

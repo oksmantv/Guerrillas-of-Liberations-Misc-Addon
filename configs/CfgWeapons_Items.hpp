@@ -142,7 +142,7 @@ class GOL_Packed_60mm_HE: ACE_ItemCore {
 	picture = "\OKS_GOL_Misc\Data\UI\60mm_HE.paa";
 	model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 	class ItemInfo: CBA_MiscItem_ItemInfo {
-		mass = 10;
+		mass = 15;
 	};
 };
 class GOL_Packed_60mm_HEAB: ACE_ItemCore {
@@ -155,10 +155,10 @@ class GOL_Packed_60mm_HEAB: ACE_ItemCore {
 	picture = "\OKS_GOL_Misc\Data\UI\60mm_HEAB.paa";
 	model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 	class ItemInfo: CBA_MiscItem_ItemInfo {
-		mass = 10;
+		mass = 15;
 	};
 };
-class GOL_Packed_60mm_FLARE: ACE_ItemCore {
+class GOL_Packed_60mm_Flare: ACE_ItemCore {
 	scope = 2;
 	author = "OksmanTV from Guerrillas of Liberation";		
 	displayName = "M6 60mm Flare (Packed)";
@@ -168,7 +168,7 @@ class GOL_Packed_60mm_FLARE: ACE_ItemCore {
 	picture = "\OKS_GOL_Misc\Data\UI\60mm_Flare.paa";
 	model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
 	class ItemInfo: CBA_MiscItem_ItemInfo {
-		mass = 10;
+		mass = 15;
 	};
 };
 class GOL_Packed_60mm_Smoke: ACE_ItemCore {

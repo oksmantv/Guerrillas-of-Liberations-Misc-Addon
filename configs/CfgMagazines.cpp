@@ -1,5 +1,29 @@
 class CfgMagazines {
     class UGL_FlareWhite_F;
+    class UK3CB_BAF_1Rnd_81mm_Mo_Flare_White;
+    class UK3CB_BAF_1Rnd_81mm_Mo_Shells;
+    class UK3CB_BAF_1Rnd_81mm_Mo_AB_Shells;
+    class UK3CB_BAF_1Rnd_81mm_Mo_Smoke_White;
+    
+    // UK3CB 60mm flare - fires dummy ballistic carrier that deploys flare at altitude
+    class UK3CB_BAF_1Rnd_60mm_Mo_Flare_White : UK3CB_BAF_1Rnd_81mm_Mo_Flare_White {
+        ammo = "OKS_60mm_Flare_Dummy";  // Fire dummy carrier, spawns white or IR based on GOL_IRFlaresEnabled
+        mass = 10;
+    };
+    
+    // Weight reduction for all UK3CB 60mm mortar rounds (50% of vanilla 82mm mass of 80)
+    class UK3CB_BAF_1Rnd_60mm_Mo_Shells : UK3CB_BAF_1Rnd_81mm_Mo_Shells {
+        mass = 10;
+    };
+    
+    class UK3CB_BAF_1Rnd_60mm_Mo_AB_Shells : UK3CB_BAF_1Rnd_81mm_Mo_AB_Shells {
+        mass = 10;
+    };
+    
+    class UK3CB_BAF_1Rnd_60mm_Mo_Smoke_White : UK3CB_BAF_1Rnd_81mm_Mo_Smoke_White {
+        mass = 10;
+    };
+    
     class GOL_1Rnd_UGL_FlareIR: UGL_FlareWhite_F {
         scope = 2;
         scopeArsenal = 2;

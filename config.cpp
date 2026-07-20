@@ -49,7 +49,7 @@ class CfgPatches
 			"GOL_Packed_Drone_Supply",
 			"GOL_Packed_60mm_HE",
 			"GOL_Packed_60mm_HEAB",
-			"GOL_Packed_60mm_FLARE",
+			"GOL_Packed_60mm_Flare",
 			"GOL_Packed_60mm_Smoke",
             "GOL_ResupplyStation_WEST",
             "GOL_ResupplyStation_WEST_Small",

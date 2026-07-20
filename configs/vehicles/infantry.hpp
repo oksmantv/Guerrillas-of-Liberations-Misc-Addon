@@ -60,15 +60,15 @@
 
 				class Unpack_60mm_HE {
 					displayName = "Unpack 60mm HE";
-					condition = "('GOL_Packed_60mm_HE' in (itemsWithMagazines _player)) && vehicle _player == _player";
+					condition = "('GOL_Packed_60mm_HE' in (itemsWithMagazines _player)) && (vehicle _player == _player) && ((loadBackpack _player + 4 * (getNumber (configFile >> 'CfgMagazines' >> 'UK3CB_BAF_1Rnd_60mm_Mo_Shells' >> 'mass'))) <= (getContainerMaxLoad (backpack _player)))";
 					exceptions[] = {};
 					statement = "[_player] call OKS_fnc_Unpack_60mm_HE_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\60mm_HE.paa";
 				};
-				
+
 				class Unpack_60mm_HEAB {
 					displayName = "Unpack 60mm HEAB";
-					condition = "('GOL_Packed_60mm_HEAB' in (itemsWithMagazines _player)) && vehicle _player == _player";
+					condition = "('GOL_Packed_60mm_HEAB' in (itemsWithMagazines _player)) && (vehicle _player == _player) && ((loadBackpack _player + 4 * (getNumber (configFile >> 'CfgMagazines' >> 'UK3CB_BAF_1Rnd_60mm_Mo_AB_Shells' >> 'mass'))) <= (getContainerMaxLoad (backpack _player)))";
 					exceptions[] = {};
 					statement = "[_player] call OKS_fnc_Unpack_60mm_HEAB_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\60mm_HEAB.paa";
@@ -76,7 +76,7 @@
 
 				class Unpack_60mm_Smoke {
 					displayName = "Unpack 60mm Smoke";
-					condition = "('GOL_Packed_60mm_Smoke' in (itemsWithMagazines _player)) && vehicle _player == _player";
+					condition = "('GOL_Packed_60mm_Smoke' in (itemsWithMagazines _player)) && (vehicle _player == _player) && ((loadBackpack _player + 4 * (getNumber (configFile >> 'CfgMagazines' >> 'UK3CB_BAF_1Rnd_60mm_Mo_Smoke_White' >> 'mass'))) <= (getContainerMaxLoad (backpack _player)))";
 					exceptions[] = {};
 					statement = "[_player] call OKS_fnc_Unpack_60mm_Smoke_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\60mm_Smoke.paa";
@@ -84,12 +84,11 @@
 
 				class Unpack_60mm_Flare {
 					displayName = "Unpack 60mm Flare";
-					condition = "('GOL_Packed_60mm_Flare' in (itemsWithMagazines _player)) && vehicle _player == _player";
+					condition = "('GOL_Packed_60mm_Flare' in (itemsWithMagazines _player)) && (vehicle _player == _player) && ((loadBackpack _player + 4 * (getNumber (configFile >> 'CfgMagazines' >> 'UK3CB_BAF_1Rnd_60mm_Mo_Flare_White' >> 'mass'))) <= (getContainerMaxLoad (backpack _player)))";
 					exceptions[] = {};
 					statement = "[_player] call OKS_fnc_Unpack_60mm_Flare_Code";
 					icon = "\OKS_GOL_Misc\Data\UI\60mm_Flare.paa";
 				};
-
 				class Deploy_Static_HMG {
 					displayName = "Deploy Static HMG";
 					condition = "('GOL_Packed_HMG' in (itemsWithMagazines _player)) && vehicle _player == _player";
@@ -172,4 +171,3 @@
 			};
 		};
 	};
-
