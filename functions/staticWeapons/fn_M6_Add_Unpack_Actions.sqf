@@ -2,25 +2,34 @@
     M6 Mortar - Add Unpack Actions
     Adds ACE self-actions for unpacking 60mm ammo when in M6 mortar
     
-    Called when player enters UK3CB_BAF_Static_M6
+    Called via Extended_GetIn_EventHandlers when player enters UK3CB_BAF_Static_M6
     Removes any existing actions first to prevent duplicates
     Actions are removed when player exits vehicle
     
-    params ["_unit"];
+    Extended GetIn params: [vehicle, position, unit, turret]
 */
 
-params ["_unit"];
+params ["_vehicle", "_position", "_unit", "_turret"];
 
 if (!hasInterface || !local _unit) exitWith {};
 
-// Check if this unit already has M6 actions (don't remove on exit, just check here)
-private _actionsExist = _unit getVariable ["OKS_M6_ActionsInitialized", false];
-
-if (_actionsExist) exitWith {
-    [format ["M6 GetIn: Unit already has actions, skipping"], true] spawn OKS_fnc_LogDebug;
+// Add Fired event handler to vehicle if it doesn't already have one
+private _hasHandler = _vehicle getVariable ["OKS_M6_HasFiredHandler", false];
+if (!_hasHandler) then {
+    private _firedID = _vehicle addEventHandler ["Fired", {
+        params ["_vehicle", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
+        
+        // Call combined handler (params already match Extended_FiredBIS format)
+        _this call OKS_fnc_M6_Fired_Combined_Handler;
+    }];
+    
+    _vehicle setVariable ["OKS_M6_VehicleFiredID", _firedID];
+    _vehicle setVariable ["OKS_M6_HasFiredHandler", true];
 };
 
-[format ["M6 GetIn: Adding actions to unit for first time"], true] spawn OKS_fnc_LogDebug;
+// Check if this unit already has M6 actions (don't remove on exit, just check here)
+private _actionsExist = _unit getVariable ["OKS_M6_ActionsInitialized", false];
+if (_actionsExist) exitWith {};
 
 private _actionHE = [
     "OKS_Unpack_60mm_HE_Vehicle",
@@ -83,8 +92,6 @@ private _actionPathHE = [_unit, 1, ["ACE_SelfActions", "ACE_Equipment"], _action
 private _actionPathHEAB = [_unit, 1, ["ACE_SelfActions", "ACE_Equipment"], _actionHEAB] call ace_interact_menu_fnc_addActionToObject;
 private _actionPathSmoke = [_unit, 1, ["ACE_SelfActions", "ACE_Equipment"], _actionSmoke] call ace_interact_menu_fnc_addActionToObject;
 private _actionPathFlare = [_unit, 1, ["ACE_SelfActions", "ACE_Equipment"], _actionFlare] call ace_interact_menu_fnc_addActionToObject;
-
-[format ["Added actions, paths: %1, %2, %3, %4", _actionPathHE, _actionPathHEAB, _actionPathSmoke, _actionPathFlare], true] spawn OKS_fnc_LogDebug;
 
 // Mark this unit as having M6 actions (never cleared - conditions handle visibility)
 _unit setVariable ["OKS_M6_ActionsInitialized", true];

@@ -6,7 +6,7 @@ class CfgAmmo {
 	
 	// Actual illumination flare - spawned by script at 150-200m altitude
 	class OKS_60mm_Flare_Spawned : F_40mm_White {
-		timeToLive = 120;
+		timeToLive = 140;
 		intensity = 8400;
 		brightness = 2;
 		coefGravity = 0.0625;
@@ -40,7 +40,7 @@ class CfgAmmo {
 	
 	// IR illumination flare - spawned by script when GOL_IRFlaresEnabled is true
 	class OKS_60mm_Flare_IR_Spawned : ACE_40mm_Flare_ir {
-		timeToLive = 120;
+		timeToLive = 140;
 		intensity = 8400;
 		brightness = 2;
 		coefGravity = 0.0625;
@@ -125,7 +125,7 @@ class CfgAmmo {
 		intensity = 900;          // Reduced for less intense center
 		brightness = 0.75;        // Reduced for softer NVG bloom
 		nvgOnly = 1;         // NVG-only illumination (standard ACE IR behavior)
-		coefGravity = 0.0625;  // 25% more gravity (0.05 * 1.25)
+		coefGravity = 0.0825;
 		flareSize = 0.1;
 		flareMaxDistance = 50;		
 		timeToLive = 90;     // Longer burn time
@@ -150,7 +150,7 @@ class CfgAmmo {
 		displayName = "White Illumination Flare (GOL)";
 		intensity = 1200;         // Reduced for less intense center
 		brightness = 1.5;         // Reduced for softer overall lighting
-		coefGravity = 0.0625;  // 25% more gravity (0.05 * 1.25)
+		coefGravity = 0.0825;
 		flareSize = 0.1;
 		flareMaxDistance = 50;		
 		timeToLive = 90;     // Longer burn time

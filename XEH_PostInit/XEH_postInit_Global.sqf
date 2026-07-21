@@ -1,462 +1,430 @@
 diag_log "OKS_GOL_Misc: XEH_postInit_Global.sqf executed";
 
-GOL_Core_Enabled = missionNamespace getVariable ["GOL_CORE_Enabled",false];
-if(GOL_Core_Enabled isEqualTo true) then {
-
 /*
     Global Executions.
 */
 
-    // Register global killed event handler (runs on all clients, server, and HC)
-    [] call OKS_fnc_GlobalKilledEventHandler;
+// Register global killed event handler (runs on all clients, server, and HC)
+[] call OKS_fnc_GlobalKilledEventHandler;
 
-    /* Define Player Side for Scripts */
-    missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
+/* Define Player Side for Scripts */
+missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 
-    /* Setup Flag Teleport */
-    [] spawn OKS_fnc_FlagTeleport;
+/* Setup Flag Teleport */
+[] spawn OKS_fnc_FlagTeleport;
 
-	/* Amphibious IFV water boost (client-only, locality-safe) */
-	if (hasInterface) then {
-        [] spawn OKS_fnc_Stealth_PlayerVisibility;
-        
-        // BettIR auto-activation for GOL_OX3000 (proper beam lights)
-        if (isClass (configFile >> "CfgPatches" >> "BettIR_Core")) then {
-            [] call OKS_fnc_BettIR_AutoWeaponIlluminator;
-            ["[PostInit] BettIR detected - using BettIR beam lights with adjustable strength", false, false, true] spawn OKS_fnc_LogDebug;
-        };
-        
-        // IR Illuminator strength monitor (adjusts BettIR intensity or creates fallback lights)
-        [] spawn OKS_fnc_IRIlluminator_Monitor;
-        ["[PostInit] IR Illuminator strength monitor started", false, false, true] spawn OKS_fnc_LogDebug;
-        
-        // Initialize IR illuminator strength (persistent across respawns)
-        [] spawn {
-            waitUntil { sleep 0.25; !isNull player };
-            
-            // Load saved strength from profile or use default 1% (minimum)
-            private _savedStrength = profileNamespace getVariable ["GOL_IRIlluminator_Strength", 1];
-            player setVariable ["GOL_IRIlluminator_Strength", _savedStrength, true];
-            
-            // Add respawn handler to restore strength setting
-            player addEventHandler ["Respawn", {
-                params ["_unit", "_corpse"];
-                private _savedStrength = profileNamespace getVariable ["GOL_IRIlluminator_Strength", 1];
-                _unit setVariable ["GOL_IRIlluminator_Strength", _savedStrength, true];
-            }];
-            
-            if (missionNamespace getVariable ["GOL_IRIlluminator_Debug", false]) then {
-                systemChat format ["[IR Illuminator] Initialized strength at %1%%", _savedStrength];
-            };
-        };
-        
-        [] spawn {
-            ["[AMPHIB_IFV_BOOST] PostInit: client init thread started", false, false, true] spawn OKS_fnc_LogDebug;
-
-            waitUntil { sleep 0.2; !isNil "OKS_fnc_AmphibiousBoostInit" };
-
-            private _enabled = missionNamespace getVariable ["GOL_AmphIFVBoost_Enabled", false];
-            private _debug = missionNamespace getVariable ["GOL_AmphIFVBoost_Debug", false];
-            private _verbose = missionNamespace getVariable ["GOL_AmphIFVBoost_DebugVerbose", false];
-            [format ["[AMPHIB_IFV_BOOST] PostInit: fn available. enabled=%1 debug=%2 verbose=%3", _enabled, _debug, _verbose], false, false, true] spawn OKS_fnc_LogDebug;
-
-            [] call OKS_fnc_AmphibiousBoostInit;
-
-            private _pfhId = missionNamespace getVariable ["OKS_AmphIFVBoost_PFH", -1];
-            [format ["[AMPHIB_IFV_BOOST] PostInit: init complete. PFH=%1", _pfhId], false, false, true] spawn OKS_fnc_LogDebug;
-        };
-	};
-
-    /* Setup player vehicles & boxes */
-    [] spawn {
-        sleep 1;
-        {
-            private _Vehicle = _x;
-            private _varName = toLower vehicleVarName _Vehicle;
-            [_Vehicle, _varName] spawn {
-                params ["_Vehicle", "_varName"];
-                waitUntil {
-                    sleep 1;
-                    !isNil "OKS_fnc_Mechanized" &&
-                    !isNil "GW_MHQ_Fnc_Handler" &&
-                    !isNil "GW_Gear_Fnc_Init"
-                };
-
-                if(isServer) then {
-					// Disable ACE's default vehicle turret rearm handling for UK3CB vehicles.
-					// We use a custom cargo-magazine rearm workflow instead (via MSS).
-					if ((typeOf _Vehicle find "UK3CB_BAF") == 0 && _Vehicle isKindOf "LandVehicle") then {
-						_Vehicle setVariable ["ace_rearm_disabled", true, true];
-					};
-
-                    if (["vehicle_", _varName] call BIS_fnc_inString) exitWith {
-                        [_Vehicle] spawn OKS_fnc_Mechanized;
-                    };
-                    if (["mhq_", _varName] call BIS_fnc_inString) exitWith {
-                        [_Vehicle, "medium"] call GW_MHQ_Fnc_Handler;
-                        _MHQShouldBeMobileServiceStation = missionNamespace getVariable ["MHQ_ShouldBe_ServiceStation",false];
-                        if(_MHQShouldBeMobileServiceStation isEqualTo true) then {
-                            [_Vehicle] spawn OKS_fnc_SetupMobileServiceStation;
-                            _Debug = missionNamespace getVariable ["MHQ_Debug",false];
-                            if(_Debug) then {
-                                format["SetupMSS-Init was run on %1",_Vehicle] spawn OKS_fnc_LogDebug;
-                            };
-                        };
-                        [_Vehicle] spawn OKS_fnc_Mechanized;
-                    };
-                    if (["helicopter_", _varName] call BIS_fnc_inString) exitWith {
-                        [_Vehicle] spawn OKS_fnc_Helicopter;
-                    };
-                    if (["jet_", _varName] call BIS_fnc_inString) exitWith {
-                        [_Vehicle] spawn OKS_fnc_Jet;
-                    };
-                };
-            };
-        } forEach (Vehicles select {
-            (_x isKindOf "LandVehicle" || _x isKindOf "Helicopter" || _x isKindOf "Plane") && alive _x
-        });
-    };
-
-    /* RemoveVehicleHE from Current and spawned Vehicles. */
-    {
-        _vehicle = _X;
-        if(
-            !(["vehicle",vehicleVarName _Vehicle, false] call BIS_fnc_inString) &&
-            !(["mhq",vehicleVarName _Vehicle, false] call BIS_fnc_inString)
-        ) then {
-            private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
-            if (_RemoveVehicleHE_Enabled) then {
-                [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
-            };
-            [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;   
-            [_vehicle] spawn OKS_fnc_AbandonVehicle;      
-            [_vehicle] call OKS_fnc_VehicleAppearance;
-
-            private _type = typeOf _vehicle;
-            if (["T34","T55","T72","T80"] findIf {_type find _x >= 0} != -1 
-                && (typeOf _x find "UK3CB" >= 0)) then {
-                [_vehicle] spawn OKS_fnc_AdjustDamage;
-            };
-        }
-    } forEach (vehicles select {_x isKindOf "LandVehicle"});
+/* Amphibious IFV water boost (client-only, locality-safe) */
+if (hasInterface) then {
+    [] spawn OKS_fnc_Stealth_PlayerVisibility;
     
-    ["LandVehicle", "init", {
-        params ["_vehicle"];
-
-		// Disable ACE's default vehicle turret rearm handling for UK3CB vehicles.
-		// Server only, so the publicVariable replication is authoritative.
-		if (isServer) then {
-			private _type = typeOf _vehicle;
-			if ((_type find "UK3CB_BAF") == 0 && _vehicle isKindOf "LandVehicle") then {
-				_vehicle setVariable ["ace_rearm_disabled", true, true];
-			};
-		};
-
-        if( 
-            !(["vehicle",vehicleVarName _Vehicle, false] call BIS_fnc_inString) &&
-            !(["mhq",vehicleVarName _Vehicle, false] call BIS_fnc_inString)
-        ) then {           
-            private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
-            if (_RemoveVehicleHE_Enabled) then {
-                [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
-            };
-            [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;
-            [_vehicle] spawn OKS_fnc_AbandonVehicle;
-            [_vehicle] call OKS_fnc_VehicleAppearance;
-            
-            private _type = typeOf _vehicle;
-            if ((["T34","T55","T72","T80"] findIf {_type find _x >= 0}) != -1 
-                && (_type find "UK3CB" >= 0)) then {
-                [_vehicle] spawn OKS_fnc_AdjustDamage;
-            };
-        };
-    }, true, [], true] call CBA_fnc_addClassEventHandler;
-
-    // M6 Mortar auto-reload from nearby containers
-    ["StaticWeapon", "Fired", {
-        params ["_vehicle"];
-        
-        if (typeOf _vehicle == "UK3CB_BAF_Static_M6") then {
-            _this call OKS_fnc_M6_Auto_Reload_Handler;
-        };
-    }, true, [], true] call CBA_fnc_addClassEventHandler;
-
-    // M6 Mortar flare altitude deployment system
-    ["StaticWeapon", "Fired", {
-        params ["_vehicle", "_weapon", "_muzzle", "_mode", "_ammoType"];
-        
-        if (typeOf _vehicle == "UK3CB_BAF_Static_M6" && {_ammoType == "OKS_60mm_Flare_Dummy"}) then {
-            _this call OKS_fnc_M6_Flare_Altitude_Deploy;
-        };
-    }, true, [], true] call CBA_fnc_addClassEventHandler;
-
-    // M6 Mortar - Add unpack actions when player enters
-    ["UK3CB_BAF_Static_M6", "GetIn", {
-        params ["_vehicle", "_role", "_unit"];
-        [_unit] call OKS_fnc_M6_Add_Unpack_Actions;
-    }] call CBA_fnc_addClassEventHandler;
-
-    // M6 Mortar - Remove unpack actions when player exits
-    ["UK3CB_BAF_Static_M6", "GetOut", {
-        params ["_vehicle", "_role", "_unit"];
-        [_unit] call OKS_fnc_M6_Remove_Unpack_Actions;
-    }] call CBA_fnc_addClassEventHandler;
-
-    /*
-        Add code to spawned units.
-    */
-    ["CAManBase", "init", {
-        params ["_unit"];
-        
-        private _AppliedHCBlacklist = false;
-        // Disable HC Transfer for AI unit.
-        if (!(_unit getVariable ["acex_headless_blacklist", false])) then {
-            _unit setVariable ["acex_headless_blacklist", true, true];
-            _AppliedHCBlacklist = true;
-
-            _Debug = missionNamespace getVariable ["GOL_HC_Debug", false];
-            if(_Debug) then {
-                format ["[HEADLESS] %1 blacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
-            };
-        };
-
-        [_unit, _AppliedHCBlacklist] spawn {
-            params ["_unit", "_AppliedHCBlacklist"];
-            sleep 5;
-            if (!isPlayer _unit) then {
-
-                private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-                private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-                private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-                
-                // Consolidate all unit setup into single thread to reduce scheduler overhead
-                
-                // Apply ethnicity and face swap
-                if(_FaceSwapEnabled) then {
-                    [_unit] spawn OKS_fnc_FaceSwap;
-                };
-
-                // Add suppression event handler
-                if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
-                    [_unit] spawn OKS_fnc_Suppressed;
-                };
-
-                // Add surrender event handlers
-                if(_SurrenderEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
-                    [_unit] spawn OKS_fnc_Surrender;
-                };
-
-                // Enable path for garrison units
-                if(side group _unit != civilian || vehicle _unit == _unit) then {
-                    private _group = group _unit;
-                    if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _unit != _unit) exitWith {
-                        // Exit if already enabled on Group level or if inside vehicle.
-                    };
-                    if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {
-                        _group setVariable ["OKS_EnablePath_Active",true,true];
-                        [_group] spawn OKS_fnc_EnablePath;
-                    };
-                };
-
-                // Enable HC Transfer after gear is applied
-                if(_AppliedHCBlacklist) then {
-                    waitUntil {sleep 2; _unit getVariable ["GW_Gear_appliedGear",false]};
-                    sleep 5;
-                    _unit setVariable ["acex_headless_blacklist", false, true];
-                    _Debug = missionNamespace getVariable ["GOL_HC_Debug", false];
-                    if(_Debug) then {
-                        format ["[HEADLESS] %1 unblacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
-                    };
-                };
-            };
-        };
-    }] call CBA_fnc_addClassEventHandler;
-
-    // Get all player units (for side comparison)
-    private _players = allPlayers select {alive _x};
-    if (_players isEqualTo []) exitWith {
-        private _SurrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", true];  
-        if(_SurrenderDebug) then {
-            "No players found for enemy check!" spawn OKS_fnc_LogDebug;
-        };
+    // BettIR auto-activation for GOL_OX3000 (proper beam lights)
+    if (isClass (configFile >> "CfgPatches" >> "BettIR_Core")) then {
+        [] call OKS_fnc_BettIR_AutoWeaponIlluminator;
+        ["[PostInit] BettIR detected - using BettIR beam lights with adjustable strength", false, false, true] spawn OKS_fnc_LogDebug;
     };
-
-    {
-        _X spawn {
-            Params ["_x"];
-            private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];   
-            sleep 5; // Ensure all units are initialized
-
-            if(_X isKindOf "CAManBase" && !isPlayer _X) then {
-                private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
-                if(_SuppressionEnabled && vehicle _X == _X) then {
-                    [_x] spawn OKS_fnc_Suppressed
-                };
-
-                private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
-                if(_FaceSwapEnabled) then {
-                    [_x] spawn OKS_fnc_FaceSwap;                   
-                };
-
-                _x spawn {
-                    params ["_X"];
-                    private ["_group"];
-                    sleep 5;
-                    _group = group _X;
-                    if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _X != _X) exitWith {
-                        // Exit if already enabled on Group level or if inside vehicle.
-                    };
-
-                    if(!isNil "OKS_fnc_EnablePath" && !(_X checkAIFeature "PATH")) then {        
-                        _group setVariable ["OKS_EnablePath_Active",true,true];
-                        [_group] spawn OKS_fnc_EnablePath;
-                    };
-                };  
-            };     
-
-            if (
-                _x isKindOf "CAManBase" &&
-                !isPlayer _x &&
-                side group _x != civilian &&
-                vehicle _X == _X
-            ) then {
-                private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
-                if(_SurrenderEnabled) then {                                
-                    [_x] spawn OKS_fnc_Surrender
-                };
-            };
-
-        };
-    } forEach allUnits;     
-
-    /* Setup Vehicle & MHQ Drops */
-    [] spawn OKS_fnc_VehicleDropSetup;
-
-    /* Setup ACE Carrying Limits */
-    ACE_maxWeightCarry = 3500; 
-    ACE_maxWeightDrag = 4500;
-
-    if (hasInterface) then {
+    
+    // IR Illuminator strength monitor (adjusts BettIR intensity or creates fallback lights)
+    [] spawn OKS_fnc_IRIlluminator_Monitor;
+    ["[PostInit] IR Illuminator strength monitor started", false, false, true] spawn OKS_fnc_LogDebug;
+    
+    // Initialize IR illuminator strength (persistent across respawns)
+    [] spawn {
+        waitUntil { sleep 0.25; !isNull player };
         
-        /* Add Paradrop Action to Gearboxes */
-        [] spawn OKS_fnc_ParadropActions;
-
-        /* Add Static Line EventHandler */
-        ["RHS_C130J_BASE", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
-        ["Air", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
-        ["UK3CB_Antonov_An2_Base", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
-        ["UK3CB_DC3_Base", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
-        ["VTOL_01_base_F", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
-
-        /* Setup TFAR Radios */
-        [] spawn OKS_fnc_TFAR_RadioSetup;
-
-        /* Setup Teamspeak Channel */
-        [] spawn OKS_fnc_BLU_SetChannel;
-
-        /* Warning System for Speaker */
-        [] spawn OKS_fnc_WarningSpeakerHandler;
-
-        /* Inventory Warning System */
-        [] spawn OKS_fnc_InventoryHandler;
-
-        /* Add Unconscious Camera Handler */
-        [] spawn OKS_fnc_SetupUnconsciousCamera;
+        // Load saved strength from profile or use default 1% (minimum)
+        private _savedStrength = profileNamespace getVariable ["GOL_IRIlluminator_Strength", 1];
+        player setVariable ["GOL_IRIlluminator_Strength", _savedStrength, true];
         
-        /* Add Medical Messages to Players. */
-        ["ace_treatmentStarted", OKS_fnc_medicalMessage] call CBA_fnc_addEventHandler;
-
-        /* Setup ORBAT */
-        [] spawn OKS_fnc_ORBATHandler;
-
-        /* Setup Support & Mobile HQ MHQ */
-        _condition = {leader group player == player};
-        _action = ["Request_Support", "Request Support","\A3\ui_f\data\map\VehicleIcons\iconCrateVeh_ca.paa", {}, _condition] call ace_interact_menu_fnc_createAction;
-        [typeOf player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToClass;
-
-        /* Setup ORBAT Actions for Pilots */
-        [] spawn OKS_fnc_Orbat_Action;
-
-        if(!isNil "Mobile_HQ") then {
-            [] spawn OKS_fnc_ACE_MoveMHQ;
-        };           
-
-        /* Setup AI Supply Drops */
-        _SupplyEnabled = missionNamespace getVariable ["NEKY_Supply_Enabled", true];
-        _VehicleDropEnabled = missionNamespace getVariable ["NEKY_SupplyVehicle_Enabled", true];
-        _MHQDropEnabled = missionNamespace getVariable ["NEKY_SupplyMHQ_Enabled", true];
-        if(_SupplyEnabled isEqualTo true) then {
-            [] spawn OKS_fnc_Ace_Resupply;
-        };
-        if(!isNil "Vehicle_1" && _VehicleDropEnabled isEqualTo true) then {
-            [] spawn OKS_fnc_Ace_VehicleDrop;
-        };
-        if(!isNil "MHQ_1" && _MHQDropEnabled isEqualTo true) then {
-            [] spawn OKS_fnc_Ace_MHQDrop;
-        };	
-
-        /* Reset Radio Transmit upon death handler and add friendly fire score. */
-        player addMPEventHandler ["MPKilled", {
-            params ["_unit","_killer","_instigator","_useEffects"];
-
-            if(isPlayer _instigator || isPlayer _killer) then {
-                if(_unit in [_killer, _instigator]) exitWith {
-                    format["[KILLS] Player Friendly Fire: %1 deemed as suicide", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
-                };
-                private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
-                _friendlyFireKills = _friendlyFireKills + 1;
-                missionNamespace setVariable ["GOL_FriendlyFireKills", _friendlyFireKills, true];
-                format["[KILLS] Player Friendly Fire: %1 killed by %2 (%3)", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
-            };
-
-            if ( local _unit ) then {
-                // Get the player's current SR radio info
-                private _radio = _unit call TFAR_fnc_activeSwRadio;
-                if(!isNil "_radio") then {
-                    private _channel = _unit getVariable ["TFAR_currentSwChannel", 0];
-                    private _frequency = _unit getVariable ["TFAR_currentSwFrequency", "10"];
-                    private _isAdditional = false;
-
-                    if (!isNil "_radio") then {
-                        [_radio, _channel, _frequency, _isAdditional] call TFAR_fnc_doSRTransmitEnd;
-                    };
-
-                    // Optionally, also handle LR radios:
-                    private _lrRadio = _unit call TFAR_fnc_activeLrRadio;
-                    private _lrChannel = _unit getVariable ["TFAR_currentLrChannel", 1];
-                    private _lrFrequency = _unit getVariable ["TFAR_currentLrFrequency", "10"];
-                    if (!isNil "_lrRadio") then {
-                        [_lrRadio, _lrChannel, _lrFrequency, false] call TFAR_fnc_doLRTransmitEnd;
-                    };
-                };
-            };
+        // Add respawn handler to restore strength setting
+        player addEventHandler ["Respawn", {
+            params ["_unit", "_corpse"];
+            private _savedStrength = profileNamespace getVariable ["GOL_IRIlluminator_Strength", 1];
+            _unit setVariable ["GOL_IRIlluminator_Strength", _savedStrength, true];
         }];
-
-        /* Setup Fastrope Damage Protection */
-        _fastRopeProtectionEnabled = missionNamespace getVariable ["GOL_FastropeDamage_Protection", false];
-        if(_fastRopeProtectionEnabled) then {
-            [player] call OKS_fnc_FastropeDamageProtection;
-        };
         
-        /* Set Ranks of Leaders */
-        [] call OKS_fnc_Ranks;
-
-        /* Handle Respawn */
-        [] call OKS_fnc_RespawnHandler;   
-
-        /* Version Check */
-        [player] spawn {
-            Params ["_Player"];
-
-            waitUntil { !isNil "GOL_MiscAddon_ServerVersion" };
-            private _GOL_MiscAddon_LocalVersion = getText(configFile >> "CBA_VERSIONING" >> "GOL_MISC_ADDON" >> "version");
-            if (_GOL_MiscAddon_LocalVersion != GOL_MiscAddon_ServerVersion) then {
-                _PlayerName = name _Player;
-                format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] spawn OKS_fnc_LogDebug;
-                format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] remoteExec ["systemChat",0];
-            };
-        };  
+        if (missionNamespace getVariable ["GOL_IRIlluminator_Debug", false]) then {
+            systemChat format ["[IR Illuminator] Initialized strength at %1%%", _savedStrength];
+        };
     };
+    
+    [] spawn {
+        ["[AMPHIB_IFV_BOOST] PostInit: client init thread started", false, false, true] spawn OKS_fnc_LogDebug;
+
+        waitUntil { sleep 0.2; !isNil "OKS_fnc_AmphibiousBoostInit" };
+
+        private _enabled = missionNamespace getVariable ["GOL_AmphIFVBoost_Enabled", false];
+        private _debug = missionNamespace getVariable ["GOL_AmphIFVBoost_Debug", false];
+        private _verbose = missionNamespace getVariable ["GOL_AmphIFVBoost_DebugVerbose", false];
+        [format ["[AMPHIB_IFV_BOOST] PostInit: fn available. enabled=%1 debug=%2 verbose=%3", _enabled, _debug, _verbose], false, false, true] spawn OKS_fnc_LogDebug;
+
+        [] call OKS_fnc_AmphibiousBoostInit;
+
+        private _pfhId = missionNamespace getVariable ["OKS_AmphIFVBoost_PFH", -1];
+        [format ["[AMPHIB_IFV_BOOST] PostInit: init complete. PFH=%1", _pfhId], false, false, true] spawn OKS_fnc_LogDebug;
+    };
+};
+
+/* Setup player vehicles & boxes */
+[] spawn {
+    sleep 1;
+    {
+        private _Vehicle = _x;
+        private _varName = toLower vehicleVarName _Vehicle;
+        [_Vehicle, _varName] spawn {
+            params ["_Vehicle", "_varName"];
+            waitUntil {
+                sleep 1;
+                !isNil "OKS_fnc_Mechanized" &&
+                !isNil "GW_MHQ_Fnc_Handler" &&
+                !isNil "GW_Gear_Fnc_Init"
+            };
+
+            if(isServer) then {
+                // Disable ACE's default vehicle turret rearm handling for UK3CB vehicles.
+                // We use a custom cargo-magazine rearm workflow instead (via MSS).
+                if ((typeOf _Vehicle find "UK3CB_BAF") == 0 && _Vehicle isKindOf "LandVehicle") then {
+                    _Vehicle setVariable ["ace_rearm_disabled", true, true];
+                };
+
+                if (["vehicle_", _varName] call BIS_fnc_inString) exitWith {
+                    [_Vehicle] spawn OKS_fnc_Mechanized;
+                };
+                if (["mhq_", _varName] call BIS_fnc_inString) exitWith {
+                    [_Vehicle, "medium"] call GW_MHQ_Fnc_Handler;
+                    _MHQShouldBeMobileServiceStation = missionNamespace getVariable ["MHQ_ShouldBe_ServiceStation",false];
+                    if(_MHQShouldBeMobileServiceStation isEqualTo true) then {
+                        [_Vehicle] spawn OKS_fnc_SetupMobileServiceStation;
+                        _Debug = missionNamespace getVariable ["MHQ_Debug",false];
+                        if(_Debug) then {
+                            format["SetupMSS-Init was run on %1",_Vehicle] spawn OKS_fnc_LogDebug;
+                        };
+                    };
+                    [_Vehicle] spawn OKS_fnc_Mechanized;
+                };
+                if (["helicopter_", _varName] call BIS_fnc_inString) exitWith {
+                    [_Vehicle] spawn OKS_fnc_Helicopter;
+                };
+                if (["jet_", _varName] call BIS_fnc_inString) exitWith {
+                    [_Vehicle] spawn OKS_fnc_Jet;
+                };
+            };
+        };
+    } forEach (Vehicles select {
+        (_x isKindOf "LandVehicle" || _x isKindOf "Helicopter" || _x isKindOf "Plane") && alive _x
+    });
+};
+
+/* RemoveVehicleHE from Current and spawned Vehicles. */
+{
+    _vehicle = _X;
+    if(
+        !(["vehicle",vehicleVarName _Vehicle, false] call BIS_fnc_inString) &&
+        !(["mhq",vehicleVarName _Vehicle, false] call BIS_fnc_inString)
+    ) then {
+        private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
+        if (_RemoveVehicleHE_Enabled) then {
+            [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
+        };
+        [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;   
+        [_vehicle] spawn OKS_fnc_AbandonVehicle;      
+        [_vehicle] call OKS_fnc_VehicleAppearance;
+
+        private _type = typeOf _vehicle;
+        if (["T34","T55","T72","T80"] findIf {_type find _x >= 0} != -1 
+            && (typeOf _x find "UK3CB" >= 0)) then {
+            [_vehicle] spawn OKS_fnc_AdjustDamage;
+        };
+    }
+} forEach (vehicles select {_x isKindOf "LandVehicle"});
+
+["LandVehicle", "init", {
+    params ["_vehicle"];
+
+    // Disable ACE's default vehicle turret rearm handling for UK3CB vehicles.
+    // Server only, so the publicVariable replication is authoritative.
+    if (isServer) then {
+        private _type = typeOf _vehicle;
+        if ((_type find "UK3CB_BAF") == 0 && _vehicle isKindOf "LandVehicle") then {
+            _vehicle setVariable ["ace_rearm_disabled", true, true];
+        };
+    };
+
+    if( 
+        !(["vehicle",vehicleVarName _Vehicle, false] call BIS_fnc_inString) &&
+        !(["mhq",vehicleVarName _Vehicle, false] call BIS_fnc_inString)
+    ) then {           
+        private _RemoveVehicleHE_Enabled = missionNamespace getVariable ["GOL_RemoveVehicleHE_Enabled",true];
+        if (_RemoveVehicleHE_Enabled) then {
+            [_vehicle] spawn OKS_fnc_RemoveVehicleHE;
+        };
+        [_vehicle] spawn OKS_fnc_ForceVehicleSpeed;
+        [_vehicle] spawn OKS_fnc_AbandonVehicle;
+        [_vehicle] call OKS_fnc_VehicleAppearance;
+        
+        private _type = typeOf _vehicle;
+        if ((["T34","T55","T72","T80"] findIf {_type find _x >= 0}) != -1 
+            && (_type find "UK3CB" >= 0)) then {
+            [_vehicle] spawn OKS_fnc_AdjustDamage;
+        };
+    };
+}, true, [], true] call CBA_fnc_addClassEventHandler;
+
+// M6 Mortar event handlers moved to XEH_preInit_packing.sqf for reliable registration
+
+/*
+    Add code to spawned units.
+*/
+["CAManBase", "init", {
+    params ["_unit"];
+    
+    private _AppliedHCBlacklist = false;
+    // Disable HC Transfer for AI unit.
+    if (!(_unit getVariable ["acex_headless_blacklist", false])) then {
+        _unit setVariable ["acex_headless_blacklist", true, true];
+        _AppliedHCBlacklist = true;
+
+        _Debug = missionNamespace getVariable ["GOL_HC_Debug", false];
+        if(_Debug) then {
+            format ["[HEADLESS] %1 blacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
+        };
+    };
+
+    [_unit, _AppliedHCBlacklist] spawn {
+        params ["_unit", "_AppliedHCBlacklist"];
+        sleep 5;
+        if (!isPlayer _unit) then {
+
+            private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+            private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
+            private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+            
+            // Consolidate all unit setup into single thread to reduce scheduler overhead
+            
+            // Apply ethnicity and face swap
+            if(_FaceSwapEnabled) then {
+                [_unit] spawn OKS_fnc_FaceSwap;
+            };
+
+            // Add suppression event handler
+            if(_SuppressionEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
+                [_unit] spawn OKS_fnc_Suppressed;
+            };
+
+            // Add surrender event handlers
+            if(_SurrenderEnabled && side group _unit != civilian && vehicle _unit == _unit) then {
+                [_unit] spawn OKS_fnc_Surrender;
+            };
+
+            // Enable path for garrison units
+            if(side group _unit != civilian || vehicle _unit == _unit) then {
+                private _group = group _unit;
+                if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _unit != _unit) exitWith {
+                    // Exit if already enabled on Group level or if inside vehicle.
+                };
+                if(!isNil "OKS_fnc_EnablePath" && !(_unit checkAIFeature "PATH")) then {
+                    _group setVariable ["OKS_EnablePath_Active",true,true];
+                    [_group] spawn OKS_fnc_EnablePath;
+                };
+            };
+
+            // Enable HC Transfer after gear is applied
+            if(_AppliedHCBlacklist) then {
+                waitUntil {sleep 2; _unit getVariable ["GW_Gear_appliedGear",false]};
+                sleep 5;
+                _unit setVariable ["acex_headless_blacklist", false, true];
+                _Debug = missionNamespace getVariable ["GOL_HC_Debug", false];
+                if(_Debug) then {
+                    format ["[HEADLESS] %1 unblacklisted from HC transfer.", _unit] spawn OKS_fnc_LogDebug;
+                };
+            };
+        };
+    };
+}] call CBA_fnc_addClassEventHandler;
+
+// Get all player units (for side comparison)
+private _players = allPlayers select {alive _x};
+if (_players isEqualTo []) exitWith {
+    private _SurrenderDebug = missionNamespace getVariable ["GOL_Surrender_Debug", true];  
+    if(_SurrenderDebug) then {
+        "No players found for enemy check!" spawn OKS_fnc_LogDebug;
+    };
+};
+
+{
+    _X spawn {
+        Params ["_x"];
+        private _playerSide = missionNameSpace getVariable ["GOL_Friendly_Side",(side group player)];   
+        sleep 5; // Ensure all units are initialized
+
+        if(_X isKindOf "CAManBase" && !isPlayer _X) then {
+            private _SuppressionEnabled = missionNamespace getVariable ["GOL_Suppression_Enabled", true];
+            if(_SuppressionEnabled && vehicle _X == _X) then {
+                [_x] spawn OKS_fnc_Suppressed
+            };
+
+            private _FaceSwapEnabled = missionNamespace getVariable ["GOL_FaceSwap_Enabled", true];
+            if(_FaceSwapEnabled) then {
+                [_x] spawn OKS_fnc_FaceSwap;                   
+            };
+
+            _x spawn {
+                params ["_X"];
+                private ["_group"];
+                sleep 5;
+                _group = group _X;
+                if(_group getVariable ["OKS_EnablePath_Active",false] || vehicle _X != _X) exitWith {
+                    // Exit if already enabled on Group level or if inside vehicle.
+                };
+
+                if(!isNil "OKS_fnc_EnablePath" && !(_X checkAIFeature "PATH")) then {        
+                    _group setVariable ["OKS_EnablePath_Active",true,true];
+                    [_group] spawn OKS_fnc_EnablePath;
+                };
+            };  
+        };     
+
+        if (
+            _x isKindOf "CAManBase" &&
+            !isPlayer _x &&
+            side group _x != civilian &&
+            vehicle _X == _X
+        ) then {
+            private _SurrenderEnabled = missionNamespace getVariable ["GOL_Surrender_Enabled", true];
+            if(_SurrenderEnabled) then {                                
+                [_x] spawn OKS_fnc_Surrender
+            };
+        };
+
+    };
+} forEach allUnits;     
+
+/* Setup Vehicle & MHQ Drops */
+[] spawn OKS_fnc_VehicleDropSetup;
+
+/* Setup ACE Carrying Limits */
+ACE_maxWeightCarry = 3500; 
+ACE_maxWeightDrag = 4500;
+
+if (hasInterface) then {
+    
+    /* Add Paradrop Action to Gearboxes */
+    [] spawn OKS_fnc_ParadropActions;
+
+    /* Add Static Line EventHandler */
+    ["RHS_C130J_BASE", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+    ["Air", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+    ["UK3CB_Antonov_An2_Base", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+    ["UK3CB_DC3_Base", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+    ["VTOL_01_base_F", "GetOut", OKS_fnc_StaticJump_EventCode, true] call CBA_fnc_addClassEventHandler;
+
+    /* Setup TFAR Radios */
+    [] spawn OKS_fnc_TFAR_RadioSetup;
+
+    /* Setup Teamspeak Channel */
+    [] spawn OKS_fnc_BLU_SetChannel;
+
+    /* Warning System for Speaker */
+    [] spawn OKS_fnc_WarningSpeakerHandler;
+
+    /* Inventory Warning System */
+    [] spawn OKS_fnc_InventoryHandler;
+
+    /* Add Unconscious Camera Handler */
+    [] spawn OKS_fnc_SetupUnconsciousCamera;
+    
+    /* Add Medical Messages to Players. */
+    ["ace_treatmentStarted", OKS_fnc_medicalMessage] call CBA_fnc_addEventHandler;
+
+    /* Setup ORBAT */
+    [] spawn OKS_fnc_ORBATHandler;
+
+    /* Setup Support & Mobile HQ MHQ */
+    _condition = {leader group player == player};
+    _action = ["Request_Support", "Request Support","\A3\ui_f\data\map\VehicleIcons\iconCrateVeh_ca.paa", {}, _condition] call ace_interact_menu_fnc_createAction;
+    [typeOf player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToClass;
+
+    /* Setup ORBAT Actions for Pilots */
+    [] spawn OKS_fnc_Orbat_Action;
+
+    if(!isNil "Mobile_HQ") then {
+        [] spawn OKS_fnc_ACE_MoveMHQ;
+    };           
+
+    /* Setup AI Supply Drops */
+    _SupplyEnabled = missionNamespace getVariable ["NEKY_Supply_Enabled", true];
+    _VehicleDropEnabled = missionNamespace getVariable ["NEKY_SupplyVehicle_Enabled", true];
+    _MHQDropEnabled = missionNamespace getVariable ["NEKY_SupplyMHQ_Enabled", true];
+    if(_SupplyEnabled isEqualTo true) then {
+        [] spawn OKS_fnc_Ace_Resupply;
+    };
+    if(!isNil "Vehicle_1" && _VehicleDropEnabled isEqualTo true) then {
+        [] spawn OKS_fnc_Ace_VehicleDrop;
+    };
+    if(!isNil "MHQ_1" && _MHQDropEnabled isEqualTo true) then {
+        [] spawn OKS_fnc_Ace_MHQDrop;
+    };	
+
+    /* Reset Radio Transmit upon death handler and add friendly fire score. */
+    player addMPEventHandler ["MPKilled", {
+        params ["_unit","_killer","_instigator","_useEffects"];
+
+        if(isPlayer _instigator || isPlayer _killer) then {
+            if(_unit in [_killer, _instigator]) exitWith {
+                format["[KILLS] Player Friendly Fire: %1 deemed as suicide", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
+            };
+            private _friendlyFireKills = missionNamespace getVariable ["GOL_FriendlyFireKills", 0];
+            _friendlyFireKills = _friendlyFireKills + 1;
+            missionNamespace setVariable ["GOL_FriendlyFireKills", _friendlyFireKills, true];
+            format["[KILLS] Player Friendly Fire: %1 killed by %2 (%3)", name _unit, name _instigator, name _killer] spawn OKS_fnc_LogDebug;
+        };
+
+        if ( local _unit ) then {
+            // Get the player's current SR radio info
+            private _radio = _unit call TFAR_fnc_activeSwRadio;
+            if(!isNil "_radio") then {
+                private _channel = _unit getVariable ["TFAR_currentSwChannel", 0];
+                private _frequency = _unit getVariable ["TFAR_currentSwFrequency", "10"];
+                private _isAdditional = false;
+
+                if (!isNil "_radio") then {
+                    [_radio, _channel, _frequency, _isAdditional] call TFAR_fnc_doSRTransmitEnd;
+                };
+
+                // Optionally, also handle LR radios:
+                private _lrRadio = _unit call TFAR_fnc_activeLrRadio;
+                private _lrChannel = _unit getVariable ["TFAR_currentLrChannel", 1];
+                private _lrFrequency = _unit getVariable ["TFAR_currentLrFrequency", "10"];
+                if (!isNil "_lrRadio") then {
+                    [_lrRadio, _lrChannel, _lrFrequency, false] call TFAR_fnc_doLRTransmitEnd;
+                };
+            };
+        };
+    }];
+
+    /* Setup Fastrope Damage Protection */
+    _fastRopeProtectionEnabled = missionNamespace getVariable ["GOL_FastropeDamage_Protection", false];
+    if(_fastRopeProtectionEnabled) then {
+        [player] call OKS_fnc_FastropeDamageProtection;
+    };
+    
+    /* Set Ranks of Leaders */
+    [] call OKS_fnc_Ranks;
+
+    /* Handle Respawn */
+    [] call OKS_fnc_RespawnHandler;   
+
+    /* Version Check */
+    [player] spawn {
+        Params ["_Player"];
+
+        waitUntil { !isNil "GOL_MiscAddon_ServerVersion" };
+        private _GOL_MiscAddon_LocalVersion = getText(configFile >> "CBA_VERSIONING" >> "GOL_MISC_ADDON" >> "version");
+        if (_GOL_MiscAddon_LocalVersion != GOL_MiscAddon_ServerVersion) then {
+            _PlayerName = name _Player;
+            format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] spawn OKS_fnc_LogDebug;
+            format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] remoteExec ["systemChat",0];
+        };
+    };  
 };
 
 // --- GOL_BMP2DM: ACE self-actions for ATGM deploy/stow (commander only) ---

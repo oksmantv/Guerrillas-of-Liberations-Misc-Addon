@@ -18,10 +18,10 @@ class CfgFunctions // Defines a function
 			class Deploy_GMG_Code {};			
 			class Deploy_AT_Code {};			
 			class Deploy_Mortar_Code {};			
-			class Packing_code {};
+			class Packing_code {};		
+			class M6_Fired_Combined_Handler {};			
 			class M6_Auto_Reload_Handler {};
 			class M6_Add_Unpack_Actions {};
-			class M6_Remove_Unpack_Actions {};
 			class M6_Flare_Altitude_Deploy {};
 		};
 

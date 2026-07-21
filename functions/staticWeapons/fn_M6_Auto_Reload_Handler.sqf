@@ -11,51 +11,47 @@
     params ["_vehicle", "_weapon", "_muzzle", "_mode", "_ammoType", "_magazine", "_projectile"];
 */
 
-params ["_vehicle", "_weapon", "_muzzle", "_mode", "_ammoType", "_magazine", "_projectile"];
+params ["_vehicle", "_weapon", "_muzzle", "_mode", "_ammoType", "_magazine", "_projectile", ["_gunner", objNull]];
 
-private _magDisplayName = getText (configFile >> "CfgMagazines" >> _magazine >> "displayName");
+// Handle magazine parameter - can be string (classname), array [classname, ammo], or object
+private _magazineClass = if (_magazine isEqualType "") then {
+    _magazine
+} else {
+    if (_magazine isEqualType []) then {
+        _magazine select 0
+    } else {
+        str _magazine
+    }
+};
+private _magDisplayName = getText (configFile >> "CfgMagazines" >> _magazineClass >> "displayName");
 
-format ["[M6 Auto-Reload] Fired: vehicle=%1, weapon=%2, magazine=%3", typeOf _vehicle, _weapon, _magazine] spawn OKS_fnc_LogDebug;
-
-private _gunner = gunner _vehicle;
-if (isNull _gunner) exitWith {
-	"[M6 Auto-Reload] EXIT: Gunner is null" spawn OKS_fnc_LogDebug;
+// Get gunner from vehicle if not provided in params
+if (isNull _gunner) then {
+	_gunner = gunner _vehicle;
 };
 
-if (!local _gunner) exitWith {
-	format ["[M6 Auto-Reload] EXIT: Gunner not local (local=%1)", local _gunner] spawn OKS_fnc_LogDebug;
-};
+if (isNull _gunner || !local _gunner) exitWith {};
 
 // Find nearby containers and weapon holders within 10m
 private _nearbyContainers = nearestObjects [_vehicle, ["GroundWeaponHolder", "ReammoBox_F"], 10];
-format ["[M6 Auto-Reload] Nearby containers: %1", count _nearbyContainers] spawn OKS_fnc_LogDebug;
-
-if (count _nearbyContainers == 0) exitWith {
-	"[M6 Auto-Reload] EXIT: No nearby containers" spawn OKS_fnc_LogDebug;
-};
+if (count _nearbyContainers == 0) exitWith {};
 
 // Check if gunner has space for one magazine in inventory
 private _canAddMag = _gunner canAdd [_magazine, 1, true];
-format ["[M6 Auto-Reload] canAdd check: %1 (loadBackpack=%2)", _canAddMag, loadBackpack _gunner] spawn OKS_fnc_LogDebug;
-
-if !(_canAddMag) exitWith {
-	"[M6 Auto-Reload] EXIT: No inventory space" spawn OKS_fnc_LogDebug;
-};
+if !(_canAddMag) exitWith {};
 
 // Search containers for matching magazine
 private _foundMatch = false;
 {
 	private _container = _x;
 	private _containerMags = magazinesAmmoCargo _container;
-	format ["[M6 Auto-Reload] Checking container %1 with %2 magazines", typeOf _container, count _containerMags] spawn OKS_fnc_LogDebug;
 	
 	{
 		_x params ["_magClass", "_ammoCount"];
 		
-		if (_magClass == _magazine) then {
-			systemChat format ["Picked up %1", _magDisplayName];
+		if (_magClass == _magazineClass && _ammoCount > 0) then {
+			systemChat format ["✓ Picked up %1", _magDisplayName];
 			hint format ["Picked up\n%1", _magDisplayName];
-			format ["[M6 Auto-Reload] SUCCESS: Adding %1 (%2 rounds) to gunner", _magClass, _ammoCount] spawn OKS_fnc_LogDebug;
 			
 			// Add magazine to gunner
 			_gunner addMagazine [_magClass, _ammoCount];
@@ -69,8 +65,4 @@ private _foundMatch = false;
 	} forEach _containerMags;
 	
 } forEach _nearbyContainers;
-
-if (!_foundMatch) then {
-	format ["[M6 Auto-Reload] No matching magazine found. Looking for: %1", _magazine] spawn OKS_fnc_LogDebug;
-};
 

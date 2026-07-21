@@ -33,8 +33,6 @@ private _flareClass = if (_useIR) then {
 // Randomize deployment altitude: 300-350m AGL
 private _deployAltitude = 300 + random 50;
 
-["M6 Flare: Tracking projectile for altitude deployment", true, false, false] spawn OKS_fnc_LogDebug;
-
 // Track projectile altitude - wait for ascending above target, then descending through it
 [{
 	params ["_args", "_handle"];
@@ -43,7 +41,6 @@ private _deployAltitude = 300 + random 50;
 	// Exit if projectile deleted or hit ground
 	if (isNull _projectile || {!alive _projectile}) exitWith {
 		[_handle] call CBA_fnc_removePerFrameHandler;
-		["M6 Flare: Projectile destroyed before deployment", true, false, false] spawn OKS_fnc_LogDebug;
 	};
 	
 	private _pos = getPosATL _projectile;
@@ -54,7 +51,6 @@ private _deployAltitude = 300 + random 50;
 	// Phase 1: Wait until projectile ascends above deployment altitude
 	if (!_reachedPeak && {_altitude >= _deployAltitude}) then {
 		_args set [2, true];  // Mark that we've reached above target altitude
-		["M6 Flare: Projectile reached target altitude, waiting for descent", true, false, false] spawn OKS_fnc_LogDebug;
 	};
 	
 	// Phase 2: Deploy when descending back through deployment altitude
@@ -71,8 +67,6 @@ private _deployAltitude = 300 + random 50;
 		
 		// Delete dummy projectile
 		deleteVehicle _projectile;
-		
-		[format ["M6 Flare: Deployed at %1m AGL (descending)", round _altitude], true, false, false] spawn OKS_fnc_LogDebug;
 	};
 	
 }, 0.1, [_projectile, _deployAltitude, false, _flareClass]] call CBA_fnc_addPerFrameHandler;

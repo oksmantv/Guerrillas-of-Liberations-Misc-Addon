@@ -486,6 +486,22 @@ class Extended_PostInit_EventHandlers {
     };
 };
 
+class Extended_Init_EventHandlers {
+    class UK3CB_BAF_Static_M6 {
+        class OKS_M6_Init {
+            init = "format ['[M6 Init] M6 mortar initialized: %1 at %2', _this select 0, diag_tickTime] spawn OKS_fnc_LogDebug;";
+        };
+    };
+};
+
+class Extended_GetIn_EventHandlers {
+    class UK3CB_BAF_Static_M6 {
+        class OKS_M6_GetIn {
+            getIn = "_this call OKS_fnc_M6_Add_Unpack_Actions";
+        };
+    };
+};
+
 class CfgSettings {
     class CBA {
         class Versioning {
