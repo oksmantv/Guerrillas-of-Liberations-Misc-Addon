@@ -17,6 +17,17 @@ if (!hasInterface) exitWith {
     0 
 };
 
+// Only allow adjustment when on foot
+if (vehicle player != player) exitWith { player getVariable ["GOL_IRIlluminator_Strength", 1] };
+
+// Only allow adjustment when in NVG/IR mode (prevents conflicts with other keybinds like ACE speed limiter)
+if (currentVisionMode player != 1) exitWith { player getVariable ["GOL_IRIlluminator_Strength", 1] };
+
+// Only allow adjustment when holding primary weapon with a GOL illuminator attached
+if (currentWeapon player != primaryWeapon player) exitWith { player getVariable ["GOL_IRIlluminator_Strength", 1] };
+private _flashlightItem = (primaryWeaponItems player) param [1, ""];
+if !(_flashlightItem in ["GOL_OX3000", "GOL_OX3000_LR", "GOL_OX3000_II", "GOL_OX3000_LR_II"]) exitWith { player getVariable ["GOL_IRIlluminator_Strength", 1] };
+
 params [
     ["_increase", true, [true]]
 ];
@@ -110,10 +121,10 @@ if (_newStrength != _currentStrength) then {
     // Determine model image and name
     private _modelImage = "\A3\weapons_F\Data\UI\gear_accv_pointer_CA.paa";
     private _modelName = "IR Illuminator";
-    if (_flashlightItem == "GOL_OX3000") then {
+    if (_flashlightItem in ["GOL_OX3000", "GOL_OX3000_LR"]) then {
         _modelName = "Dual Mode";
     } else {
-        if (_flashlightItem == "GOL_OX3000_II") then {
+        if (_flashlightItem in ["GOL_OX3000_II", "GOL_OX3000_LR_II"]) then {
             _modelName = "IR Illuminator";
         };
     };

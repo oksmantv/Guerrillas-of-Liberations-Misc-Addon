@@ -312,6 +312,8 @@ class RscTitles {
     #include "configs\CfgSatCamHUD.cpp"
 };
 
+#include "configs\CfgM6RangeCard.hpp"
+
 #include "configs\CfgJammerUILayout.cpp"
 #include "configs\CfgOrbat.cfg"
 #include "configs\compat\compat_bettir.hpp"
@@ -498,6 +500,9 @@ class Extended_GetIn_EventHandlers {
     class UK3CB_BAF_Static_M6 {
         class OKS_M6_GetIn {
             getIn = "_this call OKS_fnc_M6_Add_Unpack_Actions";
+        };
+        class OKS_M6_BallisticsFix {
+            getIn = "_this call OKS_fnc_M6_BallisticsFix";
         };
     };
 };

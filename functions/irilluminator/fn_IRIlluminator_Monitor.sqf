@@ -96,8 +96,8 @@ missionNamespace setVariable ["OKS_IRIlluminator_Monitor_Started", true];
                 private _irLaserActive = _unit isIRLaserOn _weapon;
                 private _bettirWeaponOn = _unit getVariable ['BettIR_weapon_illuminator_on', false];
                 
-                private _isDualMode = (_flashlightItem == "GOL_OX3000");
-                private _isIIMode = (_flashlightItem == "GOL_OX3000_II");
+                private _isDualMode = (_flashlightItem in ["GOL_OX3000", "GOL_OX3000_LR"]);
+                private _isIIMode = (_flashlightItem in ["GOL_OX3000_II", "GOL_OX3000_LR_II"]);
                 private _isIRIlluminator = _isDualMode || _isIIMode;
                 
                 // Unit should have light if:

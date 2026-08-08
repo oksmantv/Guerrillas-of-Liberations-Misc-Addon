@@ -184,3 +184,16 @@ class GOL_Packed_60mm_Smoke: ACE_ItemCore {
 		mass = 15;
 	};
 };
+class OKS_M6_RangeCard: ACE_ItemCore {
+	scope = 2;
+	author = "OksmanTV from Guerrillas of Liberation";
+	displayName = "M6 Rangetable";
+	descriptionUse = "Printed range table for the M6 mortar. Self-interact to view.";
+	descriptionShort = "M6 mortar range table. Self-interact to open.";
+	picture = "\z\ace\addons\mk6mortar\UI\icon_rangeTable.paa";
+	ACE_isTool = 1;
+	model = "\A3\weapons_F\ammo\mag_univ.p3d";
+	class ItemInfo: CBA_MiscItem_ItemInfo {
+		mass = 1;
+	};
+};

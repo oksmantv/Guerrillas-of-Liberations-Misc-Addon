@@ -306,7 +306,8 @@ ACE_maxWeightCarry = 3500;
 ACE_maxWeightDrag = 4500;
 
 if (hasInterface) then {
-    
+    showChat true;
+
     /* Add Paradrop Action to Gearboxes */
     [] spawn OKS_fnc_ParadropActions;
 
@@ -342,6 +343,18 @@ if (hasInterface) then {
     _condition = {leader group player == player};
     _action = ["Request_Support", "Request Support","\A3\ui_f\data\map\VehicleIcons\iconCrateVeh_ca.paa", {}, _condition] call ace_interact_menu_fnc_createAction;
     [typeOf player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToClass;
+
+    /* M6 Range Card — available when item is in inventory */
+    _action = [
+        "OKS_ViewM6RangeCard",
+        "View M6 Range Table",
+        "\z\ace\addons\mk6mortar\UI\icon_rangeTable.paa",
+        { [] call OKS_fnc_OpenM6RangeCard },
+        { "OKS_M6_RangeCard" in (items player) }
+    ] call ace_interact_menu_fnc_createAction;
+    [typeOf player, 1, ["ACE_SelfActions", "ACE_Equipment"], _action] call ace_interact_menu_fnc_addActionToClass;
+
+    /* Force standard M6 range table — override handled via Extended_GetIn_EventHandlers in config.cpp */
 
     /* Setup ORBAT Actions for Pilots */
     [] spawn OKS_fnc_Orbat_Action;

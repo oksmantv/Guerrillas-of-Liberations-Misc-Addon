@@ -44,11 +44,17 @@
 		private _taskId = convoy_3 getVariable ["OKS_Convoy_TaskId", ""];
 		waitUntil { sleep 5; taskState _taskId in ["SUCCEEDED", "FAILED"] };
 
+	13 - Flanking Route (Optional. Array of positions, objects, or markers the infantry walks after
+	     dismounting before their task fires. Armed vehicles escort the infantry to the destination.
+	     Supported entry types: Object (getPos), String (markerPos), Array (direct position).
+	     Empty array (default) skips flanking. Fully backwards compatible.)
+
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false] spawn OKS_fnc_Convoy_Spawn;
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "alternate"] spawn OKS_fnc_Convoy_Spawn;
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "successive"] spawn OKS_fnc_Convoy_Spawn;
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["rush"], "convoystop"] spawn OKS_fnc_Convoy_Spawn;
 	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25, 30],[true,6],[], false, false, ["rush"], "offroad"] spawn OKS_fnc_Convoy_Spawn;
+	[convoy_1,convoy_2,convoy_3,east,[4,["rhs_btr60_msv"], 6, 25],[true,6],[], false, false, ["hunt"], "alternate", nil, [flank_obj_1, "flank_marker_2", [1234,5678,0]]] spawn OKS_fnc_Convoy_Spawn;
 */
 
 if(!isServer) exitWith {};
@@ -66,7 +72,8 @@ Params [
 	["_DismountBehaviour", ["rush"], [[]]],
 	["_ParkingMode", "alternate", [false, ""]],
 	["_TaskArray", nil, [[],""]],
-	["_PreTaskId", "", [""]]
+	["_PreTaskId", "", [""]],
+	["_FlankingRoute", [], [[]]]
 ];
 
 // --- Normalise legacy bool values to enum strings ---
@@ -202,6 +209,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 	_Vehicle setVariable ["OKS_ForceSpeedActive", true, true];
 	_Vehicle setVariable ["OKS_LimitSpeedBase", _SpeedKph, true];
 	_Vehicle setVariable ["OKS_Convoy_Active", true, true];
+	_Vehicle setVariable ["OKS_Convoy_FlankingRoute", _FlankingRoute, true];
 	_Vehicle setVariable ["OKS_Convoy_ParkingMode", _ParkingMode, true];
 	_Vehicle setDir (getDir _Spawn);
 	_Vehicle setVehicleLock "LOCKED";
@@ -337,6 +345,7 @@ for "_i" from 0 to ((_Count - 1) + 4) do {
 		_CargoGroup = [_Vehicle, _Side, -1, _CargoCount, true] call OKS_fnc_AddVehicleCrew;
     };
 	_CargoGroup setBehaviour "CARELESS"; _CargoGroup setCombatMode "BLUE";
+	_Vehicle setVariable ["OKS_Convoy_CargoGroup", _CargoGroup, true];
     _ConvoyGroupArray pushBackUnique _Group; _ConvoyGroupArray pushBackUnique _CargoGroup;
 
 	if(_ForcedCareless) then {

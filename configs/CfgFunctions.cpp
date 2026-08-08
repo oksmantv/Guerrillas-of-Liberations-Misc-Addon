@@ -588,6 +588,7 @@ class CfgFunctions // Defines a function
 			class Convoy_DeleteAllWaypoints {};
 			class Convoy_DismountAndTaskCode {};
 			class Convoy_TaskTracker {};
+			class VehicleAttachSquad {};
 		};
 		
 		class OKS_Spawn_Convoy_AirDefence {
@@ -681,6 +682,14 @@ class CfgFunctions // Defines a function
 		class OKS_Intercom {
 			file = "\OKS_GOL_Misc\functions\playersetup";
 			class CollectIntercomHeadgear {};
+		};
+
+		class OKS_Mortar {
+			file = "\OKS_GOL_Misc\functions\mortar";
+			class OpenM6RangeCard {};
+			class M6RangeCardOnLoad {};
+			class M6RangeCardStep {};
+			class M6_BallisticsFix {};
 		};
 
 		class ace_irlight {
