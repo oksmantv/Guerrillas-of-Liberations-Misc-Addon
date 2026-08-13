@@ -10,17 +10,35 @@ _class = str(typeOf _Helicopter);
 _Helicopter addAction [
 	"M230: Switch to <t color='#FF6666'>AP</t>",
 	{ _this call OKS_fnc_M230_SwapAmmo },
-	["GOL_PylonWeapon_M230_AP", "GOL_PylonWeapon_M230_HE"],
+	["AP"],
 	6, false, true, "",
-	"driver _target == player && currentWeapon _target == 'GOL_weapon_M230_ChainGun' && 'GOL_PylonWeapon_M230_HE' in (getPylonMagazines _target) && (_target getVariable ['GOL_M230_AP_Ammo', 250]) > 0"
+	"driver _target == player && currentWeapon _target == 'GOL_weapon_M230_ChainGun' && ({ _x in ['GOL_PylonWeapon_M230_HE','GOL_PylonWeapon_M230_HE_L'] } count (getPylonMagazines _target)) > 0 && (_target getVariable ['GOL_M230_AP_Total', 999]) > 0"
 ];
 _Helicopter addAction [
 	"M230: Switch to <t color='#66FF66'>HE</t>",
 	{ _this call OKS_fnc_M230_SwapAmmo },
-	["GOL_PylonWeapon_M230_HE", "GOL_PylonWeapon_M230_AP"],
+	["HE"],
 	6, false, true, "",
-	"driver _target == player && currentWeapon _target == 'GOL_weapon_M230_ChainGun' && 'GOL_PylonWeapon_M230_AP' in (getPylonMagazines _target) && (_target getVariable ['GOL_M230_HE_Ammo', 250]) > 0"
+	"driver _target == player && currentWeapon _target == 'GOL_weapon_M230_ChainGun' && ({ _x in ['GOL_PylonWeapon_M230_AP','GOL_PylonWeapon_M230_AP_L'] } count (getPylonMagazines _target)) > 0 && (_target getVariable ['GOL_M230_HE_Total', 999]) > 0"
 ];
+
+// M230 ammo tracking — Fired EH counts rounds fired per magazine class.
+// GOL_M230_<magClass>_Fired is incremented once per round.
+// Remaining = configCount - firedCount; read by OKS_fnc_M230_SetPylon on swap.
+// Guard: only add on the machine where the helicopter is local to avoid double-counting.
+if (local _Helicopter) then {
+	_Helicopter addEventHandler ["Fired", {
+		params ["_vehicle", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine"];
+		if (_weapon != "GOL_weapon_M230_ChainGun") exitWith {};
+		private _varName = format ["GOL_M230_%1_Fired", _magazine];
+		private _newCount = (_vehicle getVariable [_varName, 0]) + 1;
+		_vehicle setVariable [_varName, _newCount, true];
+		// Log every 10th round to avoid RPT flood
+		if (_newCount % 10 == 0) then {
+			diag_log format ["[M230] Fired EH | %1 = %2 total fired", _magazine, _newCount];
+		};
+	}];
+};
 
 if (_class find "UH60" != -1) then {
 	_Helicopter addAction ["Open Right Cargo Door",{_target = _this select 0; _target animateDoor ['doorRB',1]; _target animate ['doorHandler_R',1]},nil,1.5,true,true,"","(_target getRelDir _this > 35) && _target getRelDir _this < 120 && _target doorPhase 'DoorRB' == 0 && _target distance _this < 6 && !(_this in _target)"];

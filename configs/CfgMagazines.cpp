@@ -1498,16 +1498,18 @@ class CfgMagazines {
 	class GOL_PylonWeapon_M230_HE: 250Rnd_30mm_HE_shells {
 		scope = 2;
 		author = "Guerrillas of Liberation";
-		displayName = "M230 30mm Chain Gun Pod (HE)";
+		displayName = "M230 30mm Chain Gun Pod (HE) - Right";
 		displayNameShort = "M230 HE Belt";
-		descriptionShort = "M230 30mm Chain Gun | HE 250 rounds";
+		descriptionShort = "M230 30mm Chain Gun | HE 300 rounds";
+        selectionFireAnim = "zasleh";
 		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
 		count = 300;
-		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
-		muzzlePos = "muzzlePos";
-		muzzleEnd = "muzzleEnd";
-		hardpoints[] = {"DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+		model = "\a3\Weapons_F\DynamicLoadout\PylonPod_HeavyMinigun_Heli_Transport_01_R_F.p3d";
+		muzzlePos = "machinegun_beg";
+		muzzleEnd = "machinegun_end";
+		hardpoints[] = {"B_GAU19_HELI_R", "DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
 		pylonWeapon = "GOL_weapon_M230_ChainGun";
+        pylonMirrorClass = "GOL_PylonWeapon_M230_HE_L";       
 		mass = 200;
 	};
 
@@ -1517,17 +1519,60 @@ class CfgMagazines {
 	class GOL_PylonWeapon_M230_AP: 250Rnd_30mm_APDS_shells {
 		scope = 2;
 		author = "Guerrillas of Liberation";
-		displayName = "M230 30mm Chain Gun Pod (AP)";
+		displayName = "M230 30mm Chain Gun Pod (AP) - Right";
 		displayNameShort = "M230 AP Belt";
-		descriptionShort = "M230 30mm Chain Gun | AP 250 rounds";
+		descriptionShort = "M230 30mm Chain Gun | AP 300 rounds";
+        selectionFireAnim = "zasleh";
 		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
 		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
 		count = 300;
-		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
-		muzzlePos = "muzzlePos";
-		muzzleEnd = "muzzleEnd";
-		hardpoints[] = {"DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+		model = "\a3\Weapons_F\DynamicLoadout\PylonPod_HeavyMinigun_Heli_Transport_01_R_F.p3d";
+        muzzlePos = "machinegun_beg";
+		muzzleEnd = "machinegun_end";
+		hardpoints[] = {"B_GAU19_HELI_R", "DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
 		pylonWeapon = "GOL_weapon_M230_ChainGun";
+        pylonMirrorClass = "GOL_PylonWeapon_M230_AP_L";
 		mass = 200;
 	};
+
+	// HE pylon pod — fragmentation/blast, effective vs infantry and light vehicles
+	class GOL_PylonWeapon_M230_HE_L: 250Rnd_30mm_HE_shells {
+		scope = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M230 30mm Chain Gun Pod (HE) - Left";
+		displayNameShort = "M230 HE Belt";
+		descriptionShort = "M230 30mm Chain Gun | HE 300 rounds";
+        selectionFireAnim = "zasleh";
+		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
+		count = 300;
+		model = "\a3\Weapons_F\DynamicLoadout\PylonPod_HeavyMinigun_Heli_Transport_01_L_F.p3d";
+		muzzlePos = "machinegun_beg";
+		muzzleEnd = "machinegun_end";
+		hardpoints[] = {"B_GAU19_HELI_L", "DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+		pylonWeapon = "GOL_weapon_M230_ChainGun";
+        pylonMirrorClass = "GOL_PylonWeapon_M230_HE";
+		mass = 200;
+	};
+
+	// AP ammo belt — baked into all GOL pylon-capable helicopter classes.
+	// Provides AP ammo for in-flight cycling (ammo-cycle key) once the
+	// M230 HE pod is loaded. Not visible in the Eden pylon screen.
+	class GOL_PylonWeapon_M230_AP_L: 250Rnd_30mm_APDS_shells {
+		scope = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M230 30mm Chain Gun Pod (AP) - Left";
+		displayNameShort = "M230 AP Belt";
+		descriptionShort = "M230 30mm Chain Gun | AP 300 rounds";
+        selectionFireAnim = "zasleh";
+		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
+		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
+		count = 300;
+		model = "\a3\Weapons_F\DynamicLoadout\PylonPod_HeavyMinigun_Heli_Transport_01_L_F.p3d";
+		muzzlePos = "machinegun_beg";
+		muzzleEnd = "machinegun_end";
+		hardpoints[] = {"B_GAU19_HELI_L", "DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+		pylonWeapon = "GOL_weapon_M230_ChainGun";
+        pylonMirrorClass = "GOL_PylonWeapon_M230_AP";
+		mass = 200;
+	};   
 };

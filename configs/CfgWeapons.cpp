@@ -365,20 +365,37 @@ class CfgWeapons {
 				showToPlayer = 1;
                 aiDispersionCoefY = 0.5;
                 aiDispersionCoefX = 0.5;
+				cartridgePos = "nabojnicestart";
+				cartridgeVel = "nabojniceend";
+				muzzleEnd = "machinegun_end";
+				muzzlePos = "machinegun_beg";
+				selectionFireAnim = "zasleh";
                 soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
                 rhs_burstLimiter = 1200;
                 magazines[] = {
-                        "GOL_PylonWeapon_M230_HE",
-                        "GOL_PylonWeapon_M230_AP"
+					"GOL_PylonWeapon_M230_HE",
+					"GOL_PylonWeapon_M230_AP",
+					"GOL_PylonWeapon_M230_HE_L",
+					"GOL_PylonWeapon_M230_AP_L"
                 };
                 modes[] = {"HighROF", "LowROF", "close", "short", "medium", "far"};
 
                 class GunParticles {
-                        class Effect {
-                                effectName = "MachineGun3";
-                                positionName = "memMuzzle";
-                                directionName = "memGunTip";
-                        };
+					class Effect1 {
+						directionName = "machinegun_eject_dir";
+						effectName = "MachineGunCartridge";
+						positionName = "machinegun_eject_pos";
+					};
+					class FirstEffect {
+						directionName = "machinegun_beg";
+						effectName = "MachineGun2";
+						positionName = "machinegun_end";
+					};
+					class SecondEffect {
+						directionName = "machinegun_beg";
+						effectName = "MachineGun2";
+						positionName = "machinegun_end";
+					};										
                 };
 
                 // 650 RPM

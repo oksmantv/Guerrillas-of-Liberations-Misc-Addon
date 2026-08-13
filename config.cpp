@@ -251,7 +251,9 @@ class CfgPatches
 			"GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow",
 			// M230 30mm Chain Gun Pod magazines
 			"GOL_PylonWeapon_M230_HE",
-			"GOL_PylonWeapon_M230_AP"
+			"GOL_PylonWeapon_M230_AP",
+			"GOL_PylonWeapon_M230_HE_L",
+			"GOL_PylonWeapon_M230_AP_L"
 		};
 	};
 
