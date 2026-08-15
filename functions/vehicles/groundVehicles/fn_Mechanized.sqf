@@ -117,7 +117,7 @@ if (_Vehicle isKindOf "LandVehicle") then {
     if (_hasHECannon) then {
         _Vehicle setVariable ["OKS_ProxRound_Capable", true, true];
 		diag_log format ["[MECHANIZED] Proximity fuse enabled for %1", typeOf _Vehicle];
-        _Vehicle addAction [
+        [_Vehicle, [
             "<t color='#FFB300'>Proximity Fuse: </t><img image='\a3\ui_f\data\IGUI\Cfg\Actions\ico_OFF_ca.paa' size='1'/>",
             {
 				private _veh    = _this select 0;
@@ -134,8 +134,8 @@ if (_Vehicle isKindOf "LandVehicle") then {
 			},
             nil, 1.5, true, true, "",
             "(_this != vehicle _this) && (gunner _target == _this) && (_target getVariable ['OKS_ProxRound_Active', false])"
-        ];
-        _Vehicle addAction [
+        ]] remoteExec ["addAction", 0];
+        [_Vehicle, [
             "<t color='#66FF66'>Proximity Fuse: </t><img image='\a3\ui_f\data\IGUI\Cfg\Actions\ico_ON_ca.paa' size='1'/>",
             {
 				private _veh    = _this select 0;
@@ -153,7 +153,7 @@ if (_Vehicle isKindOf "LandVehicle") then {
 			},
             nil, 1.5, true, true, "",
             "(_this != vehicle _this) && (gunner _target == _this) && !(_target getVariable ['OKS_ProxRound_Active', false])"
-        ];
+        ]] remoteExec ["addAction", 0];
 
         // Add FiredEH on ALL machines so it fires on the gunner's client too.
         // The handler gates on (local _gunner) — only the gunner's machine processes it,
