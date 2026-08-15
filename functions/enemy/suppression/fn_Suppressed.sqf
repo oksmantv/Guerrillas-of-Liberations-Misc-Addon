@@ -53,8 +53,8 @@ _Unit setVariable ["GOL_SuppressedMax",_MaximumTime,true];
 _Unit addEventHandler ["Suppressed", {
 	params ["_unit", "_distance", "_shooter", "_instigator", "_ammoObject", "_ammoClassName", "_ammoConfig"];
 
-    private _isNotPlayer = (!isPlayer _shooter || !isPlayer _instigator);
-    private _isNotNearbyShot = (_distance > 5);
+    private _isNotPlayer = (!isPlayer _shooter && !isPlayer _instigator);
+    private _isNotNearbyShot = (_distance > 10);
     private _isNotEnemy = (side (group _shooter)) getFriend (side (group _unit)) > 0.6;
     if(_isNotPlayer || _isNotEnemy || _isNotNearbyShot) exitWith {};
 
@@ -66,4 +66,30 @@ _Unit addEventHandler ["Suppressed", {
     };
 
     [_unit] spawn OKS_fnc_SuppressedHandler;
+}];
+
+_Unit addEventHandler ["AmmoExplodedNear", {
+    params ["_unit", "_shot", "_position", "_velocity", "_ammo", "_explosive", "_indirectHit", "_invArmor", "_damage"];
+
+    // Only process explosive ammo (filters out regular bullets)
+    if (_explosive <= 0) exitWith {};
+
+    // Check distance from explosion to unit (both in ASL space)
+    private _expRadius = missionNamespace getVariable ["GOL_Suppression_ExplosionRadius", 40];
+    if ((getPosASL _unit) distance _position > _expRadius) exitWith {};
+
+    // Skip if already suppressed or mounted in a vehicle
+    if (_unit getVariable ["GOL_IsSuppressed", false]) exitWith {};
+    if (vehicle _unit != _unit) exitWith {};
+
+    private _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug", false];
+    if (_Suppressed_Debug) then {
+        private _dist = round ((getPosASL _unit) distance _position);
+        format ["[SUPPRESS] %1 suppressed by explosion (%2) at %3m", name _unit, _ammo, _dist] spawn OKS_fnc_LogDebug;
+    };
+
+    // Manually raise suppression since explosions do not trigger getSuppression natively
+    private _multiplier = missionNamespace getVariable ["GOL_Suppression_ExplosionMultiplier", 2];
+    _unit setSuppression 1;
+    [_unit, _multiplier] spawn OKS_fnc_SuppressedHandler;
 }];

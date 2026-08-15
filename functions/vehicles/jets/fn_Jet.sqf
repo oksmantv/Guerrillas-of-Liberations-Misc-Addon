@@ -67,13 +67,8 @@ while {alive _aircraft} do {
                     _x setSuppression 1;
                     [_x, _multiplier] spawn OKS_fnc_SuppressedHandler;
                     format ["[FLYBY] %1 Suppressed by jet %2", name _x, name driver _aircraft] spawn OKS_fnc_LogDebug;
-                    _x spawn {
-                        params ["_x"];
-                        sleep 30;
-                        _x setVariable ["GOL_JetSuppressed",false,true];
-                    };
+                    [{ (_this select 0) setVariable ["GOL_JetSuppressed",false,true]; }, [_x], 30] call CBA_fnc_waitAndExecute;
                 };
-                sleep 0.1;
             } forEach _enemies;
         };
         sleep 0.1;

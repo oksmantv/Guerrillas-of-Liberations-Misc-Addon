@@ -350,7 +350,11 @@ if (hasInterface) then {
         "View M6 Range Table",
         "\z\ace\addons\mk6mortar\UI\icon_rangeTable.paa",
         { [] call OKS_fnc_OpenM6RangeCard },
-        { "OKS_M6_RangeCard" in (items player) }
+        { 
+            "OKS_M6_RangeCard" in (items player) &&
+            typeof vehicle player != "UK3CB_BAF_Static_M6" &&
+            currentWeapon vehicle player != "UK3CB_BAF_M6_veh" 
+        }
     ] call ace_interact_menu_fnc_createAction;
     [typeOf player, 1, ["ACE_SelfActions", "ACE_Equipment"], _action] call ace_interact_menu_fnc_addActionToClass;
 
