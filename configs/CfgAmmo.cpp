@@ -196,6 +196,32 @@ class CfgAmmo {
 
 	// Custom drone warhead classes (reduced lethality variants)
 	class G_40mm_HE;
+
+	// Proximity fuse air burst charge — spawned at altitude by OKS_fnc_ProxRound_TrackRound.
+	// fuzeMaxTime causes the round to self-detonate in-place rather than waiting for terrain impact,
+	// producing a full HE explosion with ACE fragmentation at the exact air position.
+	// Custom APERS mine ammo for OKS_ProxMine_AP — half the explosive power of vanilla
+	// APERSMine_Range_Ammo. explosionEffects/CraterEffects nulled: visual comes from
+	// OKS_ProxFuze_Airburst; we only want the pressure wave and ACE frag shrapnel.
+	class APERSMine_Range_Ammo;
+	class OKS_ProxMine_AP_Ammo : APERSMine_Range_Ammo {
+		indirectHit = 5;
+		indirectHitRange = 2.5;
+		explosionEffects = "";
+		CraterEffects = "";
+		ace_frag_charge = 25;
+		ace_frag_force = 0.5;
+		ace_frag_gurney_c = 1350;
+		ace_frag_gurney_k = 0.166667;
+		ace_frag_metal = 400;
+		ace_frag_classes[] = {"ace_frag_large_HD", "ace_frag_large_HD", "ace_frag_large_HD"};
+	};
+
+	class OKS_ProxFuze_Airburst : G_40mm_HE {
+		fuzeMinTime = 0;
+		fuzeMaxTime = 0.05;
+	};
+
 	class OKS_Drone_Warhead_Small: G_40mm_HE {
 		hit = 80;
 		indirectHit = 15;

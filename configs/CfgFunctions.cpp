@@ -23,6 +23,9 @@ class CfgFunctions // Defines a function
 			class M6_Auto_Reload_Handler {};
 			class M6_Add_Unpack_Actions {};
 			class M6_Flare_Altitude_Deploy {};
+			class ProxRound_Init {};
+			class ProxRound_FiredHandler {};
+			class ProxRound_TrackRound {};
 		};
 
 		class OKS_Tasks {

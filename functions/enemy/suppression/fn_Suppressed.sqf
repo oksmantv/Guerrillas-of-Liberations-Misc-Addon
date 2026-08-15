@@ -82,14 +82,28 @@ _Unit addEventHandler ["AmmoExplodedNear", {
     if (_unit getVariable ["GOL_IsSuppressed", false]) exitWith {};
     if (vehicle _unit != _unit) exitWith {};
 
+    // Scale suppression by indirectHit (explosion power) and distance using a power falloff.
+    // _indirectHit is already provided by the EH params (matches CfgAmmo >> indirectHit).
+    // Reference values: grenade ~8, 60mm mortar ~30, 82mm ~50, 120mm mortar ~80
+    // Tuned targets:
+    //   Grenade at <=10m  -> 1 hit suppresses
+    //   Grenade at ~20m   -> 2-3 hits
+    //   60mm at ~50m      -> 2 hits
+    //   120mm at ~50m     -> 1 hit suppresses
+    private _dist = ((getPosASL _unit) distance _position) max 1;
+    private _suppressAdd = ((2.5 * _indirectHit) / (_dist ^ 1.3)) min 0.9;
+    private _newSuppression = ((getSuppression _unit) + _suppressAdd) min 1.0;
+    _unit setSuppression _newSuppression;
+
     private _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug", false];
     if (_Suppressed_Debug) then {
-        private _dist = round ((getPosASL _unit) distance _position);
-        format ["[SUPPRESS] %1 suppressed by explosion (%2) at %3m", name _unit, _ammo, _dist] spawn OKS_fnc_LogDebug;
+        format ["[SUPPRESS] %1 explosion (%2) at %3m: +%4 suppression -> %5", name _unit, _ammo, round _dist, _suppressAdd, _newSuppression] spawn OKS_fnc_LogDebug;
     };
 
-    // Manually raise suppression since explosions do not trigger getSuppression natively
-    private _multiplier = missionNamespace getVariable ["GOL_Suppression_ExplosionMultiplier", 2];
-    _unit setSuppression 1;
-    [_unit, _multiplier] spawn OKS_fnc_SuppressedHandler;
+    // Only invoke suppression handler once threshold is crossed
+    private _threshold = _unit getVariable ["GOL_SuppressedThreshold", 0.75];
+    if (_newSuppression > _threshold) then {
+        private _multiplier = missionNamespace getVariable ["GOL_Suppression_ExplosionMultiplier", 2];
+        [_unit, _multiplier] spawn OKS_fnc_SuppressedHandler;
+    };
 }];

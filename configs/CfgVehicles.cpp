@@ -49,6 +49,25 @@ class CfgVehicles {
         };
     };
 
+    // Custom air burst APERS charge — reduced power and no smoke cloud.
+    // Used by OKS_fnc_ProxRound_TrackRound as the proximity fuse shrapnel source.
+    // Half the indirectHit/indirectHitRange of vanilla APERSMine; explosionEffects
+    // blanked so the heavy smoke cloud is suppressed (visual comes from OKS_ProxFuze_Airburst).
+    class APERSMine;
+    class OKS_ProxMine_AP : APERSMine {
+        ammo = "OKS_ProxMine_AP_Ammo";
+        indirectHit = 5;
+        indirectHitRange = 2.5;
+        explosionEffects = "";
+        CraterEffects = "";
+        ace_frag_charge = 25;
+        ace_frag_force = 0.5;
+        ace_frag_gurney_c = 1350;
+        ace_frag_gurney_k = 0.166667;
+        ace_frag_metal = 400;
+        ace_frag_classes[] = {"ace_frag_large_HD", "ace_frag_large_HD", "ace_frag_large_HD"};
+    };
+
 // Static weapons — ACE packing actions
 #include "vehicles\static_weapons.hpp"
 
