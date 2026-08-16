@@ -55,25 +55,12 @@ if (_dist >= _range) then {
     _wall setObjectTextureGlobal [0, ""];
     [{deleteVehicle (_this select 0)}, [_wall], 0.1] call CBA_fnc_waitAndExecute;
 
-    // G_40mm_HE grenade hits a second invisible canister 0.5m below the detonation point.
-    // Detonates natively in the air — full HE explosion visual + ACE frag spreading
-    // outward from the air position, catching targets in defilade below.
+    // Custom APERS charge — full power at range, reduced at <100m to prevent ACE frag lag spike.
     private _shotParents = getShotParents _projectile;
-    private _grenadeWallPos = _detonatePos vectorAdd (_dir vectorMultiply 0.5);
-    private _grenadeWall = createVehicle ["Land_CanisterFuel_F", ASLToATL _grenadeWallPos, [], 0, "FLY"];
-    _grenadeWall setPosASL _grenadeWallPos;
-    _grenadeWall setObjectTextureGlobal [0, ""];
-    [{deleteVehicle (_this select 0)}, [_grenadeWall], 0.1] call CBA_fnc_waitAndExecute;
-
-    private _exp = createVehicle ["OKS_ProxFuze_Airburst", ASLToATL _detonatePos, [], 0, "FLY"];
-    _exp setPosASL _detonatePos;
-    _exp setShotParents _shotParents;
-    _exp setVelocity (_dir vectorMultiply 200);
-
-    // Custom APERS charge — half-power, no smoke cloud, omnidirectional shrapnel spread.
-    private _primer = createMine ["OKS_ProxMine_AP", ASLToATL _detonatePos, [], 0];
+    private _mineClass = if (_range < 100) then {"OKS_ProxMine_AP_Short"} else {"OKS_ProxMine_AP"};
+    private _primer = createMine [_mineClass, ASLToATL _detonatePos, [], 0];
     _primer setPosASL _detonatePos;
-    _primer setDamage [1, true];
+    _primer setDamage 1;
 
-    diag_log format ["[TRACKROUND] Detonation: wall=%1 exp=%2 pos=%3", _wall, _exp, _detonatePos];
+    diag_log format ["[TRACKROUND] Detonation: wall=%1 primer=%2 pos=%3", _wall, _primer, _detonatePos];
 };

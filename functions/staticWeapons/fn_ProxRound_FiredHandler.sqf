@@ -46,7 +46,7 @@ if (getNumber (configFile >> "CfgAmmo" >> _ammo >> "indirectHit") <= 0) exitWith
 if (getNumber (configFile >> "CfgAmmo" >> _ammo >> "explosive")   <= 0) exitWith { diag_log format ["[PROXROUND] EXIT: explosive=0 for %1", _ammo]; };
 
 // --- Fuse distance from the gunner's ACE FCS lase (T) ---
-private _range = currentZeroing _gunner;
+private _range = (currentZeroing _gunner) + 5;
 if (_range <= 0) exitWith { diag_log "[PROXROUND] EXIT: zeroing=0 — lase target first (T)"; };
 
 diag_log format ["[PROXROUND] Tracking round | ammo=%1 range=%2m projectile=%3", _ammo, _range, _projectile];

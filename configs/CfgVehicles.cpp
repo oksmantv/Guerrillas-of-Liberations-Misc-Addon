@@ -54,17 +54,35 @@ class CfgVehicles {
     // Half the indirectHit/indirectHitRange of vanilla APERSMine; explosionEffects
     // blanked so the heavy smoke cloud is suppressed (visual comes from OKS_ProxFuze_Airburst).
     class APERSMine;
+
+    // Full-power air burst — used at >= 100m. ~60 large mixed fragments, full force.
     class OKS_ProxMine_AP : APERSMine {
         ammo = "OKS_ProxMine_AP_Ammo";
-        indirectHit = 5;
-        indirectHitRange = 2.5;
+        indirectHit = 8;
+        indirectHitRange = 6;
         explosionEffects = "";
         CraterEffects = "";
-        ace_frag_charge = 25;
+        ace_frag_charge = 40;
+        ace_frag_force = 1;
+        ace_frag_gurney_c = 1350;
+        ace_frag_gurney_k = 0.166667;
+        ace_frag_metal = 600;
+        ace_frag_classes[] = {"ace_frag_large", "ace_frag_large_HD", "ace_frag_large"};
+    };
+
+    // Short-range air burst — used at < 100m to prevent ACE frag spike lag.
+    // Fewer fragments, lower force, same no-smoke setup.
+    class OKS_ProxMine_AP_Short : APERSMine {
+        ammo = "OKS_ProxMine_AP_Ammo";
+        indirectHit = 5;
+        indirectHitRange = 4;
+        explosionEffects = "";
+        CraterEffects = "";
+        ace_frag_charge = 15;
         ace_frag_force = 0.5;
         ace_frag_gurney_c = 1350;
         ace_frag_gurney_k = 0.166667;
-        ace_frag_metal = 400;
+        ace_frag_metal = 150;
         ace_frag_classes[] = {"ace_frag_large_HD", "ace_frag_large_HD", "ace_frag_large_HD"};
     };
 

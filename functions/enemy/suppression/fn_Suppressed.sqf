@@ -70,6 +70,7 @@ _Unit addEventHandler ["Suppressed", {
 
 _Unit addEventHandler ["AmmoExplodedNear", {
     params ["_unit", "_shot", "_position", "_velocity", "_ammo", "_explosive", "_indirectHit", "_invArmor", "_damage"];
+    _Instigator = getShotParents _shot;
 
     // Only process explosive ammo (filters out regular bullets)
     if (_explosive <= 0) exitWith {};
@@ -81,6 +82,10 @@ _Unit addEventHandler ["AmmoExplodedNear", {
     // Skip if already suppressed or mounted in a vehicle
     if (_unit getVariable ["GOL_IsSuppressed", false]) exitWith {};
     if (vehicle _unit != _unit) exitWith {};
+    if(!isNil "_Instigator" && ((side group (_Instigator select 1)) getFriend (side group _unit) >= 0.6)) exitWith {
+        diag_log format ["[SUPPRESS] Instigator: %1", str (_Instigator select 1)] spawn OKS_fnc_LogDebug;
+        format ["[SUPPRESS] %1 is friendly to instigator %2. Exiting.", name _unit, name (_Instigator select 1)] spawn OKS_fnc_LogDebug;
+    };
 
     // Scale suppression by indirectHit (explosion power) and distance using a power falloff.
     // _indirectHit is already provided by the EH params (matches CfgAmmo >> indirectHit).
@@ -96,8 +101,8 @@ _Unit addEventHandler ["AmmoExplodedNear", {
     _unit setSuppression _newSuppression;
 
     private _Suppressed_Debug = missionNamespace getVariable ["GOL_Suppression_Debug", false];
-    if (_Suppressed_Debug) then {
-        format ["[SUPPRESS] %1 explosion (%2) at %3m: +%4 suppression -> %5", name _unit, _ammo, round _dist, _suppressAdd, _newSuppression] spawn OKS_fnc_LogDebug;
+    if (_Suppressed_Debug) then {    
+        format ["[SUPPRESS] %1 explosion (%2) at %3m: +%4 suppression -> %5 by %6", name _unit, _ammo, round _dist, _suppressAdd, _newSuppression, _Instigator] spawn OKS_fnc_LogDebug;
     };
 
     // Only invoke suppression handler once threshold is crossed
