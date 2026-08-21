@@ -45,6 +45,14 @@ if (getNumber (configFile >> "CfgAmmo" >> _ammo >> "indirectHit") <= 0) exitWith
 // Must have an explosive charge — excludes APFSDS that has non-zero indirectHit in config
 if (getNumber (configFile >> "CfgAmmo" >> _ammo >> "explosive")   <= 0) exitWith { diag_log format ["[PROXROUND] EXIT: explosive=0 for %1", _ammo]; };
 
+// Weapon class ignore list — missiles, ATGMs, and launchers whose rounds pass the
+// ammo filters but must never be proximity-fused (they are self-guided or unrelated).
+private _ignoredWeapons = [
+    "rhs_weap_9m113",       // BMP-2DM Konkurs ATGM
+    "rhs_weap_9m113m"       // Konkurs-M variant
+];
+if (_weapon in _ignoredWeapons) exitWith { diag_log format ["[PROXROUND] EXIT: weapon %1 in ignore list", _weapon]; };
+
 // --- Fuse distance from the gunner's ACE FCS lase (T) ---
 private _range = (currentZeroing _gunner) + 5;
 if (_range <= 0) exitWith { diag_log "[PROXROUND] EXIT: zeroing=0 — lase target first (T)"; };

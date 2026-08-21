@@ -114,6 +114,7 @@ class CfgPatches
             "rhs_beret_vdv1_GOL",
             "rhs_beret_vdv2_GOL",
             "rhs_beret_vdv3_GOL",
+            "rhs_ssh68_2_GOL",
             "OKS_DroneDisruptor_Pistol",
             "GOL_MMG_01_tan_F",
             "GOL_MMG_01_hex_F",
@@ -276,6 +277,18 @@ class CfgPatches
         skipWhenMissingDependencies = 1;
         units[] = {};
         weapons[] = {};
+        magazines[] = {};
+    };
+
+    class GOL_MISC_COMPAT_RHSGREF {
+        requiredAddons[] = {"rhsgref_main"};
+        requiredVersion = 2.14;
+        author = "OksmanTV";
+        skipWhenMissingDependencies = 1;
+        units[] = {};
+        weapons[] = {
+            "rhsgref_ssh68_vsr_GOL"
+        };
         magazines[] = {};
     };
 
