@@ -388,6 +388,7 @@ class CfgFunctions // Defines a function
 			class ScudIntercept_OnFired {};
 			class ScudIntercept_PickTargetPos {};
 			class ScudIntercept_LaunchAI {};
+			class VLS_SimpleLaunchAndDelete {};
 		};
 
 		class OKS_PlayerSetup {
@@ -516,6 +517,7 @@ class CfgFunctions // Defines a function
 			class DroneHuntZone {};
 			class Helicopter_Attack {};
 			class BuildingRestCamp {};
+			class Inactive_VehicleSpawn {};
 		};
 
 		class OKS_Jammer {

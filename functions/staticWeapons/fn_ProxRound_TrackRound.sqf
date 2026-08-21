@@ -24,7 +24,7 @@
  */
 
 params ["_args", "_handle"];
-_args params ["_projectile", "_muzzlePos", "_range", "_ammoType"];
+_args params ["_projectile", "_muzzlePos", "_range", "_ammoType", ["_weaponClass", "", [""]]];
 
 // Round hit something naturally before reaching fuse distance — stop tracking
 if (isNull _projectile || {!alive _projectile}) exitWith {
@@ -46,21 +46,65 @@ if (_dist >= _range) then {
     private _dir = _muzzlePos vectorFromTo _currentPos;
     private _detonatePos = _muzzlePos vectorAdd (_dir vectorMultiply _range);
 
-    // Interceptor — tiny fuel canister placed directly in the round's flight path.
-    // setObjectTextureGlobal [""] makes the model invisible while keeping geo LOD (collision).
-    // Object is cleaned up 0.1s after creation (round has already impacted by then).
-    private _wallPos = _currentPos vectorAdd (_dir vectorMultiply 0.5);
-    private _wall = createVehicle ["Land_CanisterFuel_F", ASLToATL _wallPos, [], 0, "FLY"];
-    _wall setPosASL _wallPos;
-    _wall setObjectTextureGlobal [0, ""];
-    [{deleteVehicle (_this select 0)}, [_wall], 0.1] call CBA_fnc_waitAndExecute;
+    // Weapons whose rounds don't reliably trigger on the invisible canister interceptor.
+    // Keyed on weapon classname — one entry covers all vehicle variants using that cannon.
+    // Add classnames here as new calibres/platforms are confirmed (check RPT for weapon=%1).
+    private _noCanisterList = [
+        "rhs_weap_2a42",        // vanilla RHS BMP-2DM
+        "GOL_weap_2a42_HE",     // GOL custom HE-only variant
+        "autocannon_30mm",      // vanilla A3 30mm (Lynx, Mora, etc.)
+        "autocannon_30mm_CTWS"  // vanilla A3 30mm CTWS (AMV-7)
+    ];
+    private _noCanister = _weaponClass in _noCanisterList;
 
-    // Custom APERS charge — full power at range, reduced at <100m to prevent ACE frag lag spike.
-    private _shotParents = getShotParents _projectile;
-    private _mineClass = if (_range < 100) then {"OKS_ProxMine_AP_Short"} else {"OKS_ProxMine_AP"};
-    private _primer = createMine [_mineClass, ASLToATL _detonatePos, [], 0];
-    _primer setPosASL _detonatePos;
-    _primer setDamage 1;
+    // AGL-based mine power scaling — compute before detonation path so no-canister
+    // can decide whether to delete the round (only delete if a mine will actually spawn).
+    private _terrainH = getTerrainHeightASL [_detonatePos select 0, _detonatePos select 1];
+    private _agl = (_detonatePos select 2) - _terrainH;
 
-    diag_log format ["[TRACKROUND] Detonation: wall=%1 primer=%2 pos=%3", _wall, _primer, _detonatePos];
+    private _mineClass = "";
+    if (_range < 100) then {
+        // Short range: only spawn mine if close to the ground (avoid wasted frag above cover)
+        if (_agl <= 5) then { _mineClass = "OKS_ProxMine_40mm_AP_Short" };
+    } else {
+        _mineClass = switch (true) do {
+            case (_agl > 15): { "" };                           // Too high — skip mine entirely
+            case (_agl > 10): { "OKS_ProxMine_40mm_AP_High" };  // 10-15m — 25% power
+            case (_agl > 5):  { "OKS_ProxMine_40mm_AP_Med" };   // 5-10m  — 50% power
+            default           { "OKS_ProxMine_40mm_AP" };        // <= 5m  — full power
+        };
+    };
+
+    if (_noCanister) then {
+        if (_mineClass != "") then {
+            // Only delete the round when a mine will replace it visually.
+            // If AGL check skips the mine, let the round continue naturally.
+            deleteVehicle _projectile;
+            private _spawnClass = _mineClass + "_FX";
+            private _primer = createMine [_spawnClass, ASLToATL _detonatePos, [], 0];
+            _primer setPosASL _detonatePos;
+            _primer setDamage 1;
+            diag_log format ["[TRACKROUND] No-canister detonation: class=%1 agl=%2m", _spawnClass, _agl];
+        } else {
+            diag_log format ["[TRACKROUND] No-canister: AGL too high (%1m) — round continues", _agl];
+        };
+    } else {
+        // Interceptor — always blocks the round; native HE explosion provides the visual.
+        private _wallPos = _currentPos vectorAdd (_dir vectorMultiply 0.5);
+        private _wall = createVehicle ["Land_CanisterFuel_F", ASLToATL _wallPos, [], 0, "FLY"];
+        _wall setPosASL _wallPos;
+        _wall setObjectTextureGlobal [0, ""];
+        [{deleteVehicle (_this select 0)}, [_wall], 0.1] call CBA_fnc_waitAndExecute;
+
+        if (_mineClass != "") then {
+            private _primer = createMine [_mineClass, ASLToATL _detonatePos, [], 0];
+            _primer setPosASL _detonatePos;
+            _primer setDamage 1;
+            diag_log format ["[TRACKROUND] Canister detonation: class=%1 agl=%2m", _mineClass, _agl];
+        } else {
+            diag_log format ["[TRACKROUND] Canister only — AGL too high for mine (%1m)", _agl];
+        };
+    };
+
+    diag_log format ["[TRACKROUND] Complete: weapon=%1 agl=%2m noCanister=%3", _weaponClass, _agl, _noCanister];
 };

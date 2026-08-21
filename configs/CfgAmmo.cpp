@@ -200,24 +200,33 @@ class CfgAmmo {
 	// Proximity fuse air burst charge — spawned at altitude by OKS_fnc_ProxRound_TrackRound.
 	// fuzeMaxTime causes the round to self-detonate in-place rather than waiting for terrain impact,
 	// producing a full HE explosion with ACE fragmentation at the exact air position.
-	// Custom APERS mine ammo for OKS_ProxMine_AP — half the explosive power of vanilla
+	// Custom APERS mine ammo for OKS_ProxMine_40mm_AP — half the explosive power of vanilla
 	// APERSMine_Range_Ammo. explosionEffects/CraterEffects nulled: visual comes from
 	// OKS_ProxFuze_Airburst; we only want the pressure wave and ACE frag shrapnel.
 	class APERSMine_Range_Ammo;
-	class OKS_ProxMine_AP_Ammo : APERSMine_Range_Ammo {
+	class OKS_ProxMine_40mm_AP_Ammo : APERSMine_Range_Ammo {
+		model = "";
 		indirectHit = 5;
 		indirectHitRange = 2.5;
 		explosionEffects = "";
 		CraterEffects = "";
-		ace_frag_charge = 25;
-		ace_frag_force = 0.5;
-		ace_frag_gurney_c = 1350;
+		explosionAngle = 60;
+		ace_frag_charge = 6;
+		ace_frag_force = 1.5;
+		ace_frag_gurney_c = 280;
 		ace_frag_gurney_k = 0.166667;
-		ace_frag_metal = 400;
-		ace_frag_classes[] = {"ace_frag_large_HD", "ace_frag_large_HD", "ace_frag_large_HD"};
+		ace_frag_metal = 30;   // ~5-8 sparse fragments — not enough to blanket the sphere
+		ace_frag_classes[] = {"ace_frag_large", "ace_frag_large", "ace_frag_large"};
 	};
 
-	class OKS_ProxFuze_Airburst : G_40mm_HE {
+	// FX variant — used by no-canister path (round deleted, no native HE explosion).
+	// Identical damage/frag properties; explosion and crater effects re-enabled for the visual.
+	class OKS_ProxMine_40mm_AP_Ammo_FX : OKS_ProxMine_40mm_AP_Ammo {
+		explosionEffects = "ExploAmmoExplosion";  // cannon-round effect — enhanced by graphical mods
+		CraterEffects = "";  // air burst — no ground crater
+	};
+
+	class OKS_ProxFuze_40mm_Airburst : G_40mm_HE {
 		fuzeMinTime = 0;
 		fuzeMaxTime = 0.05;
 	};

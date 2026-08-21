@@ -55,5 +55,5 @@ diag_log format ["[PROXROUND] Tracking round | ammo=%1 range=%2m projectile=%3",
 private _muzzlePos = getPosASLVisual _projectile;
 
 // Start per-frame proximity tracking on this machine (gunner-local).
-// Args: [projectile, muzzlePos, range, ammoType]
-[{_this call OKS_fnc_ProxRound_TrackRound}, 0, [_projectile, _muzzlePos, _range, _ammo]] call CBA_fnc_addPerFrameHandler;
+// Args: [projectile, muzzlePos, range, ammoType, weaponClass]
+[{_this call OKS_fnc_ProxRound_TrackRound}, 0, [_projectile, _muzzlePos, _range, _ammo, _weapon]] call CBA_fnc_addPerFrameHandler;
