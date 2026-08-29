@@ -54,7 +54,8 @@
 		_Position = getPosATL _SpawnPos;
 	} else {
 		_return = [_SpawnPos] call _GetDirToNearestPlayer;
-		_return params ["_Direction","_NearestPlayer"];
+		_return params ["_ReturnDirection"];
+		_Direction = _ReturnDirection;
 		_Position = _SpawnPos;
 	};
 
