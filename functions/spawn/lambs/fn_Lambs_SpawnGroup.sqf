@@ -55,6 +55,7 @@
 	} else {
 		_return = [_SpawnPos] call _GetDirToNearestPlayer;
 		_return params ["_Direction","_NearestPlayer"];
+		_Direction = (_return select 0);
 		_Position = _SpawnPos;
 	};
 
