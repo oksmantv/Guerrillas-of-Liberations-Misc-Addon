@@ -25,6 +25,24 @@ sleep 1;
 [_Helicopter] spawn OKS_fnc_Helicopter_Protection;
 [_Helicopter] call OKS_fnc_AircraftFlareSupportInit;
 
+// Restore any pylon loadout saved from a previous life of this vehicle (same
+// magazine class/position, always at full ammo). If nothing has been saved
+// yet - this is the vehicle's first-ever spawn - capture its current
+// (editor/config-default) pylon loadout as the baseline instead, so there is
+// something to restore to on the next respawn.
+private _varName = vehicleVarName _Helicopter;
+private _SavedPylons = GOL_Heli_PylonLoadouts getOrDefault [_varName, []];
+if (_SavedPylons isEqualTo []) then {
+	GOL_Heli_PylonLoadouts set [_varName, getPylonMagazines _Helicopter];
+} else {
+	{
+		if (_x != "") then {
+			_Helicopter setPylonLoadout [_forEachIndex + 1, _x, true];
+		};
+	} forEach _SavedPylons;
+};
+[_Helicopter] remoteExec ["OKS_fnc_Helicopter_PylonEH",0];
+
 _Helicopter enableSimulationGlobal true;
 sleep 5;
 _Helicopter allowDamage true;

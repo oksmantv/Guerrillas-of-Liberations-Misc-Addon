@@ -185,6 +185,8 @@ class CfgFunctions // Defines a function
 			class SetupMechanized {};				
 			class SetupHelicopter {};				
 			class SetupMHQ {};							
+			class ModuleForceKit {};
+			class ModuleSpawnGolVehicle {};
 		};
 
 		class OKS_Modules {
@@ -352,6 +354,8 @@ class CfgFunctions // Defines a function
 			class SetPylonsToTurret {};
 			class M230_SwapAmmo {};
 			class M230_SetPylon {};
+			class Helicopter_PylonEH {};
+			class Helicopter_SavePylonData {};
 		};
 
 		class OKS_Jets {

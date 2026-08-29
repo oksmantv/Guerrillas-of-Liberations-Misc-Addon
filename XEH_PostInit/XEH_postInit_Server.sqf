@@ -8,6 +8,10 @@ if(isServer) then {
     GOL_MiscAddon_ServerVersion = getText(configFile >> "CBA_VERSIONING" >> "GOL_MISC_ADDON" >> "version");
     publicVariable "GOL_MiscAddon_ServerVersion";
 
+    // Session-scoped store of respawning helicopters' pylon loadouts, keyed by vehicleVarName.
+    // See fn_Helicopter_PylonEH.sqf / fn_Helicopter_SavePylonData.sqf.
+    GOL_Heli_PylonLoadouts = createHashMap;
+
     _EnabledDaps = missionNamespace getVariable ["GOL_DAPS_Enabled", false];
     if(!_EnabledDaps) then {
         /* DAPS Options */

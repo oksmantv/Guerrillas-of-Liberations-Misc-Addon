@@ -93,6 +93,35 @@ class CfgPatches
             "OKS_Module_HuntBase",
             "OKS_Module_AirBase",
             "OKS_Module_SpawnPoint",
+            "OKS_Module_ForceKit_PL",
+            "OKS_Module_ForceKit_PM",
+            "OKS_Module_ForceKit_FAC",
+            "OKS_Module_ForceKit_Drone",
+            "OKS_Module_ForceKit_Mortar",
+            "OKS_Module_ForceKit_SL",
+            "OKS_Module_ForceKit_SM",
+            "OKS_Module_ForceKit_FTL",
+            "OKS_Module_ForceKit_R",
+            "OKS_Module_ForceKit_G",
+            "OKS_Module_ForceKit_AG",
+            "OKS_Module_ForceKit_AR",
+            "OKS_Module_ForceKit_AB",
+            "OKS_Module_ForceKit_ATAB",
+            "OKS_Module_ForceKit_Crew",
+            "OKS_Module_ForceKit_AMMG",
+            "OKS_Module_ForceKit_MMG",
+            "OKS_Module_ForceKit_Dragon",
+            "OKS_Module_ForceKit_Engineer",
+            "OKS_Module_ForceKit_LR",
+            "OKS_Module_ForceKit_AA",
+            "OKS_Module_ForceKit_AMAT",
+            "OKS_Module_ForceKit_MAT",
+            "OKS_Module_ForceKit_P",
+            "OKS_Module_ForceKit_JetP",
+            "OKS_Module_ForceKit_PJ",
+            "OKS_Module_ForceKit_Marksman",
+            "OKS_Module_SpawnGolVehicle",
+            "OKS_Module_SpawnGolMHQ",
 			"GOL_FastRope_DZ",
 			"GOL_Flag_Hellfish",
             "Fennek_wd","Fennek_d","Fennek_e","Fennek_hmg_wd","Fennek_hmg_d","Fennek_hmg_e","Fennek_gmg_wd","Fennek_gmg_d","Fennek_gmg_e",
@@ -373,6 +402,9 @@ class CfgEditorSubcategories {
     class GOL_Modules {
         displayName = "Modules";
     };      
+    class GOL_Gear {
+        displayName = "Gear";
+    };
 };
 
 class CfgFactionClasses {
@@ -384,6 +416,11 @@ class CfgFactionClasses {
     };
     class GOL_Modules {
         displayName = "GOL Modules";
+        priority = 1;
+        side = 7;
+    };
+    class GOL_Gear {
+        displayName = "GOL Gear";
         priority = 1;
         side = 7;
     };

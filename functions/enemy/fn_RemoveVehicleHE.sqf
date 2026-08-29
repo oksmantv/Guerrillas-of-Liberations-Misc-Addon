@@ -36,11 +36,29 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 	};
 
 	if(
-		["Marid", typeOf _Vehicle, false] call BIS_fnc_inString &&
-		["Wheeled_02_rcws_v2", typeOf _Vehicle, false] call BIS_fnc_inString &&
+		["Marid", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["RHS_MK19_CROWS_M153", [0]]; // Marid
+	};
+
+	if(
+		["Wheeled_02_rcws_v2", typeOf _Vehicle, false] call BIS_fnc_inString ||
 		["Tracked_01_rcws_F", typeOf _Vehicle, false] call BIS_fnc_inString
 	) then {
-		_Vehicle removeWeaponTurret ["GMG_40MM", [0]]; // Marid
+		_Vehicle removeWeaponTurret ["GMG_40MM", [0]]; // O_APC_Wheeled_02_rcws_v2_F / B_APC_Tracked_01 (B_T_APC_Tracked_01_rcws_F)
+	};
+
+	if(
+		["UK3CB_AAF_B_AAV", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["GMG_40MM", [0]]; // UK3CB AAV
+		_Vehicle removeWeaponTurret ["UK3CB_Factions_MK19", [0]]; // UK3CB AAV - alternate weapon variant
+	};
+
+	if(
+		["rhs_tigr", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["RHS_weap_Ags30_tigr", [1]]; // RHS Tigr - custom turret location
 	};
 
 	if(
