@@ -358,7 +358,23 @@ if (hasInterface) then {
     ] call ace_interact_menu_fnc_createAction;
     [typeOf player, 1, ["ACE_SelfActions", "ACE_Equipment"], _action] call ace_interact_menu_fnc_addActionToClass;
 
-    /* Force standard M6 range table — override handled via Extended_GetIn_EventHandlers in config.cpp */
+    /*
+        Handle Ignore Air Target
+    */
+    // All Created Groups
+    addMissionEventHandler ["GroupCreated", {
+        params ["_group"];
+        
+        if(missionNamespace getVariable ["GOL_Enemy_IgnorePlayerAir", false] != "disabled") then {
+            [_Group, true] call OKS_fnc_Ignore_PlayerAir;
+        };
+    }];
+    // Current Active Groups on Mission Start
+    if(missionNamespace getVariable ["GOL_Enemy_IgnorePlayerAir", false] != "disabled") then {
+        { 
+            [_x, true] call OKS_fnc_Ignore_PlayerAir; 
+        } forEach (allGroups select {!(isPlayer (leader _x))});
+    };
 
     /* Setup ORBAT Actions for Pilots */
     [] spawn OKS_fnc_Orbat_Action;
@@ -442,11 +458,9 @@ if (hasInterface) then {
             format ["[GOL MISC ADDON] %1 | Local Version: (%2) | Expected: %3.", _PlayerName, _GOL_MiscAddon_LocalVersion, GOL_MiscAddon_ServerVersion] remoteExec ["systemChat",0];
         };
     };  
-};
 
-// --- GOL_BMP2DM: ACE self-actions for ATGM deploy/stow (commander only) ---
-// Added via script to avoid wiping parent ACE actions in config.
-if (hasInterface) then {
+    // --- GOL_BMP2DM: ACE self-actions for ATGM deploy/stow (commander only) ---
+    // Added via script to avoid wiping parent ACE actions in config.
 	private _atgmParent = ["GOL_ATGM", "ATGM Launcher", "",
 		{},
 		{_player == (vehicle _player) turretUnit [0,0] && {isTurnedOut _player}}

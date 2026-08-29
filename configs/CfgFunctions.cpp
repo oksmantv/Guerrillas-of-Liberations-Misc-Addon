@@ -224,6 +224,7 @@ class CfgFunctions // Defines a function
 			class RestCamp {};
 			class RestCamp_WakeUp {};
 			class GarrisonBuildingsInArea {};
+			class Ignore_PlayerAir {};
 		};	
 
 		class OKS_Stealth_Core {

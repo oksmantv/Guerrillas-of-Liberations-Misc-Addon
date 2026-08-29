@@ -54,7 +54,7 @@ private _ignoredWeapons = [
 if (_weapon in _ignoredWeapons) exitWith { diag_log format ["[PROXROUND] EXIT: weapon %1 in ignore list", _weapon]; };
 
 // --- Fuse distance from the gunner's ACE FCS lase (T) ---
-private _range = (currentZeroing _gunner) + 5;
+private _range = (currentZeroing _gunner) + 2;
 if (_range <= 0) exitWith { diag_log "[PROXROUND] EXIT: zeroing=0 — lase target first (T)"; };
 
 diag_log format ["[PROXROUND] Tracking round | ammo=%1 range=%2m projectile=%3", _ammo, _range, _projectile];

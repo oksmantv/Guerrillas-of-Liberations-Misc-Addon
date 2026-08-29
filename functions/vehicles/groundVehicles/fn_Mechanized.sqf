@@ -134,7 +134,7 @@ if (_Vehicle isKindOf "LandVehicle") then {
 			},
             nil, 1.5, true, true, "",
             "(_this != vehicle _this) && (gunner _target == _this) && (_target getVariable ['OKS_ProxRound_Active', false])"
-        ]] remoteExec ["addAction", 0];
+        ]] remoteExec ["addAction", 0, true];
         [_Vehicle, [
             "<t color='#66FF66'>Proximity Fuse: </t><img image='\a3\ui_f\data\IGUI\Cfg\Actions\ico_ON_ca.paa' size='1'/>",
             {
@@ -153,12 +153,12 @@ if (_Vehicle isKindOf "LandVehicle") then {
 			},
             nil, 1.5, true, true, "",
             "(_this != vehicle _this) && (gunner _target == _this) && !(_target getVariable ['OKS_ProxRound_Active', false])"
-        ]] remoteExec ["addAction", 0];
+        ]] remoteExec ["addAction", 0, true];
 
         // Add FiredEH on ALL machines so it fires on the gunner's client too.
         // The handler gates on (local _gunner) — only the gunner's machine processes it,
         // which is where the projectile simulation lives.
-        [_Vehicle, ["Fired", { _this call OKS_fnc_ProxRound_FiredHandler }]] remoteExec ["addEventHandler", 0];
+        [_Vehicle, ["Fired", { _this call OKS_fnc_ProxRound_FiredHandler }]] remoteExec ["addEventHandler", 0, true];
 		diag_log format ["[MECHANIZED] Proximity fuse Fired EH added for %1", typeOf _Vehicle];
         if (_Debug) then {
             format ["[MECHANIZED] Proximity fuse set up: %1", typeOf _Vehicle] spawn OKS_fnc_LogDebug;

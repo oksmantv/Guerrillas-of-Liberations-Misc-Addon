@@ -413,6 +413,36 @@ class CfgFactionClasses {
 	};    
 };
 
+class CfgNotifications
+{
+    class OKS_RadioMessage_Base
+    {
+        title = "Received Message";
+        description = "<t color='#FFFFFF'>%1</t>";
+        iconPicture = "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\radio_ca.paa";
+        iconText = "";
+        color[] = {1,1,1,1};
+        duration = 4;
+        priority = 7;
+        difficulty[] = {};
+    };
+
+    class OKS_RadioMessage_West: OKS_RadioMessage_Base
+    {
+        color[] = {0.14,0.58,1.00,1};
+    };
+
+    class OKS_RadioMessage_East: OKS_RadioMessage_Base
+    {
+        color[] = {0.68,0.15,0.03,1};
+    };
+
+    class OKS_RadioMessage_Independent: OKS_RadioMessage_Base
+    {
+        color[] = {0.02,0.71,0.18,1};
+    };
+};
+
 class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Core {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_core.sqf'";
@@ -453,6 +483,9 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Packing {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_PreInit_Packing.sqf'";
     };   
+    class OKS_PreInit_Player {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_PreInit_Player.sqf'";
+    };       
     class OKS_PreInit_Tasks {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_PreInit_Tasks.sqf'";
     };   

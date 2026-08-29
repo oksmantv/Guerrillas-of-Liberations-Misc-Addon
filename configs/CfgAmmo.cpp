@@ -1031,11 +1031,11 @@ class CfgAmmo {
 	// ACE hardcodes "ACE_NLAW_Penetrator" in fnc_seeker.sqf, so this is the only
 	// way to increase damage. Affects all NLAW variants.
 	// Vanilla ACE: caliber=33.333 (~500mm RHA), hit=450.
-	// GOL: caliber=65 (~825mm RHA), hit=750
+	// GOL: caliber=90 (~1350mm RHA), hit=1100 — defeats T-80 turret/hull incl. ERA.
 	class ammo_Penetrator_NLAW;
 	class ACE_NLAW_Penetrator: ammo_Penetrator_NLAW {
-		caliber = 65;    // ~825mm RHA pen via ACE formula (typicalSpeed*caliber*15/1000)
-		hit = 750;
+		caliber = 90;    // ~1350mm RHA pen via ACE formula (typicalSpeed*caliber*15/1000)
+		hit = 1100;
 		warheadName = "HEAT";
 	};
 };

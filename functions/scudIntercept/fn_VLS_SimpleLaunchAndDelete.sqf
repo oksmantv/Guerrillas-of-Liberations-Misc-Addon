@@ -10,6 +10,9 @@
  *   _rounds            – Number: Number of rounds to fire
  *   _delayBetweenRounds - Number: Delay (in seconds) between each round
  *   _delayBeforeDelete  - Number: Delay (in seconds) from a missile is fired until it is deleted
+ * 
+ *   Example: [west, east, vls_1, gunner vls_1, vlstarget_1, "magazine_Missiles_Cruise_01_x18", 2, 4, 30] spawn OKS_fnc_VLS_SimpleLaunchAndDelete;
+ *
  */
 
 params [
