@@ -54,7 +54,7 @@
 //	Version 1.11
 ///////////////////////
 
-Private ["_Ammo","_EnableMarking","_Dir","_ScreenSize","_NewInaccuracy","_ScreenReloadTime","_TempPos","_Roll","_GuidedSize","_GuidedReloadTime","_GuidedInaccuracyMultiplier","_SoundOn","_In","_Sound","_SoundTypes","_Marking","_FriendlyNear","_Danger","_DangerClose","_SelectedFiringMode","_SporadicReloadTime","_PreciseReloadTime","_BarrageReloadTime","_Units","_Scanner","_Gunner","_MinRange","_MaxRange","_Zone","_Unit","_Lock","_Group","_Avoid","_OffMap","_RandomFiringMode","_Temp","_This","_Side","_Position","_FiringMode","_BarrageSize","_PreciseSize","_SporadicSize","_Light","_Medium","_Heavy","_Smoke","_Flare","_TravelTime","_MarkSmoke","_MarkFlare","_RandomFiringMode","_Duration"];
+Private ["_Ammo","_EnableMarking","_Dir","_ScreenSize","_NewInaccuracy","_ScreenReloadTime","_TempPos","_Roll","_GuidedSize","_GuidedReloadTime","_GuidedInaccuracyMultiplier","_SoundOn","_In","_Sound","_SoundTypes","_Marking","_FriendlyNear","_Danger","_DangerClose","_SelectedFiringMode","_SporadicReloadTime","_PreciseReloadTime","_BarrageReloadTime","_Units","_Scanner","_Gunner","_MinRange","_MaxRange","_Zone","_Unit","_Lock","_Group","_Avoid","_OffMap","_RandomFiringMode","_Temp","_This","_Side","_Position","_FiringMode","_BarrageSize","_PreciseSize","_SporadicSize","_Light","_Medium","_Heavy","_Smoke","_Flare","_TravelTime","_MarkSmoke","_MarkFlare","_RandomFiringMode","_Duration","_MortarLost"];
 
 if (hasInterface && !isServer) exitWith {false};		// Ensures only server or HC runs this script
 
@@ -321,6 +321,7 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 	{
 		// Firing modes
 		_Index = 0;
+		_MortarLost = false;
 		_Roll = round (random 100);
 		
 		if !(_OffMap) then {_Unit doWatch [(_Position select 0), (_Position select 1), ((_Position select 2) + 1000)]};
@@ -333,7 +334,7 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_SporadicSize call BIS_FNC_SelectRandom};
 				_Count = _Count min _Ammo;
 				private _InterRound = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {8};
-				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
+				while {( !(_Index == _Count) && !_MortarLost && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 0) && _EnableMarking) then 
 					{
@@ -341,22 +342,32 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 						sleep (_TravelTime + 5);
 					};
 			
-					if !(_OffMap) then 
+					// Re-validate mortar/gunner survival right before firing - the marker delay above can outlast the mortar
+					if (!(_OffMap) && !((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar))) then 
 					{
-						[_Mortar, _Unit, _Position] Spawn OKS_fnc_MortarAISequence;
+						_MortarLost = true;
+						format ["[Mortar] Mortar destroyed/abandoned before round %1 could be fired, cancelling remaining strike.", _Index +1] spawn OKS_fnc_LogDebug;
 					};
 			
-					[_Position, _NewInaccuracy, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
-					_Index = _Index +1;
-					_Ammo = _Ammo -1;
-					if (_Index == _Count) then 
+					if !(_MortarLost) then 
 					{
-						if ((_Scanner) && !(_OffMap)) then 
+						if !(_OffMap) then 
 						{
-							Sleep _SporadicReloadTime;
+							[_Mortar, _Unit, _Position] Spawn OKS_fnc_MortarAISequence;
 						};
-					} else {
-						sleep _InterRound;
+			
+						[_Position, _NewInaccuracy, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
+						_Index = _Index +1;
+						_Ammo = _Ammo -1;
+						if (_Index == _Count) then 
+						{
+							if ((_Scanner) && !(_OffMap)) then 
+							{
+								Sleep _SporadicReloadTime;
+							};
+						} else {
+							sleep _InterRound;
+						};
 					};
 				};
 			};
@@ -366,7 +377,7 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_PreciseSize call BIS_FNC_SelectRandom};
 				_Count = _Count min _Ammo;
 				private _InterRound = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {11};
-				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
+				while {( !(_Index == _Count) && !_MortarLost && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 1) && _EnableMarking) then 
 					{
@@ -374,22 +385,32 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 						sleep (_TravelTime + 5);
 					};
 			
-					if !(_OffMap) then 
+					// Re-validate mortar/gunner survival right before firing - the marker delay above can outlast the mortar
+					if (!(_OffMap) && !((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar))) then 
 					{
-						[_Mortar, _Unit, _Position] Spawn OKS_fnc_MortarAISequence;
+						_MortarLost = true;
+						format ["[Mortar] Mortar destroyed/abandoned before round %1 could be fired, cancelling remaining strike.", _Index +1] spawn OKS_fnc_LogDebug;
 					};
 			
-					[_Position, _NewInaccuracy, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
-					_Index = _Index +1;
-					_Ammo = _Ammo -1;
-					if (_Index == _Count) then 
+					if !(_MortarLost) then 
 					{
-						if ((_Scanner) && !(_OffMap)) then 
+						if !(_OffMap) then 
 						{
-							Sleep _PreciseReloadTime;
+							[_Mortar, _Unit, _Position] Spawn OKS_fnc_MortarAISequence;
 						};
-					} else {
-						sleep _InterRound;
+			
+						[_Position, _NewInaccuracy, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
+						_Index = _Index +1;
+						_Ammo = _Ammo -1;
+						if (_Index == _Count) then 
+						{
+							if ((_Scanner) && !(_OffMap)) then 
+							{
+								Sleep _PreciseReloadTime;
+							};
+						} else {
+							sleep _InterRound;
+						};
 					};
 				};
 			};
@@ -399,7 +420,7 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_BarrageSize call BIS_FNC_SelectRandom};
 				_Count = _Count min _Ammo;
 				private _InterRound = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {4};
-				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
+				while {( !(_Index == _Count) && !_MortarLost && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 2) && _EnableMarking) then 
 					{
@@ -407,23 +428,33 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 						sleep (_TravelTime + 5);
 					};
 			
-					if !(_OffMap) then 
+					// Re-validate mortar/gunner survival right before firing - the marker delay above can outlast the mortar
+					if (!(_OffMap) && !((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar))) then 
 					{
-						[_Mortar, _Unit, _Position] Spawn OKS_fnc_MortarAISequence;
+						_MortarLost = true;
+						format ["[Mortar] Mortar destroyed/abandoned before round %1 could be fired, cancelling remaining strike.", _Index +1] spawn OKS_fnc_LogDebug;
 					};
 			
-					[_Position, _NewInaccuracy, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
-					
-					_Index = _Index +1;
-					_Ammo = _Ammo -1;
-					if (_Index == _Count) then 
+					if !(_MortarLost) then 
 					{
-						if ((_Scanner) && !(_OffMap)) then 	
+						if !(_OffMap) then 
 						{
-							Sleep _BarrageReloadTime;
+							[_Mortar, _Unit, _Position] Spawn OKS_fnc_MortarAISequence;
 						};
-					} else {
-						sleep _InterRound;
+			
+						[_Position, _NewInaccuracy, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
+						
+						_Index = _Index +1;
+						_Ammo = _Ammo -1;
+						if (_Index == _Count) then 
+						{
+							if ((_Scanner) && !(_OffMap)) then 	
+							{
+								Sleep _BarrageReloadTime;
+							};
+						} else {
+							sleep _InterRound;
+						};
 					};
 				};
 			};
@@ -433,7 +464,7 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 				_Count = if (_ForcedRoundCount >= 0) then {_ForcedRoundCount} else {_GuidedSize call BIS_FNC_SelectRandom};
 				_Count = _Count min _Ammo;
 				_SleepGuided = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {(_TravelTime + 5)};
-				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
+				while {( !(_Index == _Count) && !_MortarLost && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 3) && _EnableMarking) then 
 					{
@@ -441,58 +472,68 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 						sleep (_TravelTime + 5);
 					};
 			
-					if !(_OffMap) then 
+					// Re-validate mortar/gunner survival right before firing - the marker delay above can outlast the mortar
+					if (!(_OffMap) && !((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar))) then 
 					{
-						[_Mortar, _Unit, _Position] Spawn OKS_fnc_MortarAISequence;
+						_MortarLost = true;
+						format ["[Mortar] Mortar destroyed/abandoned before round %1 could be fired, cancelling remaining strike.", _Index +1] spawn OKS_fnc_LogDebug;
 					};
 			
-					if (_Index == 0) then 
+					if !(_MortarLost) then 
 					{
-						if (_Roll > 30) then
+						if !(_OffMap) then 
 						{
-							_Temp = CreateVehicle ["Land_HelipadEmpty_F", [(_Position select 0), (_Position select 1), (_Position select 2)], [], _NewInaccuracy, "CAN_COLLIDE"];
-							_TempPos = GetPosATL _Temp;
-							deleteVehicle _Temp;
-							while {((_TempPos distance _Position) < 20)} do
+							[_Mortar, _Unit, _Position] Spawn OKS_fnc_MortarAISequence;
+						};
+			
+						if (_Index == 0) then 
+						{
+							if (_Roll > 30) then
 							{
 								_Temp = CreateVehicle ["Land_HelipadEmpty_F", [(_Position select 0), (_Position select 1), (_Position select 2)], [], _NewInaccuracy, "CAN_COLLIDE"];
 								_TempPos = GetPosATL _Temp;
 								deleteVehicle _Temp;
-								sleep 0.1;
+								while {((_TempPos distance _Position) < 20)} do
+								{
+									_Temp = CreateVehicle ["Land_HelipadEmpty_F", [(_Position select 0), (_Position select 1), (_Position select 2)], [], _NewInaccuracy, "CAN_COLLIDE"];
+									_TempPos = GetPosATL _Temp;
+									deleteVehicle _Temp;
+									sleep 0.1;
+								};
+							} else {
+								_Temp = CreateVehicle ["Land_HelipadEmpty_F", [(_Position select 0), (_Position select 1), (_Position select 2)], [], _NewInaccuracy, "CAN_COLLIDE"];
+								_TempPos = GetPosATL _Temp;
+							};
+						};
+			
+						if ((_Index > 0) && (_TempPos distance _Position > 20)) then 
+						{
+							_TempInaccuracy = ((_TempPos distance _Position) - 15);
+							_TempPos = CreateVehicle ["Land_HelipadEmpty_F", [(_Position select 0), (_Position select 1), (_Position select 2)], [], _TempInaccuracy, "CAN_COLLIDE"];
+							_TempPos = GetPosATL _TempPos;
+						};
+
+						if (_TempPos distance _Position < 20) then
+						{
+							[_Position, 20, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
+						} else {
+							[_TempPos, 0, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
+						};
+			
+						_Index = _Index +1;
+						_Ammo = _Ammo -1;
+						if (_Index == _Count) then 
+						{
+							if ((_Scanner) && !(_OffMap)) then 	
+							{
+								Sleep _GuidedReloadTime;
 							};
 						} else {
-							_Temp = CreateVehicle ["Land_HelipadEmpty_F", [(_Position select 0), (_Position select 1), (_Position select 2)], [], _NewInaccuracy, "CAN_COLLIDE"];
-							_TempPos = GetPosATL _Temp;
-						};
-					};
-			
-					if ((_Index > 0) && (_TempPos distance _Position > 20)) then 
-					{
-						_TempInaccuracy = ((_TempPos distance _Position) - 15);
-						_TempPos = CreateVehicle ["Land_HelipadEmpty_F", [(_Position select 0), (_Position select 1), (_Position select 2)], [], _TempInaccuracy, "CAN_COLLIDE"];
-						_TempPos = GetPosATL _TempPos;
-					};
-
-					if (_TempPos distance _Position < 20) then
-					{
-						[_Position, 20, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
-					} else {
-						[_TempPos, 0, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
-					};
-			
-					_Index = _Index +1;
-					_Ammo = _Ammo -1;
-					if (_Index == _Count) then 
-					{
-						if ((_Scanner) && !(_OffMap)) then 	
-						{
-							Sleep _GuidedReloadTime;
-						};
-					} else {
-						sleep _SleepGuided;
-						if (_RoundIntervalSeconds <= 0) then
-						{
-							if ( ((_TempPos distance _Position) < 20) && (_SleepGuided > 3) ) then {_SleepGuided = 3};
+							sleep _SleepGuided;
+							if (_RoundIntervalSeconds <= 0) then
+							{
+								if ( ((_TempPos distance _Position) < 20) && (_SleepGuided > 3) ) then {_SleepGuided = 3};
+							};
 						};
 					};
 				};
@@ -505,7 +546,7 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 				private _InterRound = if (_RoundIntervalSeconds > 0) then {_RoundIntervalSeconds} else {3};
 				if (isNil "_Dir") then {_Dir = round (random 360)};
 				_TempPos = _Position;
-				while {( !(_Index == _Count) && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
+				while {( !(_Index == _Count) && !_MortarLost && ((_OffMap) or ((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar) && (_Ammo > 0))) )} do
 				{
 					if ((_Index == 0) && (_Marking select 4) && _EnableMarking) then 
 					{
@@ -513,24 +554,34 @@ While {((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar)) or (_OffMap)} do
 						sleep (_TravelTime + 5);
 					};
 			
-					if !(_OffMap) then 
+					// Re-validate mortar/gunner survival right before firing - the marker delay above can outlast the mortar
+					if (!(_OffMap) && !((Alive _Mortar) && (Alive _Unit) && (_Unit in _Mortar))) then 
 					{
-						[_Mortar, _Unit, _TempPos] Spawn OKS_fnc_MortarAISequence;
+						_MortarLost = true;
+						format ["[Mortar] Mortar destroyed/abandoned before round %1 could be fired, cancelling remaining strike.", _Index +1] spawn OKS_fnc_LogDebug;
 					};
 			
-					[_TempPos, 5, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
-					
-					_Index = _Index +1;
-					_Ammo = _Ammo -1;
-					if (_Index == _Count) then 
+					if !(_MortarLost) then 
 					{
-						if ((_Scanner) && !(_OffMap)) then 	
+						if !(_OffMap) then 
 						{
-							Sleep _ScreenReloadTime;
+							[_Mortar, _Unit, _TempPos] Spawn OKS_fnc_MortarAISequence;
 						};
-					} else {
-						sleep _InterRound;
-						_TempPos = [_TempPos, 15, _Dir] call BIS_fnc_relPos;
+			
+						[_TempPos, 5, _MortarType, _Sound, _SoundOn, _TravelTime, _Flare] Spawn OKS_fnc_MortarShell;
+						
+						_Index = _Index +1;
+						_Ammo = _Ammo -1;
+						if (_Index == _Count) then 
+						{
+							if ((_Scanner) && !(_OffMap)) then 	
+							{
+								Sleep _ScreenReloadTime;
+							};
+						} else {
+							sleep _InterRound;
+							_TempPos = [_TempPos, 15, _Dir] call BIS_fnc_relPos;
+						};
 					};
 				};
 			};

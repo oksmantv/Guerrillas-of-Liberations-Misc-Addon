@@ -279,25 +279,26 @@
 
 		// --- Driver camera-style view (replaces RHS 2D periscope) ---
 		driverForceOptics = 1;
-		driverOpticsModel = "\A3\drones_f\Weapons_F_Gamma\Reticle\UGV_01_Optics_Driver_F.p3d";
+		driverOpticsModel = "\a3\weapons_f\reticle\Optics_Driver_01_F";
 		driverOpticsColor[] = {1,1,1,1};
 		driverOpticsEffect[] = {};
 
 		class DriverOpticsIn
 		{
+			// Single view with continuous scroll zoom — avoids the snap/reset from multiple OpticView classes
 			class OpticView
 			{
 				initAngleX = 10;    // +10 = tilt up; counters the downward angle baked into the driverview memory point
-				minAngleX = -30;
-				maxAngleX = 30;
+				minAngleX = -25;
+				maxAngleX = 25;
 				initAngleY = 0;
-				minAngleY = -30;
-				maxAngleY = 30;
-				initFov = 0.7;
-				minFov = 0.25;
-				maxFov = 1.1;
+				minAngleY = -90;    // wide horizontal — driver can look fully sideways
+				maxAngleY = 90;
+				initFov = 0.9;      // comfortable default, not tunnel-vision
+				minFov = 0.2;       // scroll in: tight zoom
+				maxFov = 1.4;       // scroll out: wide situational view
 				visionMode[] = {"Normal","NVG"};
-				opticsModel = "\A3\drones_f\Weapons_F_Gamma\Reticle\UGV_01_Optics_Driver_F.p3d";
+				opticsModel = "\a3\weapons_f\reticle\Optics_Driver_01_F";
 				gunnerOpticsEffect[] = {};
 			};
 		};
@@ -865,6 +866,7 @@
 				};
 			};
 
+			// --- ACE FFV: Interior cargo seats (firing port positions) ---
 			// --- ACE FFV: Interior cargo seats (firing port positions) ---
 			class CargoTurret_01: CargoTurret_01
 			{

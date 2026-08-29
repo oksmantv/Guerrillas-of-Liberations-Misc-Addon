@@ -32,9 +32,12 @@ if(getText (configFile >> "CfgVehicles" >> typeOf _Helicopter >> "ace_fastroping
 };
 
 {
-	_fuelCan = "FlexibleTank_01_forest_F" createVehicle [0,0,0];
+	_fuelCan = "FlexibleTank_01_forest_F" createVehicle (getPosATL _Helicopter);
+	_fuelCan allowDamage false;
+	_fuelCan disableCollisionWith _Helicopter;
 	[_fuelCan,1000] call ace_refuel_fnc_setFuel;
 	[_fuelCan,_Helicopter,true] call ace_cargo_fnc_loadItem;
+	_fuelCan allowDamage true;
 } foreach [1,2];
 
 _Helicopter setVariable ["ace_repair_canRepair", 1, true];

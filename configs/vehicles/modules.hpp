@@ -35,8 +35,8 @@
     class OKS_Module_ApplyUnitGear : Module_F {
         scope = 2;
         scopeCurator = 2;
-        displayName = "OKS Apply Unit Gear";
-        category = "GOL_Modules";
+        displayName = "Auto Force Kit (Nearest Unit)";
+        category = "GOL_Gear";
         function = "OKS_fnc_ApplyUnitGear"; // Your function
         functionPriority = 1;
         isGlobal = 1;
@@ -1084,6 +1084,176 @@
                 typeName = "NUMBER";
                 defaultValue = 0;
             };
+        };
+    };
+
+    // ==================== Force Kit (Zeus) ====================
+    // Attach one of these modules directly onto a unit in Zeus (curator attach),
+    // or draw a sync line to one or more units, to force-refresh their gear
+    // kit to a specific role. Each module hard-codes a role via the custom
+    // "OKS_ForceKit_Role" property, read at runtime by OKS_fnc_ModuleForceKit.
+    // The module deletes itself after running - place a new one to reapply.
+    class OKS_Module_ForceKit_Base : Module_F {
+        scope = 1;
+        scopeCurator = 2;
+        icon = "\a3\ui_f\data\igui\cfg\actions\gear_ca.paa";
+        category = "GOL_Gear";
+        function = "OKS_fnc_ModuleForceKit";
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 0;
+        curatorCanAttach = 1;
+        class ModuleDescription {
+            description = "Attach directly to a unit in Zeus (or sync to one/more units) to force-refresh their gear kit. Deletes itself after running - place a new one to reapply.";
+        };
+    };
+    class OKS_Module_ForceKit_PL : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Platoon Actual";
+        OKS_ForceKit_Role = "pl";
+    };
+    class OKS_Module_ForceKit_PM : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Platoon Medic";
+        OKS_ForceKit_Role = "pm";
+    };
+    class OKS_Module_ForceKit_FAC : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Forward Air Controller";
+        OKS_ForceKit_Role = "fac";
+    };
+    class OKS_Module_ForceKit_Drone : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Drone Operator";
+        OKS_ForceKit_Role = "drone";
+    };
+    class OKS_Module_ForceKit_Mortar : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Mortar Operator";
+        OKS_ForceKit_Role = "lightdragon";
+    };
+    class OKS_Module_ForceKit_SL : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Squad Leader";
+        OKS_ForceKit_Role = "sl";
+    };
+    class OKS_Module_ForceKit_SM : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Squad Medic";
+        OKS_ForceKit_Role = "sm";
+    };
+    class OKS_Module_ForceKit_FTL : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Fire Team Leader";
+        OKS_ForceKit_Role = "ftl";
+    };
+    class OKS_Module_ForceKit_R : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Rifleman";
+        OKS_ForceKit_Role = "r";
+    };
+    class OKS_Module_ForceKit_G : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Grenadier";
+        OKS_ForceKit_Role = "g";
+    };
+    class OKS_Module_ForceKit_AG : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Asst. Gunner";
+        OKS_ForceKit_Role = "ag";
+    };
+    class OKS_Module_ForceKit_AR : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Automatic Rifleman";
+        OKS_ForceKit_Role = "ar";
+    };
+    class OKS_Module_ForceKit_AB : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: AR Ammo Bearer";
+        OKS_ForceKit_Role = "ab";
+    };
+    class OKS_Module_ForceKit_ATAB : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: AT Ammo Bearer";
+        OKS_ForceKit_Role = "atab";
+    };
+    class OKS_Module_ForceKit_Crew : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Vehicle Crew";
+        OKS_ForceKit_Role = "crew";
+    };
+    class OKS_Module_ForceKit_AMMG : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Asst. Medium Machine Gunner";
+        OKS_ForceKit_Role = "ammg";
+    };
+    class OKS_Module_ForceKit_MMG : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Medium Machine Gunner";
+        OKS_ForceKit_Role = "mmg";
+    };
+    class OKS_Module_ForceKit_Dragon : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Dragon";
+        OKS_ForceKit_Role = "dragon";
+    };
+    class OKS_Module_ForceKit_Engineer : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Engineer";
+        OKS_ForceKit_Role = "engineer";
+    };
+    class OKS_Module_ForceKit_LR : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Light Rifleman";
+        OKS_ForceKit_Role = "lr";
+    };
+    class OKS_Module_ForceKit_AA : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Anti-Air";
+        OKS_ForceKit_Role = "aa";
+    };
+    class OKS_Module_ForceKit_AMAT : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Asst. Heavy AT";
+        OKS_ForceKit_Role = "amat";
+    };
+    class OKS_Module_ForceKit_MAT : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Heavy AT";
+        OKS_ForceKit_Role = "mat";
+    };
+    class OKS_Module_ForceKit_P : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Chopper Pilot";
+        OKS_ForceKit_Role = "p";
+    };
+    class OKS_Module_ForceKit_JetP : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Jet Pilot";
+        OKS_ForceKit_Role = "jetp";
+    };
+    class OKS_Module_ForceKit_PJ : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Para-Rescueman";
+        OKS_ForceKit_Role = "pj";
+    };
+    class OKS_Module_ForceKit_Marksman : OKS_Module_ForceKit_Base {
+        displayName = "Force Kit: Marksman";
+        OKS_ForceKit_Role = "marksman";
+    };
+
+    // ==================== Spawn Replacement Supply Vehicles (Zeus-only) ====================
+    // Spawns a fresh vehicle that copies the CURRENT "Vehicle_1"/"MHQ_1"
+    // template's classname + exported appearance (paintjob, etc.) - i.e. a
+    // replacement of whatever the mission's standard supply vehicle/MHQ
+    // currently is, not a hardcoded default. "Vehicle_1"/"MHQ_1" must already
+    // exist (placed in Eden at mission start) since that's what gets copied.
+    class OKS_Module_SpawnGolVehicle : Module_F {
+        scope = 1;
+        scopeCurator = 2;
+        icon = "\a3\Modules_F\data\iconModule_ca.paa";
+        category = "GOL_Modules";
+        displayName = "Spawn New GOL Vehicle";
+        function = "OKS_fnc_ModuleSpawnGolVehicle";
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 0;
+        curatorCanAttach = 0;
+        canSetArea = 0;
+        OKS_GolVehicleType = "Vehicle";
+        class ModuleDescription {
+            description = "Spawns a fresh vehicle matching 'Vehicle_1's current classname and appearance, then applies the Mechanized setup. 'Vehicle_1' must already exist. Deletes itself after running.";
+        };
+    };
+    class OKS_Module_SpawnGolMHQ : Module_F {
+        scope = 1;
+        scopeCurator = 2;
+        icon = "\a3\Modules_F\data\iconModule_ca.paa";
+        category = "GOL_Modules";
+        displayName = "Spawn New GOL MHQ";
+        function = "OKS_fnc_ModuleSpawnGolVehicle";
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 0;
+        curatorCanAttach = 0;
+        canSetArea = 0;
+        OKS_GolVehicleType = "MHQ";
+        class ModuleDescription {
+            description = "Spawns a fresh vehicle matching 'MHQ_1's current classname and appearance, then applies the MHQ + Mechanized setup. 'MHQ_1' must already exist. Deletes itself after running.";
         };
     };
 

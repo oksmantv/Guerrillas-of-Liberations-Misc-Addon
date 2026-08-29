@@ -227,7 +227,7 @@ class GOL_launch_NLAW_ready_F: GOL_launch_NLAW_F {
 		fired = "_this call CBA_fnc_firedDisposable";
 	};
 	class WeaponSlotsInfo: WeaponSlotsInfo {
-		mass = 125; // 4.5 kg launcher + 8.0 kg magazine
+		mass = 100; // 4.5 kg launcher + 8.0 kg magazine
 		allowedSlots[] = {901};
 	};
 };

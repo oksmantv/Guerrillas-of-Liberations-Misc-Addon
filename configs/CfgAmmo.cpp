@@ -196,6 +196,41 @@ class CfgAmmo {
 
 	// Custom drone warhead classes (reduced lethality variants)
 	class G_40mm_HE;
+
+	// Proximity fuse air burst charge — spawned at altitude by OKS_fnc_ProxRound_TrackRound.
+	// fuzeMaxTime causes the round to self-detonate in-place rather than waiting for terrain impact,
+	// producing a full HE explosion with ACE fragmentation at the exact air position.
+	// Custom APERS mine ammo for OKS_ProxMine_40mm_AP — half the explosive power of vanilla
+	// APERSMine_Range_Ammo. explosionEffects/CraterEffects nulled: visual comes from
+	// OKS_ProxFuze_Airburst; we only want the pressure wave and ACE frag shrapnel.
+	class APERSMine_Range_Ammo;
+	class OKS_ProxMine_40mm_AP_Ammo : APERSMine_Range_Ammo {
+		model = "";
+		indirectHit = 5;
+		indirectHitRange = 2.5;
+		explosionEffects = "";
+		CraterEffects = "";
+		explosionAngle = 60;
+		ace_frag_charge = 6;
+		ace_frag_force = 1.5;
+		ace_frag_gurney_c = 280;
+		ace_frag_gurney_k = 0.166667;
+		ace_frag_metal = 30;   // ~5-8 sparse fragments — not enough to blanket the sphere
+		ace_frag_classes[] = {"ace_frag_large", "ace_frag_large", "ace_frag_large"};
+	};
+
+	// FX variant — used by no-canister path (round deleted, no native HE explosion).
+	// Identical damage/frag properties; explosion and crater effects re-enabled for the visual.
+	class OKS_ProxMine_40mm_AP_Ammo_FX : OKS_ProxMine_40mm_AP_Ammo {
+		explosionEffects = "ExploAmmoExplosion";  // cannon-round effect — enhanced by graphical mods
+		CraterEffects = "";  // air burst — no ground crater
+	};
+
+	class OKS_ProxFuze_40mm_Airburst : G_40mm_HE {
+		fuzeMinTime = 0;
+		fuzeMaxTime = 0.05;
+	};
+
 	class OKS_Drone_Warhead_Small: G_40mm_HE {
 		hit = 80;
 		indirectHit = 15;
@@ -996,11 +1031,11 @@ class CfgAmmo {
 	// ACE hardcodes "ACE_NLAW_Penetrator" in fnc_seeker.sqf, so this is the only
 	// way to increase damage. Affects all NLAW variants.
 	// Vanilla ACE: caliber=33.333 (~500mm RHA), hit=450.
-	// GOL: caliber=65 (~825mm RHA), hit=750
+	// GOL: caliber=90 (~1350mm RHA), hit=1100 — defeats T-80 turret/hull incl. ERA.
 	class ammo_Penetrator_NLAW;
 	class ACE_NLAW_Penetrator: ammo_Penetrator_NLAW {
-		caliber = 65;    // ~825mm RHA pen via ACE formula (typicalSpeed*caliber*15/1000)
-		hit = 750;
+		caliber = 90;    // ~1350mm RHA pen via ACE formula (typicalSpeed*caliber*15/1000)
+		hit = 1100;
 		warheadName = "HEAT";
 	};
 };

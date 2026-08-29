@@ -1,7 +1,20 @@
 /*
     OKS_fnc_Convoy_DismountAndTaskCode
-    Makes a group dismount from a vehicle and assigns a task.
-    Usage: [_Group, _VehicleObject, _type] spawn OKS_fnc_Convoy_DismountAndTaskCode;
+    Makes a group dismount from a vehicle and assigns a combat task.
+
+    If OKS_Convoy_FlankingRoute is stored on the vehicle, infantry groups walk that
+    route first before their task fires. Armed mounted groups spawn OKS_fnc_VehicleAttachSquad
+    to escort the infantry and wait for infantry arrival before their own task fires.
+    An empty or absent route skips flanking entirely (backwards compatible).
+
+    Params:
+    0 - Group  - The group being tasked (cargo group or crew group)
+    1 - Object - Vehicle the group belongs to (used to read flanking/cargo variables)
+    2 - String - Task type: "rush" | "attack" | "hold" | "hunt" | "defend" | "patrol" | "assault"
+    3 - Bool   - Should dismount from vehicle (true = force get-out)
+    4 - Bool   - Was ambushed (true = overrides defend/patrol to attack)
+
+    Usage: [_Group, _VehicleObject, _type, _shouldDismount, _wasAmbushed] spawn OKS_fnc_Convoy_DismountAndTaskCode;
 */
 params ["_Group", ["_VehicleObject", objNull, [objNull, ""]], "_type",["_shouldDismount", false],["_wasAmbushed", false]];
 private _ConvoyDebug = missionNamespace getVariable ["GOL_Convoy_Debug", false];

@@ -23,6 +23,9 @@ class CfgFunctions // Defines a function
 			class M6_Auto_Reload_Handler {};
 			class M6_Add_Unpack_Actions {};
 			class M6_Flare_Altitude_Deploy {};
+			class ProxRound_Init {};
+			class ProxRound_FiredHandler {};
+			class ProxRound_TrackRound {};
 		};
 
 		class OKS_Tasks {
@@ -182,6 +185,8 @@ class CfgFunctions // Defines a function
 			class SetupMechanized {};				
 			class SetupHelicopter {};				
 			class SetupMHQ {};							
+			class ModuleForceKit {};
+			class ModuleSpawnGolVehicle {};
 		};
 
 		class OKS_Modules {
@@ -221,6 +226,7 @@ class CfgFunctions // Defines a function
 			class RestCamp {};
 			class RestCamp_WakeUp {};
 			class GarrisonBuildingsInArea {};
+			class Ignore_PlayerAir {};
 		};	
 
 		class OKS_Stealth_Core {
@@ -348,6 +354,8 @@ class CfgFunctions // Defines a function
 			class SetPylonsToTurret {};
 			class M230_SwapAmmo {};
 			class M230_SetPylon {};
+			class Helicopter_PylonEH {};
+			class Helicopter_SavePylonData {};
 		};
 
 		class OKS_Jets {
@@ -385,6 +393,7 @@ class CfgFunctions // Defines a function
 			class ScudIntercept_OnFired {};
 			class ScudIntercept_PickTargetPos {};
 			class ScudIntercept_LaunchAI {};
+			class VLS_SimpleLaunchAndDelete {};
 		};
 
 		class OKS_PlayerSetup {
@@ -513,6 +522,7 @@ class CfgFunctions // Defines a function
 			class DroneHuntZone {};
 			class Helicopter_Attack {};
 			class BuildingRestCamp {};
+			class Inactive_VehicleSpawn {};
 		};
 
 		class OKS_Jammer {

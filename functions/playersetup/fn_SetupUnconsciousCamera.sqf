@@ -43,7 +43,9 @@ if (!_Enabled) exitWith {
                         _camera = "camera" camCreate [_Position select 0,_Position select 1,_height];     
                     };
                     _camera camSetTarget _unit;
-                    _unit setVariable ["GOL_SpectatorCamera",_camera,true];	
+                    _unit setVariable ["GOL_SpectatorCamera",_camera,true];
+                    _unit setVariable ["GOL_UnconsciousCameraNVG", false];
+                    camUseNVG false;
                     cutText ["", "BLACK OUT",1]; sleep 1;
                     
                     waitUntil {!isNil "ace_medical_feedback_ppUnconsciousBlur"};
@@ -57,6 +59,7 @@ if (!_Enabled) exitWith {
                     sleep 2;
                     cutText ["", "BLACK IN",3];
 
+                    private _tick = 0;
                     while {!([_unit] call ace_common_fnc_isAwake) && Alive _unit} do {
                         if([_unit] call ace_common_fnc_isAwake || !Alive _unit) exitWith {
                             if(_Debug) then {
@@ -65,17 +68,19 @@ if (!_Enabled) exitWith {
                             ["", -1, 0, 1, 2, 0, 935] spawn BIS_fnc_dynamicText;
                         };
 
-                        private _startPos = eyePos _unit;
-                        private _endPos = _startPos vectorAdd [0, 0, 3]; // 3m above eye level
+                        if(_tick % 3 == 0) then {
+                            private _startPos = eyePos _unit;
+                            private _endPos = _startPos vectorAdd [0, 0, 3]; // 3m above eye level
 
-                        private _hits = lineIntersectsSurfaces [_startPos, _endPos, _unit, objNull, true, 1, "GEOM", "FIRE"];
-                        private _isIndoors = count _hits > 0;
-                        if(_isIndoors) then {
-                            if(_Debug) then {
-                                format["Inside - Camera adjusted",name _unit] spawn OKS_fnc_LogDebug;
-                            };                           
-                            _height = 1.5;
-                            _distance = 2;
+                            private _hits = lineIntersectsSurfaces [_startPos, _endPos, _unit, objNull, true, 1, "GEOM", "FIRE"];
+                            private _isIndoors = count _hits > 0;
+                            if(_isIndoors) then {
+                                if(_Debug) then {
+                                    format["Inside - Camera adjusted",name _unit] spawn OKS_fnc_LogDebug;
+                                };                           
+                                _height = 1.5;
+                                _distance = 2;
+                            };
                         };
 
                         _playerbloodVolume = _unit getVariable ["ace_medical_bloodVolume", 6];
@@ -90,17 +95,53 @@ if (!_Enabled) exitWith {
                             _TierDebug = "TIER 1";
                         };
 
-                        private _Debug = missionNamespace getVariable ["GOL_Unconscious_CameraDebug",false];
-                        if(_Debug) then {
-                            format["Camera Status for %1 - %2",name _unit,_TierDebug] spawn OKS_fnc_LogDebug;
+                        // Cardiac arrest is checked every second since every second out of the (default 90s) window matters.
+                        // While active, it overrides the blood-volume tier so the player always sees TIER 1 / the countdown.
+                        private _isCardiacArrest = _unit getVariable ["ace_medical_inCardiacArrest", false];
+                        private _statusText = format["YOU ARE A %1 CASUALTY.",_Tier];
+                        private _cardiacDebug = "Not in Cardiac Arrest";
+                        if(_isCardiacArrest) then {
+                            _Tier = "<t color='#ff0000'>TIER 1</t>";
+                            _TierDebug = "TIER 1";
+                            _TimeColor = "#ffffff"; // White for >=45s
+                            private _cardiacTimeLeft = 0 max (_unit getVariable ["ace_medical_statemachine_cardiacArrestTimeLeft", 0]);
+                            if(_cardiacTimeLeft < 45) then {
+                                _TimeColor = "#e09f06"; // Red for <45s
+                            };
+                            if(_cardiacTimeLeft < 15) then {
+                                _TimeColor = "#ff0000"; // Red for <15s
+                            };
+                            _statusText = format["YOU ARE A %1 CASUALTY.<br/><t color='#ff0000'>CARDIAC ARREST</t> <t color='%3'> - %2</t>",_Tier,floor _cardiacTimeLeft,_TimeColor];
+                            _cardiacDebug = format["Cardiac Arrest - %1s remaining", floor _cardiacTimeLeft];
                         };
 
-                        [format["YOU ARE A %1 CASUALTY.",_Tier], -1, 0, 5, 0, 0, 935] spawn BIS_fnc_dynamicText;
-                        _Position = (getPosATL _unit) getPos [_distance,_Dir];
-                        _Dir = _dir + 20;
-                        _camera camSetPos [_Position select 0,_Position select 1,_height];
-                        _camera camCommit 3;
-                        sleep 3;
+                        private _Debug = missionNamespace getVariable ["GOL_Unconscious_CameraDebug",false];
+                        if(_Debug) then {
+                            format["Camera Status for %1 - %2 | %3",name _unit,_TierDebug,_cardiacDebug] spawn OKS_fnc_LogDebug;
+                        };
+
+                        [_statusText, -1, 0, 2, 0, 0, 935] spawn BIS_fnc_dynamicText;
+
+                        if(_tick % 3 == 0) then {
+                            _Position = (getPosATL _unit) getPos [_distance,_Dir];
+                            _Dir = _dir + 20;
+                            _camera camSetPos [_Position select 0,_Position select 1,_height];
+                            _camera camCommit 3;
+                        };
+
+                        // Manual NVG keypresses are unreliable while the unit is unconscious (input is locked),
+                        // so night vision is instead toggled automatically based on time of day.
+                        private _isDark = (daytime < 6) || (daytime > 20);
+                        if (_isDark != (_unit getVariable ["GOL_UnconsciousCameraNVG", false])) then {
+                            _unit setVariable ["GOL_UnconsciousCameraNVG", _isDark];
+                            camUseNVG _isDark;
+                            if(_Debug) then {
+                                format["Camera: NVG auto-set to %1 for %2 (daytime %3)",_isDark,name _unit,daytime] spawn OKS_fnc_LogDebug;
+                            };
+                        };
+
+                        _tick = _tick + 1;
+                        sleep 1;
                         if([_unit] call ace_common_fnc_isAwake || !Alive _unit) exitWith {
                             if(_Debug) then {
                                 format["Camera: %1 is now awake or dead. Exiting camera loop.",name _unit] spawn OKS_fnc_LogDebug;
@@ -119,6 +160,8 @@ if (!_Enabled) exitWith {
     if(!(_unconscious)) then {
         _unit spawn {
             _this setVariable ["UnconsciousCameraActivated",false,true];
+            _this setVariable ["GOL_UnconsciousCameraNVG", false];
+            camUseNVG false;
             private _Debug = missionNamespace getVariable ["GOL_Unconscious_CameraDebug",false];
             if(_Debug) then {
                 format["Camera Disabled for %1. Left unconscious state.",name _this] spawn OKS_fnc_LogDebug;
@@ -142,6 +185,8 @@ if (!_Enabled) exitWith {
 player addEventHandler ["Killed", {
     params ["_unit", "_killer"];
     _unit setVariable ["UnconsciousCameraActivated",false,true];
+    _unit setVariable ["GOL_UnconsciousCameraNVG", false];
+    camUseNVG false;
     private _camera = _unit getVariable ["GOL_SpectatorCamera", objNull];
     private _Debug = missionNamespace getVariable ["GOL_Unconscious_CameraDebug",false];
     if (!isNull _camera) then {        

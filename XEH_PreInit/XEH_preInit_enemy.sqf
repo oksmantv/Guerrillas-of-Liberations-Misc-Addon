@@ -9,11 +9,43 @@ diag_log "OKS_GOL_Misc: XEH_preInit_enemy.sqf executed";
     1
 ] call CBA_fnc_addSetting;
 
+// CBA Settings for OKS FaceSwap
+[
+    "GOL_Enemy_IgnorePlayerAir",
+    "LIST",
+    ["Ignore Player Air Targets", "If enabled, enemy AI groups will by default, ignore player air targets. (Dynamic Targeting uses MaxRange/Polling values)"],
+    ["GOL Enemy", "AI Behaviour"],
+    [
+        ["disabled", "enabled", "dynamic"],
+        ["Disabled", "Enabled", "Dynamic Targeting"], 
+        0 // Default index for disabled
+    ],
+    1
+] call CBA_settings_fnc_init;
+
+[
+    "GOL_Enemy_IgnorePlayerAir_MaxRange",
+    "SLIDER",
+    ["Ignore Player Air Targets Max Range", "The maximum range at which enemy AI groups will ignore player air targets. -1 = disable range check."],
+    ["GOL Enemy", "AI Behavior"],
+    [0, 2000, 1000, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Enemy_IgnorePlayerAir_PollTime",
+    "SLIDER",
+    ["Ignore Player Air Targets Poll Time", "How often to check for new player air targets (in seconds)."],
+    ["GOL Enemy", "AI Behavior"],
+    [0, 60, 10, 0],
+    1
+] call CBA_fnc_addSetting;
+
 [
     "GOL_UndercoverAI_Debug",
     "CHECKBOX",
     ["Enable UndercoverAI DEBUG", "Enables debugging for undercover AI scripts."],
-    ["GOL Enemy", "Debug"],
+    ["GOL Enemy", "Undercover AI"],
     true,
     1
 ] call CBA_fnc_addSetting;
