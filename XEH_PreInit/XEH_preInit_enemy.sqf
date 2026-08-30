@@ -13,7 +13,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_enemy.sqf executed";
 [
     "GOL_Enemy_IgnorePlayerAir",
     "LIST",
-    ["Ignore Player Air Targets", "If enabled, enemy AI groups will by default, ignore player air targets. (Dynamic Targeting uses MaxRange/Polling values)"],
+    ["Ignore Player Air Targets", "If enabled, enemy AI groups will by default, ignore player air targets. (Dynamic Targeting uses MaxRange value)"],
     ["GOL Enemy", "AI Behaviour"],
     [
         ["disabled", "enabled", "dynamic"],
@@ -26,9 +26,27 @@ diag_log "OKS_GOL_Misc: XEH_preInit_enemy.sqf executed";
 [
     "GOL_Enemy_IgnorePlayerAir_MaxRange",
     "SLIDER",
-    ["Ignore Player Air Targets Max Range", "The maximum range at which enemy AI groups will ignore player air targets. -1 = disable range check."],
-    ["GOL Enemy", "AI Behavior"],
-    [0, 2000, 1000, 0],
+    ["Ignore Player Air Targets Max Range", "The maximum range at which enemy AI groups will ignore player air targets."],
+    ["GOL Enemy", "AI Behaviour"],
+    [0, 1000, 400, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_EnemyVehicle_IgnorePlayerAir_MaxRange",
+    "SLIDER",
+    ["Ignore Player Air Targets Max Range", "The maximum range at which enemy AI Vehicle groups will ignore player air targets."],
+    ["GOL Enemy", "AI Behaviour"],
+    [0, 2000, 800, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_EnemyVehicle_IgnorePlayerAir_MaxRange_AAA",
+    "SLIDER",
+    ["Ignore Player Air Targets Max Range (AAA)", "Dynamic Targeting only. The maximum range at which enemy AAA-equipped groups (vehicles or infantry carrying AA-tagged ammo) will ignore player air targets."],
+    ["GOL Enemy", "AI Behaviour"],
+    [0, 6000, 2500, 0],
     1
 ] call CBA_fnc_addSetting;
 
@@ -36,8 +54,26 @@ diag_log "OKS_GOL_Misc: XEH_preInit_enemy.sqf executed";
     "GOL_Enemy_IgnorePlayerAir_PollTime",
     "SLIDER",
     ["Ignore Player Air Targets Poll Time", "How often to check for new player air targets (in seconds)."],
-    ["GOL Enemy", "AI Behavior"],
-    [0, 60, 10, 0],
+    ["GOL Enemy", "AI Behaviour"],
+    [0, 30, 2, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Enemy_IgnorePlayerAir_IgnoreDelay",
+    "SLIDER",
+    ["Ignore Player Air Targets Grace Delay", "Dynamic Targeting only. After a player aircraft leaves max range, keep it engageable for this many extra seconds before re-ignoring it. Compensates for fast/low flybys being missed by the poll rate."],
+    ["GOL Enemy", "AI Behaviour"],
+    [0, 30, 10, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Enemy_IgnorePlayerAir_DetailedDebug",
+    "CHECKBOX",
+    ["Detailed Debug for Ignore Player Air Targets", "Enables detailed debugging for ignore player air targets."],
+    ["GOL Enemy", "AI Behaviour"],
+    false,
     1
 ] call CBA_fnc_addSetting;
 
