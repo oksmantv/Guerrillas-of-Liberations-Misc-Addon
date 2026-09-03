@@ -290,6 +290,58 @@
 		};		
 	};	
 
+	class rhs_ssh68_2;
+	class rhs_ssh68_2_GOL : rhs_ssh68_2 {
+		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "SSh-68 Helmet (GOL)";
+		picture = "\rhsafrf\addons\rhs_inventoryicons\data\headgear\rhs_ssh68_2_ca.paa";
+		model = "\rhsafrf\addons\rhs_infantry3\gear\head\rhs_SSH_68";
+		hiddenSelections[] = {"camo"};
+		hiddenSelectionsTextures[] = {"\rhsafrf\addons\rhs_infantry3\data\SSH68_co.paa"};
+		class ItemInfo {
+			_generalMacro = "HeadgearItem";
+			author = "Bohemia Interactive";
+			allowedSlots[] = {801,901,701,605};
+			hiddenSelections[] = {"camo"};
+			hiddenSelectionsTextures[] = {"\rhsafrf\addons\rhs_infantry3\data\SSH68_co.paa"};
+			mass = 25;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			uniformModel = "\rhsafrf\addons\rhs_infantry3\gear\head\rhs_SSH_68";
+			modelSides[] = {6};
+			type = 605;
+			class HitpointsProtectionInfo {
+				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
+			};
+		};
+	};
+
+	class rhsgref_ssh68_vsr;
+	class rhsgref_ssh68_vsr_GOL : rhsgref_ssh68_vsr {
+		author = "RHS GREF edited by OksmanTV from Guerrillas of Liberation";
+		displayName = "SSh-68 Helmet VSR (GOL)";
+		picture = "\rhsgref\addons\rhsgref_inventoryicons\data\Headgear\rhsgref_ssh68_vsr_ca.paa";
+		model = "\rhsgref\addons\rhsgref_infantry\gear\head\rhs_ssh68_cloth";
+		hiddenSelections[] = {"Camo2"};
+		hiddenSelectionsTextures[] = {"\rhsgref\addons\rhsgref_infantry\data_cdf\SSH68_cloth_vsr_co.paa"};
+		class ItemInfo {
+			_generalMacro = "HeadgearItem";
+			author = "Bohemia Interactive";
+			allowedSlots[] = {801,901,701,605};
+			hiddenSelections[] = {"Camo2"};
+			hiddenSelectionsTextures[] = {"\rhsgref\addons\rhsgref_infantry\data_cdf\SSH68_cloth_vsr_co.paa"};
+			mass = 25;
+			overlaySelectionsInfo[] = {"Ghillie_hide"};
+			scope = 0;
+			uniformModel = "\rhsgref\addons\rhsgref_infantry\gear\head\rhs_ssh68_cloth";
+			modelSides[] = {6};
+			type = 605;
+			class HitpointsProtectionInfo {
+				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
+			};
+		};
+	};
+
 	class UK3CB_H_SSH60_Helmet_Covered_TAN;
 	class UK3CB_H_SSH60_Helmet_Covered_TAN_GOL : UK3CB_H_SSH60_Helmet_Covered_TAN {
 		author = "RHS edited by OksmanTV from Guerrillas of Liberation";

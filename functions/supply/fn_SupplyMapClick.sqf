@@ -17,7 +17,7 @@ _BoxCode = [_This, 4, "", ["", {}]] call BIS_fnc_Param;
 _Vulnerable = [_This, 5, false, [false]] call BIS_fnc_Param;
 
 //	Run main script
-[_Side, _HeliClass, _Type, _STDs, _BoxCode, _Vulnerable] remoteExec ["OKS_fnc_Supply", 0, false];
+[_Side, _HeliClass, _Type, _STDs, _BoxCode, _Vulnerable] remoteExec ["OKS_fnc_Supply", 2, false];
 
 //	Create Unique Marker Name
 _Index = 0;

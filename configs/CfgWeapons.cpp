@@ -314,20 +314,20 @@ class CfgWeapons {
 		muzzles[] = {"this"};
 		magazineWell[] = {"RHS_AutoCannon_30mm_2A42_HE"};
 		displayName = "2A42 HE";
-		dispersion = 0.0012;
+		dispersion = 0.0004;
 	};
 	class GOL_weap_2a42_AP: rhs_weap_2a42 {
 		ballisticsComputer = 18;
 		muzzles[] = {"this"};
 		magazineWell[] = {"RHS_AutoCannon_30mm_2A42_AP"};
 		displayName = "2A42 AP";
-		dispersion = 0.0012;
+		dispersion = 0.0004;
 	};
 
 	class rhs_weap_pkt;
 	class GOL_weap_pkt: rhs_weap_pkt {
 		ballisticsComputer = 18;
-		dispersion = 0.002;
+		dispersion = 0.0006;
 	};
 
 	// AP45 Compatibility patches

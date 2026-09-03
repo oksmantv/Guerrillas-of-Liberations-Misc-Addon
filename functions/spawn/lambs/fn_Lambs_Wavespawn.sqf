@@ -1,12 +1,13 @@
 /*
 	OKS_Lambs_Wavespawn
+
 	[SpawnPosOrPositionsInArray,UnitsPerWave,AmountOfWaves,DelayPerWave,TypeOfWP,Side,Range,"VariableNameSetTrueUponAllClear"] spawn OKS_fnc_Lambs_Wavespawn;
 	[[getPos spawn_1,getPos spawn_2],5,2,120,"hunt",east,1500,"WaveSpawn1Destroyed"] spawn OKS_fnc_Lambs_Wavespawn;
+
+	Example: [[attack_1,attack_2,attack_3,attack_4,attack_5,attack_6,attack_7],2,3,180,"rush",east,1500,"Wave1Complete"] spawn OKS_fnc_Lambs_Wavespawn;
 */
 
  	if(!isServer) exitWith {};
-
-	[[attack_1,attack_2,attack_3,attack_4,attack_5,attack_6,attack_7],2,3,180,"rush",east,1500,"Wave1Complete"] spawn OKS_fnc_Lambs_Wavespawn;
 
 	Params [
 		"_SpawnPos",

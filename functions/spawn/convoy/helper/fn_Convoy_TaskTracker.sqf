@@ -242,6 +242,12 @@ private _initialPos = if (!isNull _heaviest) then { getPos _heaviest } else { _e
 	_ShowPosition
 ] call BIS_fnc_taskCreate;
 
+// Attach task destination to the initial front vehicle so Arma tracks position
+// internally — no script loop updates needed, no position-update notifications.
+if (!isNull _heaviest) then {
+	[_taskId, _heaviest, false] call BIS_fnc_taskSetDestination;
+};
+
 // --- Tracking loop (spawned — runs in its own thread) ----------------------
 
 [_taskId, _VehicleArray, _ConvoyGroupArray, _TaskCondition, _ShowNotification, _locString, _aaSuffix,
@@ -254,7 +260,8 @@ params [
 ];
 
 private _arrivalApplied = false;
-private _lastTrackedPos = [];  // Only push position update when convoy moved meaningfully
+private _lastTrackedVehicle = objNull; // Track which vehicle the task is attached to
+private _lastTrackedPos = [];  // Fallback position (used when no front vehicle is alive)
 
 while {true} do {
 	private _aliveVehicles = _VehicleArray select { alive _x };
@@ -298,10 +305,17 @@ while {true} do {
 		};
 	};
 
-	if (_trackPos isNotEqualTo []) then {
-		// Only update when convoy has moved >75m — prevents BIS task system from
-		// spamming "task assigned" notifications on every position push.
-		if (_lastTrackedPos isEqualTo [] || { _trackPos distance2D _lastTrackedPos > 75 }) then {
+	// Re-attach task to the front vehicle when it changes.
+	// Passing an Object to BIS_fnc_taskSetDestination calls setTaskDestination with an object,
+	// which makes Arma track the position silently — no per-update notifications.
+	if (!isNull _frontLeaderVehicle && {alive _frontLeaderVehicle}) then {
+		if (!(_frontLeaderVehicle isEqualTo _lastTrackedVehicle)) then {
+			_lastTrackedVehicle = _frontLeaderVehicle;
+			[_taskId, _frontLeaderVehicle, false] call BIS_fnc_taskSetDestination;
+		};
+	} else {
+		// No alive front leader — fall back to a static position update (only on meaningful move)
+		if (_trackPos isNotEqualTo [] && {_lastTrackedPos isEqualTo [] || {_trackPos distance2D _lastTrackedPos > 75}}) then {
 			_lastTrackedPos = _trackPos;
 			[_taskId, _trackPos, false] call BIS_fnc_taskSetDestination;
 		};

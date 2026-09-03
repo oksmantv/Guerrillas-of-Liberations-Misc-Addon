@@ -3,9 +3,9 @@
 // Edit this value to update the addon version across all files
 
 #define MISC_MAJOR 3 // 0-10
-#define MISC_MINOR 4 // 0-10
-#define MISC_PATCHLVL 7 // 0-10
-#define MISC_BUILD 130826
+#define MISC_MINOR 5 // 0-10
+#define MISC_PATCHLVL 3 // 0-10
+#define MISC_BUILD 290826
 
 #define MISC_VERSION MISC_MAJOR.MISC_MINOR.MISC_PATCHLVL.MISC_BUILD
 #define MISC_VERSION_AR MISC_MAJOR,MISC_MINOR,MISC_PATCHLVL,MISC_BUILD

@@ -45,3 +45,22 @@ diag_log "OKS_GOL_Misc: XEH_preInit_suppression.sqf executed";
     [2, 15, 10, 0],
     1
 ] call CBA_fnc_addSetting;
+
+// Settings for explosion-based suppression (AmmoExplodedNear)
+[
+    "GOL_Suppression_ExplosionRadius",
+    "SLIDER",
+    ["Explosion Suppression Radius", "Distance in metres from an explosion that will suppress nearby AI. Requires Arma 3 v2.22+."],
+    ["GOL Suppression", "Explosions"],
+    [5, 100, 50, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Suppression_ExplosionMultiplier",
+    "SLIDER",
+    ["Explosion Suppression Multiplier", "Duration multiplier applied to suppression caused by nearby explosions (relative to rifle-fire suppression)."],
+    ["GOL Suppression", "Explosions"],
+    [1, 5, 3, 1],
+    1
+] call CBA_fnc_addSetting;
