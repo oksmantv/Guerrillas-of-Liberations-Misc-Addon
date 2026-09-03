@@ -33,7 +33,7 @@
 
 if (hasInterface && !isServer) exitWith {false};		// Ensures only server or HC runs this script
 
-Private ["_HeliType","_WPDistance","_ChuteHeight","_SpareIndex","_SkillVariables","_Rendevouz","_Type","_AIPilotSkill","_AICrewSkill","_AIUnitSkill","_UnitTypes","_OldDropMarker","_DropPosition","_Dir","_Sectors","_CrewSpots","_PilotClasses","_CrewClasses","_EmptyCargoSeats","_LZ","_AirDropLeaders","_Temp","_Side","_Direction","_Position","_Index","_HeliClass","_SAD","_UnloadOrDrop","_Ingress","_UnloadOrDropMarker","_Egress","_Units","_UnitsWPs","_Group","_Heli","_x","_HeliGroup","_Pilot","_AirDropUnits","_y","_i","_OKS_Dir"];
+Private ["_HeliType","_WPDistance","_SpareIndex","_SkillVariables","_Rendevouz","_Type","_AIPilotSkill","_AICrewSkill","_AIUnitSkill","_UnitTypes","_OldDropMarker","_DropPosition","_Dir","_Sectors","_CrewSpots","_PilotClasses","_CrewClasses","_EmptyCargoSeats","_LZ","_AirDropLeaders","_Temp","_Side","_Direction","_Position","_Index","_HeliClass","_SAD","_UnloadOrDrop","_Ingress","_UnloadOrDropMarker","_Egress","_Units","_UnitsWPs","_Group","_Heli","_x","_HeliGroup","_Pilot","_AirDropUnits","_y","_i","_OKS_Dir"];
 
 Params
 [
@@ -48,10 +48,18 @@ Params
 	["_UnitsWPs", [""], [[""],[]]],
 	["_Override", false, [true]],			// AS LONG AS BI HAVEN'T FIXED THEIR SHIT
 	["_Airbase", false,[true]],
-	["_OKS_Zone", ObjNull,[ObjNull]]
+	["_OKS_Zone", ObjNull,[ObjNull]],
+	["_LimitSpeedPercentage", 1, [0,1]],
+	["_FlyInHeight", 0, [0]],
+	["_ChuteHeight", 0, [0]]
 ];
 
 #include "fn_AirDrop_Settings.sqf"
+
+// Set chute opening altitude if not supplied
+if (_ChuteHeight == 0) then {
+	_ChuteHeight = missionNamespace getVariable ["GOL_Airdrop_ChuteHeight", 100];
+};
 
 _UnloadOrDrop = (toLower _UnloadOrDrop);
 
@@ -198,6 +206,23 @@ if (_UnloadOrDrop isEqualTo "paradrop") then
 sleep 0.5;
 _EmptyCargoSeats = (_Heli emptyPositions "Cargo");
 
+// Limit speed
+if (_LimitSpeedPercentage < 1) then {
+	private _maxSpeed = getNumber (configOf _Heli >> "maxSpeed");
+
+	diag_log format["[TEST] _maxSpeed = %1; _LimitSpeedPercentage = %2; Calulated = %3", _maxSpeed, _LimitSpeedPercentage, (_maxSpeed * _LimitSpeedPercentage)];
+
+	{
+		private _limitedSpeed = (_maxSpeed * _LimitSpeedPercentage);
+
+		_x limitSpeed _limitedSpeed;
+
+		if (speed _x > _limitedSpeed) then {
+			_x forceSpeed _limitedSpeed;
+		};
+	} forEach [_Heli, _Pilot];
+};
+
 // Heli waypoints
 Switch (_UnloadOrDrop) do
 {
@@ -314,8 +339,14 @@ Switch (_UnloadOrDrop) do
 		if(!(_Airbase)) then {
 			_Heli setPosATL [(GetPosATL _Heli select 0), (GetPosATL _Heli select 1), ((GetPosATL _Heli select 2) + 60)];
 		};
-			
-		_Heli flyInHeight 200;
+
+		// Set desired altitude of the vehicle (default to 200 if not set)
+		if (_FlyInHeight > 0) then {
+			_Heli flyInHeight _FlyInHeight;
+		} else {
+			_Heli flyInHeight 200;
+		};
+
 		_Dir = [_Heli, _UnloadOrDropMarker] call BIS_fnc_dirTo;
 		if ((_Units select 0) > 0) then
 		{
