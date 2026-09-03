@@ -13,12 +13,6 @@
         ["_AddCargoCommander",false,[false]] // If true, add first cargo slot and set as effectiveCommander
     ];
 
-    // Handle "fill cargo" request
-    if (_CargoSlots == -1) then {
-        // Set _CargoSlots to whatever the maximum cargo slots are for this vehicle type
-        _CargoSlots = ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount);
-    };
-
     Private ["_UnitClass","_Group","_Commander","_Gunner","_Driver"];
 
     private _isAirVehicle = (!isNull _Vehicle) && {
@@ -142,9 +136,16 @@
         };
     };
 
+    _CargoSeats = ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount);
+
+    // Handle "fill cargo" request
+    if (_CargoSlots == -1) then {
+        // Set _CargoSlots to whatever the maximum cargo slots are for this vehicle type
+        _CargoSlots = _CargoSeats;
+    };
+
     if(_CargoSlots > 0 || _AddCargoCommander) then {
         if(([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount) >= 1) then {
-            _CargoSeats = ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount);
             if(_AddCargoCommander) then {
                 // Add first cargo slot and set as effectiveCommander
                 _Unit = _Group CreateUnit [(_Leaders call BIS_FNC_selectRandom), [0,0,0], [], 0, "NONE"];
