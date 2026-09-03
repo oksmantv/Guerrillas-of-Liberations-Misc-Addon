@@ -49,7 +49,7 @@ Params
 	["_Override", false, [true]],			// AS LONG AS BI HAVEN'T FIXED THEIR SHIT
 	["_Airbase", false,[true]],
 	["_OKS_Zone", ObjNull,[ObjNull]],
-	["_LimitSpeedPercentage", 1, [0,1]],
+	["_LimitSpeed", 0, [0]],
 	["_FlyInHeight", 0, [0]],
 	["_ChuteHeight", 0, [0]]
 ];
@@ -59,6 +59,11 @@ Params
 // Set chute opening altitude if not supplied
 if (_ChuteHeight == 0) then {
 	_ChuteHeight = missionNamespace getVariable ["GOL_Airdrop_ChuteHeight", 100];
+};
+
+if (_LimitSpeed > 0) then {
+  // Convert from km/h to m/s
+  _LimitSpeed = (_LimitSpeed / 3.6);
 };
 
 _UnloadOrDrop = (toLower _UnloadOrDrop);
@@ -203,23 +208,14 @@ if (_UnloadOrDrop isEqualTo "paradrop") then
 	} forEach _CrewSpots;
 };
 
+if (_LimitSpeed > 0) then {
+	// Limit speed
+	_Heli forceSpeed _LimitSpeed;
+	_Pilot forceSpeed _LimitSpeed;
+};
+
 sleep 0.5;
 _EmptyCargoSeats = (_Heli emptyPositions "Cargo");
-
-// Limit speed
-if (_LimitSpeedPercentage < 1) then {
-	private _maxSpeed = getNumber (configOf _Heli >> "maxSpeed");
-
-	{
-		private _limitedSpeed = (_maxSpeed * _LimitSpeedPercentage);
-
-		_x limitSpeed _limitedSpeed;
-
-		if (speed _x > _limitedSpeed) then {
-			_x forceSpeed _limitedSpeed;
-		};
-	} forEach [_Heli, _Pilot];
-};
 
 // Heli waypoints
 Switch (_UnloadOrDrop) do
