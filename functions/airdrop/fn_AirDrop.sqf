@@ -210,8 +210,6 @@ _EmptyCargoSeats = (_Heli emptyPositions "Cargo");
 if (_LimitSpeedPercentage < 1) then {
 	private _maxSpeed = getNumber (configOf _Heli >> "maxSpeed");
 
-	diag_log format["[TEST] _maxSpeed = %1; _LimitSpeedPercentage = %2; Calulated = %3", _maxSpeed, _LimitSpeedPercentage, (_maxSpeed * _LimitSpeedPercentage)];
-
 	{
 		private _limitedSpeed = (_maxSpeed * _LimitSpeedPercentage);
 
