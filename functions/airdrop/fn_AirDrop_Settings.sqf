@@ -5,6 +5,7 @@
 // General Settings
 
 _Rendevouz = missionNamespace getVariable ["GOL_Airdrop_Rendevouz", false];
+_ChuteHeight = missionNamespace getVariable ["GOL_Airdrop_ChuteHeight", 100];
 _WPDistance = missionNamespace getVariable ["GOL_Airdrop_WPDistance", 150];
 _Settings = [_Side] call OKS_fnc_Hunt_Settings;
 _Settings Params ["_MinDistance","_UpdateFreqSettings","_SkillVariables","_Skill","_AirDropLeaders","_AirDropUnits","_MaxCargoSeats","_HeliClass", "_PilotClasses", "_CrewClasses"];
