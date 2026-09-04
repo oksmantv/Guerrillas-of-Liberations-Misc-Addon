@@ -49,8 +49,8 @@ Params
 	["_Override", false, [true]],			// AS LONG AS BI HAVEN'T FIXED THEIR SHIT
 	["_Airbase", false,[true]],
 	["_OKS_Zone", ObjNull,[ObjNull]],
-	["_LimitSpeed", (missionNamespace getVariable ["GOL_Airdrop_LimitSpeed", 250]), [0]],
-	["_FlyInHeight", (missionNamespace getVariable ["GOL_Airdrop_FlyInHeight", 300]), [0]],
+	["_LimitSpeed", (missionNamespace getVariable ["GOL_Airdrop_LimitSpeed", 200]), [0]],
+	["_FlyInHeight", (missionNamespace getVariable ["GOL_Airdrop_FlyInHeight", 200]), [0]],
 	["_ChuteHeightOverride", 0, [0]]
 ];
 
@@ -334,12 +334,8 @@ Switch (_UnloadOrDrop) do
 			_Heli setPosATL [(GetPosATL _Heli select 0), (GetPosATL _Heli select 1), ((GetPosATL _Heli select 2) + 60)];
 		};
 
-		// Set desired altitude of the vehicle (default to 200 if not set)
-		if (_FlyInHeight > 0) then {
-			_Heli flyInHeight _FlyInHeight;
-		} else {
-			_Heli flyInHeight 200;
-		};
+		// Set desired altitude of the vehicle
+		_Heli flyInHeight _FlyInHeight;
 
 		_Dir = [_Heli, _UnloadOrDropMarker] call BIS_fnc_dirTo;
 		if ((_Units select 0) > 0) then
