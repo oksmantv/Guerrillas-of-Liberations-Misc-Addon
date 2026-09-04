@@ -49,16 +49,16 @@ Params
 	["_Override", false, [true]],			// AS LONG AS BI HAVEN'T FIXED THEIR SHIT
 	["_Airbase", false,[true]],
 	["_OKS_Zone", ObjNull,[ObjNull]],
-	["_LimitSpeed", 0, [0]],
-	["_FlyInHeight", 0, [0]],
-	["_ChuteHeight", 0, [0]]
+	["_LimitSpeed", (missionNamespace getVariable ["GOL_Airdrop_LimitSpeed", 250]), [0]],
+	["_FlyInHeight", (missionNamespace getVariable ["GOL_Airdrop_FlyInHeight", 300]), [0]],
+	["_ChuteHeightOverride", 0, [0]]
 ];
 
 #include "fn_AirDrop_Settings.sqf"
 
-// Set chute opening altitude if not supplied
-if (_ChuteHeight == 0) then {
-	_ChuteHeight = missionNamespace getVariable ["GOL_Airdrop_ChuteHeight", 100];
+if (_ChuteHeightOverride > 0) then {
+  // Override the chute height if a specific value is provided
+  _ChuteHeight = _ChuteHeightOverride;
 };
 
 if (_LimitSpeed > 0) then {
