@@ -363,14 +363,13 @@ if (hasInterface) then {
     */
     // All Created Groups
     addMissionEventHandler ["GroupCreated", {
-        params ["_group"];
-        
-        if(missionNamespace getVariable ["GOL_Enemy_IgnorePlayerAir", false] != "disabled") then {
-            [_Group, true] call OKS_fnc_Ignore_PlayerAir;
+        params ["_group"];     
+        if(missionNamespace getVariable ["GOL_Enemy_IgnorePlayerAir", "disabled"] != "disabled") then {
+            [_group, true] call OKS_fnc_Ignore_PlayerAir;
         };
     }];
     // Current Active Groups on Mission Start
-    if(missionNamespace getVariable ["GOL_Enemy_IgnorePlayerAir", false] != "disabled") then {
+    if(missionNamespace getVariable ["GOL_Enemy_IgnorePlayerAir", "disabled"] != "disabled") then {
         { 
             [_x, true] call OKS_fnc_Ignore_PlayerAir; 
         } forEach (allGroups select {!(isPlayer (leader _x))});
