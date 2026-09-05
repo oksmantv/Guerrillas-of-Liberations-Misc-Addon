@@ -14,6 +14,9 @@
 //	8. Array: [number of groups, % of total cargo to be filled with units]. [2,1] will spawn 2 groups and fill 100% available cargo seats. [4,0.5] will spawn 4 groups and fill 50% available cargo seats.
 //	9. Array of [X,Y,Z] or Strings:  Unit waypoints to follow when disembarking, last waypoint is a "Search and Destroy" waypoint. ["FirstWaypoint","SecondWaypoint",[Third,Way,Point]]
 //	10. Boolean: This is an override to my ghetto fix for paradropping (only) units. This will be in place until BIS fixes their AI Pilots (broke this script from 1.60). By keeping this False (default) there will be no gunners and the helo will paradrop units as intended. If you override this command by using True, the helicopter will have gunners but the script might not work because of AI behaviour.
+//  13. Number: (Optional) Limit the speed of the aircraft in km/h.
+//  14. Number: (Optional) Override the default fly-in height of the aircraft.
+//  15. Number: (Optional) Override the chute opening height of paradrop units (in meters).
 //	More settings in fn_AirDrop_Settings.sqf
 //
 ////////////////
@@ -23,6 +26,7 @@
 //	null = [east, "O_Heli_Light_02_unarmed_F", False, "unload", "AirDropSpawn", _LZ, "AirDropDespawn", [2,1], [_LZ]] spawn OKS_fnc_AirDrop;
 //	[east, "O_Heli_Light_02_F", True, "unload", "AirDropSpawn2", "AirDropTarget2", "AirDropSAD", [2,1], ["wp3","wp2"]] spawn OKS_fnc_AirDrop;
 //	null = [west, "", false, "paradrop", "ingress", (getpos player), "Egress", [2, 1], ["zone1"],false,false] spawn OKS_fnc_AirDrop;
+//  null = [east, "UK3CB_AAF_O_C130J", false, "paradrop", "marker_Spawn_Slow", "marker_LZ_Slow", "marker_Despawn_Slow", [2,1], ["marker_LZ_Slow"], false, true, objNull, 180, 500, 150] spawn OKS_fnc_AirDrop;
 //
 //
 //
@@ -33,7 +37,7 @@
 
 if (hasInterface && !isServer) exitWith {false};		// Ensures only server or HC runs this script
 
-Private ["_HeliType","_WPDistance","_ChuteHeight","_SpareIndex","_SkillVariables","_Rendevouz","_Type","_AIPilotSkill","_AICrewSkill","_AIUnitSkill","_UnitTypes","_OldDropMarker","_DropPosition","_Dir","_Sectors","_CrewSpots","_PilotClasses","_CrewClasses","_EmptyCargoSeats","_LZ","_AirDropLeaders","_Temp","_Side","_Direction","_Position","_Index","_HeliClass","_SAD","_UnloadOrDrop","_Ingress","_UnloadOrDropMarker","_Egress","_Units","_UnitsWPs","_Group","_Heli","_x","_HeliGroup","_Pilot","_AirDropUnits","_y","_i","_OKS_Dir"];
+Private ["_HeliType","_WPDistance","_SpareIndex","_SkillVariables","_Rendevouz","_ChuteHeight","_Type","_AIPilotSkill","_AICrewSkill","_AIUnitSkill","_UnitTypes","_OldDropMarker","_DropPosition","_Dir","_Sectors","_CrewSpots","_PilotClasses","_CrewClasses","_EmptyCargoSeats","_LZ","_AirDropLeaders","_Temp","_Side","_Direction","_Position","_Index","_HeliClass","_SAD","_UnloadOrDrop","_Ingress","_UnloadOrDropMarker","_Egress","_Units","_UnitsWPs","_Group","_Heli","_x","_HeliGroup","_Pilot","_AirDropUnits","_y","_i","_OKS_Dir"];
 
 Params
 [
@@ -48,10 +52,23 @@ Params
 	["_UnitsWPs", [""], [[""],[]]],
 	["_Override", false, [true]],			// AS LONG AS BI HAVEN'T FIXED THEIR SHIT
 	["_Airbase", false,[true]],
-	["_OKS_Zone", ObjNull,[ObjNull]]
+	["_OKS_Zone", ObjNull,[ObjNull]],
+	["_LimitSpeed", (missionNamespace getVariable ["GOL_Airdrop_LimitSpeed", 200]), [0]],
+	["_FlyInHeight", (missionNamespace getVariable ["GOL_Airdrop_FlyInHeight", 200]), [0]],
+	["_ChuteHeightOverride", 0, [0]]
 ];
 
 #include "fn_AirDrop_Settings.sqf"
+
+if (_ChuteHeightOverride > 0) then {
+  // Override the chute height if a specific value is provided
+  _ChuteHeight = _ChuteHeightOverride;
+};
+
+if (_LimitSpeed > 0) then {
+  // Convert from km/h to m/s
+  _LimitSpeed = (_LimitSpeed / 3.6);
+};
 
 _UnloadOrDrop = (toLower _UnloadOrDrop);
 
@@ -195,6 +212,14 @@ if (_UnloadOrDrop isEqualTo "paradrop") then
 	} forEach _CrewSpots;
 };
 
+if (_LimitSpeed > 0) then {
+	_Heli forceSpeed _LimitSpeed;
+	_Pilot forceSpeed _LimitSpeed;
+};
+
+// Set desired altitude of the vehicle
+_Heli flyInHeight _FlyInHeight;
+
 sleep 0.5;
 _EmptyCargoSeats = (_Heli emptyPositions "Cargo");
 
@@ -314,8 +339,7 @@ Switch (_UnloadOrDrop) do
 		if(!(_Airbase)) then {
 			_Heli setPosATL [(GetPosATL _Heli select 0), (GetPosATL _Heli select 1), ((GetPosATL _Heli select 2) + 60)];
 		};
-			
-		_Heli flyInHeight 200;
+
 		_Dir = [_Heli, _UnloadOrDropMarker] call BIS_fnc_dirTo;
 		if ((_Units select 0) > 0) then
 		{
