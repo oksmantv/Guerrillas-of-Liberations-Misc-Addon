@@ -213,6 +213,9 @@ if (_LimitSpeed > 0) then {
 	_Pilot forceSpeed _LimitSpeed;
 };
 
+// Set desired altitude of the vehicle
+_Heli flyInHeight _FlyInHeight;
+
 sleep 0.5;
 _EmptyCargoSeats = (_Heli emptyPositions "Cargo");
 
@@ -332,9 +335,6 @@ Switch (_UnloadOrDrop) do
 		if(!(_Airbase)) then {
 			_Heli setPosATL [(GetPosATL _Heli select 0), (GetPosATL _Heli select 1), ((GetPosATL _Heli select 2) + 60)];
 		};
-
-		// Set desired altitude of the vehicle
-		_Heli flyInHeight _FlyInHeight;
 
 		_Dir = [_Heli, _UnloadOrDropMarker] call BIS_fnc_dirTo;
 		if ((_Units select 0) > 0) then
