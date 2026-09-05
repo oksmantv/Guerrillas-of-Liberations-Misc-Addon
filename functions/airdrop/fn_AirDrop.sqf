@@ -14,6 +14,9 @@
 //	8. Array: [number of groups, % of total cargo to be filled with units]. [2,1] will spawn 2 groups and fill 100% available cargo seats. [4,0.5] will spawn 4 groups and fill 50% available cargo seats.
 //	9. Array of [X,Y,Z] or Strings:  Unit waypoints to follow when disembarking, last waypoint is a "Search and Destroy" waypoint. ["FirstWaypoint","SecondWaypoint",[Third,Way,Point]]
 //	10. Boolean: This is an override to my ghetto fix for paradropping (only) units. This will be in place until BIS fixes their AI Pilots (broke this script from 1.60). By keeping this False (default) there will be no gunners and the helo will paradrop units as intended. If you override this command by using True, the helicopter will have gunners but the script might not work because of AI behaviour.
+//  13. Number: (Optional) Limit the speed of the aircraft in km/h.
+//  14. Number: (Optional) Override the default fly-in height of the aircraft.
+//  15. Number: (Optional) Override the chute opening height of paradrop units (in meters).
 //	More settings in fn_AirDrop_Settings.sqf
 //
 ////////////////
@@ -23,6 +26,7 @@
 //	null = [east, "O_Heli_Light_02_unarmed_F", False, "unload", "AirDropSpawn", _LZ, "AirDropDespawn", [2,1], [_LZ]] spawn OKS_fnc_AirDrop;
 //	[east, "O_Heli_Light_02_F", True, "unload", "AirDropSpawn2", "AirDropTarget2", "AirDropSAD", [2,1], ["wp3","wp2"]] spawn OKS_fnc_AirDrop;
 //	null = [west, "", false, "paradrop", "ingress", (getpos player), "Egress", [2, 1], ["zone1"],false,false] spawn OKS_fnc_AirDrop;
+//  null = [east, "UK3CB_AAF_O_C130J", false, "paradrop", "marker_Spawn_Slow", "marker_LZ_Slow", "marker_Despawn_Slow", [2,1], ["marker_LZ_Slow"], false, true, objNull, 180, 500, 150] spawn OKS_fnc_AirDrop;
 //
 //
 //
