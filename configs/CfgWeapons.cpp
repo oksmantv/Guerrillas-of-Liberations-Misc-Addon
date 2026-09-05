@@ -455,5 +455,416 @@ class CfgWeapons {
                 };
         };
 
+        // ============================================================
+        // GOL "Terror GMG" — same-model GMG/Mk19 weapons re-tuned for AI
+        // gunners on enemy vehicles: 2-round bursts with a long pause
+        // between them (aiRateOfFire = 6s), ~3x vanilla dispersion, and
+        // reduced HE blast/damage (see GOL_ammo_* in CfgAmmo.cpp — rare
+        // direct hits stay dangerous, splash is toned down).
+        //
+        // Swapped in at runtime by fn_RemoveVehicleHE.sqf. The vanilla
+        // base classes (GMG_40MM, RHS_MK19, RHS_MK19_CROWS_M153,
+        // UK3CB_Factions_MK19) are left untouched, so this only affects
+        // vehicles the script has processed — AI-crewed enemy vehicles.
+        // ============================================================
+
+        // NOTE: internal same-name mode inheritance (class manual: manual {})
+        // does NOT resolve in this addon's build pipeline — "manual" (etc.)
+        // comes back as an undefined base class. Every fire mode below is
+        // therefore a full standalone redefinition inheriting the global
+        // Mode_FullAuto base, with every value that mattered (displayName,
+        // reloadTime, aiRateOfFireDistance) copied from the real vanilla/RHS
+        // class via the docs/gmg_terror_dump.sqf dump, plus our overrides
+        // (dispersion ~3x, burst=2, aiRateOfFire=6 for the pause).
+        //
+        // autoFire=1 is REQUIRED here — autoFire=0 (true "stop after N
+        // rounds, wait for a new fire decision") made AI vehicle gunners
+        // refuse to ever select/fire these modes. autoFire=1 + burst=2 is
+        // the only pattern confirmed to make AI actually use a burst on a
+        // turret weapon in this codebase (see M230 LowROF in CfgWeapons.cpp
+        // and /memories/repo/m230-chaingun.md). aiRateOfFire=6 still forces
+        // the pause between burst groups.
+        class GMG_40MM : MGun {
+			class Manual;
+			class close;
+			class short;
+			class medium;
+			class far;
+		};
+        class GOL_weap_GMG40MM_Terror: GMG_40MM {
+                scope = 2;
+                displayName = "GMG 40mm (Suppressive)";
+                dispersion = 0.03;
+				aiBurstTerminable=1;
+                magazines[] = {"GOL_mag_GMG40MM_200","GOL_mag_GMG40MM_96","GOL_mag_GMG40MM_64","GOL_mag_GMG40MM_32"};
+
+                class manual: Mode_FullAuto {
+                        displayName = "Mk 19"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 10;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class close: Mode_FullAuto {
+                        displayName = "Mk 19";
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 50;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class short: Mode_FullAuto {
+                        displayName = "Mk 19"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 150;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class medium: Mode_FullAuto {
+                        displayName = "Mk 19"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 400;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class far: Mode_FullAuto {
+                        displayName = "Mk 19"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 1000;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+        };
+		class GMG_20mm;
+        class RHS_MK19 : GMG_20mm {
+			class manual;
+			class close;
+			class short;
+			class medium;
+			class far;
+		};
+        class GOL_weap_MK19_Terror: RHS_MK19 {
+                scope = 2;
+                displayName = "Mk19 (Suppressive)";
+                dispersion = 0.03;
+				aiBurstTerminable=1;
+                magazines[] = {
+                        "GOL_mag_MK19_48_M384","GOL_mag_MK19_48_M1001","GOL_mag_MK19_48_M430I","GOL_mag_MK19_48_M430A1",
+                        "GOL_mag_MK19_96_M384","GOL_mag_MK19_96_M1001","GOL_mag_MK19_96_M430I","GOL_mag_MK19_96_M430A1"
+                };
+
+                class manual: manual {
+                        displayName = "Mk. 19 Grenade Launcher";
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1;
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 500;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class close: close {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1;
+						reloadTime = 0.15;
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 50;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class short: short {
+                        displayName = "Mk. 19 Grenade Launcher"; dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 300;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class medium: medium {
+                        displayName = "Mk. 19 Grenade Launcher"; dispersion = 0.03;
+						aiBurstTerminable=1;burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 600;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class far: far {
+                        displayName = "Mk. 19 Grenade Launcher"; dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 1000;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+        };
+
+        class RHS_MK19_CROWS_M153 : RHS_MK19 {};
+        class GOL_weap_MK19_CROWS_Terror: RHS_MK19_CROWS_M153 {
+                scope = 2;
+                displayName = "Mk19 CROWS (Suppressive)";
+                dispersion = 0.03;
+				aiBurstTerminable=1;
+                magazines[] = {
+                        "GOL_mag_MK19_48_M384","GOL_mag_MK19_48_M1001","GOL_mag_MK19_48_M430I","GOL_mag_MK19_48_M430A1",
+                        "GOL_mag_MK19_96_M384","GOL_mag_MK19_96_M1001","GOL_mag_MK19_96_M430I","GOL_mag_MK19_96_M430A1"
+                };
+
+                class manual: manual {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 500;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class close: close {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 50;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class short: short {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 300;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class medium: medium {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 600;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class far: far {
+                        displayName = "Mk. 19 Grenade Launcher";
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 1000;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+        };
+
+        class UK3CB_Factions_MK19 : RHS_MK19 {};
+        class GOL_weap_MK19_UK3CB_Terror: UK3CB_Factions_MK19 {
+                scope = 2;
+                displayName = "Mk19 (Suppressive)";
+                dispersion = 0.03;
+				aiBurstTerminable=1;
+                magazines[] = {
+                        "GOL_mag_MK19_48_M384","GOL_mag_MK19_48_M1001","GOL_mag_MK19_48_M430I",
+                        "GOL_mag_MK19_96_M384","GOL_mag_MK19_96_M1001","GOL_mag_MK19_96_M430I"
+                };
+
+                class manual: manual {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 500;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class close: close {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 50;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class short: short {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 300;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class medium: medium {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 600;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class far: far {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 1000;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+        };
+
+		class RHS_weap_Ags30;
+		class RHS_weap_Ags30_tigr: RHS_weap_Ags30 {
+			class manual;
+			class close;
+			class short;
+			class medium;
+			class far;
+		};
+		class RHS_weapon_Ags30_tigr_Terror : RHS_weap_Ags30_tigr {
+			class manual : manual {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 3;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 500;
+			};
+			class close : close {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 4;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 50;
+			};
+			class short : short {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 3;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 300;
+			};
+			class medium : medium {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 2;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 500;
+			};
+			class far : far {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 2;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 1000;
+			};
+		};
 };
 

@@ -21,7 +21,6 @@ class CfgPatches
             "rhs_weapons",
             "rhs_c_weapons",
             "rhs_c_bmp",
-            
             "rhsusf_main",
             "rhsusf_c_airweapons",
             "rhsusf_c_heavyweapons",
@@ -169,7 +168,12 @@ class CfgPatches
             // NLAW lightweight variant (CBA Disposable: base / ready / used)
             "GOL_launch_NLAW_F",
             "GOL_launch_NLAW_ready_F",
-            "GOL_launch_NLAW_used_F"
+            "GOL_launch_NLAW_used_F",
+            // "Terror GMG" — reduced-lethality AI GMG/Mk19 variants (see fn_RemoveVehicleHE.sqf)
+            "GOL_weap_GMG40MM_Terror",
+            "GOL_weap_MK19_Terror",
+            "GOL_weap_MK19_CROWS_Terror",
+            "GOL_weap_MK19_UK3CB_Terror"
         };
 		magazines[] = {
             "GOL_1Rnd_UGL_FlareIR",
@@ -283,7 +287,20 @@ class CfgPatches
 			"GOL_PylonWeapon_M230_HE",
 			"GOL_PylonWeapon_M230_AP",
 			"GOL_PylonWeapon_M230_HE_L",
-			"GOL_PylonWeapon_M230_AP_L"
+			"GOL_PylonWeapon_M230_AP_L",
+			// "Terror GMG" magazines (reduced-lethality HE, see CfgAmmo.cpp)
+			"GOL_mag_GMG40MM_200",
+			"GOL_mag_GMG40MM_96",
+			"GOL_mag_GMG40MM_64",
+			"GOL_mag_GMG40MM_32",
+			"GOL_mag_MK19_48_M384",
+			"GOL_mag_MK19_48_M1001",
+			"GOL_mag_MK19_48_M430I",
+			"GOL_mag_MK19_48_M430A1",
+			"GOL_mag_MK19_96_M384",
+			"GOL_mag_MK19_96_M1001",
+			"GOL_mag_MK19_96_M430I",
+			"GOL_mag_MK19_96_M430A1"
 		};
 	};
 

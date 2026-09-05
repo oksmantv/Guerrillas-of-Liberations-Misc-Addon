@@ -1575,4 +1575,64 @@ class CfgMagazines {
         pylonMirrorClass = "GOL_PylonWeapon_M230_AP";
 		mass = 200;
 	};   
+
+	// ============================================================
+	// GOL "Terror GMG" magazines — same capacities as their base
+	// magazine, pointed at the reduced-lethality ammo in CfgAmmo.cpp.
+	// See functions/enemy/fn_RemoveVehicleHE.sqf for the vehicle swap.
+	// ============================================================
+	class 200Rnd_40mm_G_belt;
+	class GOL_mag_GMG40MM_200: 200Rnd_40mm_G_belt {
+		ammo = "GOL_ammo_GMG40MM_Terror";
+	};
+	class 96Rnd_40mm_G_belt;
+	class GOL_mag_GMG40MM_96: 96Rnd_40mm_G_belt {
+		ammo = "GOL_ammo_GMG40MM_Terror";
+	};
+	class 64Rnd_40mm_G_belt;
+	class GOL_mag_GMG40MM_64: 64Rnd_40mm_G_belt {
+		ammo = "GOL_ammo_GMG40MM_Terror";
+	};
+	class 32Rnd_40mm_G_belt;
+	class GOL_mag_GMG40MM_32: 32Rnd_40mm_G_belt {
+		ammo = "GOL_ammo_GMG40MM_Terror";
+	};
+
+	class RHS_mag_VOG30_30;
+	class GOL_mag_VOG30_30: RHS_mag_VOG30_30 {
+		ammo = "GOL_ammo_VOG30_Terror";
+	};
+
+	class RHS_48Rnd_40mm_MK19;
+	class GOL_mag_MK19_48_M384: RHS_48Rnd_40mm_MK19 {
+		ammo = "GOL_ammo_MK19_M384_Terror";
+	};
+	class RHS_48Rnd_40mm_MK19_M1001;
+	class GOL_mag_MK19_48_M1001: RHS_48Rnd_40mm_MK19_M1001 {
+		ammo = "GOL_ammo_MK19_M1001_Terror";
+	};
+	class RHS_48Rnd_40mm_MK19_M430I;
+	class GOL_mag_MK19_48_M430I: RHS_48Rnd_40mm_MK19_M430I {
+		ammo = "GOL_ammo_MK19_M430I_Terror";
+	};
+	class RHS_48Rnd_40mm_MK19_M430A1;
+	class GOL_mag_MK19_48_M430A1: RHS_48Rnd_40mm_MK19_M430A1 {
+		ammo = "GOL_ammo_MK19_M430A1_Terror";
+	};
+	class RHS_96Rnd_40mm_MK19;
+	class GOL_mag_MK19_96_M384: RHS_96Rnd_40mm_MK19 {
+		ammo = "GOL_ammo_MK19_M384_Terror";
+	};
+	class RHS_96Rnd_40mm_MK19_M1001;
+	class GOL_mag_MK19_96_M1001: RHS_96Rnd_40mm_MK19_M1001 {
+		ammo = "GOL_ammo_MK19_M1001_Terror";
+	};
+	class RHS_96Rnd_40mm_MK19_M430I;
+	class GOL_mag_MK19_96_M430I: RHS_96Rnd_40mm_MK19_M430I {
+		ammo = "GOL_ammo_MK19_M430I_Terror";
+	};
+	class RHS_96Rnd_40mm_MK19_M430A1;
+	class GOL_mag_MK19_96_M430A1: RHS_96Rnd_40mm_MK19_M430A1 {
+		ammo = "GOL_ammo_MK19_M430A1_Terror";
+	};
 };

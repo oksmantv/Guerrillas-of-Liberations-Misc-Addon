@@ -1038,4 +1038,92 @@ class CfgAmmo {
 		hit = 1100;
 		warheadName = "HEAT";
 	};
+
+	// ============================================================
+	// GOL "Terror GMG" ammo — reduced-lethality HE variants of the
+	// vanilla/RHS 40mm grenades used by AI-crewed enemy GMG/Mk19 vehicles
+	// (see functions/enemy/fn_RemoveVehicleHE.sqf). A direct hit is still
+	// dangerous, but blast damage/radius is toned down so a single grenade
+	// landing near a squad suppresses instead of wiping it out.
+	// Ratio applied uniformly vs each base ammo class:
+	//   hit x0.7 (-30%), indirectHit x0.5 (-50%), indirectHitRange x0.6 (-40%)
+	// ============================================================
+	class G_40mm_HEDP;
+	class GOL_ammo_GMG40MM_Terror: G_40mm_HEDP {
+		hit = 50;
+		indirectHit = 3;
+		indirectHitRange = 2.4;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
+
+	class rhs_ammo_mk19m3_M384;
+	class GOL_ammo_MK19_M384_Terror: rhs_ammo_mk19m3_M384 {
+		hit = 28;
+		indirectHit = 4;
+		indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+
+	};
+
+	class rhs_ammo_mk19m3_M1001;
+	class GOL_ammo_MK19_M1001_Terror: rhs_ammo_mk19m3_M1001 {
+		hit = 28;
+		indirectHit = 4;
+		indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
+
+	class rhs_ammo_mk19m3_M430I;
+	class GOL_ammo_MK19_M430I_Terror: rhs_ammo_mk19m3_M430I {
+		hit = 25;
+		indirectHit = 4;
+	indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
+
+	class rhs_ammo_mk19m3_M430A1;
+	class GOL_ammo_MK19_M430A1_Terror: rhs_ammo_mk19m3_M430A1 {
+		hit = 25;
+		indirectHit = 4;
+		indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
+
+	class rhs_ammo_VOG30;
+	class GOL_ammo_VOG30_Terror: rhs_ammo_VOG30 {
+		hit = 25;
+		indirectHit = 4;
+		indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
 };

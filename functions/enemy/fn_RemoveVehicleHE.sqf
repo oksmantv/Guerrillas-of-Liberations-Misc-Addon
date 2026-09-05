@@ -34,33 +34,12 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 		};
 		_Vehicle removeMagazinesTurret ["140Rnd_30mm_MP_shells_Tracer_Green",[0]]; // BM-2T
 	};
-
-	if(
-		["Marid", typeOf _Vehicle, false] call BIS_fnc_inString
-	) then {
-		_Vehicle removeWeaponTurret ["RHS_MK19_CROWS_M153", [0]]; // Marid
-	};
-
-	if(
-		["Wheeled_02_rcws_v2", typeOf _Vehicle, false] call BIS_fnc_inString ||
-		["Tracked_01_rcws_F", typeOf _Vehicle, false] call BIS_fnc_inString
-	) then {
-		_Vehicle removeWeaponTurret ["GMG_40MM", [0]]; // O_APC_Wheeled_02_rcws_v2_F / B_APC_Tracked_01 (B_T_APC_Tracked_01_rcws_F)
-	};
-
-	if(
-		["UK3CB_AAF_B_AAV", typeOf _Vehicle, false] call BIS_fnc_inString
-	) then {
-		_Vehicle removeWeaponTurret ["GMG_40MM", [0]]; // UK3CB AAV
-		_Vehicle removeWeaponTurret ["UK3CB_Factions_MK19", [0]]; // UK3CB AAV - alternate weapon variant
-	};
-
 	if(
 		["rhs_tigr", typeOf _Vehicle, false] call BIS_fnc_inString
 	) then {
 		_Vehicle removeWeaponTurret ["RHS_weap_Ags30_tigr", [1]]; // RHS Tigr - custom turret location
 	};
-
+	
 	if(
 		["Wheeled_03_cannon", typeOf _Vehicle, false] call BIS_fnc_inString
 	) then {
@@ -150,7 +129,78 @@ if({_Vehicle isKindOf _X} count ["TrackedAPC","Tank","WheeledAPC","Car","StaticW
 	if(["M1117", typeOf _Vehicle, false] call BIS_fnc_inString) then {
 		_Enabled = true;
         _Vehicle removeWeaponTurret ["RHS_MK19", [0]]; // M1117
+        // GOL Terror GMG swap - AI fires 2-round bursts, ~2x dispersion, reduced HE blast (see CfgWeapons.cpp)
+        _Vehicle addMagazineTurret ["GOL_mag_MK19_48_M384", [0]];
+        _Vehicle addWeaponTurret ["GOL_weap_MK19_Terror", [0]];
     };
+	if(["Armed_Boat_GMG", typeOf _Vehicle, false] call BIS_fnc_inString) then {
+		_Enabled = true;
+        _Vehicle removeWeaponTurret ["uk3cb_AGS30_LR", [0]]; // M1117
+        // GOL Terror GMG swap - AI fires 2-round bursts, ~2x dispersion, reduced HE blast (see CfgWeapons.cpp)
+		_Vehicle addMagazineTurret ["GOL_mag_VOG30_30", [0]];
+		_Vehicle addWeaponTurret ["GOL_weap_Ags30_Tigr_Terror", [0]];
+    };	
+	if(["Boat_Armed_01", typeOf _Vehicle, false] call BIS_fnc_inString) then {
+		_Enabled = true;
+        _Vehicle removeWeaponTurret ["GMG_40mm", [0]]; // GMG Vanilla
+        // GOL Terror GMG swap - AI fires 2-round bursts, ~2x dispersion, reduced HE blast (see CfgWeapons.cpp)
+		_Vehicle addWeaponTurret ["GOL_weap_GMG40MM_Terror", [0]];
+		_Vehicle addMagazineTurret ["GOL_mag_GMG40MM_200", [0]];
+    };		
+	if(
+		["Marid", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["RHS_MK19_CROWS_M153", [0]]; // Marid		
+		// GOL Terror GMG swap - AI fires 2-round bursts, ~2x dispersion, reduced HE blast (see CfgWeapons.cpp)
+		_Vehicle addMagazineTurret ["GOL_mag_MK19_48_M384", [0]];	
+		_Vehicle addWeaponTurret ["GOL_weap_MK19_CROWS_Terror", [0]];
+	};
+
+	if(
+		["Wheeled_02_rcws_v2", typeOf _Vehicle, false] call BIS_fnc_inString ||
+		["Tracked_01_rcws_F", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["GMG_40MM", [0]]; // O_APC_Wheeled_02_rcws_v2_F / B_APC_Tracked_01 (B_T_APC_Tracked_01_rcws_F)
+		// GOL Terror GMG swap - AI fires 2-round bursts, ~2x dispersion, reduced HE blast (see CfgWeapons.cpp)
+		_Vehicle addMagazineTurret ["GOL_mag_GMG40MM_200", [0]];
+		_Vehicle addWeaponTurret ["GOL_weap_GMG40MM_Terror", [0]];
+	};
+
+	if(
+		["UK3CB_AAF_B_AAV", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		private _turretWeapons = _Vehicle weaponsTurret [0];
+		// GOL Terror GMG swap - only one of these two is ever actually mounted, check before removing/adding
+		if("GMG_40MM" in _turretWeapons) then {
+			_Vehicle removeWeaponTurret ["GMG_40MM", [0]]; // UK3CB AAV
+			_Vehicle addWeaponTurret ["GOL_weap_GMG40MM_Terror", [0]];
+			_Vehicle addMagazineTurret ["GOL_mag_GMG40MM_200", [0]];
+		};
+		if("UK3CB_Factions_MK19" in _turretWeapons) then {
+			_Vehicle removeWeaponTurret ["UK3CB_Factions_MK19", [0]]; // UK3CB AAV - alternate weapon variant
+			_Vehicle addMagazineTurret ["GOL_mag_MK19_48_M384", [0]];
+			_Vehicle addWeaponTurret ["GOL_weap_MK19_UK3CB_Terror", [0]];
+		};
+	};
+
+	if(
+		["rhs_tigr", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["RHS_weap_Ags30_tigr", [1]]; // RHS Tigr - custom turret location
+		// Unable to add new weapon to special turret.
+	};
+
+	if(
+		["Wheeled_03_cannon", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["missiles_titan", [0]]; // Pandur ATGM
+	};	
+
+	if(
+		["BTR90", typeOf _Vehicle, false] call BIS_fnc_inString
+	) then {
+		_Vehicle removeWeaponTurret ["uk3cb_weap_ags17_btr90", [0]]; // BTR-90 GMG
+	};
 
 	Private _Debug = missionNamespace getVariable ["GOL_Enemy_Debug",false];
 	if(_Debug) then {

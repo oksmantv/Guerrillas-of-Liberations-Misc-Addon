@@ -213,7 +213,8 @@ class CfgFunctions // Defines a function
 			class SearchLight {};
 			class AdjustDamage {};
 			class ForceVehicleSpeed {};	
-			class RemoveVehicleHE {};					
+			class RemoveVehicleHE {};
+			class CycleVehicleWeapon {};
 			class FaceSwap {};
 			class GetEthnicity {};
 			class GetEthnicityFromFace {};
