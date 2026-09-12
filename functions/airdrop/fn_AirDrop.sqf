@@ -53,8 +53,8 @@ Params
 	["_Override", false, [true]],			// AS LONG AS BI HAVEN'T FIXED THEIR SHIT
 	["_Airbase", false,[true]],
 	["_OKS_Zone", ObjNull,[ObjNull]],
-	["_LimitSpeed", (missionNamespace getVariable ["GOL_Airdrop_LimitSpeed", 200]), [0]],
-	["_FlyInHeight", (missionNamespace getVariable ["GOL_Airdrop_FlyInHeight", 200]), [0]],
+	["_LimitSpeed", (missionNamespace getVariable ["GOL_Airdrop_LimitSpeed", 0]), [0]],
+	["_FlyInHeight", (missionNamespace getVariable ["GOL_Airdrop_FlyInHeight", 0]), [0]],
 	["_ChuteHeightOverride", 0, [0]]
 ];
 
@@ -63,11 +63,6 @@ Params
 if (_ChuteHeightOverride > 0) then {
   // Override the chute height if a specific value is provided
   _ChuteHeight = _ChuteHeightOverride;
-};
-
-if (_LimitSpeed > 0) then {
-  // Convert from km/h to m/s
-  _LimitSpeed = (_LimitSpeed / 3.6);
 };
 
 _UnloadOrDrop = (toLower _UnloadOrDrop);
@@ -213,12 +208,18 @@ if (_UnloadOrDrop isEqualTo "paradrop") then
 };
 
 if (_LimitSpeed > 0) then {
+	// Convert from km/h to m/s
+	_LimitSpeed = (_LimitSpeed / 3.6);
+
+	// Limit speed
 	_Heli forceSpeed _LimitSpeed;
 	_Pilot forceSpeed _LimitSpeed;
 };
 
-// Set desired altitude of the vehicle
-_Heli flyInHeight _FlyInHeight;
+if (_FlyInHeight > 0) then {
+	// Set desired altitude of the vehicle
+	_Heli flyInHeight _FlyInHeight;
+};
 
 sleep 0.5;
 _EmptyCargoSeats = (_Heli emptyPositions "Cargo");
