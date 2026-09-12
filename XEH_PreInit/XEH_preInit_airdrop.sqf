@@ -46,3 +46,22 @@ diag_log "OKS_GOL_Misc: XEH_preInit_airdrop.sqf executed";
     [50, 1000, 150, 0],
     true
 ] call CBA_fnc_addSetting;
+
+// CBA Settings for AirDrop Limit Speed and Fly In Height
+[
+    "GOL_Airdrop_LimitSpeed",
+    "EDITBOX",
+    ["Limit Speed", "The maximum speed (in km/h) of the aircraft. Leave at 0 to maintain Arma default behaviour."],
+    ["GOL AirDrop", "General"],
+    "0",
+    true
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Airdrop_FlyInHeight",
+    "EDITBOX",
+    ["Fly In Height", "The altitude (in meters) at which the aircraft will fly during the airdrop. Leave at 0 to maintain Arma default behaviour."],
+    ["GOL AirDrop", "General"],
+    "0",
+    true
+] call CBA_fnc_addSetting;
