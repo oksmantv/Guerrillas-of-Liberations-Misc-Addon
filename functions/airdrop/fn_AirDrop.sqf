@@ -62,12 +62,12 @@ Params
 
 if (_LimitSpeed == 0) then {
 	// No override provided via function parameters, check missionNamespace variable
-	_LimitSpeed = parseNumber (missionNamespace getVariable ["GOL_Airdrop_LimitSpeed", "0"]);
+	_LimitSpeed = (missionNamespace getVariable ["GOL_Airdrop_LimitSpeed", 0]);
 };
 
 if (_FlyInHeight == 0) then {
 	// No override provided via function parameters, check missionNamespace variable
-	_FlyInHeight = parseNumber (missionNamespace getVariable ["GOL_Airdrop_FlyInHeight", "0"]);
+	_FlyInHeight = (missionNamespace getVariable ["GOL_Airdrop_FlyInHeight", 0]);
 };
 
 if (_ChuteHeightOverride > 0) then {
