@@ -391,7 +391,6 @@ class CBA_DisposableLaunchers {
 class CfgMods {
     class GOL_MISC_ADDON {
         name = "Guerrillas of Liberation Misc";
-        author = "Oksman";
         url = "https://gol-clan.com/home";
     };
 };
