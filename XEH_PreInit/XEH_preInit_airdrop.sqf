@@ -53,7 +53,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_airdrop.sqf executed";
     "SLIDER",
     ["Limit Speed", "The maximum speed (in km/h) of the aircraft. Leave at 0 to maintain Arma default behaviour."],
     ["GOL AirDrop", "General"],
-    [0, 10000, 0, 0], // [min, max, default, precision]
+    [0, 1000, 0, 0], // [min, max, default, precision]
     true
 ] call CBA_fnc_addSetting;
 
