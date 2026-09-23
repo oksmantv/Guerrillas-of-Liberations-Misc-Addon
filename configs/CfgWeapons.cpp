@@ -371,7 +371,7 @@ class CfgWeapons {
 				muzzlePos = "machinegun_beg";
 				selectionFireAnim = "zasleh";
 				flash = "gunfire";
-				flashSize = 0.25;
+				flashSize = 0.35;
                 soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
                 rhs_burstLimiter = 1200;
                 magazines[] = {

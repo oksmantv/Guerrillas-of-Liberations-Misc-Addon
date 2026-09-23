@@ -1,11 +1,11 @@
-// BettIR vehicle patches - patches BettIR's light objects for stronger illumination.
+// GOL IR illuminator vehicle patches for stronger illumination.
 // This file is included from CfgVehicles.cpp (inside the CfgVehicles class).
-// Only loaded when BettIR is present (controlled by skipWhenMissingDependencies in CfgPatches).
+// Loaded with the embedded GOL IR illuminator core.
 
 class Lamps_base_F;
 
 // NVG-mounted illuminator - PATCHED TO BE STRONGER
-class BettIR_Illuminator_NVG: Lamps_base_F {
+class GOL_IRLLM_Illuminator_NVG: Lamps_base_F {
     class Reflectors {
         class Light_1 {
             // Increased from default: color {70,40,60}, intensity 0.9, range 22m
@@ -39,7 +39,7 @@ class BettIR_Illuminator_NVG: Lamps_base_F {
 // Weapon-mounted illuminator - PATCHED FOR STRONGER FOCUSED BEAM
 // This is what GOL_OX3000 will use via auto-activation
 // Base class at LOWEST strength (1%) - BettIR's default keybind uses this
-class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
+class GOL_IRLLM_Illuminator_Weapon: GOL_IRLLM_Illuminator_NVG {
     class Reflectors: Reflectors {
 
         class Light_1: Light_1 {
@@ -73,7 +73,7 @@ class BettIR_Illuminator_Weapon: BettIR_Illuminator_NVG {
 };
 
 // Adjustable strength variants (1%, 1.5%, 2%, 2.5%, 3%)
-class BettIR_Illuminator_Weapon_1: BettIR_Illuminator_Weapon {
+class GOL_IRLLM_Illuminator_Weapon_1: GOL_IRLLM_Illuminator_Weapon {
     class Reflectors: Reflectors {
         class Light_1: Light_1 {
             intensity = 0.6;    // 1% of 60 - Low mode
@@ -89,7 +89,7 @@ class BettIR_Illuminator_Weapon_1: BettIR_Illuminator_Weapon {
     };
 };
 
-class BettIR_Illuminator_Weapon_1_5: BettIR_Illuminator_Weapon {
+class GOL_IRLLM_Illuminator_Weapon_1_5: GOL_IRLLM_Illuminator_Weapon {
     class Reflectors: Reflectors {
         class Light_1: Light_1 {
             intensity = 0.9;    // 1.5% of 60 - Medium mode
@@ -105,7 +105,7 @@ class BettIR_Illuminator_Weapon_1_5: BettIR_Illuminator_Weapon {
     };
 };
 
-class BettIR_Illuminator_Weapon_2: BettIR_Illuminator_Weapon {
+class GOL_IRLLM_Illuminator_Weapon_2: GOL_IRLLM_Illuminator_Weapon {
     class Reflectors: Reflectors {
         class Light_1: Light_1 {
             intensity = 1.2;    // 2% of 60 - High mode
@@ -121,7 +121,7 @@ class BettIR_Illuminator_Weapon_2: BettIR_Illuminator_Weapon {
     };
 };
 
-class BettIR_Illuminator_Weapon_2_5: BettIR_Illuminator_Weapon {
+class GOL_IRLLM_Illuminator_Weapon_2_5: GOL_IRLLM_Illuminator_Weapon {
     class Reflectors: Reflectors {
         class Light_1: Light_1 {
             intensity = 1.5;    // 2.5% of 60 - Very High mode (extended)
@@ -137,7 +137,7 @@ class BettIR_Illuminator_Weapon_2_5: BettIR_Illuminator_Weapon {
     };
 };
 
-class BettIR_Illuminator_Weapon_3: BettIR_Illuminator_Weapon {
+class GOL_IRLLM_Illuminator_Weapon_3: GOL_IRLLM_Illuminator_Weapon {
     class Reflectors: Reflectors {
         class Light_1: Light_1 {
             intensity = 1.5;    // 2.5% of 60 - reduced from 1.8 to reduce bloom

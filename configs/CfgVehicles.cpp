@@ -42,6 +42,56 @@ class SensorTemplateNV;
 class SensorTemplateDataLink;
 
 class CfgVehicles {
+    class Lamps_base_F;
+    class GOL_IRLLM_Illuminator_NVG: Lamps_base_F
+    {
+        scope = 1;
+        scopeCurator = 1;
+        displayName = "GOL IR Light Object";
+        model = "\OKS_GOL_Misc\vendor\BettIR_Core\data\models\Light.p3d";
+        class Hitpoints {};
+        class AnimationSources {};
+        class Reflectors
+        {
+            class Light_1
+            {
+                color[] = {70, 40, 60};
+                ambient[] = {0.05, 0.1, 0.05};
+                intensity = 0.9;
+                size = 1;
+                innerAngle = 25;
+                outerAngle = 85;
+                coneFadeCoef = 4;
+                position = "Light_1_pos";
+                direction = "Light_1_dir";
+                hitpoint = "";
+                selection = "";
+                useFlare = 1;
+                flareSize = 0.1;
+                flareMaxDistance = 10;
+                class Attenuation { start = 0; constant = 0; linear = 0; quadratic = 1; hardLimitStart = 8; hardLimitEnd = 22; };
+            };
+        };
+    };
+    class GOL_IRLLM_Illuminator_Weapon: GOL_IRLLM_Illuminator_NVG
+    {
+        displayName = "GOL Weapon IR Light Object";
+        class Reflectors: Reflectors
+        {
+            class Light_1: Light_1
+            {
+                color[] = {160, 120, 80};
+                innerAngle = 3;
+                outerAngle = 15;
+                coneFadeCoef = 6;
+                intensity = 35;
+                useFlare = 1;
+                flareSize = 0.6;
+                flareMaxDistance = 350;
+                class Attenuation: Attenuation { start = 0.85; constant = 0; linear = 0; quadratic = 1; hardLimitStart = 280; hardLimitEnd = 350; };
+            };
+        };
+    };
     class Land;
     class LandVehicle: Land {
         class ACE_Actions {

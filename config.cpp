@@ -304,6 +304,16 @@ class CfgPatches
 		};
 	};
 
+    class GOL_IRLLM_Core {
+        requiredAddons[] = {"A3_UI_F"};
+        requiredVersion = 0.1;
+        author = "OksmanTV";
+        name = "GOL IR Illuminator Core";
+        units[] = {};
+        weapons[] = {};
+        magazines[] = {};
+    };
+
 	class GOL_MISC_COMPAT_JCA {
 		requiredAddons[] = {"Weapons_F_JCA_IA_Rifles_HK437"};
 		requiredVersion = 2.14;
@@ -315,16 +325,6 @@ class CfgPatches
 		};
 		magazines[] = {};
 	};
-
-    class GOL_MISC_COMPAT_BETTIR {
-        requiredAddons[] = {"BettIR_Core"};
-        requiredVersion = 2.14;
-        author = "OksmanTV";
-        skipWhenMissingDependencies = 1;
-        units[] = {};
-        weapons[] = {};
-        magazines[] = {};
-    };
 
     class GOL_MISC_COMPAT_RHSGREF {
         requiredAddons[] = {"rhsgref_main"};
@@ -354,6 +354,7 @@ class CfgPatches
 
 #include "version.hpp"
 #include "BIS_AddonInfo.hpp"
+#include "vendor\BettIR_Core\legacy_core.hpp"
 #include "configs\CfgAmmo.cpp"
 #include "configs\CfgBrains.cpp"
 #include "configs\CfgEden.cpp"
@@ -377,7 +378,6 @@ class RscTitles {
 
 #include "configs\CfgJammerUILayout.cpp"
 #include "configs\CfgOrbat.cfg"
-#include "configs\compat\compat_bettir.hpp"
 #include "configs\compat\compat_ace_irlight_slots.hpp"
 
 // CBA Disposable Framework registration.
@@ -497,6 +497,9 @@ class CfgNotifications
 };
 
 class Extended_PreInit_EventHandlers {
+    class GOL_IRLLM_PreInit {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\vendor\BettIR_Core\XEH_preInit.sqf'";
+    };
     class OKS_PreInit_Core {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_core.sqf'";
     };
@@ -578,6 +581,9 @@ class Extended_PreInit_EventHandlers {
 };
 
 class Extended_PostInit_EventHandlers {
+    class GOL_IRLLM_PostInit {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\vendor\BettIR_Core\XEH_postInit.sqf'";
+    };
     class OKS_PostInit_Global {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_PostInit_Global.sqf'";
     };
@@ -614,6 +620,7 @@ class CfgSettings {
             class GOL_MISC_ADDON {
                 main_addon = "GOL_MISC_ADDON";
             };
+            class GOL_IRLLM_Core {};
         };
     };
 };

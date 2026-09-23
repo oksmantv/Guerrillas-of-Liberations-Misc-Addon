@@ -17,10 +17,10 @@ missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 if (hasInterface) then {
     [] spawn OKS_fnc_Stealth_PlayerVisibility;
     
-    // BettIR auto-activation for GOL_OX3000 (proper beam lights)
-    if (isClass (configFile >> "CfgPatches" >> "BettIR_Core")) then {
-        [] call OKS_fnc_BettIR_AutoWeaponIlluminator;
-        ["[PostInit] BettIR detected - using BettIR beam lights with adjustable strength", false, false, true] spawn OKS_fnc_LogDebug;
+    // GOL IR illuminator auto-activation for GOL_OX3000 beam lights.
+    if (isClass (configFile >> "CfgPatches" >> "GOL_IRLLM_Core")) then {
+        [] call OKS_fnc_GOL_IRLLM_AutoWeaponIlluminator;
+        ["[PostInit] GOL IR illuminator active with adjustable beam strength", false, false, true] spawn OKS_fnc_LogDebug;
     };
     
     // IR Illuminator strength monitor (adjusts BettIR intensity or creates fallback lights)

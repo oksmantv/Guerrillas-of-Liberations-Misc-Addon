@@ -1502,7 +1502,7 @@ class CfgMagazines {
 		displayNameShort = "M230 HE Belt";
 		descriptionShort = "M230 30mm Chain Gun | HE 300 rounds";
         selectionFireAnim = "zasleh";
-		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
 		count = 300;
 		model = "\a3\Weapons_F\DynamicLoadout\PylonPod_HeavyMinigun_Heli_Transport_01_R_F.p3d";
 		muzzlePos = "machinegun_beg";
@@ -1524,7 +1524,7 @@ class CfgMagazines {
 		descriptionShort = "M230 30mm Chain Gun | AP 300 rounds";
         selectionFireAnim = "zasleh";
 		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
-		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
 		count = 300;
 		model = "\a3\Weapons_F\DynamicLoadout\PylonPod_HeavyMinigun_Heli_Transport_01_R_F.p3d";
         muzzlePos = "machinegun_beg";
@@ -1543,7 +1543,7 @@ class CfgMagazines {
 		displayNameShort = "M230 HE Belt";
 		descriptionShort = "M230 30mm Chain Gun | HE 300 rounds";
         selectionFireAnim = "zasleh";
-		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
 		count = 300;
 		model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun.p3d";
 		muzzlePos = "machinegun_beg";
@@ -1565,7 +1565,7 @@ class CfgMagazines {
 		descriptionShort = "M230 30mm Chain Gun | AP 300 rounds";
         selectionFireAnim = "zasleh";
 		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
-		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
 		count = 300;
 		model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun.p3d";
 		muzzlePos = "machinegun_beg";
