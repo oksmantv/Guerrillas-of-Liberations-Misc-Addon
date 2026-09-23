@@ -45,42 +45,17 @@ missionNamespace setVariable ["OKS_IRIlluminator_Monitor_Started", true];
     // Detect if BettIR is present (creates proper beam lights)
     private _hasBettIR = isClass (configFile >> "CfgPatches" >> "BettIR_Core");
     
-    // Track lights per unit: [[unit, light], [unit, light], ...] (only used when BettIR NOT present)
-    private _unitLights = [];
-    
-    while { true } do {
-        private _enabled = missionNamespace getVariable ["GOL_IRIlluminator_Enabled", true];
-        
-        if (!_enabled) then {
-            // Clean up all lights if system disabled (only if we're managing lights)
-            if (!_hasBettIR) then {
-                {
-                    private _light = _x select 1;
-                    if (!isNull _light) then {
-                        deleteVehicle _light;
-                    };
-                } forEach _unitLights;
-                _unitLights = [];
-            };
-            sleep 1;
-            continue;
-        };
-        
-        // Get all players within reasonable distance (optimization)
-        private _maxDistance = missionNamespace getVariable ["GOL_IRIlluminator_MaxDistance", 150];
-        private _nearPlayers = allPlayers select {
-            alive _x && { (player distance _x) < _maxDistance }
-        };
-        
-        // Track which units should have lights this frame
-        private _unitsWithLights = [];
-        
-        // Check each nearby player
-        {
-            private _unit = _x;
-            private _weapon = currentWeapon _unit;
-            
-            if (_weapon != "") then {
+    /*
+        Client-side, standalone IR illuminator monitor.
+
+        The legacy BettIR bridge was removed. GOL now creates and manages its own
+        local scripted lights for OX3000 dual-mode attachments. Light strength is
+        read from the public GOL_IRIlluminator_Strength unit variable so clients
+        render the same intensity for nearby players.
+
+        Usage:
+        [] spawn OKS_fnc_IRIlluminator_Monitor;
+    */
                 // Get weapon accessories
                 private _accessories = switch (_weapon) do {
                     case (primaryWeapon _unit): { primaryWeaponItems _unit };

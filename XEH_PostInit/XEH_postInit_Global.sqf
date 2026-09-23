@@ -16,14 +16,8 @@ missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 /* Amphibious IFV water boost (client-only, locality-safe) */
 if (hasInterface) then {
     [] spawn OKS_fnc_Stealth_PlayerVisibility;
-    
-    // BettIR auto-activation for GOL_OX3000 (proper beam lights)
-    if (isClass (configFile >> "CfgPatches" >> "BettIR_Core")) then {
-        [] call OKS_fnc_BettIR_AutoWeaponIlluminator;
-        ["[PostInit] BettIR detected - using BettIR beam lights with adjustable strength", false, false, true] spawn OKS_fnc_LogDebug;
-    };
-    
-    // IR Illuminator strength monitor (adjusts BettIR intensity or creates fallback lights)
+
+    // Standalone IR illuminator; it has no BettIR dependency or compatibility hook.
     [] spawn OKS_fnc_IRIlluminator_Monitor;
     ["[PostInit] IR Illuminator strength monitor started", false, false, true] spawn OKS_fnc_LogDebug;
     

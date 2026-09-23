@@ -316,16 +316,6 @@ class CfgPatches
 		magazines[] = {};
 	};
 
-    class GOL_MISC_COMPAT_BETTIR {
-        requiredAddons[] = {"BettIR_Core"};
-        requiredVersion = 2.14;
-        author = "OksmanTV";
-        skipWhenMissingDependencies = 1;
-        units[] = {};
-        weapons[] = {};
-        magazines[] = {};
-    };
-
     class GOL_MISC_COMPAT_RHSGREF {
         requiredAddons[] = {"rhsgref_main"};
         requiredVersion = 2.14;
@@ -377,7 +367,7 @@ class RscTitles {
 
 #include "configs\CfgJammerUILayout.cpp"
 #include "configs\CfgOrbat.cfg"
-#include "configs\compat\compat_bettir.hpp"
+// Legacy BettIR compatibility was removed. GOL's IR illuminator is self-contained.
 #include "configs\compat\compat_ace_irlight_slots.hpp"
 
 // CBA Disposable Framework registration.
