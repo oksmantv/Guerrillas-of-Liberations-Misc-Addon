@@ -1,5 +1,23 @@
 class CfgFunctions // Defines a function
-{	
+{
+	class GOL_IRLLM
+	{
+		class Core
+		{
+			class initialize { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_initialize.sqf"; };
+			class getCompatibleNVGs { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_getCompatibleNVGs.sqf"; };
+			class getCompatibleWeaponAttachments { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_getCompatibleWeaponAttachments.sqf"; };
+			class updateUnitList { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_updateUnitList.sqf"; };
+			class nvgIlluminatorOn { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_nvgIlluminatorOn.sqf"; };
+			class nvgIlluminatorOff { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_nvgIlluminatorOff.sqf"; };
+			class toggleNvgIlluminator { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_toggleNvgIlluminator.sqf"; };
+			class weaponIlluminatorOn { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_weaponIlluminatorOn.sqf"; };
+			class weaponIlluminatorOff { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_weaponIlluminatorOff.sqf"; };
+			class toggleWeaponIlluminator { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_toggleWeaponIlluminator.sqf"; };
+			class handleVisionModeChange { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_handleVisionModeChange.sqf"; };
+		};
+	};
+
 	class OKS {
 		class OKS_Packing {
 			file = "\OKS_GOL_Misc\functions\staticWeapons";
@@ -710,5 +728,9 @@ class CfgFunctions // Defines a function
 			class initItemContextMenu {};
 		};
 
-        };
+		class compat {
+				file = "\OKS_GOL_Misc\functions\compat";
+				class GOL_IRLLM_AutoWeaponIlluminator { file = "\OKS_GOL_Misc\functions\compat\fn_BettIR_AutoWeaponIlluminator.sqf"; };
+		};       
+  };
 };

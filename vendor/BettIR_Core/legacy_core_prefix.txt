@@ -1,0 +1,4 @@
+//<'BettIR_Core.pbo' properties via Mikero's dos tools, dll version 10.13>
+prefix=BettIR_Core;
+//PboType=Arma Addon;
+//</properties>

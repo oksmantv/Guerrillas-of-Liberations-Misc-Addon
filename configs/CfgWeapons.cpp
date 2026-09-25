@@ -365,11 +365,13 @@ class CfgWeapons {
 				showToPlayer = 1;
                 aiDispersionCoefY = 0.5;
                 aiDispersionCoefX = 0.5;
-				cartridgePos = "nabojnicestart";
-				cartridgeVel = "nabojniceend";
+				cartridgePos = "machinegun_eject_pos";
+				cartridgeVel = "machinegun_eject_end";
 				muzzleEnd = "machinegun_end";
 				muzzlePos = "machinegun_beg";
 				selectionFireAnim = "zasleh";
+				flash = "gunfire";
+				flashSize = 0.35;
                 soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
                 rhs_burstLimiter = 1200;
                 magazines[] = {
@@ -378,8 +380,8 @@ class CfgWeapons {
 					"GOL_PylonWeapon_M230_HE_L",
 					"GOL_PylonWeapon_M230_AP_L"
                 };
-                modes[] = {"HighROF", "LowROF", "close", "short", "medium", "far"};
-
+                modes[] = {"HighROF", "LowROF"};
+				class EventHandlers {};
                 class GunParticles {
 					class Effect1 {
 						directionName = "machinegun_eject_dir";
@@ -406,7 +408,6 @@ class CfgWeapons {
                         soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
                         class StandardSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
                         class SilencedSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
-                        flash = "gunfire";
                         flashSize = 0.1;
                         recoil = "Empty";
                         ffMagnitude = 0.25;
@@ -424,6 +425,8 @@ class CfgWeapons {
                         maxRange = 2;
                         maxRangeProbab = 0.01;
 						rhs_burstLimiter = 1200;
+						selectionFireAnim = "zasleh";
+						flash = "gunfire";
                 };
 
                 // 300 RPM
@@ -434,7 +437,6 @@ class CfgWeapons {
                         soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
                         class StandardSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
                         class SilencedSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
-                        flash = "gunfire";
                         flashSize = 0.1;
                         recoil = "Empty";
                         ffMagnitude = 0.25;
@@ -452,6 +454,9 @@ class CfgWeapons {
                         maxRange = 2;
                         maxRangeProbab = 0.01;
 						rhs_burstLimiter = 1200;
+						selectionFireAnim = "zasleh";
+						flash = "gunfire";
+
                 };
         };
 

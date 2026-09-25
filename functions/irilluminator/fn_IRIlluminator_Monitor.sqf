@@ -43,7 +43,7 @@ missionNamespace setVariable ["OKS_IRIlluminator_Monitor_Started", true];
     waitUntil { sleep 0.25; !isNull player };
     
     // Detect if BettIR is present (creates proper beam lights)
-    private _hasBettIR = isClass (configFile >> "CfgPatches" >> "BettIR_Core");
+    private _hasBettIR = isClass (configFile >> "CfgPatches" >> "GOL_IRLLM_Core");
     
     /*
         Client-side, standalone IR illuminator monitor.
@@ -98,18 +98,18 @@ missionNamespace setVariable ["OKS_IRIlluminator_Monitor_Started", true];
                         // Determine which light class to use based on strength
                         private _strength = _strengthMultiplier * 100;
                         private _lightClass = if (_strength >= 3) then {
-                            "BettIR_Illuminator_Weapon_3"  // Maximum (3%) - extended
+                            "GOL_IRLLM_Illuminator_Weapon_3"  // Maximum (3%) - extended
                         } else {
                             if (_strength >= 2.5) then {
-                                "BettIR_Illuminator_Weapon_2_5"  // Very High (2.5%) - extended
+                                "GOL_IRLLM_Illuminator_Weapon_2_5"  // Very High (2.5%) - extended
                             } else {
                                 if (_strength >= 2) then {
-                                    "BettIR_Illuminator_Weapon_2"  // High (2%)
+                                    "GOL_IRLLM_Illuminator_Weapon_2"  // High (2%)
                                 } else {
                                     if (_strength >= 1.5) then {
-                                        "BettIR_Illuminator_Weapon_1_5"  // Medium (1.5%)
+                                        "GOL_IRLLM_Illuminator_Weapon_1_5"  // Medium (1.5%)
                                     } else {
-                                        "BettIR_Illuminator_Weapon_1"  // Low (1%)
+                                        "GOL_IRLLM_Illuminator_Weapon_1"  // Low (1%)
                                     }
                                 }
                             }
