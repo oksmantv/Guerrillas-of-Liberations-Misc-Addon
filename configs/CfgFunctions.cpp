@@ -284,11 +284,13 @@ class CfgFunctions // Defines a function
 		
 		class OKS_IRIlluminator {
 			file = "\OKS_GOL_Misc\functions\irilluminator";
-			class IRIlluminator_Monitor {};
+			// The former BettIR-backed source is retained only as migration history.
+			class IRIlluminator_Monitor {
+				file = "\OKS_GOL_Misc\functions\irilluminator\fn_IRIlluminator_StandaloneMonitor.sqf";
+			};
 			class IRIlluminator_InitSettings {};
 			class IRIlluminator_AdjustStrength {};
 			class IRIlluminator_DebugTest {};
-			class IRIlluminator_WeaponIlluminatorOn {};
 		};
 		
 		class OKS_Suppression {
@@ -729,6 +731,6 @@ class CfgFunctions // Defines a function
 		class compat {
 				file = "\OKS_GOL_Misc\functions\compat";
 				class GOL_IRLLM_AutoWeaponIlluminator { file = "\OKS_GOL_Misc\functions\compat\fn_BettIR_AutoWeaponIlluminator.sqf"; };
-		};
-        };
+		};       
+  };
 };
