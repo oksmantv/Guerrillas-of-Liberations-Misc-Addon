@@ -871,5 +871,9 @@ class CfgWeapons {
 				aiRateOfFireDistance = 1000;
 			};
 		};
+
+#define GOL_GEAR_CFGWEAPONS
+#include "vehicles\gear.hpp"
+#undef GOL_GEAR_CFGWEAPONS
 };
 

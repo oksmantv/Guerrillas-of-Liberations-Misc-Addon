@@ -16,6 +16,7 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
     private _lastCamo = -1;
     private _lastAudible = -1;
     private _lastNight = "";
+    private _lastUnderwater = false;
     private _lastDetected = false;
     private _lastDetectorKnowsAbout = -1;
     
@@ -45,6 +46,7 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
                 ["lightLevel", 0],
                 ["ambientLight", 0],
                 ["dynamicLight", 0],
+                ["underwater", false],
                 ["dark", false],
                 ["lit", false],
                 ["flashlight", false],
@@ -73,21 +75,32 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
             continue;
         };
 
-        // Request lighting from server (NVG-agnostic measurement)
-        // IMPORTANT: This ONLY works on TRUE DEDICATED SERVERS (not SP or player-hosted MP).
-        // On dedicated servers, getLightingAt has NVG state permanently OFF, excluding IR-only lights.
-        // In SP/local testing, server IS the player client, so IR lights still contaminate the result.
-        [player, clientOwner] remoteExecCall ["OKS_fnc_Stealth_GetLightingServer", 2];
-        
-        // Use cached server lighting data (async response from previous frame)
-        private _serverLighting = missionNamespace getVariable ["OKS_Stealth_ServerLighting", nil];
-        private _serverLightingTime = missionNamespace getVariable ["OKS_Stealth_ServerLightingTime", -1];
-        
-        // If no server data yet, fall back to local measurement (will be inaccurate with NVGs on, but temporary)
-        private _lighting = if (isNil "_serverLighting" || (_serverLightingTime < 0)) then {
-            getLightingAt player
+        private _playerVehicle = vehicle player;
+        private _underwater = (missionNamespace getVariable ["GOL_Stealth_PlayerUnderwaterEnabled", true])
+            && { (underwater player) || { (_playerVehicle != player) && { underwater _playerVehicle } } };
+
+        // Underwater concealment intentionally bypasses lighting calculations and the
+        // server request: surface light, stance, vegetation, and weather do not model
+        // submerged AI detection in a useful way.
+        private _lighting = if (_underwater) then {
+            [0, 0, 0, 0]
         } else {
-            _serverLighting
+            // Request lighting from server (NVG-agnostic measurement)
+            // IMPORTANT: This ONLY works on TRUE DEDICATED SERVERS (not SP or player-hosted MP).
+            // On dedicated servers, getLightingAt has NVG state permanently OFF, excluding IR-only lights.
+            // In SP/local testing, server IS the player client, so IR lights still contaminate the result.
+            [player, clientOwner] remoteExecCall ["OKS_fnc_Stealth_GetLightingServer", 2];
+
+            // Use cached server lighting data (async response from previous frame)
+            private _serverLighting = missionNamespace getVariable ["OKS_Stealth_ServerLighting", nil];
+            private _serverLightingTime = missionNamespace getVariable ["OKS_Stealth_ServerLightingTime", -1];
+
+            // If no server data yet, fall back to local measurement (will be inaccurate with NVGs on, but temporary)
+            if (isNil "_serverLighting" || (_serverLightingTime < 0)) then {
+                getLightingAt player
+            } else {
+                _serverLighting
+            }
         };
         
         _lighting params ["_sunLight", "_ambientLightBrightness", "_moonLight", "_dynamicLightBrightness"];
@@ -164,8 +177,12 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
         };
 
         // Flashlight drastically increases visibility regardless of darkness
-        if (_hasVisibleFlashlight) then {
+        if (_hasVisibleFlashlight && !_underwater) then {
             _targetCamo = (_targetCamo * 8) min 2.5;
+        };
+
+        if (_underwater) then {
+            _targetCamo = missionNamespace getVariable ["GOL_Stealth_PlayerCamoUnderwater", 0.05];
         };
 
         // Vegetation concealment - check for nearby bushes/trees
@@ -173,7 +190,7 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
         private _vegetationMultiplier = 1;
         private _nearVegetation = [];
         
-        if (_vegetationEnabled) then {
+        if (_vegetationEnabled && !_underwater) then {
             private _vegetationRadius = missionNamespace getVariable ["GOL_Stealth_VegetationRadius", 2.5];
             private _vegetationThreshold = missionNamespace getVariable ["GOL_Stealth_VegetationThreshold", 2];
             private _vegetationBonus = missionNamespace getVariable ["GOL_Stealth_VegetationMultiplier", 0.7];
@@ -191,10 +208,14 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
             };
         };
 
-        private _camoStanceMultiplier = switch (_stance) do {
-            case "PRONE": { missionNamespace getVariable ["GOL_Stealth_PlayerCamoMulProne", 0.8] };
-            case "CROUCH": { missionNamespace getVariable ["GOL_Stealth_PlayerCamoMulCrouch", 0.9] };
-            default { missionNamespace getVariable ["GOL_Stealth_PlayerCamoMulStand", 1.05] };
+        private _camoStanceMultiplier = if (_underwater) then {
+            1
+        } else {
+            switch (_stance) do {
+                case "PRONE": { missionNamespace getVariable ["GOL_Stealth_PlayerCamoMulProne", 0.8] };
+                case "CROUCH": { missionNamespace getVariable ["GOL_Stealth_PlayerCamoMulCrouch", 0.9] };
+                default { missionNamespace getVariable ["GOL_Stealth_PlayerCamoMulStand", 1.05] };
+            }
         };
 
         // Audible coefficient also benefits from darkness (harder to locate sounds)
@@ -222,7 +243,7 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
         private _weatherMinMultiplier = missionNamespace getVariable ["GOL_Stealth_PlayerAudibleWeatherMinMultiplier", 0.65];
         private _weatherAudibleMultiplier = 1;
 
-        if (_weatherEnabled) then {
+        if (_weatherEnabled && !_underwater) then {
             private _weatherOvercast = overcast;
             private _weatherRain = rain;
 
@@ -235,6 +256,10 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
         };
 
         _targetAudible = _targetAudible * _weatherAudibleMultiplier;
+
+        if (_underwater) then {
+            _targetAudible = missionNamespace getVariable ["GOL_Stealth_PlayerAudibleUnderwater", 0.05];
+        };
 
         // Apply stance and vegetation modifiers to camouflage
         private _baseCamo = _targetCamo;
@@ -334,6 +359,7 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
             ["lightLevel", _totalLight],
             ["ambientLight", _ambientLightBrightness],
             ["dynamicLight", _dynamicLightBrightness],
+            ["underwater", _underwater],
             ["darknessLevel", _darknessLevel],
             ["flashlight", _hasVisibleFlashlight],
             ["flashlightState", _hasFlashlightState],
@@ -358,10 +384,11 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
         ], false];
 
         // Optional one-line state snapshot, only when darkness level changes.
-        if ((_darknessLevel != _lastNight) && { missionNamespace getVariable ["GOL_Stealth_PlayerVisibilityDebug", false] }) then {
-            [format ["[Stealth.Player] light=%1 level=%2 flash=%3 ir=%4 stance=%5 camo=%6 audible=%7 overcast=%8 rain=%9 weatherMul=%10", _totalLight, _darknessLevel, _hasVisibleFlashlight, _hasIrLaser, _stance, _targetCamo, _targetAudible, overcast, rain, _weatherAudibleMultiplier], false, false, true] spawn OKS_fnc_LogDebug;
+        if (((_darknessLevel != _lastNight) || (_underwater != _lastUnderwater)) && { missionNamespace getVariable ["GOL_Stealth_PlayerVisibilityDebug", false] }) then {
+            [format ["[Stealth.Player] light=%1 level=%2 underwater=%3 flash=%4 ir=%5 stance=%6 camo=%7 audible=%8 overcast=%9 rain=%10 weatherMul=%11", _totalLight, _darknessLevel, _underwater, _hasVisibleFlashlight, _hasIrLaser, _stance, _targetCamo, _targetAudible, overcast, rain, _weatherAudibleMultiplier], false, false, true] spawn OKS_fnc_LogDebug;
         };
         _lastNight = _darknessLevel;
+        _lastUnderwater = _underwater;
 
         sleep (_interval max 0.5);
     };

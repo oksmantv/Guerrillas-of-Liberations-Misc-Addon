@@ -4,8 +4,11 @@ class CfgPatches
 	class GOL_MISC_ADDON {
         requiredAddons[] = { 
             "A3_3DEN",
+            "A3_Characters_F",
+            "A3_Characters_F_Beta",
             "A3_UI_F", 
             "A3_Air_F",
+            "A3_Boat_F_Beta_SDV_01",
             "A3_Soft_F",
             "A3_Soft_F_Beta",
             "A3_Modules_F",
@@ -126,7 +129,10 @@ class CfgPatches
             "Fennek_wd","Fennek_d","Fennek_e","Fennek_hmg_wd","Fennek_hmg_d","Fennek_hmg_e","Fennek_gmg_wd","Fennek_gmg_d","Fennek_gmg_e",
             "GOL_BMP2DM",
             "GOL_BMP2DM_CDF",
-            "GOL_BMP2DM_GAF"
+            "GOL_BMP2DM_GAF",
+            "GOL_B_SDV_01_F",
+            "GOL_O_SDV_01_F",
+            "GOL_I_SDV_01_F"
 		};
 		weapons[] = {
             "UK3CB_V_Invisible_Plate_Low",
@@ -173,7 +179,16 @@ class CfgPatches
             "GOL_weap_GMG40MM_Terror",
             "GOL_weap_MK19_Terror",
             "GOL_weap_MK19_CROWS_Terror",
-            "GOL_weap_MK19_UK3CB_Terror"
+            "GOL_weap_MK19_UK3CB_Terror",
+            "GOL_V_RebreatherIA",
+            "GOL_V_RebreatherIR",
+            "GOL_V_RebreatherB",
+            "GOL_U_I_Wetsuit",
+            "GOL_U_B_Wetsuit",
+            "GOL_U_O_Wetsuit",
+            "GOL_G_B_Diving",
+            "GOL_G_O_Diving",
+            "GOL_G_I_Diving"
         };
 		magazines[] = {
             "GOL_1Rnd_UGL_FlareIR",
@@ -362,6 +377,9 @@ class CfgPatches
 #include "configs\CfgMagazineWells.cpp"
 #include "configs\CfgRecoils.cpp"
 #include "configs\CfgWeapons.cpp"
+#define GOL_GEAR_CFGGLASSES
+#include "configs\vehicles\gear.hpp"
+#undef GOL_GEAR_CFGGLASSES
 #include "configs\CfgVehicles.cpp"
 #include "configs\CfgFunctions.cpp"
 #include "configs\CfgSounds.cpp"

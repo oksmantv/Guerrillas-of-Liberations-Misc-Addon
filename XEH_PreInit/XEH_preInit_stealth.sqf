@@ -121,6 +121,33 @@ diag_log "OKS_GOL_Misc: XEH_preInit_stealth.sqf executed";
 ] call CBA_fnc_addSetting;
 
 [
+    "GOL_Stealth_PlayerUnderwaterEnabled",
+    "CHECKBOX",
+    ["Enable Underwater Concealment", "Applies dedicated camouflage and audible coefficients while the player is underwater. This intentionally provides a strong stealth advantage to divers and submerged SDV crews."],
+    ["GOL Stealth", "Player - Underwater"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Stealth_PlayerCamoUnderwater",
+    "SLIDER",
+    ["Player Camo (Underwater)", "Camouflage coefficient while underwater. Very low values make divers and submerged SDV crews extremely difficult for AI to spot."],
+    ["GOL Stealth", "Player - Underwater"],
+    [0.001, 0.25, 0.05, 3],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Stealth_PlayerAudibleUnderwater",
+    "SLIDER",
+    ["Player Audible (Underwater)", "Audible coefficient while underwater. Very low values make divers and submerged SDV crews extremely difficult for AI to locate by sound."],
+    ["GOL Stealth", "Player - Underwater"],
+    [0.001, 0.5, 0.05, 3],
+    1
+] call CBA_fnc_addSetting;
+
+[
     "GOL_Stealth_PlayerCamoMulProne",
     "SLIDER",
     ["Camouflage Stance Multiplier (Prone)", "Multiplier applied to camouflage while prone. Lower means harder to detect."],

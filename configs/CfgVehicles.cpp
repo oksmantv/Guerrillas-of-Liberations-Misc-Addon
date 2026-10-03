@@ -220,6 +220,9 @@ class CfgVehicles {
 // TFAR Intercom patch (enables intercom on MRAPs)
 #include "compat\compat_tfar_intercom.hpp"
 
+// SDV low-observability and TFAR intercom patch
+#include "vehicles\sdv.hpp"
+
 // Legacy BettIR light-object patches were removed; IR illumination is now scripted by GOL.
 
 };
