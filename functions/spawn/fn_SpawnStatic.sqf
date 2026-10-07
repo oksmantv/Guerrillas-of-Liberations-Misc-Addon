@@ -47,7 +47,20 @@ _Array Params [
 	["_UnknownArray",[],[[]]],
 	["_Side",independent,[sideUnknown]]
 ];
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_SpawnStatic", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
 
+if (_oks_applyMultiplier) then {
+	if (count _InfantryArray > 0) then {
+		_InfantryArray = _InfantryArray call BIS_fnc_arrayShuffle;
+		_InfantryArray = _InfantryArray select [0, ceil (count _InfantryArray * _oks_multiplier / 100)];
+	};
+	if (count _VehicleArray > 0) then {
+		_VehicleArray = _VehicleArray call BIS_fnc_arrayShuffle;
+		_VehicleArray = _VehicleArray select [0, ceil (count _VehicleArray * _oks_multiplier / 100)];
+	};
+};
 	_Settings = [_Side] Call OKS_Dynamic_Setting;
 	_Settings Params ["_Units"];
 	_Units Params ["_Leaders","_Units","_Officer"];

@@ -6,6 +6,13 @@
 	_UnitArray Params ["_Leaders","_Units","_Officer"];
 	Private ["_GarrisonPositions","_GarrisonMaxSize","_GarrisonMaxSize","_Unit","_Group"];
 
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_Garrison", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier) then {
+		_NumberInfantry = (ceil (_NumberInfantry * _oks_multiplier / 100)) max 2;
+	};
+
 	_GarrisonPositions = [_House] call BIS_fnc_buildingPositions;
 	_GarrisonMaxSize = count _GarrisonPositions;
 

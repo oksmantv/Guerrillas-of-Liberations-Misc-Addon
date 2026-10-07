@@ -5,6 +5,13 @@
 	Params["_Area","_NumberOfVehicles","_Range","_Type","_Side"];
 	Private ["_SafePos","_nearRoads","_road","_roadConnectedTo","_connectedRoad","_direction","_VehicleWaypoints","_SelectedVehicles","_Debug_Variable","_Dir","_Group","_Vehicle"];
 
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_VehiclePatrol", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier) then {
+		_NumberOfVehicles = (ceil (_NumberOfVehicles * _oks_multiplier / 100)) max 1;
+	};
+
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 	_Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian"];
 	_UnitArray Params ["_Leaders","_Units","_Officer"];

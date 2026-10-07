@@ -41,6 +41,14 @@
 		["_Side",east,[sideUnknown]],
 		["_Range",2000,[0]]
 	];
+
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_MechanizedSpawn", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier) then {
+		_InfantryNumber = (ceil (_InfantryNumber * _oks_multiplier / 100)) max 3;
+	};
+
 	Private ["_Dir"];
 	
 	if(typeName _Spawn == "OBJECT") then {

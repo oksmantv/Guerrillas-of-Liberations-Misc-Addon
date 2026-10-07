@@ -16,6 +16,14 @@
  	if(!isServer) exitWith {};
 
 	Params ["_SpawnPos","_LambsType",["_InfantryCountOrVehicleArray",5,[0,[]]],["_Side",east,[sideUnknown]],["_Range",1500,[0]],["_Array",[],[[]]]];
+
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_LambsSpawnGroup", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier && { _InfantryCountOrVehicleArray isEqualType 0 }) then {
+		_InfantryCountOrVehicleArray = (ceil (_InfantryCountOrVehicleArray * _oks_multiplier / 100)) max 2;
+	};
+
 	private ["_RandomPos","_Center","_Direction","_Position"];
 
 	private _KnowsAboutTargets = {

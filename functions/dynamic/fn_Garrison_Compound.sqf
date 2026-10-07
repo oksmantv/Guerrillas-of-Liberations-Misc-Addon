@@ -7,6 +7,13 @@
 	Private ["_GarrisonPositions","_GarrisonMaxSize","_GarrisonMaxSize","_Unit"];
 		Private _Debug_Variable = false;
 
+		private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+		private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_GarrisonCompound", false];
+		private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+		if (_oks_applyMultiplier) then {
+			_NumberInfantry = (ceil (_NumberInfantry * _oks_multiplier / 100)) max 2;
+		};
+
 		_Group = CreateGroup _Side;
 		_Group setVariable ["lambs_danger_disableGroupAI", true];
 		

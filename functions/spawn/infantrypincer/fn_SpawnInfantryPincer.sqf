@@ -29,6 +29,14 @@
 		["_BaseOfFireAngle",15,[0]],
 		["_FlankingSpawnSpread",50,[0]]
 	];
+
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_InfantryPincer", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier) then {
+		_NumbersArray = _NumbersArray apply { (ceil (_x * _oks_multiplier / 100)) max 2 };
+	};
+
 	_NumbersArray Params ["_FrontNumbers","_FrontNumbers2","_LeftNumbers","_RightNumbers"];
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 	_Settings Params ["_Units"];

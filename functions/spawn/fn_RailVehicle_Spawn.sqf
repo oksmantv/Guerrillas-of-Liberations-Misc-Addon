@@ -39,6 +39,13 @@ params [
 	["_deploymentStyle", "rush", [""]]
 ];
 
+private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_RailVehicle", false];
+private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+if (_oks_applyMultiplier && { _cargoCount > 0 }) then {
+	_cargoCount = (ceil (_cargoCount * _oks_multiplier / 100)) max 3;
+};
+
 private _railDebug = missionNamespace getVariable ["GOL_RailMove_Debug", false];
 
 if (_vehicleClass isEqualTo "") exitWith { [objNull, grpNull, grpNull] };
