@@ -25,6 +25,9 @@ _crate allowDamage false;
 _crate hideObjectGlobal true;
 _crate setDir _dir;
 _crate disableCollisionWith _target;
+// ACE falls back to [0, 0, 0] for objects without a configured carry offset.
+// Apply the standard forward carry position globally before the player's carry action starts.
+[_crate, true, [0, 1, 1], 0, false, true] call ace_dragging_fnc_setCarryable;
 [_crate, _player, _target] spawn {
     Params ["_crate", "_player", "_target"];
     sleep 0.1;

@@ -23,7 +23,7 @@
 //
 //	Made By NeKo-ArroW with help from GuzzenVonLidl with tweeks from Luke for ace
 
-if (hasInterface && !isServer) exitWith {false};		// Ensures only server or HC runs this script
+if (!isServer) exitWith {false};		// Support aircraft are server-authoritative.
 
 Private ["_PilotClass","_Correction","_Signal","_SignalClass","_Chute","_ChuteClass","_Position","_Vehicle","_VehicleClass","_HeliPad","_Index","_Pilot","_Side","_HeliClass","_This","_Type","_STD","_STDs","_Vehicle","_Vulnerable","_x","_Pilot","_Text","_Parameters","_Temp"];
 

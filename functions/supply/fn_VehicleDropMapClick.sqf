@@ -18,7 +18,7 @@ _Vulnerable = [_This, 5, false, [false]] call BIS_fnc_Param;
 _VehicleClass = [_This, 6, "B_APC_Wheeled_01_cannon_F", [""]] call BIS_fnc_Param;
 
 //	Run main script
-[_Side, _HeliClass, _Type, _STDs, _VehicleCode, _Vulnerable,_VehicleClass] remoteExec ["OKS_fnc_VehicleDrop", 0, false];
+[_Side, _HeliClass, _Type, _STDs, _VehicleCode, _Vulnerable,_VehicleClass] remoteExec ["OKS_fnc_VehicleDrop", 2, false];
 
 //	Create Unique Marker Name
 _Index = 0;

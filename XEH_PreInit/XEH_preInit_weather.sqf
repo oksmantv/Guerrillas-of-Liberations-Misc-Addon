@@ -2,7 +2,7 @@ diag_log "OKS_GOL_Misc: XEH_preInit_weather.sqf executed";
 
 private _category = ["GOL Weather", "Snowstorm"];
 
-["GOL_Weather_SnowstormEnabled", "CHECKBOX", ["Enable Snowstorm", "Automatically starts the snowstorm on every mission when enabled."], _category, true, 1] call cba_settings_fnc_init;
+["GOL_Weather_SnowstormEnabled", "CHECKBOX", ["Enable Snowstorm", "Automatically starts the snowstorm on every mission when enabled."], _category, false, 1] call cba_settings_fnc_init;
 ["GOL_Weather_SnowstormSnowfall", "CHECKBOX", ["Snowfall", "Creates local, context-aware snow particle effects."], _category, true, 1] call cba_settings_fnc_init;
 ["GOL_Weather_SnowstormDuration", "SLIDER", ["Duration", "Storm duration in seconds. Set to -1 for an indefinite storm."], _category, [-1, 14400, -1, 0], 1] call cba_settings_fnc_init;
 ["GOL_Weather_SnowstormAmbientInterval", "SLIDER", ["Ambient Sound Variation", "Maximum additional seconds between distant ambient sounds. Set to 0 to disable them."], _category, [0, 1800, 15, 0], 1] call cba_settings_fnc_init;

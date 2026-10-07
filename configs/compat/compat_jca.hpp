@@ -17,10 +17,8 @@
 // This file should only be included when JCA is loaded.
 class JCA_arifle_HK437_VFG_black_F;
 class JCA_arifle_HK437_AFG_black_F;
-class Pistol_Base_F;
 class Rifle_Short_Base_F;
 class JCA_muzzle_snds_9MM_enhanced_black;
-class InventoryMuzzleItem_Base_F;
 class hgun_P07_F;
 class hgun_Rook40_F;
 class pdw2000_base_F;
@@ -82,8 +80,8 @@ class GOL_muzzle_snds_9MM_ghost_black: JCA_muzzle_snds_9MM_enhanced_black {
 // magazine bases. Add the subsonic variants and Ghost Suppressor explicitly.
 class JCA_hgun_G17_base_F: Pistol_Base_F {
 	magazines[] += {"GOL_17Rnd_9x19_G17_Subsonic_Mag"};
-	class WeaponSlotsInfo: WeaponSlotsInfo {
-		class MuzzleSlot: MuzzleSlot {
+	class WeaponSlotsInfo {
+		class MuzzleSlot {
 			compatibleItems[] += {"GOL_muzzle_snds_9MM_ghost_black"};
 		};
 	};
@@ -105,8 +103,8 @@ class JCA_hgun_G17_olive_F: JCA_hgun_G17_base_F {
 
 class JCA_smg_MP5_base_F: Rifle_Short_Base_F {
 	magazines[] += {"GOL_30Rnd_9x19_MP5_Subsonic_Mag"};
-	class WeaponSlotsInfo: WeaponSlotsInfo {
-		class MuzzleSlot: MuzzleSlot {
+	class WeaponSlotsInfo {
+		class MuzzleSlot {
 			compatibleItems[] += {"GOL_muzzle_snds_9MM_ghost_black"};
 		};
 	};

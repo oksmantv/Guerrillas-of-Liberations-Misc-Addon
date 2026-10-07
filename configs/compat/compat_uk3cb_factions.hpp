@@ -21,7 +21,6 @@ class rhs_weap_m4a1_wd;
 class rhs_weap_m4a1_m203s_wd;
 class SMG_02_F;
 class uk3cb_muzzle_snds_mp5;
-class InventoryMuzzleItem_Base_F;
 // rhs_weap_m249_pip_L — already defined in compat_rhs.hpp
 class rhs_weap_m249_pip_L_vfg3;
 
@@ -78,8 +77,8 @@ class GOL_muzzle_snds_mp5_ghost: uk3cb_muzzle_snds_mp5 {
 // Its child variants inherit the custom magazine and muzzle-slot entry.
 class UK3CB_MP5_Base: SMG_02_F {
     magazines[] += {"GOL_UK3CB_MP5_30Rnd_9x19_Subsonic_Mag"};
-    class WeaponSlotsInfo: WeaponSlotsInfo {
-        class MuzzleSlot: MuzzleSlot {
+    class WeaponSlotsInfo {
+        class MuzzleSlot {
             compatibleItems[] += {
                 "GOL_muzzle_snds_9MM_ghost_black",
                 "GOL_muzzle_snds_mp5_ghost"

@@ -1,6 +1,6 @@
 # GOL Weather Snowstorm
 
-The snowstorm starts automatically on the server after mission initialization when `GOL_Weather_SnowstormEnabled` is enabled. It is indefinite by default. Mission scripts can also use `[] call OKS_fnc_Weather_Start` and `[] call OKS_fnc_Weather_Stop` on the server.
+The snowstorm is disabled by default. It starts automatically on the server after mission initialization only when `GOL_Weather_SnowstormEnabled` is enabled. Mission scripts can also use `[] call OKS_fnc_Weather_Start` and `[] call OKS_fnc_Weather_Stop` on the server.
 
 All behaviour is configured in the **GOL Weather / Snowstorm** CBA category. The options map to the original demo's snowfall, duration, ambient sounds, breath vapour, gust interval, object-force, vanilla fog, local fog, wind intensification, and unit cold-effect parameters.
 
