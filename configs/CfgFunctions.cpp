@@ -222,6 +222,22 @@ class CfgFunctions // Defines a function
 			class ModuleAirBase {};
 		};				
 
+		class OKS_Weather {
+			file = "\OKS_GOL_Misc\functions\weather";
+			class Weather_Start {};
+			class Weather_Stop {};
+			class Weather_ServerLoop {};
+			class Weather_ClientStart {};
+			class Weather_ClientPosition {};
+			class Weather_ClientSnow {};
+			class Weather_ClientFog {};
+			class Weather_ClientBreath {};
+			class Weather_ClientAmbient {};
+			class Weather_ClientWind {};
+			class Weather_ClientCough {};
+			class Weather_ClientGust {};
+		};
+
 		class OKS_Enemy {
 			file = "\OKS_GOL_Misc\functions\enemy";
 			class ReplaceUnitGear {};
@@ -247,6 +263,11 @@ class CfgFunctions // Defines a function
 			class GarrisonBuildingsInArea {};
 			class Ignore_PlayerAir {};
 		};	
+
+		class OKS_SDV {
+			file = "\OKS_GOL_Misc\functions\vehicles\sdv";
+			class SDV_DepthHoldToggle {};
+		};
 
 		class OKS_Stealth_Core {
 			file = "\OKS_GOL_Misc\functions\stealth\core";

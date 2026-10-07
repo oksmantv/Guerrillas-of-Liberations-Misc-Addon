@@ -20,7 +20,7 @@ if (!isNil "lambs_wp_fnc_taskHunt") then {
 			side _X == [_Unit] call GW_Common_Fnc_getSide &&
 			_X distance2D _Unit < _NearbyHunterRange &&
 			alive _X &&
-			!isPlayer _X &&
+			!(isPlayer _X || { _X in playableUnits } || { _X in switchableUnits }) &&
 			[_X] call ace_common_fnc_isAwake
 		} count units _X >= 2 &&
 		!(_X getVariable ["LAMBS_HUNTING", false]) &&
@@ -35,7 +35,7 @@ if (!isNil "lambs_wp_fnc_taskHunt") then {
 			side _X == [_Unit] call GW_Common_Fnc_getSide &&
 			_X distance2D _Unit < _NearbyHunterRange &&
 			alive _X &&
-			!isPlayer _X &&
+			!(isPlayer _X || { _X in playableUnits } || { _X in switchableUnits }) &&
 			[_X] call ace_common_fnc_isAwake
 		} count units _X >= 2 &&
 		!(_X getVariable ["LAMBS_HUNTING", false]) &&

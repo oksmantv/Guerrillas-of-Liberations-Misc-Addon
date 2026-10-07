@@ -15,6 +15,7 @@ params [
 
 if (!isServer) exitWith { false };
 if (isNull _caller || { !alive _caller }) exitWith { false };
+if (isPlayer _caller || { _caller in playableUnits } || { _caller in switchableUnits }) exitWith { false };
 
 [] call OKS_fnc_Stealth_Init;
 
@@ -55,6 +56,10 @@ if (_callerHasRadio) then {
 
 if (isNull _radioCaller) exitWith {
     ["No valid radio caller found"] call _log;
+    false
+};
+if (isPlayer _radioCaller || { _radioCaller in playableUnits } || { _radioCaller in switchableUnits }) exitWith {
+    ["Rejected playable or switchable radio caller"] call _log;
     false
 };
 

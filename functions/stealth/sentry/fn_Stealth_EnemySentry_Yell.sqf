@@ -11,6 +11,9 @@ switch (typeName _UnitOrGroup) do {
 	default { systemChat format ["What the fuck am I going to do with a %1 value in _UNITorGROUP?", typeName _UnitOrGroup] };
 };
 
+_Yeller = _Yeller select { !(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits }) };
+if (_Yeller isEqualTo []) exitWith { false };
+
 _Unit = selectRandom _Yeller;
 if (alive _Unit && [_Unit] call ace_common_fnc_isAwake) then {
 	private _SoundFileName = selectRandom ["yell_1", "yell_2", "yell_3", "yell_4", "yell_5", "yell_6", "yell_7", "yell_8", "yell_9"];

@@ -16,6 +16,7 @@ params [
 ];
 
 private _unitArray = [_Unit, _Side, _ChanceForRadioEquipment, _RequiresRadioToCallHunt] call OKS_fnc_Stealth_EnemySentry_CreateUnit;
+_unitArray = _unitArray select { !(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits }) };
 
 {
 	[_X, _NearbyHunterRange, _RequiresRadioToCallHunt, _ShouldSetNearbyToHunt, _Side, _HuntRange] spawn {

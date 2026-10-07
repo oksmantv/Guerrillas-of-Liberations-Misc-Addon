@@ -208,6 +208,9 @@ class CfgVehicles {
 // Light vehicles — FastRope, Plane actions, Fennek variants
 #include "vehicles\light_vehicles.hpp"
 
+// Placeable environment objects
+#include "vehicles\objects.hpp"
+
 // Tracked vehicles — BMP-2DM
 #include "vehicles\bmp2dm.hpp"
 

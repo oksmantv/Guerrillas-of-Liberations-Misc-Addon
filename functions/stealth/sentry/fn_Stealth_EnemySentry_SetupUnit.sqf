@@ -4,6 +4,8 @@
 
 params ["_Unit"];
 
+if (isNull _Unit || { isPlayer _Unit } || { _Unit in playableUnits } || { _Unit in switchableUnits }) exitWith { false };
+
 if (count units group _Unit > 1) then {
 	private _SingleGroup = createGroup (side _Unit);
 	[_Unit] joinSilent _SingleGroup;

@@ -26,7 +26,7 @@ private _attachForGroup = {
     if (isNull _group) exitWith {};
     if (side _group in [civilian, sideLogic, sideUnknown]) exitWith {};
     if ({ alive _x } count units _group == 0) exitWith {};
-    if ({ isPlayer _x } count units _group > 0) exitWith {}; // Never apply to player groups
+    if ({ isPlayer _x || { _x in playableUnits } || { _x in switchableUnits } } count units _group > 0) exitWith {}; // Never apply to human-playable groups
     if !(missionNamespace getVariable ["GOL_Stealth_Enabled", false]) exitWith {};
 
     private _patrolEnabled = missionNamespace getVariable ["GOL_Stealth_AutoEnablePatrols", false];
@@ -94,7 +94,7 @@ missionNamespace setVariable ["OKS_Stealth_AutoEnable_AttachForGroup", _attachFo
 
     if (!isServer) exitWith {};
     if (isNull _unit) exitWith {};
-    if (isPlayer _unit) exitWith {};
+    if (isPlayer _unit || { _unit in playableUnits } || { _unit in switchableUnits }) exitWith {};
 
     [_unit] spawn {
         params ["_unit"];

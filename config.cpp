@@ -33,6 +33,8 @@ class CfgPatches
             "UK3CB_BAF_Weapons_L119",
             "UK3CB_BAF_Weapons_L110",
             "UK3CB_Factions_Weapons_G36",
+			"Weapons_F_JCA_IA_Pistols_G17",
+			"Weapons_F_JCA_IA_SMGs_MP5",
             "FPV_UA",
             "Kimi_HMDs_Helos"
         };
@@ -125,6 +127,7 @@ class CfgPatches
             "OKS_Module_SpawnGolVehicle",
             "OKS_Module_SpawnGolMHQ",
 			"GOL_FastRope_DZ",
+            "OKS_InvisibleWall3m",
 			"GOL_Flag_Hellfish",
             "Fennek_wd","Fennek_d","Fennek_e","Fennek_hmg_wd","Fennek_hmg_d","Fennek_hmg_e","Fennek_gmg_wd","Fennek_gmg_d","Fennek_gmg_e",
             "GOL_BMP2DM",
@@ -150,6 +153,9 @@ class CfgPatches
             "rhs_beret_vdv3_GOL",
             "rhs_ssh68_2_GOL",
             "OKS_DroneDisruptor_Pistol",
+            // Ghost 9 mm suppressor (JCA model; see compat_jca.hpp)
+            "GOL_muzzle_snds_9MM_ghost_black",
+			"GOL_muzzle_snds_mp5_ghost",
             "GOL_MMG_01_tan_F",
             "GOL_MMG_01_hex_F",
             "GOL_weap_pkm",
@@ -193,6 +199,11 @@ class CfgPatches
 		magazines[] = {
             "GOL_1Rnd_UGL_FlareIR",
             "GOL_1Rnd_UGL_FlareWhite",
+            // Ghost 9 mm suppressor system.
+            "GOL_17Rnd_9x19_G17_Subsonic_Mag",
+            "GOL_30Rnd_9x21_Subsonic_Mag",
+            "GOL_30Rnd_9x19_MP5_Subsonic_Mag",
+            "GOL_UK3CB_MP5_30Rnd_9x19_Subsonic_Mag",
 			// 9.3x64mm for heavy machine guns — ball, tracer, SLAP, and 200-round variants.
 			"GOL_150Rnd_93x64_Mag",
 			"GOL_150Rnd_93x64_Mag_Tracer",
@@ -330,15 +341,24 @@ class CfgPatches
     };
 
 	class GOL_MISC_COMPAT_JCA {
-		requiredAddons[] = {"Weapons_F_JCA_IA_Rifles_HK437"};
+        requiredAddons[] = {
+            "Weapons_F_JCA_IA_Rifles_HK437",
+            "Weapons_F_JCA_IA_Pistols_G17",
+            "Weapons_F_JCA_IA_SMGs_MP5"
+        };
 		requiredVersion = 2.14;
 		author = "OksmanTV";
 		units[] = {};
 		weapons[] = {
 			"GOL_arifle_HK437_VFG_black_F",
-			"GOL_arifle_HK437_AFG_black_F"
+            "GOL_arifle_HK437_AFG_black_F",
+			"GOL_muzzle_snds_9MM_ghost_black"
 		};
-		magazines[] = {};
+        magazines[] = {
+            "GOL_17Rnd_9x19_G17_Subsonic_Mag",
+            "GOL_30Rnd_9x21_Subsonic_Mag",
+			"GOL_30Rnd_9x19_MP5_Subsonic_Mag"
+        };
 	};
 
     class GOL_MISC_COMPAT_RHSGREF {
@@ -410,6 +430,12 @@ class CfgMods {
     class GOL_MISC_ADDON {
         name = "Guerrillas of Liberation Misc";
         url = "https://gol-clan.com/home";
+        author = "Guerrillas of Liberation";
+        logo = "\OKS_GOL_Misc\data\images\logo.paa";
+        logoSmall = "\OKS_GOL_Misc\data\images\logo.paa";
+        logoOver = "\OKS_GOL_Misc\data\images\logo.paa";
+        tooltipOwned = "Guerrillas of Liberation Misc";
+        dlcColor[] = {0.1, 0.5, 0.9, 1};
     };
 };
 
@@ -596,6 +622,9 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Stealth {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_stealth.sqf'";
     };
+    class OKS_PreInit_Weather {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_weather.sqf'";
+    };
 };
 
 class Extended_PostInit_EventHandlers {
@@ -610,6 +639,9 @@ class Extended_PostInit_EventHandlers {
     };
     class OKS_PostInit_Intercom {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_postInit_Intercom.sqf'";
+    };
+    class OKS_PostInit_Weather {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_postInit_weather.sqf'";
     };
 };
 

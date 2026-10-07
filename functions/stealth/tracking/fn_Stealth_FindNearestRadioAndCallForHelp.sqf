@@ -9,6 +9,13 @@ params [
 	["_NearbyHunterRange", 500, [0]]
 ];
 
+_NearFriendliesWithRadio = _NearFriendliesWithRadio select {
+	!(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits })
+	&& { alive _x }
+	&& { isNil "ace_common_fnc_isAwake" || { [_x] call ace_common_fnc_isAwake } }
+};
+if (_NearFriendliesWithRadio isEqualTo []) exitWith { false };
+
 private _sortedNearFriendliesWithRadio = [_NearFriendliesWithRadio, [], { _x distance _Unit }, "ASCEND"] call BIS_fnc_sortBy;
 private _nearestFriendlyWithRadio = selectRandom _sortedNearFriendliesWithRadio;
 

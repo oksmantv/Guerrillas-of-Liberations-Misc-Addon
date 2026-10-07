@@ -14,6 +14,7 @@ params [
 
 if (!isServer) exitWith { false };
 if (isNull _unit || { !alive _unit }) exitWith { false };
+if (isPlayer _unit || { _unit in playableUnits } || { _unit in switchableUnits }) exitWith { false };
 
 if (!isNil "ace_common_fnc_isAwake" && { !([_unit] call ace_common_fnc_isAwake) }) exitWith { false };
 

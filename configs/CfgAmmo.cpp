@@ -3,6 +3,34 @@ class CfgAmmo {
 	class F_40mm_White;
 	class Flare_82mm_AMOS_White;
 	class Sh_82mm_AMOS;
+	class JCA_B_9x19_Ball;
+	class B_9x21_Ball;
+
+	// Subsonic 9 mm ammunition for the Ghost Suppressor system. The low
+	// audibleFire value is further reduced by the suppressor's AmmoCoef.
+	class GOL_B_9x19_Subsonic: JCA_B_9x19_Ball {
+		audibleFire = 0.1;
+		audibleFireTime = 0.1;
+		visibleFire = 0.1;
+		visibleFireTime = 0.1;
+		typicalSpeed = 300;
+		dangerRadiusBulletClose = 0;
+		dangerRadiusHit = 0;
+		suppressionRadiusBulletClose = 0;
+		suppressionRadiusHit = 0;
+	};
+
+	class GOL_B_9x21_Subsonic: B_9x21_Ball {
+		audibleFire = 0.1;
+		audibleFireTime = 0.1;
+		visibleFire = 0.1;
+		visibleFireTime = 0.1;
+		typicalSpeed = 300;
+		dangerRadiusBulletClose = 0;
+		dangerRadiusHit = 0;
+		suppressionRadiusBulletClose = 0;
+		suppressionRadiusHit = 0;
+	};
 	
 	// Actual illumination flare - spawned by script at 150-200m altitude
 	class OKS_60mm_Flare_Spawned : F_40mm_White {
@@ -299,7 +327,6 @@ class CfgAmmo {
 	};
 
 	// Drone disruptor pistol ammo - EMP pulses (no physical projectile)
-	class B_9x21_Ball;
 	class OKS_Ammo_DisruptorPulse: B_9x21_Ball {
 		hit = 0;
 		indirectHit = 0;

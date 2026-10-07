@@ -15,6 +15,7 @@ params [
 
 if (!isServer) exitWith { false };
 if (isNull _trackerGroup) exitWith { false };
+if ({ isPlayer _x || { _x in playableUnits } || { _x in switchableUnits } } count units _trackerGroup > 0) exitWith { false };
 
 [] call OKS_fnc_Stealth_Init;
 
@@ -33,9 +34,12 @@ private _isAwake = {
 
 _trackerGroup setVariable ["acex_headless_blacklist", true, true];
 
-while { { [_x] call _isAwake } count units _trackerGroup > 0 } do {
+while {
+    { [_x] call _isAwake } count units _trackerGroup > 0
+    && { { isPlayer _x || { _x in playableUnits } || { _x in switchableUnits } } count units _trackerGroup == 0 }
+} do {
     private _leader = leader _trackerGroup;
-    if (isNull _leader) then {
+    if (isNull _leader || { isPlayer _leader } || { _leader in playableUnits } || { _leader in switchableUnits }) then {
         sleep _checkDelay;
         continue;
     };
