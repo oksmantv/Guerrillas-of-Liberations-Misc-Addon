@@ -13,7 +13,7 @@ Params ["_player"];
 
         [
             _actionName,
-            3,
+            2,
             {true},
             {
                 (_this select 0) params ["_player"];
@@ -25,16 +25,57 @@ Params ["_player"];
                 for "_i" from 1 to 4 do {
                     if (_player canAdd [_item, 1, true]) then {
                         _player addMagazineGlobal _item;
-                        _UnpackedRounds = _UnpackedRounds + 1;	
+                        _UnpackedRounds = _UnpackedRounds + 1;
                     } else {
                         _GroundWeaponHolder addMagazineCargoGlobal [_item,1];
-                        _FailedUnpack = true;			
+                        _FailedUnpack = true;
                     };
                 };
-                if(_FailedUnpack) then {
-                    systemChat format["Your inventory is full. Unpacked %1 HE rounds on ground.",(4 - _UnpackedRounds)];
+                private _uMax  = if (uniform _player != "") then { getContainerMaxLoad (uniform _player) } else { 0 };
+                private _vMax  = if (vest _player != "") then { getContainerMaxLoad (vest _player) } else { 0 };
+                private _bpMax = if (backpack _player != "") then { getContainerMaxLoad (backpack _player) } else { 0 };
+                private _totalMax  = _uMax + _vMax + _bpMax;
+                private _totalLoad = (loadUniform _player) * _uMax + (loadVest _player) * _vMax + (loadBackpack _player) * _bpMax;
+                private _invUsagePct = if (_totalMax > 0) then { round (_totalLoad / _totalMax * 100) } else { 0 };
+                private _invSpaceStr = str _invUsagePct + "% Inventory Usage";
+                if (_FailedUnpack) then {
+                    systemChat format ["Unpacked HE: %1 to inventory, %2 on ground. %3.", _UnpackedRounds, (4 - _UnpackedRounds), _invSpaceStr];
                 } else {
-                    systemChat format["You unpacked %1 HE rounds.",_UnpackedRounds];
+                    systemChat format ["You unpacked %1 HE rounds. %2.", _UnpackedRounds, _invSpaceStr];
+                };
+                if (_FailedUnpack) then {
+                    [_player, _GroundWeaponHolder, _item] spawn {
+                        params ["_player", "_holder", "_item"];
+                        private _endTime = time + 60;
+                        private _done = false;
+                        while {time < _endTime && !_done} do {
+                            sleep 1;
+                            if (!alive _holder) then {
+                                _done = true;
+                            } else {
+                                private _holderMags = magazinesAmmoCargo _holder;
+                                private _match = _holderMags select { (_x select 0) == _item };
+                                if (count _match == 0) then {
+                                    _done = true;
+                                } else {
+                                    if (_player canAdd [_item, 1, true]) then {
+                                        private _ammoCount = (_match select 0) select 1;
+                                        _player addMagazine [_item, _ammoCount];
+                                        _holder addMagazineAmmoCargo [_item, -1, _ammoCount];
+                                        private _uMax  = if (uniform _player != "") then { getContainerMaxLoad (uniform _player) } else { 0 };
+                                        private _vMax  = if (vest _player != "") then { getContainerMaxLoad (vest _player) } else { 0 };
+                                        private _bpMax = if (backpack _player != "") then { getContainerMaxLoad (backpack _player) } else { 0 };
+                                        private _totalMax  = _uMax + _vMax + _bpMax;
+                                        private _totalLoad = (loadUniform _player) * _uMax + (loadVest _player) * _vMax + (loadBackpack _player) * _bpMax;
+                                        private _pct = if (_totalMax > 0) then { round (_totalLoad / _totalMax * 100) } else { 0 };
+                                        private _pctStr = str _pct + "% Inventory Usage";
+                                        systemChat format ["✓ Auto-picked up %1 from ground. %2.", getText (configFile >> "CfgMagazines" >> _item >> "displayName"), _pctStr];
+                                        _done = true;
+                                    };
+                                };
+                            };
+                        };
+                    };
                 };
             },
             {

@@ -102,6 +102,7 @@ if(_isArtilleryVehicle) exitWith {
 		format["[CONVOY] %1 is a mortar, setting up for mortar task.",[configFile >> "CfgVehicles" >> typeOf _VehicleObject] call BIS_fnc_displayName] spawn OKS_fnc_LogDebug;
 	};	
 	[_VehicleObject, side (group gunner _vehicleObject), "barrage", "light", ["auto", 15], 150, 1000, 30] spawn OKS_fnc_Mortars;
+	driver _VehicleObject disableAI "PATH";
 };
 
 if (_IsArmedVehicle) exitWith {

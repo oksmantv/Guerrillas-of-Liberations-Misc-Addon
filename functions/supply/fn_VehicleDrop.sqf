@@ -101,9 +101,12 @@ _Heli AllowDamage _Vulnerable;
 _Pilot = CreateAgent [_PilotClass, [0,0,0], [], 0, "NONE"];
 _Pilot MoveInDriver _Heli;
 _Pilot setRank "SERGEANT";
-_Pilot SetBehaviour "STEALTH";
+_Pilot SetBehaviour "CARELESS";
 _Pilot setCombatMode "BLUE";
 _Pilot disableAI "FSM";
+_Pilot disableAI "LIGHTS";
+_Heli setPilotLight false;
+_Heli setCollisionLight false;
 sleep 1;
 
 /*

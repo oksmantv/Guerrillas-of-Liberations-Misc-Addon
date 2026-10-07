@@ -23,8 +23,11 @@ if(_ServiceStation) then {
 		};
 		
 		waitUntil {sleep 0.1; isNull (attachedTo _Vehicle)};		
-		_Crate = "GOL_MobileServiceStation" createVehicle [0,0,0];
+		_Crate = "GOL_MobileServiceStation" createVehicle (getPosATL _Vehicle);
+		_Crate allowDamage false;
+		_Crate disableCollisionWith _Vehicle;
 		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;
+		_Crate allowDamage true;
 		
 		if(_GroundVehiclesDebug) then {
 			format["[SERVICESTATION] Mobile service station %1 loaded into vehicle: %2", typeOf _Crate, typeOf _Vehicle] spawn OKS_fnc_LogDebug;
@@ -38,8 +41,11 @@ if(_ServiceStation) then {
 	_MHQShouldBeMobileServiceStation = missionNamespace getVariable ["MHQ_ShouldBe_ServiceStation",false];
 	if(_Vehicle getVariable ["GOL_isMHQ",false] && !(_MHQShouldBeMobileServiceStation)) then {
 		waitUntil {sleep 0.1; isNull (attachedTo _Vehicle)};
-		_Crate = "GOL_MobileServiceStation" createVehicle [0,0,0];
-		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;			
+		_Crate = "GOL_MobileServiceStation" createVehicle (getPosATL _Vehicle);
+		_Crate allowDamage false;
+		_Crate disableCollisionWith _Vehicle;
+		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;
+		_Crate allowDamage true;
 		_Debug = missionNamespace getVariable ["MHQ_Debug",false];
 		if(_Debug) then {
 			format["%1 added to cargo of mhq: %1",typeOf _Crate,_Vehicle] spawn OKS_fnc_LogDebug;
@@ -47,8 +53,11 @@ if(_ServiceStation) then {
 	};
 } else {
 	{
-		_fuelCan = "FlexibleTank_01_forest_F" createVehicle [0,0,0];
+		_fuelCan = "FlexibleTank_01_forest_F" createVehicle (getPosATL _Vehicle);
+		_fuelCan allowDamage false;
+		_fuelCan disableCollisionWith _Vehicle;
 		[_fuelCan,1000] call ace_refuel_fnc_setFuel;
 		[_fuelCan,_Vehicle,true] call ace_cargo_fnc_loadItem;
+		_fuelCan allowDamage true;
 	} foreach [1,2];
 };

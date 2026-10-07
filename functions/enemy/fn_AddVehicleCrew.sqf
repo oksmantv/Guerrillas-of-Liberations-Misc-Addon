@@ -8,10 +8,11 @@
         ["_Vehicle",objNull,[objnull]],
         ["_Side",east,[sideUnknown]],
         ["_CrewSlots",0,[-1]], // 0 = full crew, 1 = driver only, 2 = gunner only, 3 = commander only, -1 = None
-        ["_CargoSlots",0,[-1]], // Amount of Infantry in Cargo
+        ["_CargoSlots",0,[-1]], // Amount of Infantry in Cargo.  -1 = Full Cargo, 0 = None. (Clamps to maximum seats if above limit)
         ["_ShouldBlacklistHeadless",false,[false]],
-        ["_AddCargoCommander",false,[false]] // If true, add first cargo slot and set as effectiveCommander
+        ["_AddCargoCommander",false,[false]] // If true, use first cargo unit as effectiveCommander.
     ];
+
     Private ["_UnitClass","_Group","_Commander","_Gunner","_Driver"];
 
     private _isAirVehicle = (!isNull _Vehicle) && {
@@ -135,9 +136,10 @@
         };
     };
 
-    if(_CargoSlots > 0 || _AddCargoCommander) then {
-        if(([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount) >= 1) then {
-            _CargoSeats = ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount);
+    if(_CargoSlots != 0 || _AddCargoCommander) then {
+		// Set the original base value as the maximum a vehicle can allow.
+    	_CargoSeats = ([TypeOf _Vehicle,true] call BIS_fnc_crewCount) - ([TypeOf _Vehicle,false] call BIS_fnc_crewCount);
+        if(_CargoSeats >= 1) then {
             if(_AddCargoCommander) then {
                 // Add first cargo slot and set as effectiveCommander
                 _Unit = _Group CreateUnit [(_Leaders call BIS_FNC_selectRandom), [0,0,0], [], 0, "NONE"];
@@ -149,8 +151,15 @@
                     format["[ADDVEHICLECREW] Added cargo commander %1 to %2",_Unit,_Vehicle] spawn OKS_fnc_LogDebug;
                 };
                 _CargoSeats = _CargoSeats - 1;
+				// Additional bug I may have looked over. Commander is in the cargo group, so he counts as a CargoSlot.
+				// We deduct a slot when that happens.
+				if (_CargoSlots > 0) then { _CargoSlots = _CargoSlots - 1 };
             };
-            if(_CargoSeats > _CargoSlots) then { _CargoSeats = _CargoSlots };
+
+			// If slots are higher than 0 (ex: 5) and available seats are higher (10), then set the base value (10) to selected value (5).
+			// If the user overshoots the allowed seats, this will clamp it.
+			// If selected slots are -1, no clamp is performed and base (max seats) are used
+            if (_CargoSlots >= 0 && {_CargoSeats > _CargoSlots}) then { _CargoSeats = _CargoSlots };
             for "_i" from 1 to (_CargoSeats) do
             {
                 Private "_Unit";

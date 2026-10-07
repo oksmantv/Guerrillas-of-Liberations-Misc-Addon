@@ -1,5 +1,59 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_convoy.sqf executed";
 
+[
+    "GOL_Convoy_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL Convoy", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Convoy_Target_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Target Debug", "When enabled, DEBUG messages will show detailed convoy targeting and detection logic."],
+    ["GOL Convoy", "Debug"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Convoy_Speed_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Speed Debug", "When enabled, DEBUG messages will play in the SystemChat speed checks."],
+    ["GOL Convoy", "Debug"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Convoy_Markers_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Markers Debug", "When enabled, DEBUG Arrow markers will be spawned on the convoy end waypoints."],
+    ["GOL Convoy", "Debug"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Convoy_Dispersion_Debug",
+    "CHECKBOX",
+    ["Enable Convoy Dispersion Debug", "When enabled, DEBUG messages will show dispersion changes near waypoints."],
+    ["GOL Convoy", "Debug"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Convoy_AA_Debug",
+    "CHECKBOX",
+    ["Enable Convoy AA Debug", "When enabled, DEBUG messages will show detailed AA vehicle selection and engagement."],
+    ["GOL Convoy", "Debug"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
 // XEH_preInit_convoy.sqf
 // Initializes convoy-related variables and CBA settings (excluding debug)
 

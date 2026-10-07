@@ -57,8 +57,11 @@ _aircraft flyInHeight 700;
 _aircraft setCaptive true;
 
 if (_shouldBeCareless) then {
-    _crewGroup setBehaviour "STEALTH";
+    _crewGroup setBehaviour "CARELESS";
     _crewGroup setCombatMode "BLUE";
+    _aircraft setPilotLight false;
+    _aircraft setCollisionLight false;
+    { _x disableAI "LIGHTS"; } forEach (units _crewGroup);
 };
 
 private _dropWp = _crewGroup addWaypoint [_dropToPos, 0];

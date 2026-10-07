@@ -43,6 +43,7 @@ if ([_designatedVehicle] call _isValidVehicleFn) then {
     private _designatedSeats = [_designatedVehicle] call _seatCountFn;
     _designatedSeats params ["_designatedGuardSeats", "_designatedHasHvtCargo"];
     if (
+        !(_designatedVehicle getVariable ["OKS_InterceptHvt_Reserved", false]) &&
         _designatedHasHvtCargo &&
         {_designatedGuardSeats > 0} &&
         {[_designatedVehicle, _groupUnits] call _isCrewCompatibleFn}
@@ -53,7 +54,7 @@ if ([_designatedVehicle] call _isValidVehicleFn) then {
 
 if (_useDesignated) exitWith {
     if (_hvtDebug) then {
-        format ["[INTERCEPT HVT][SELECT_VEH] Using designated vehicle %1", typeOf _designatedVehicle] call OKS_fnc_LogDebug;
+        format ["[INTERCEPT HVT][SELECT_VEH] Using designated vehicle %1 (netId=%2)", typeOf _designatedVehicle, netId _designatedVehicle] call OKS_fnc_LogDebug;
     };
     _designatedVehicle setVariable ["OKS_InterceptHvt_Reserved", true, true];
     _designatedVehicle

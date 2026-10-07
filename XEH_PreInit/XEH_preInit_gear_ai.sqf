@@ -1,5 +1,14 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_gear_ai.sqf executed";
 
+[
+    "GOL_EnemyGear_Debug",
+    "CHECKBOX",
+    ["Enable Enemy Gear DEBUG", "Enables debug logging for OKS_fnc_ReplaceUnitGear."],
+    ["GOL Gear AI", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // CBA Settings for AI Gear
 [
     "LAT_Chance",

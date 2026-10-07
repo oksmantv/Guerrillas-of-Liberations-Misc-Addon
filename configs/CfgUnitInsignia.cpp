@@ -15,4 +15,12 @@ class CfgUnitInsignia
 		texture = "\OKS_GOL_Misc\data\images\pzg371.paa";
 		textureVehicle = "";
 	};
+
+	class GOL_Insignia_StygianGuard
+	{
+		displayName = "Stygian Guard";
+		author = "GOL";
+		texture = "\OKS_GOL_Misc\data\images\sg.paa";
+		textureVehicle = "";
+	};
 };

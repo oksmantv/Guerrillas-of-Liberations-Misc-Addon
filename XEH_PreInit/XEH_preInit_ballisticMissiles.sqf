@@ -1,5 +1,14 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_ballisticMissiles.sqf executed";
 
+[ 
+    "GOL_ScudIntercept_Debug",
+    "CHECKBOX",
+    ["Enable SCUD/Cruise Intercept DEBUG", "Enables debugging for SCUD (RHS) and Cruise Missile (VLS) launch/intercept scripts."],
+    ["GOL Ballistic Missiles", "Debug"],
+    true,
+    1
+] call cba_settings_fnc_init;
+
 // Ballistic missile / SCUD / Cruise missile intercept settings
 // These settings drive OKS_fnc_ScudIntercept_* scripts.
 

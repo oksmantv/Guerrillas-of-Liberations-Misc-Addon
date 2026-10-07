@@ -1,5 +1,14 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_surrender.sqf executed";
 
+[
+    "GOL_Surrender_Debug",
+    "CHECKBOX",
+    ["Enable Surrender Debug", "When enabled, DEBUG messages will play in the SystemChat."],
+    ["GOL Surrender", "Debug"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
 // CBA Settings for GOL_Surrender
 // Checkbox: Enable Surrender
 [

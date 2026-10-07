@@ -16,6 +16,11 @@ if(isNil "_Grp") exitWith {
 if (_Grp getVariable ["NEKY_Hunt_GroupEnabled",false]) exitWith {}; // Exit if Group is already hunting
 _Grp setVariable ["NEKY_Hunt_GroupEnabled",true];
 
+// Disable LAMBS danger FSM so the group does not stop to react to random gunfire/aircraft
+_Grp setVariable ["lambs_danger_disableGroupAI", true];
+// Start in YELLOW — group will not halt to engage until they are close to the target
+_Grp setCombatMode "YELLOW";
+
 _AI = Units _Grp;
 _Leader = Leader _Grp;
 _PlayerGrp = Group _Player;
@@ -81,6 +86,8 @@ While {
 	// Reveal prey and its group.
 	if ((_Leader distance2D _Player) < 300) then
 	{
+		// Close enough — switch to full combat mode
+		_Grp setCombatMode "RED";
 		if ((_Grp knowsAbout _Player) < 1.5) then
 		{
 			{
@@ -88,6 +95,8 @@ While {
 			} forEach (Units _PlayerGrp);
 		};
 	} else {
+		// Still en-route — stay in YELLOW so the group does not stop for random threats
+		_Grp setCombatMode "YELLOW";
 		{
 			if(isNull objectParent(Leader _Grp)) then {
 				_Grp Reveal [_x, 0.1];

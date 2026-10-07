@@ -1,4 +1,119 @@
 class CfgMagazines {
+    class UGL_FlareWhite_F;
+    class UK3CB_BAF_1Rnd_81mm_Mo_Flare_White;
+    class UK3CB_BAF_1Rnd_81mm_Mo_Shells;
+    class UK3CB_BAF_1Rnd_81mm_Mo_AB_Shells;
+    class UK3CB_BAF_1Rnd_81mm_Mo_Smoke_White;
+    class JCA_17Rnd_9x19_G17_Mag;
+    class JCA_30Rnd_9x19_MP5_Mag;
+    class UK3CB_MP5_30Rnd_9x19_Magazine;
+    class 30Rnd_9x21_Mag;
+
+    // Subsonic magazines retain the physical compatibility of their parents.
+    class GOL_17Rnd_9x19_G17_Subsonic_Mag: JCA_17Rnd_9x19_G17_Mag {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = "Guerrillas of Liberation";
+        displayName = "Ghost 9 mm 17Rnd G17 Subsonic Mag";
+        displayNameShort = "Ghost 9 mm";
+        descriptionShort = "Caliber: 9x19 mm<br />Rounds: 17<br />Subsonic ammunition for suppressed G17 pistols.";
+        ammo = "GOL_B_9x19_Subsonic";
+        initSpeed = 300;
+    };
+
+    class GOL_30Rnd_9x21_Subsonic_Mag: 30Rnd_9x21_Mag {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = "Guerrillas of Liberation";
+        displayName = "Ghost 9 mm 30Rnd Subsonic Mag";
+        displayNameShort = "Ghost 9 mm";
+        descriptionShort = "Caliber: 9x21 mm<br />Rounds: 30<br />Subsonic ammunition for suppressed 9 mm weapons.";
+        ammo = "GOL_B_9x21_Subsonic";
+        initSpeed = 300;
+    };
+
+    class GOL_30Rnd_9x19_MP5_Subsonic_Mag: JCA_30Rnd_9x19_MP5_Mag {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = "Guerrillas of Liberation";
+        displayName = "Ghost 9 mm 30Rnd MP5 Subsonic Mag";
+        displayNameShort = "Ghost 9 mm";
+        descriptionShort = "Caliber: 9x19 mm<br />Rounds: 30<br />Subsonic ammunition for suppressed JCA MP5 submachine guns.";
+        ammo = "GOL_B_9x19_Subsonic";
+        initSpeed = 300;
+    };
+
+    class GOL_UK3CB_MP5_30Rnd_9x19_Subsonic_Mag: UK3CB_MP5_30Rnd_9x19_Magazine {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = "Guerrillas of Liberation";
+        displayName = "Ghost 9 mm 30Rnd MP5 Subsonic Mag (3CB)";
+        displayNameShort = "Ghost 9 mm";
+        descriptionShort = "Caliber: 9x19 mm<br />Rounds: 30<br />Subsonic ammunition for suppressed 3CB MP5 submachine guns.";
+        ammo = "GOL_B_9x19_Subsonic";
+        initSpeed = 300;
+    };
+    
+    // UK3CB 60mm flare - fires dummy ballistic carrier that deploys flare at altitude
+    class UK3CB_BAF_1Rnd_60mm_Mo_Flare_White : UK3CB_BAF_1Rnd_81mm_Mo_Flare_White {
+        ammo = "OKS_60mm_Flare_Dummy";  // Fire dummy carrier, spawns white or IR based on GOL_IRFlaresEnabled
+        mass = 10;
+    };
+    
+    // Weight reduction for all UK3CB 60mm mortar rounds (50% of vanilla 82mm mass of 80)
+    class UK3CB_BAF_1Rnd_60mm_Mo_Shells : UK3CB_BAF_1Rnd_81mm_Mo_Shells {
+        mass = 10;
+    };
+    
+    class UK3CB_BAF_1Rnd_60mm_Mo_AB_Shells : UK3CB_BAF_1Rnd_81mm_Mo_AB_Shells {
+        mass = 10;
+    };
+    
+    class UK3CB_BAF_1Rnd_60mm_Mo_Smoke_White : UK3CB_BAF_1Rnd_81mm_Mo_Smoke_White {
+        mass = 10;
+    };
+    
+    class GOL_1Rnd_UGL_FlareIR: UGL_FlareWhite_F {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        displayName = "40mm IR Flare (GOL)";
+        displayNameShort = "IR Flare";
+        descriptionShort = "40mm parachute IR flare. NVG-visible with minimal naked-eye signature.";
+        ammo = "GOL_40mm_Flare_ir_UGL";
+    };
+
+    class GOL_1Rnd_UGL_FlareWhite: UGL_FlareWhite_F {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        displayName = "40mm White Flare (GOL)";
+        displayNameShort = "White Flare";
+        descriptionShort = "40mm parachute white illumination flare. High-intensity visible light.";
+        ammo = "GOL_40mm_Flare_White_UGL";
+    };   
+
+    class 120Rnd_CMFlare_Chaff_Magazine;
+    class GOL_250Rnd_CMFlare_Visible_Mag: 120Rnd_CMFlare_Chaff_Magazine {
+        displayName = "250Rnd Support Flares (Visible)";
+        displayNameShort = "VIS Flare";
+        ammo = "GOL_40mm_Flare_White_air";
+        initSpeed = 0;
+        count = 250;
+    };
+
+    class GOL_250Rnd_CMFlare_IR_Mag: 120Rnd_CMFlare_Chaff_Magazine {
+        displayName = "250Rnd Support Flares (IR)";
+        displayNameShort = "IR Flare";
+        ammo = "GOL_40mm_Flare_ir_air";
+        initSpeed = 0;
+        count = 250;
+    };
+
     class rhs_mag_9k38_rocket; // Reference the base class (no body)
     class gol_mag_9k38_rocket: rhs_mag_9k38_rocket {
         displayName = "9K38 (Disabled ACE Guidance)";
@@ -411,7 +526,7 @@ class CfgMagazines {
         scope = 2;
         count = 250;
         displayName = "7.62mm 250Rnd M993 AP (MG3)";
-        displayNameShort = "M993 250";
+        displayNameShort = "M993 AP";
         descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 tungsten AP";
         ammo = "GOL_B_762x51_M993";
         tracersEvery = 0;
@@ -419,7 +534,7 @@ class CfgMagazines {
 
     class GOL_MG3_250Rnd_762x51_M993_Tracer_Red: GOL_MG3_250Rnd_762x51_M993 {
         displayName = "7.62mm 250Rnd M993 AP Tracer (Red) (MG3)";
-        displayNameShort = "M993 250 (Red)";
+        displayNameShort = "M993 AP (Red)";
         descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 AP, all red tracers";
         ammo = "GOL_B_762x51_M993_Tracer_Red";
         tracersEvery = 1;
@@ -428,7 +543,7 @@ class CfgMagazines {
 
     class GOL_MG3_250Rnd_762x51_M993_Tracer_Green: GOL_MG3_250Rnd_762x51_M993 {
         displayName = "7.62mm 250Rnd M993 AP Tracer (Green) (MG3)";
-        displayNameShort = "M993 250 (Green)";
+        displayNameShort = "M993 AP (Green)";
         descriptionShort = "7.62x51mm NATO 250-round drum belt, M993 AP, all green tracers";
         ammo = "GOL_B_762x51_M993_Tracer_Green";
         tracersEvery = 1;
@@ -799,21 +914,21 @@ class CfgMagazines {
     // 5.56mm AP45 reload tracer variants (last 5 rounds are tracers)
     class GOL_30Rnd_556x45_AP45_Reload_Tracer_Red: GOL_30Rnd_556x45_AP45 {
         displayName = "5.56mm 30Rnd AP45 Reload Tracer (Red)";
-        displayNameShort = "AP45 RT (Red)";
+        displayNameShort = "AP45 Reload Tracer (Red)";
         descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, last 5 red tracers";
         ammo = "GOL_B_556x45_Ball_AP45_Tracer_Red";
     };
 
     class GOL_30Rnd_556x45_AP45_Reload_Tracer_Green: GOL_30Rnd_556x45_AP45 {
         displayName = "5.56mm 30Rnd AP45 Reload Tracer (Green)";
-        displayNameShort = "AP45 RT (Green)";
+        displayNameShort = "AP45 Reload Tracer (Green)";
         descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, last 5 green tracers";
         ammo = "GOL_B_556x45_Ball_AP45_Tracer_Green";
     };
 
     class GOL_30Rnd_556x45_AP45_Reload_Tracer_Yellow: GOL_30Rnd_556x45_AP45 {
         displayName = "5.56mm 30Rnd AP45 Reload Tracer (Yellow)";
-        displayNameShort = "AP45 RT (Yellow)";
+        displayNameShort = "AP45 Reload Tracer (Yellow)";
         descriptionShort = "5.56x45mm NATO 30-round STANAG, Nammo AP45, last 5 yellow tracers";
         ammo = "GOL_B_556x45_Ball_AP45_Tracer_Yellow";
     };
@@ -1016,25 +1131,88 @@ class CfgMagazines {
 	// LEFT   reticle (VM markings) : PG-7VM (HEAT+)
 	// RIGHT  reticle (VL markings) : OG-7V
 	// CENTER reticle (VR markings) : TBG-7V, PG-7VR
+	class rhs_rpg7_PG7V_mag;
 	class rhs_rpg7_PG7VM_mag;
 	class rhs_rpg7_PG7VL_mag;
 	class rhs_rpg7_PG7VR_mag;
+	class rhs_rpg18_mag;
 
 	class GOL_mag_rpg7_Modern: rhs_rpg7_PG7VM_mag {
 		scope = 2;
 		scopeArsenal = 2;
-		displayName = "RPG-7 PG-7VM (GOL)";
-		displayNameShort = "PG-7VM";
+		displayName = "PG-7VM+ (GOL)";
+		displayNameShort = "PG-7VM+";
 		descriptionShort = "HEAT+. Aim using LEFT reticle.";
 		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_PG7VM_mag_ca.paa";
 		mass = 22;
 		ammo = "GOL_ammo_Modern";
 	};
 
+	class GOL_mag_rpg7_Type59: rhs_rpg7_PG7V_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type-59 HEAT (GOL)";
+		displayNameShort = "Type-59";
+		descriptionShort = "Anti-personnel HEAT. Kills crew, damages components. Minimal structural blast. Aim using LEFT reticle.";
+		mass = 18;
+		ammo = "GOL_ammo_Type59HEAT";
+	};
+
+	class GOL_mag_rpg7_Type69: rhs_rpg7_PG7V_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type-69 HEAT (GOL)";
+		displayNameShort = "Type-69";
+		descriptionShort = "Reduced-charge HEAT.";
+		mass = 20;
+		ammo = "GOL_ammo_Type69HEAT";
+	};
+
+	class GOL_mag_rpg7_Type69II: rhs_rpg7_PG7VL_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type 69-II HEAT (GOL)";
+		displayNameShort = "Type-69-II";
+		descriptionShort = "Improved reduced-charge HEAT. Aim using RIGHT reticle.";
+		mass = 22;
+		ammo = "GOL_ammo_Type69II";
+	};
+
+	// ==================== RPG-17 magazines (rhs_rpg18_mag base) ====================
+	class GOL_mag_rpg17_Type59: rhs_rpg18_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type-59 HEAT (RPG-17)";
+		displayNameShort = "Type-59";
+		descriptionShort = "Pre-loaded Type-59 HEAT round for RPG-17 disposable launcher.";
+		mass = 18;
+		ammo = "GOL_ammo_rpg17_Type59";
+	};
+
+	class GOL_mag_rpg17_Type69: rhs_rpg18_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type-69 HEAT (RPG-17)";
+		displayNameShort = "Type-69";
+		descriptionShort = "Pre-loaded Type-69 HEAT round for RPG-17 disposable launcher.";
+		mass = 20;
+		ammo = "GOL_ammo_rpg17_Type69";
+	};
+
+	class GOL_mag_rpg17_Type69II: rhs_rpg18_mag {
+		scope = 2;
+		scopeArsenal = 2;
+		displayName = "Type 69-II HEAT (RPG-17)";
+		displayNameShort = "Type-69-II";
+		descriptionShort = "Pre-loaded Type 69-II HEAT round for RPG-17 disposable launcher.";
+		mass = 22;
+		ammo = "GOL_ammo_rpg17_Type69II";
+	};
+
 	class GOL_mag_rpg7_OG7V: rhs_rpg7_PG7VL_mag {
 		scope = 2;
 		scopeArsenal = 2;
-		displayName = "RPG-7 OG-7V (GOL)";
+		displayName = "OG-7V (GOL)";
 		displayNameShort = "OG-7V";
 		descriptionShort = "HE fragmentation. Aim using RIGHT reticle.";
 		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_OG7V_mag_ca.paa";
@@ -1047,7 +1225,7 @@ class CfgMagazines {
 	class GOL_mag_rpg7_TBG7V: rhs_rpg7_PG7VR_mag {
 		scope = 2;
 		scopeArsenal = 2;
-		displayName = "RPG-7 TBG-7V (GOL)";
+		displayName = "TBG-7V (GOL)";
 		displayNameShort = "TBG-7V";
 		descriptionShort = "Thermobaric. Aim using CENTER reticle.";
 		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_TBG7V_mag_ca.paa";
@@ -1060,7 +1238,7 @@ class CfgMagazines {
 	class GOL_mag_rpg7_VR: rhs_rpg7_PG7VR_mag {
 		scope = 2;
 		scopeArsenal = 2;
-		displayName = "RPG-7 PG-7VR (GOL)";
+		displayName = "PG-7VR (GOL)";
 		displayNameShort = "PG-7VR";
 		descriptionShort = "Tandem HEAT — defeats ERA. Aim using CENTER reticle.";
 		picture = "\rhsafrf\addons\rhs_inventoryicons\data\magazines\rhs_rpg7_PG7VR_mag_ca.paa";
@@ -1080,7 +1258,7 @@ class CfgMagazines {
 		scopeArsenal = 2;
 		count = 100;
 		displayName = "7.62mm 100Rnd M993 AP (UK59)";
-		displayNameShort = "M993 100";
+		displayNameShort = "M993 AP";
 		descriptionShort = "7.62x51mm 100-round belt, M993 tungsten AP, no tracer";
 		ammo = "GOL_B_762x51_M993";
 		tracersEvery = 0;
@@ -1089,7 +1267,7 @@ class CfgMagazines {
 
 	class GOL_UK59_100Rnd_762x51_M993_Tracer_Red: GOL_UK59_100Rnd_762x51_M993 {
 		displayName = "7.62mm 100Rnd M993 AP Tracer Red (UK59)";
-		displayNameShort = "M993 100 (Red)";
+		displayNameShort = "M993 AP (Red)";
 		descriptionShort = "7.62x51mm 100-round belt, M993 AP, all red tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Red";
 		tracersEvery = 1;
@@ -1098,7 +1276,7 @@ class CfgMagazines {
 
 	class GOL_UK59_100Rnd_762x51_M993_Tracer_Green: GOL_UK59_100Rnd_762x51_M993 {
 		displayName = "7.62mm 100Rnd M993 AP Tracer Green (UK59)";
-		displayNameShort = "M993 100 (Green)";
+		displayNameShort = "M993 AP (Green)";
 		descriptionShort = "7.62x51mm 100-round belt, M993 AP, all green tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Green";
 		tracersEvery = 1;
@@ -1107,7 +1285,7 @@ class CfgMagazines {
 
 	class GOL_UK59_100Rnd_762x51_M993_Tracer_Yellow: GOL_UK59_100Rnd_762x51_M993 {
 		displayName = "7.62mm 100Rnd M993 AP Tracer Yellow (UK59)";
-		displayNameShort = "M993 100 (Yellow)";
+		displayNameShort = "M993 AP (Yellow)";
 		descriptionShort = "7.62x51mm 100-round belt, M993 AP, all yellow tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Yellow";
 		tracersEvery = 1;
@@ -1119,7 +1297,7 @@ class CfgMagazines {
 		scopeArsenal = 2;
 		count = 200;
 		displayName = "7.62mm 200Rnd M993 AP (UK59)";
-		displayNameShort = "M993";
+		displayNameShort = "M993 AP";
 		descriptionShort = "7.62x51mm 200-round belt, M993 tungsten AP, no tracer";
 		ammo = "GOL_B_762x51_M993";
 		tracersEvery = 0;
@@ -1128,7 +1306,7 @@ class CfgMagazines {
 
 	class GOL_UK59_200Rnd_762x51_M993_Tracer_Red: GOL_UK59_200Rnd_762x51_M993 {
 		displayName = "7.62mm 200Rnd M993 AP Tracer Red (UK59)";
-		displayNameShort = "M993 (Red)";
+		displayNameShort = "M993 AP (Red)";
 		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all red tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Red";
 		tracersEvery = 1;
@@ -1137,7 +1315,7 @@ class CfgMagazines {
 
 	class GOL_UK59_200Rnd_762x51_M993_Tracer_Green: GOL_UK59_200Rnd_762x51_M993 {
 		displayName = "7.62mm 200Rnd M993 AP Tracer Green (UK59)";
-		displayNameShort = "M993 (Green)";
+		displayNameShort = "M993 AP (Green)";
 		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all green tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Green";
 		tracersEvery = 1;
@@ -1146,7 +1324,7 @@ class CfgMagazines {
 
 	class GOL_UK59_200Rnd_762x51_M993_Tracer_Yellow: GOL_UK59_200Rnd_762x51_M993 {
 		displayName = "7.62mm 200Rnd M993 AP Tracer Yellow (UK59)";
-		displayNameShort = "M993 (Yellow)";
+		displayNameShort = "M993 AP (Yellow)";
 		descriptionShort = "7.62x51mm 200-round belt, M993 AP, all yellow tracers";
 		ammo = "GOL_B_762x51_M993_Tracer_Yellow";
 		tracersEvery = 1;
@@ -1161,13 +1339,13 @@ class CfgMagazines {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "7.62x39mm 100Rnd Belt (GOL)";
-		displayNameShort = "7.62x39 100";
+		displayNameShort = "7.62x39";
 		descriptionShort = "7.62x39mm 100-round belt, ball, no tracer";
 	};
 
 	class GOL_RPD_100Rnd_762x39_Tracer_Red: GOL_RPD_100Rnd_762x39 {
 		displayName = "7.62x39mm 100Rnd Belt Tracer Red (GOL)";
-		displayNameShort = "7.62x39 100 (Red)";
+		displayNameShort = "7.62x39 (Red)";
 		descriptionShort = "7.62x39mm 100-round belt, all red tracers";
 		ammo = "GOL_B_762x39_Ball_Tracer_Red";
 		tracersEvery = 1;
@@ -1176,7 +1354,7 @@ class CfgMagazines {
 
 	class GOL_RPD_100Rnd_762x39_Tracer_Green: GOL_RPD_100Rnd_762x39 {
 		displayName = "7.62x39mm 100Rnd Belt Tracer Green (GOL)";
-		displayNameShort = "7.62x39 100 (Green)";
+		displayNameShort = "7.62x39 (Green)";
 		descriptionShort = "7.62x39mm 100-round belt, all green tracers";
 		ammo = "GOL_B_762x39_Ball_Tracer_Green";
 		tracersEvery = 1;
@@ -1185,7 +1363,7 @@ class CfgMagazines {
 
 	class GOL_RPD_100Rnd_762x39_Tracer_Yellow: GOL_RPD_100Rnd_762x39 {
 		displayName = "7.62x39mm 100Rnd Belt Tracer Yellow (GOL)";
-		displayNameShort = "7.62x39 100 (Yellow)";
+		displayNameShort = "7.62x39 (Yellow)";
 		descriptionShort = "7.62x39mm 100-round belt, all yellow tracers";
 		ammo = "GOL_B_762x39_Ball_Tracer_Yellow";
 		tracersEvery = 1;
@@ -1199,13 +1377,13 @@ class CfgMagazines {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "7.62x39mm 75Rnd Drum (GOL)";
-		displayNameShort = "7.62x39 75";
+		displayNameShort = "7.62x39";
 		descriptionShort = "7.62x39mm 75-round drum, ball, no tracer";
 	};
 
 	class GOL_75Rnd_762x39_Tracer_Red: GOL_75Rnd_762x39 {
 		displayName = "7.62x39mm 75Rnd Drum Tracer Red (GOL)";
-		displayNameShort = "7.62x39 75 (Red)";
+		displayNameShort = "7.62x39 (Red)";
 		descriptionShort = "7.62x39mm 75-round drum, all red tracers";
 		ammo = "GOL_B_762x39_Ball_Tracer_Red";
 		tracersEvery = 1;
@@ -1214,7 +1392,7 @@ class CfgMagazines {
 
 	class GOL_75Rnd_762x39_Tracer_Green: GOL_75Rnd_762x39 {
 		displayName = "7.62x39mm 75Rnd Drum Tracer Green (GOL)";
-		displayNameShort = "7.62x39 75 (Green)";
+		displayNameShort = "7.62x39 (Green)";
 		descriptionShort = "7.62x39mm 75-round drum, all green tracers";
 		ammo = "GOL_B_762x39_Ball_Tracer_Green";
 		tracersEvery = 1;
@@ -1223,7 +1401,7 @@ class CfgMagazines {
 
 	class GOL_75Rnd_762x39_Tracer_Yellow: GOL_75Rnd_762x39 {
 		displayName = "7.62x39mm 75Rnd Drum Tracer Yellow (GOL)";
-		displayNameShort = "7.62x39 75 (Yellow)";
+		displayNameShort = "7.62x39 (Yellow)";
 		descriptionShort = "7.62x39mm 75-round drum, all yellow tracers";
 		ammo = "GOL_B_762x39_Ball_Tracer_Yellow";
 		tracersEvery = 1;
@@ -1237,13 +1415,13 @@ class CfgMagazines {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "5.45x39mm 45Rnd 7N22 AP (GOL)";
-		displayNameShort = "7N22 45";
+		displayNameShort = "7N22 AP";
 		descriptionShort = "5.45x39mm 45-round box, 7N22 armor-piercing, no tracer";
 	};
 
 	class GOL_45Rnd_545x39_7N22_Tracer_Red: GOL_45Rnd_545x39_7N22 {
 		displayName = "5.45x39mm 45Rnd 7N22 AP Tracer Red (GOL)";
-		displayNameShort = "7N22 45 (Red)";
+		displayNameShort = "7N22 AP (Red)";
 		descriptionShort = "5.45x39mm 45-round box, 7N22 AP, all red tracers";
 		ammo = "GOL_B_545x39_7N22_Tracer_Red";
 		tracersEvery = 1;
@@ -1252,7 +1430,7 @@ class CfgMagazines {
 
 	class GOL_45Rnd_545x39_7N22_Tracer_Green: GOL_45Rnd_545x39_7N22 {
 		displayName = "5.45x39mm 45Rnd 7N22 AP Tracer Green (GOL)";
-		displayNameShort = "7N22 45 (Green)";
+		displayNameShort = "7N22 AP (Green)";
 		descriptionShort = "5.45x39mm 45-round box, 7N22 AP, all green tracers";
 		ammo = "GOL_B_545x39_7N22_Tracer_Green";
 		tracersEvery = 1;
@@ -1261,7 +1439,7 @@ class CfgMagazines {
 
 	class GOL_45Rnd_545x39_7N22_Tracer_Yellow: GOL_45Rnd_545x39_7N22 {
 		displayName = "5.45x39mm 45Rnd 7N22 AP Tracer Yellow (GOL)";
-		displayNameShort = "7N22 45 (Yellow)";
+		displayNameShort = "7N22 AP (Yellow)";
 		descriptionShort = "5.45x39mm 45-round box, 7N22 AP, all yellow tracers";
 		ammo = "GOL_B_545x39_7N22_Tracer_Yellow";
 		tracersEvery = 1;
@@ -1275,7 +1453,7 @@ class CfgMagazines {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "6.5mm 100Rnd Caseless Belt (GOL)";
-		displayNameShort = "6.5mm 100";
+		displayNameShort = "6.5mm";
 		descriptionShort = "6.5x39mm caseless 100-round belt, ball, no tracer";
 		ammo = "B_65x39_caseless";
 		tracersEvery = 0;
@@ -1284,7 +1462,7 @@ class CfgMagazines {
 
 	class GOL_100Rnd_65x39_caseless_Tracer_Red: GOL_100Rnd_65x39_caseless {
 		displayName = "6.5mm 100Rnd Caseless Belt Tracer Red (GOL)";
-		displayNameShort = "6.5mm 100 (Red)";
+		displayNameShort = "6.5mm (Red)";
 		descriptionShort = "6.5x39mm caseless 100-round belt, all red tracers";
 		ammo = "GOL_B_65x39_caseless_Tracer_Red";
 		tracersEvery = 1;
@@ -1293,7 +1471,7 @@ class CfgMagazines {
 
 	class GOL_100Rnd_65x39_caseless_Tracer_Green: GOL_100Rnd_65x39_caseless {
 		displayName = "6.5mm 100Rnd Caseless Belt Tracer Green (GOL)";
-		displayNameShort = "6.5mm 100 (Green)";
+		displayNameShort = "6.5mm (Green)";
 		descriptionShort = "6.5x39mm caseless 100-round belt, all green tracers";
 		ammo = "GOL_B_65x39_caseless_Tracer_Green";
 		tracersEvery = 1;
@@ -1302,7 +1480,7 @@ class CfgMagazines {
 
 	class GOL_100Rnd_65x39_caseless_Tracer_Yellow: GOL_100Rnd_65x39_caseless {
 		displayName = "6.5mm 100Rnd Caseless Belt Tracer Yellow (GOL)";
-		displayNameShort = "6.5mm 100 (Yellow)";
+		displayNameShort = "6.5mm (Yellow)";
 		descriptionShort = "6.5x39mm caseless 100-round belt, all yellow tracers";
 		ammo = "GOL_B_65x39_caseless_Tracer_Yellow";
 		tracersEvery = 1;
@@ -1317,7 +1495,7 @@ class CfgMagazines {
 		scope = 2;
 		scopeArsenal = 2;
 		displayName = "6.5mm 200Rnd Cased Belt (GOL)";
-		displayNameShort = "6.5mm Cased 200";
+		displayNameShort = "6.5mm Cased";
 		descriptionShort = "6.5x39mm cased 200-round belt, ball, no tracer";
 		ammo = "B_65x39_caseless";
 		tracersEvery = 0;
@@ -1326,7 +1504,7 @@ class CfgMagazines {
 
 	class GOL_200Rnd_65x39_cased_Box_Tracer_Red: GOL_200Rnd_65x39_cased_Box {
 		displayName = "6.5mm 200Rnd Cased Belt Tracer Red (GOL)";
-		displayNameShort = "6.5mm Cased 200 (Red)";
+		displayNameShort = "6.5mm Cased (Red)";
 		descriptionShort = "6.5x39mm cased 200-round belt, all red tracers";
 		ammo = "GOL_B_65x39_cased_Tracer_Red";
 		tracersEvery = 1;
@@ -1335,7 +1513,7 @@ class CfgMagazines {
 
 	class GOL_200Rnd_65x39_cased_Box_Tracer_Green: GOL_200Rnd_65x39_cased_Box {
 		displayName = "6.5mm 200Rnd Cased Belt Tracer Green (GOL)";
-		displayNameShort = "6.5mm Cased 200 (Green)";
+		displayNameShort = "6.5mm Cased (Green)";
 		descriptionShort = "6.5x39mm cased 200-round belt, all green tracers";
 		ammo = "GOL_B_65x39_cased_Tracer_Green";
 		tracersEvery = 1;
@@ -1344,7 +1522,7 @@ class CfgMagazines {
 
 	class GOL_200Rnd_65x39_cased_Box_Tracer_Yellow: GOL_200Rnd_65x39_cased_Box {
 		displayName = "6.5mm 200Rnd Cased Belt Tracer Yellow (GOL)";
-		displayNameShort = "6.5mm Cased 200 (Yellow)";
+		displayNameShort = "6.5mm Cased (Yellow)";
 		descriptionShort = "6.5x39mm cased 200-round belt, all yellow tracers";
 		ammo = "GOL_B_65x39_cased_Tracer_Yellow";
 		tracersEvery = 1;
@@ -1373,16 +1551,18 @@ class CfgMagazines {
 	class GOL_PylonWeapon_M230_HE: 250Rnd_30mm_HE_shells {
 		scope = 2;
 		author = "Guerrillas of Liberation";
-		displayName = "M230 30mm Chain Gun Pod (HE)";
+		displayName = "M230 30mm Chain Gun Pod (HE) - Right";
 		displayNameShort = "M230 HE Belt";
-		descriptionShort = "M230 30mm Chain Gun | HE 250 rounds";
-		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
+		descriptionShort = "M230 30mm Chain Gun | HE 300 rounds";
+        selectionFireAnim = "zasleh";
+		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
 		count = 300;
-		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
-		muzzlePos = "muzzlePos";
-		muzzleEnd = "muzzleEnd";
-		hardpoints[] = {"DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+        model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun_Right.p3d";
+		muzzlePos = "machinegun_beg";
+		muzzleEnd = "machinegun_end";
+		hardpoints[] = {"B_GAU19_HELI_R", "DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
 		pylonWeapon = "GOL_weapon_M230_ChainGun";
+        pylonMirrorClass = "GOL_PylonWeapon_M230_HE_L";
 		mass = 200;
 	};
 
@@ -1392,17 +1572,120 @@ class CfgMagazines {
 	class GOL_PylonWeapon_M230_AP: 250Rnd_30mm_APDS_shells {
 		scope = 2;
 		author = "Guerrillas of Liberation";
-		displayName = "M230 30mm Chain Gun Pod (AP)";
+		displayName = "M230 30mm Chain Gun Pod (AP) - Right";
 		displayNameShort = "M230 AP Belt";
-		descriptionShort = "M230 30mm Chain Gun | AP 250 rounds";
+		descriptionShort = "M230 30mm Chain Gun | AP 300 rounds";
+        selectionFireAnim = "zasleh";
 		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
-		muzzleImpulseFactor[] = {0.2, 0.5};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
 		count = 300;
-		model = "\A3\Weapons_F\DynamicLoadout\PylonPod_Twin_Cannon_20mm.p3d";
-		muzzlePos = "muzzlePos";
-		muzzleEnd = "muzzleEnd";
-		hardpoints[] = {"DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+        model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun_Right.p3d";
+        muzzlePos = "machinegun_beg";
+		muzzleEnd = "machinegun_end";
+		hardpoints[] = {"B_GAU19_HELI_R", "DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
 		pylonWeapon = "GOL_weapon_M230_ChainGun";
+        pylonMirrorClass = "GOL_PylonWeapon_M230_AP_L";
 		mass = 200;
+	};
+
+	// HE pylon pod — fragmentation/blast, effective vs infantry and light vehicles
+	class GOL_PylonWeapon_M230_HE_L: 250Rnd_30mm_HE_shells {
+		scope = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M230 30mm Chain Gun Pod (HE) - Left";
+		displayNameShort = "M230 HE Belt";
+		descriptionShort = "M230 30mm Chain Gun | HE 300 rounds";
+        selectionFireAnim = "zasleh";
+		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
+		count = 300;
+        model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun_Left.p3d";
+		muzzlePos = "machinegun_beg";
+		muzzleEnd = "machinegun_end";
+		hardpoints[] = {"B_GAU19_HELI_L", "DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+		pylonWeapon = "GOL_weapon_M230_ChainGun";
+        pylonMirrorClass = "GOL_PylonWeapon_M230_HE";
+		mass = 200;
+	};
+
+	// AP ammo belt — baked into all GOL pylon-capable helicopter classes.
+	// Provides AP ammo for in-flight cycling (ammo-cycle key) once the
+	// M230 HE pod is loaded. Not visible in the Eden pylon screen.
+	class GOL_PylonWeapon_M230_AP_L: 250Rnd_30mm_APDS_shells {
+		scope = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M230 30mm Chain Gun Pod (AP) - Left";
+		displayNameShort = "M230 AP Belt";
+		descriptionShort = "M230 30mm Chain Gun | AP 300 rounds";
+        selectionFireAnim = "zasleh";
+		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
+		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
+		count = 300;
+        model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun_Left.p3d";
+		muzzlePos = "machinegun_beg";
+		muzzleEnd = "machinegun_end";
+		hardpoints[] = {"B_GAU19_HELI_L", "DAR", "GOL_M230_CHAINGUN", "RHS_HP_FFAR_ARMY"};
+		pylonWeapon = "GOL_weapon_M230_ChainGun";
+        pylonMirrorClass = "GOL_PylonWeapon_M230_AP";
+		mass = 200;
+	};   
+
+	// ============================================================
+	// GOL "Terror GMG" magazines — same capacities as their base
+	// magazine, pointed at the reduced-lethality ammo in CfgAmmo.cpp.
+	// See functions/enemy/fn_RemoveVehicleHE.sqf for the vehicle swap.
+	// ============================================================
+	class 200Rnd_40mm_G_belt;
+	class GOL_mag_GMG40MM_200: 200Rnd_40mm_G_belt {
+		ammo = "GOL_ammo_GMG40MM_Terror";
+	};
+	class 96Rnd_40mm_G_belt;
+	class GOL_mag_GMG40MM_96: 96Rnd_40mm_G_belt {
+		ammo = "GOL_ammo_GMG40MM_Terror";
+	};
+	class 64Rnd_40mm_G_belt;
+	class GOL_mag_GMG40MM_64: 64Rnd_40mm_G_belt {
+		ammo = "GOL_ammo_GMG40MM_Terror";
+	};
+	class 32Rnd_40mm_G_belt;
+	class GOL_mag_GMG40MM_32: 32Rnd_40mm_G_belt {
+		ammo = "GOL_ammo_GMG40MM_Terror";
+	};
+
+	class RHS_mag_VOG30_30;
+	class GOL_mag_VOG30_30: RHS_mag_VOG30_30 {
+		ammo = "GOL_ammo_VOG30_Terror";
+	};
+
+	class RHS_48Rnd_40mm_MK19;
+	class GOL_mag_MK19_48_M384: RHS_48Rnd_40mm_MK19 {
+		ammo = "GOL_ammo_MK19_M384_Terror";
+	};
+	class RHS_48Rnd_40mm_MK19_M1001;
+	class GOL_mag_MK19_48_M1001: RHS_48Rnd_40mm_MK19_M1001 {
+		ammo = "GOL_ammo_MK19_M1001_Terror";
+	};
+	class RHS_48Rnd_40mm_MK19_M430I;
+	class GOL_mag_MK19_48_M430I: RHS_48Rnd_40mm_MK19_M430I {
+		ammo = "GOL_ammo_MK19_M430I_Terror";
+	};
+	class RHS_48Rnd_40mm_MK19_M430A1;
+	class GOL_mag_MK19_48_M430A1: RHS_48Rnd_40mm_MK19_M430A1 {
+		ammo = "GOL_ammo_MK19_M430A1_Terror";
+	};
+	class RHS_96Rnd_40mm_MK19;
+	class GOL_mag_MK19_96_M384: RHS_96Rnd_40mm_MK19 {
+		ammo = "GOL_ammo_MK19_M384_Terror";
+	};
+	class RHS_96Rnd_40mm_MK19_M1001;
+	class GOL_mag_MK19_96_M1001: RHS_96Rnd_40mm_MK19_M1001 {
+		ammo = "GOL_ammo_MK19_M1001_Terror";
+	};
+	class RHS_96Rnd_40mm_MK19_M430I;
+	class GOL_mag_MK19_96_M430I: RHS_96Rnd_40mm_MK19_M430I {
+		ammo = "GOL_ammo_MK19_M430I_Terror";
+	};
+	class RHS_96Rnd_40mm_MK19_M430A1;
+	class GOL_mag_MK19_96_M430A1: RHS_96Rnd_40mm_MK19_M430A1 {
+		ammo = "GOL_ammo_MK19_M430A1_Terror";
 	};
 };

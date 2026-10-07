@@ -106,4 +106,35 @@ class CfgMagazineWells {
             "GOL_100Rnd_65x39_caseless_Tracer_Yellow"
         };
     };
+
+    // 40mm UGL wells: register GOL flares for any launcher that consumes
+    // shared 40x36 magazines via wells (vanilla/CBA/modded launchers).
+    // Use one addon-unique key (ACE-style pattern) to avoid member collisions.
+    class UGL_40x36 {
+        GOL_MISC_UGL_FLARES[] = {"GOL_1Rnd_UGL_FlareIR", "GOL_1Rnd_UGL_FlareWhite"};
+    };
+
+    class 3GL_40x36 {
+        GOL_MISC_UGL_FLARES[] = {"GOL_1Rnd_UGL_FlareIR", "GOL_1Rnd_UGL_FlareWhite"};
+    };
+
+    class CBA_40mm_M203 {
+        GOL_MISC_UGL_FLARES[] = {"GOL_1Rnd_UGL_FlareIR", "GOL_1Rnd_UGL_FlareWhite"};
+    };
+
+    class CBA_40mm_EGLM {
+        GOL_MISC_UGL_FLARES[] = {"GOL_1Rnd_UGL_FlareIR", "GOL_1Rnd_UGL_FlareWhite"};
+    };
+
+    class CBA_40mm_M320 {
+        GOL_MISC_UGL_FLARES[] = {"GOL_1Rnd_UGL_FlareIR", "GOL_1Rnd_UGL_FlareWhite"};
+    };
+
+    class CBA_40mm_GP25 {
+        GOL_MISC_UGL_FLARES[] = {"GOL_1Rnd_UGL_FlareIR", "GOL_1Rnd_UGL_FlareWhite"};
+    };
+
+    class CBA_40mm_GP25P {
+        GOL_MISC_UGL_FLARES[] = {"GOL_1Rnd_UGL_FlareIR", "GOL_1Rnd_UGL_FlareWhite"};
+    };
 };

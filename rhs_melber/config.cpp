@@ -1808,8 +1808,3 @@ class CfgVehicles
 		};
 	};
 };
-class cfgMods
-{
-	author = "Vasquez - Edited by GOL";
-	timepacked = "1649438714";
-};

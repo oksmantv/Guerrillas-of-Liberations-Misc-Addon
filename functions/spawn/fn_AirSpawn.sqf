@@ -56,10 +56,10 @@ params [
     ["_RevealAirRadius", 10000, [0]]
 ];
 
-private _toPosATL = {
+private _toPosASL = {
     params ["_positionOrObject"];
     if (_positionOrObject isEqualType objNull) exitWith {
-        if (isNull _positionOrObject) then {[0,0,0]} else {getPosATL _positionOrObject}
+        if (isNull _positionOrObject) then {[0,0,0]} else {getPosASL _positionOrObject}
     };
     if (_positionOrObject isEqualType []) exitWith {
         if ((count _positionOrObject) < 3) then {[_positionOrObject param [0,0], _positionOrObject param [1,0], 0]} else {_positionOrObject}
@@ -75,8 +75,8 @@ private _debugLog = {
     [_message, false, false, true] spawn OKS_fnc_LogDebug;
 };
 
-private _spawnPositionATL = [_SpawnPos] call _toPosATL;
-private _moveToPositionATL = [_MoveToPos] call _toPosATL;
+private _spawnPositionATL = [_SpawnPos] call _toPosASL;
+private _moveToPositionATL = [_MoveToPos] call _toPosASL;
 
 // Waypoint/target positions for AirSpawn are intended to be ground-referenced.
 // Eden context menus can sometimes pass a clicked entity (at altitude) instead of a ground click.
@@ -140,6 +140,9 @@ _aircraft setVelocityModelSpace [0, 20, 0];
 _aircraft flyInHeight _Height;
 
 private _crewGroup = [_aircraft, _Side] call OKS_fnc_AddVehicleCrew;
+_aircraft setPilotLight false;
+_aircraft setCollisionLight false;
+{ _x disableAI "LIGHTS"; } forEach (units _crewGroup);
 
 [format ["[AIRSPAWN] Spawned aircraft=%1 group=%2 crew=%3", _aircraft, _crewGroup, units _crewGroup]] call _debugLog;
 
@@ -188,7 +191,7 @@ if !(isNil { _effectiveLoadout }) then {
 };
 
 if (_ShouldBeCareless) then {
-    _crewGroup setBehaviour "STEALTH";
+    _crewGroup setBehaviour "CARELESS";
     _crewGroup setCombatMode "BLUE";
 } else {
     _crewGroup setBehaviour "COMBAT";
@@ -200,7 +203,7 @@ _waypoint setWaypointType _WaypointType;
 
 // Mirror engagement settings on the waypoint (helps when group inherits other defaults).
 if (_ShouldBeCareless) then {
-    _waypoint setWaypointBehaviour "STEALTH";
+    _waypoint setWaypointBehaviour "CARELESS";
     _waypoint setWaypointCombatMode "BLUE";
 } else {
     _waypoint setWaypointBehaviour "COMBAT";

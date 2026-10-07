@@ -1,883 +1,60 @@
 class Mode_FullAuto;
 class Mode_SemiAuto;
 class CfgWeapons {
-	class ACE_ItemCore;
-	class CBA_MiscItem_ItemInfo;
-	class GOL_Packed_HMG: ACE_ItemCore {
+	class CMFlareLauncher;
+	class GOL_CMFlareLauncher_Visible: CMFlareLauncher {
 		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";
-		displayName = "Static HMG (Packed)";
-		descriptionUse = "Packed HMG. Self-interact to deploy.";
-		descriptionShort = "Static HMG (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\GOL_HMG_Packed.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\GOL_HMG_Packed.paa";
-		model = "\z\ace\addons\gunbag\data\ace_gunbag.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 50;
-		};
-	};
-	class GOL_Packed_GMG: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "Static GMG (Packed)";
-		descriptionUse = "Packed GMG. Self-interact to deploy.";
-		descriptionShort = "Static GMG (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\GOL_GMG_Packed.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\GOL_GMG_Packed.paa";
-		model = "\z\ace\addons\gunbag\data\ace_gunbag.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 50;
-		};
-	};
-	class GOL_Packed_Mortar: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "Static Mortar (Packed)";
-		descriptionUse = "Packed Mortar. Self-interact to deploy.";
-		descriptionShort = "Static Mortar (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\GOL_Mortar_Packed.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\GOL_Mortar_Packed.paa";
-		model = "\z\ace\addons\gunbag\data\ace_gunbag.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 50;
-		};
-	};
-	class GOL_Packed_AT: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "Static AT (Packed)";
-		descriptionUse = "Packed AT. Self-interact to deploy.";
-		descriptionShort = "Static AT (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\GOL_AT_Packed.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\GOL_AT_Packed.paa";
-		model = "\z\ace\addons\gunbag\data\ace_gunbag.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 50;
-		};
-	};
+		displayName = "Parachute Flare Launcher";
+		descriptionShort = "Parachute Flare support. Single flare every 2 seconds.";
+		muzzles[] = {"this"};
+		magazines[] = {"GOL_250Rnd_CMFlare_Visible_Mag"};
+		modes[] = {"Single"};
 
-	class OKS_DroneJammer: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";
-		displayName = "Drone Jammer";
-		descriptionUse = "Portable drone jammer. Self-interact to activate.";
-		descriptionShort = "Disrupts drone guidance systems within 350m when activated.";
-		icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
-		picture = "\a3\ui_f\data\igui\cfg\simpleTasks\types\radio_ca.paa";
-		model = "\A3\Weapons_F\Items\GPS.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 20;
-		};
-	};
-	class OKS_DroneDetector: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";
-		displayName = "Drone Detector";
-		descriptionUse = "Portable drone detector. Self-interact to activate.";
-		descriptionShort = "Detects nearby drones within 500m and displays alerts.";
-		icon = "\a3\ui_f\data\igui\cfg\simpleTasks\types\search_ca.paa";
-		picture = "\a3\ui_f\data\igui\cfg\simpleTasks\types\search_ca.paa";
-		model = "\A3\Weapons_F\Items\GPS.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
-		};
-	};
-	class GOL_Packed_Drone_AT: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "Drone AT (Packed)";
-		descriptionUse = "Packed AT Drone. Self-interact to deploy.";
-		descriptionShort = "Drone AT (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-		model = "\fpv_ua\drone_pg7vl.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 17;
-		};
-	};	
-	class GOL_Packed_Drone_AP: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "Drone AP (Packed)";
-		descriptionUse = "Packed AP Drone. Self-interact to deploy.";
-		descriptionShort = "Drone AP (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-		model = "\fpv_ua\drone_ied.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 17;
-		};
-	};
-	class GOL_Packed_Drone_Supply: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "Drone Resupply (Packed)";
-		descriptionUse = "Packed Resupply Drone. Self-interact to deploy.";
-		descriptionShort = "Drone Resupply (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-		model = "\A3\Air_F_Orange\UAV_06\UAV_06_F.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 80;
-		};
-	};
-	
-	class GOL_Packed_Drone_Recon: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "Drone Recon (Packed)";
-		descriptionUse = "Packed Recon Drone. Self-interact to deploy.";
-		descriptionShort = "Drone Recon (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\GOL_Drone_Packed.paa";
-		model = "\A3\Drones_F\Air_F_Gamma\UAV_01\UAV_01_F.p3d";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 30;
-		};
-	};		
-	class GOL_Packed_60mm_HE: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "M6 60mm HE (Packed)";
-		descriptionUse = "Packed M6 60mm HE rounds (4). Self-interact to deploy.";
-		descriptionShort = "M6 60mm HE (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\60mm_HE.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\60mm_HE.paa";
-		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
-		};
-	};
-	class GOL_Packed_60mm_HEAB: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "M6 60mm HE Airburst (Packed)";
-		descriptionUse = "Packed M6 60mm HE Airbust rounds (4). Self-interact to deploy.";
-		descriptionShort = "M6 60mm HE Airburst (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\60mm_HEAB.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\60mm_HEAB.paa";
-		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
-		};
-	};
-	class GOL_Packed_60mm_FLARE: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "M6 60mm Flare (Packed)";
-		descriptionUse = "Packed M6 60mm Flare rounds (4). Self-interact to deploy.";
-		descriptionShort = "M6 60mm Flare (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\60mm_Flare.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\60mm_Flare.paa";
-		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
-		};
-	};
-	class GOL_Packed_60mm_Smoke: ACE_ItemCore {
-		scope = 2;
-		author = "OksmanTV from Guerrillas of Liberation";		
-		displayName = "M6 60mm Smoke (Packed)";
-		descriptionUse = "Packed M6 60mm Smoke rounds (4). Self-interact to deploy.";
-		descriptionShort = "M6 60mm Smoke (Packed)";
-		icon = "\OKS_GOL_Misc\Data\UI\60mm_Smoke.paa";
-		picture = "\OKS_GOL_Misc\Data\UI\60mm_Smoke.paa";
-		model =  "\rhsusf\addons\rhsusf_m252\rhs_81case_quad_small";
-		class ItemInfo: CBA_MiscItem_ItemInfo {
-			mass = 15;
-		};
-	};		
-
-	class rhs_weap_igla;
-	class gol_weapon_igla : rhs_weap_igla {
-		displayName = "9K38 Igla (Disabled ACE Guidance)";
-        magazines[] = { "gol_mag_9k38_rocket" };
-		scope = 2;
-    };
-
-	class weapon_s750Launcher;
-	class gol_weapon_s750Launcher : weapon_s750Launcher {
-		displayName = "S-400 (Disabled ACE Guidance)";
-        magazines[] = { "gol_magazine_Missile_s750_x4" };
-		scope = 2;
-    };
-
-	// ==================== SHORAD IR Launcher (turret weapon) ====================
-	class gol_weapon_shorad_ir : rhs_weap_igla {
-		displayName = "SHORAD IR Launcher (GOL)";
-		magazines[] = {
-			"gol_magazine_shorad_light_x1",
-			"gol_magazine_shorad_medium_x1",
-			"gol_magazine_shorad_heavy_x1"
-		};
-		scope = 2;
-	};
-
-	// ==================== GOL PSRL-1 (accurate RPG-7 variant) ====================
-	// Standalone weapon inheriting from rhs_weap_rpg7. No body on the parent —
-	// safe forward declaration only. dispersion = 0 removes launch spread.
-	// GOL ammo variants have deflecting = 0 for stable flight.
-	class rhs_weap_rpg7;
-	class GOL_weap_PSRL1: rhs_weap_rpg7 {
-		author = "Guerrillas of Liberation";
-		displayName = "PSRL-1 (GOL)";
-		descriptionShort = "US-made RPG-7 variant. Precision-tuned rounds, near-zero deviation.";
-		scope = 2;
-		scopeArsenal = 2;
-		baseWeapon = "GOL_weap_PSRL1";
-		dispersion = 0;
-		recoil = "recoil_rpg";
-		reloadAction = "GestureReloadRPG7";
-		magazineReloadSwitchPhase = 0.48;
-		magazines[] = {
-			// LEFT reticle (VM markings)
-			"GOL_mag_rpg7_Modern",
-			// RIGHT reticle (VL markings)
-			"GOL_mag_rpg7_OG7V",
-			"GOL_mag_rpg7_TBG7V",
-			"GOL_mag_rpg7_VR"
-		};
-		class Single: Mode_SemiAuto  {
-			reloadAction = "GestureReloadRPG7";
+		class Single: Mode_SemiAuto {
+			displayName = "Illumination (White)";
+			burst = 1;
+			reloadTime = 2.0;
+			autoFire = 0;
+			soundBurst = 0;
 			sounds[] = {"StandardSound"};
 			class StandardSound {
-				begin1[] = {"rhsafrf\addons\rhs_sounds\rpg\rpg_1", 2.35, 1, 1100};
-				begin2[] = {"rhsafrf\addons\rhs_sounds\rpg\rpg_2", 2.35, 1, 1100};
-				soundBegin[] = {"begin1", 0.5, "begin2", 0.5};
-				weaponSoundEffect = "DefaultRifle";
+				soundSetShot[] = {"UGL_shot_SoundSet","UGL_Tail_SoundSet","UGL_InteriorTail_SoundSet"};
+			};
+			class SilencedSound {
+				soundSetShot[] = {"UGL_shot_SoundSet","UGL_Tail_SoundSet","UGL_InteriorTail_SoundSet"};
 			};
 		};
 	};
 
-	// ==================== GOL NLAW (lightweight, backpack-portable) ====================
-	// Uses CBA Disposable Framework: base (Arsenal-visible) → ready (loaded) → used (spent tube).
-	class launch_NLAW_F;
-	class GOL_launch_NLAW_F: launch_NLAW_F {
-		author = "Guerrillas of Liberation";
-		displayName = "NLAW (GOL)";
-		ace_overpressure_damage = 0.4;
-		descriptionShort = "NLAW — Next Generation Light Anti-Tank Weapon. Backpack-portable variant.";
+	class GOL_CMFlareLauncher_IR: CMFlareLauncher {
 		scope = 2;
-		scopeArsenal = 2;
-		baseWeapon = "GOL_launch_NLAW_F";
-		magazines[] = {"CBA_FakeLauncherMagazine"};
-		magazineWell[] = {};
-		magazineReloadTime = 0.1;
-		reloadMagazineSound[] = {"",1,1};
-		class WeaponSlotsInfo {
-			mass = 45; // 4.5 kg — empty tube only
-			allowedSlots[] = {901};
-		};
-	};
+		displayName = "Parachute Flare Launcher (IR)";
+		descriptionShort = "IR support flare dropper. Single flare every 2 seconds.";
+		muzzles[] = {"this"};
+		magazines[] = {"GOL_250Rnd_CMFlare_IR_Mag"};
+		modes[] = {"Single"};
 
-	class GOL_launch_NLAW_ready_F: GOL_launch_NLAW_F {
-		scope = 1;
-		scopeArsenal = 1;
-		baseWeapon = "GOL_launch_NLAW_F";
-		magazines[] = {"NLAW_F"};
-		magazineWell[] = {"NLAW"};
-		class EventHandlers {
-			fired = "_this call CBA_fnc_firedDisposable";
-		};
-		class WeaponSlotsInfo: WeaponSlotsInfo {
-			mass = 125; // 4.5 kg launcher + 8.0 kg magazine
-			allowedSlots[] = {901};
-		};
-	};
-
-	class GOL_launch_NLAW_used_F: GOL_launch_NLAW_F {
-		scope = 1;
-		scopeArsenal = 1;
-		baseWeapon = "GOL_launch_NLAW_used_F";
-		displayName = "NLAW (GOL) (Used)";
-		descriptionShort = "Spent NLAW tube. Disposable — cannot be reloaded.";
-		weaponPoolAvailable = 0;
-		class WeaponSlotsInfo: WeaponSlotsInfo {
-			mass = 45; // 4.5 kg — empty tube only
-			allowedSlots[] = {901};
-		};
-	};
-
-	class UK3CB_V_Invisible_Plate;
-	class UK3CB_V_Invisible_Plate_Low : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "Invisible Chestrig + Plate (Low)";
-		descriptionShort = "Armor Level I";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "\A3\weapons_f\empty";
-			uniformType = "Default";
-
-			class HitpointsProtectionInfo {
-				class Abdomen {
-					armor = 8;
-					hitpointName = "HitAbdomen";
-					passThrough = 0.3;
-				};
-				class Body {
-					hitpointName = "HitBody";
-					passThrough = 0.3;
-				};
-				class Chest {
-					armor = 8;
-					hitpointName = "HitChest";
-					passThrough = 0.3;
-				};		
-				class Diaphragm {
-					armor = 4;
-					hitpointName = "HitDiaphragm";
-					passThrough = 0.3;
-				};	
+		class Single: Mode_SemiAuto {
+			displayName = "Illumination (IR)";
+			burst = 1;
+			reloadTime = 2.0;
+			autoFire = 0;
+			soundBurst = 0;
+			sounds[] = {"StandardSound"};
+			class StandardSound {
+				soundSetShot[] = {"UGL_shot_SoundSet","UGL_Tail_SoundSet","UGL_InteriorTail_SoundSet"};
+			};
+			class SilencedSound {
+				soundSetShot[] = {"UGL_shot_SoundSet","UGL_Tail_SoundSet","UGL_InteriorTail_SoundSet"};
 			};
 		};
 	};
 
-	class UK3CB_V_Invisible_Plate_Medium : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "Invisible Chestrig + Plate (Medium)";
-		descriptionShort = "Armor Level II";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "\A3\weapons_f\empty";
-			uniformType = "Default";
-
-			class HitpointsProtectionInfo {
-				class Abdomen {
-					armor = 10;
-					hitpointName = "HitAbdomen";
-					passThrough = 0.3;
-				};
-				class Body {
-					hitpointName = "HitBody";
-					passThrough = 0.3;
-				};
-				class Chest {
-					armor = 10;
-					hitpointName = "HitChest";
-					passThrough = 0.3;
-				};		
-				class Diaphragm {
-					armor = 5;
-					hitpointName = "HitDiaphragm";
-					passThrough = 0.3;
-				};	
-			};
-		};
-	};	
-	
-	class UK3CB_V_Invisible_Plate_High : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "Invisible Chestrig + Plate (High)";
-		descriptionShort = "Armor Level IV";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "\A3\weapons_f\empty";
-			uniformType = "Default";
-
-			class HitpointsProtectionInfo {
-				class Abdomen {
-					armor = 12;
-					hitpointName = "HitAbdomen";
-					passThrough = 0.3;
-				};
-				class Body {
-					hitpointName = "HitBody";
-					passThrough = 0.3;
-				};
-				class Chest {
-					armor = 12;
-					hitpointName = "HitChest";
-					passThrough = 0.3;
-				};		
-				class Diaphragm {
-					armor = 6;
-					hitpointName = "HitDiaphragm";
-					passThrough = 0.3;
-				};	
-			};
-		};
-	};
-
-	class rhs_6b2_GOL : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "62B (GOL)";
-		descriptionShort = "Armor Level 4";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_ca.paa";
-		model = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-
-	class rhs_6b2_AK_GOL : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "6B2 (6Sh46)";
-		descriptionShort = "Armor Level 4";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_AK_ca.paa";
-		model = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_AK";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_AK";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-
-	class rhs_6b2_chicom_GOL : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "6B2 (Chicom)";
-		descriptionShort = "Armor Level 4";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_chicom_ca.paa";
-		model = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_chicom";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_chicom";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-
-	class rhs_6b2_holster_GOL : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "6B2 (Holster)";
-		descriptionShort = "Armor Level 4";
-		dlc = "RHS_AFRF";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_holster_ca.paa";
-		model = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_holster";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_holster";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-
-	class rhs_6b2_lifchik_GOL : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "6B2 (Lifchik)";
-		descriptionShort = "Armor Level 4";
-		dlc = "RHS_AFRF";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_lifchik_ca.paa";
-		model = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_lichifka";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_lichifka";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-
-	class rhs_6b2_RPK_GOL : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "6B2 (RPK)";
-		descriptionShort = "Armor Level 4";
-		dlc = "RHS_AFRF";		
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_RPK_ca.paa";
-		model = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_RPK";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_RPK";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-
-	class rhs_6b2_SVD_GOL : UK3CB_V_Invisible_Plate {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "6B2 (Sniper)";
-		descriptionShort = "Armor Level 4";
-		dlc = "RHS_AFRF";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\vests\rhs_6b2_SVD_ca.paa";
-		model = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_SVD";
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "rhsafrf\addons\rhs_infantry3\gear\vests\rhs_6b2_SVD";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-
-	class rhs_beret_vdv1;
-	class rhs_beret_vdv2;
-	class rhs_beret_vdv3;
-	class rhs_beret_vdv1_GOL : rhs_beret_vdv1 {
-		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "Beret VDV (GOL)";
-		hiddenSelectionsTextures[] = {"\rhsafrf\addons\rhs_infantry2\gear\head\data\rhs_vdv_beret_co.paa"};
-		descriptionShort = "Armored Beret";
-		dlc = "RHS_AFRF";
-		model = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_vdv_beret";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\headgear\rhs_beret_vdv1_ca.paa";
-		class ItemInfo {
-			_generalMacro = "HeadgearItem";
-			author = "Bohemia Interactive";
-			allowedSlots[] = {801,901,701,605};
-			hiddenSelections[] = {"Camo1"};
-			mass = 5;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			modelSides[] = {6};
-			type = 605;
-			uniformModel = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_vdv_beret";
-			class HitpointsProtectionInfo {
-				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
-			};
-		};		
-	};
-	class rhs_beret_vdv2_GOL : rhs_beret_vdv2 {
-		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "Beret VDV (GOL)";
-		hiddenSelectionsTextures[] = {"\rhsafrf\addons\rhs_infantry2\gear\head\data\rhs_vdv_beret2_co.paa"};
-		descriptionShort = "Armored Beret";
-		dlc = "RHS_AFRF";
-		model = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_vdv_beret2";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\headgear\rhs_beret_vdv2_ca.paa";
-		class ItemInfo {
-			_generalMacro = "HeadgearItem";
-			author = "Bohemia Interactive";
-			allowedSlots[] = {801,901,701,605};
-			hiddenSelections[] = {"Camo1"};
-			mass = 5;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			modelSides[] = {6};
-			type = 605;
-			uniformModel = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_vdv_beret2";
-			class HitpointsProtectionInfo {
-				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
-			};
-		};		
-	};
-	class rhs_beret_vdv3_GOL : rhs_beret_vdv3 {
-		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "Beret VDV (GOL)";
-		hiddenSelectionsTextures[] = {"\rhsafrf\addons\rhs_infantry2\gear\head\data\rhs_vdv_beret3_co.paa"};
-		descriptionShort = "Armored Beret";
-		dlc = "RHS_AFRF";
-		model = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_milp_beret";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\headgear\rhs_beret_vdv3_ca.paa";
-		class ItemInfo {
-			_generalMacro = "HeadgearItem";
-			author = "Bohemia Interactive";
-			allowedSlots[] = {801,901,701,605};
-			hiddenSelections[] = {"Camo1"};
-			mass = 25;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			modelSides[] = {6};
-			type = 605;
-			uniformModel = "\rhsafrf\addons\rhs_infantry2\gear\head\rhs_milp_beret";
-			class HitpointsProtectionInfo {
-				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
-			};
-		};		
-	};
-
-	class rhs_ssh60;
-	class rhs_ssh6_GOL : rhs_ssh60 {
-		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "SSh-60 Helmet (GOL)";
-		picture = "\rhsafrf\addons\rhs_inventoryicons\data\headgear\rhs_ssh60_ca.paa";
-		model = "\rhsafrf\addons\rhs_infantry3\gear\head\rhs_SSH_60.p3d";
-		class ItemInfo {
-			_generalMacro = "HeadgearItem";
-			author = "Bohemia Interactive";
-			allowedSlots[] = {801,901,701,605};
-			hiddenSelections[] = {"Camo"};
-			mass = 25;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			uniformModel = "\rhsafrf\addons\rhs_infantry3\gear\head\rhs_SSH_60";
-			modelSides[] = {6};
-			type = 605;
-			class HitpointsProtectionInfo {
-				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
-			};
-		};		
-	};	
-
-	class UK3CB_H_SSH60_Helmet_Covered_TAN;
-	class UK3CB_H_SSH60_Helmet_Covered_TAN_GOL : UK3CB_H_SSH60_Helmet_Covered_TAN {
-		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "SSh-60 Helmet Tan (GOL)";
-		picture = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment_CW\data\ui\icon_ssh60_covered_tan_ca.paa";
-		model = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment_CW\helmet_soviet\uk3cb_ssh60_cover.p3d";
-		hiddenSelections[] = {"camo","camo1"};
-		hiddenSelectionsTextures[] = {"uk3cb_factions\addons\uk3cb_factions_equipment_cw\data\ssh60_oli_co.paa","uk3cb_factions\addons\uk3cb_factions_equipment_cw\data\ssh60_cover_tan_co.paa"};
-		class ItemInfo {
-			_generalMacro = "HeadgearItem";
-			author = "Bohemia Interactive";
-			allowedSlots[] = {801,901,701,605};
-			hiddenSelections[] = {"camo","camo1"};
-			mass = 25;
-			scope = 0;
-			modelSides[] = {3,1};
-			type = 605;
-			uniformModel = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment_CW\helmet_soviet\uk3cb_ssh60_cover.p3d";
-			class HitpointsProtectionInfo {
-				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
-			};
-		};		
-	};		
-	
-	class UK3CB_CW_US_B_LATE_H_PASGT_01_WDL;
-	class UK3CB_CW_US_B_LATE_V_PASGT_Crew_Vest;
-	class UK3CB_CW_US_B_LATE_V_PASGT_Medic_Vest;
-	class UK3CB_CW_US_B_LATE_V_PASGT_MG_Vest;
-	class UK3CB_CW_US_B_LATE_V_PASGT_Rif_Vest;
-	class UK3CB_CW_US_B_LATE_V_PASGT_Crew_Vest_GOL : UK3CB_CW_US_B_LATE_V_PASGT_Crew_Vest {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "PASGT Crew Vest (GOL)";
-		descriptionShort = "Armor Level 4";
-		model = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\UK3CB_Pasgt_Crew.p3d";
-		picture = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\data\pasgt\ui\gear_pasgt_crew_wdl_ca.paa";
-		hiddenSelections[] = {"camo","camo1","camo2"};
-		hiddenSelectionsTextures[] = {"\UK3CB_Factions\addons\UK3CB_Factions_CW_US\Blufor\data\cw_us_b_pasgt_wdl_02_co.paa","\uk3cb_factions\addons\uk3cb_factions_equipment\vest\data\pasgt\sf_gear_khaky_co.paa","\uk3cb_factions\addons\uk3cb_factions_equipment\vest\data\pasgt\webbing_p58_full_co.paa"};
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {"camo","camo1","camo2"};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\UK3CB_Pasgt_Crew";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-
-	class UK3CB_CW_US_B_LATE_V_PASGT_Medic_Vest_GOL : UK3CB_CW_US_B_LATE_V_PASGT_Medic_Vest {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "PASGT Medic Vest (GOL)";
-		descriptionShort = "Armor Level 4";
-		model = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\UK3CB_Pasgt_Medic.p3d";
-		picture = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\data\pasgt\ui\gear_pasgt_medic_wdl_ca.paa";
-		hiddenSelections[] = {"camo","camo1","camo2"};
-		hiddenSelectionsTextures[] = {"\UK3CB_Factions\addons\UK3CB_Factions_CW_US\Blufor\data\cw_us_b_pasgt_wdl_02_co.paa","\uk3cb_factions\addons\uk3cb_factions_equipment\vest\data\pasgt\sf_gear_khaky_co.paa","\uk3cb_factions\addons\uk3cb_factions_equipment\vest\data\pasgt\webbing_p58_full_co.paa"};		
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {"camo","camo1","camo2"};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformmodel = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\UK3CB_Pasgt_Medic";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-	class UK3CB_CW_US_B_LATE_V_PASGT_MG_Vest_GOL : UK3CB_CW_US_B_LATE_V_PASGT_MG_Vest {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "PASGT Machinegun Vest (GOL)";
-		descriptionShort = "Armor Level 4";
-		model = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\UK3CB_Pasgt_MG.p3d";
-		picture = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\data\pasgt\ui\gear_pasgt_mg_wdl_ca.paa";
-		hiddenSelections[] = {"camo","camo1","camo2"};
-		hiddenSelectionsTextures[] = {"\UK3CB_Factions\addons\UK3CB_Factions_CW_US\Blufor\data\cw_us_b_pasgt_wdl_02_co.paa","\uk3cb_factions\addons\uk3cb_factions_equipment\vest\data\pasgt\sf_gear_khaky_co.paa","\uk3cb_factions\addons\uk3cb_factions_equipment\vest\data\pasgt\webbing_p58_full_co.paa"};
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {"camo","camo1","camo2"};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\UK3CB_Pasgt_MG";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};
-	class UK3CB_CW_US_B_LATE_V_PASGT_Rif_Vest_GOL : UK3CB_CW_US_B_LATE_V_PASGT_Rif_Vest {
-		author = "3CB Factions edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "PASGT Rifleman Vest (GOL)";
-		descriptionShort = "Armor Level 4";
-		model = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\UK3CB_Pasgt_Rif.p3d";
-		picture = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\data\pasgt\ui\gear_pasgt_rif_wdl_ca.paa";
-		hiddenSelections[] = {"camo","camo1","camo2"};
-		hiddenSelectionsTextures[] = {"\UK3CB_Factions\addons\UK3CB_Factions_CW_US\Blufor\data\cw_us_b_pasgt_wdl_02_co.paa","\uk3cb_factions\addons\uk3cb_factions_equipment\vest\data\pasgt\sf_gear_khaky_co.paa","\uk3cb_factions\addons\uk3cb_factions_equipment\vest\data\pasgt\webbing_p58_full_co.paa"};
-		class ItemInfo {
-			_generalMacro = "VestItem";
-			author = "Bohemia Interactive";
-			containerClass = "Supply180";
-			hiddenSelections[] = {"camo","camo1","camo2"};
-			mass = 80;
-			overlaySelectionsInfo[] = {"Ghillie_hide"};
-			scope = 0;
-			showHolsteredPistol = 0;
-			type = 701;
-			uniformModel = "\UK3CB_Factions\addons\UK3CB_Factions_Equipment\vest\UK3CB_Pasgt_Rif";
-			uniformType = "Default";
-			class HitpointsProtectionInfo {
-				class Abdomen { armor = 17; hitpointName = "HitAbdomen"; passThrough = 0.3; };
-				class Body { hitpointName = "HitBody"; passThrough = 0.3; };
-				class Chest { armor = 17; hitpointName = "HitChest"; passThrough = 0.3; };
-				class Diaphragm { armor = 17; hitpointName = "HitDiaphragm"; passThrough = 0.3; };
-			};
-		};
-	};		
-	
-	class UK3CB_CW_US_B_LATE_H_PASGT_01_WDL_GOL : UK3CB_CW_US_B_LATE_H_PASGT_01_WDL {
-		author = "RHS edited by OksmanTV from Guerrillas of Liberation";
-		displayName = "PASGT Woodland (GOL)";
-		model = "rhsgref\addons\rhsgref_infantry\gear_tanoa\head\pasgt_helmet";
-		picture = "\UK3CB_Factions\addons\UK3CB_Factions_CW_US\Blufor\data\ui\icon_cw_us_h_pasgt_wdl_01_ca.paa";
-		hiddenSelectionsTextures[] = {"\UK3CB_Factions\addons\UK3CB_Factions_CW_US\Blufor\data\cw_us_b_h_pasgt_wdl_01_co.paa"};
-		class ItemInfo {
-			_generalMacro = "HeadgearItem";
-			author = "Bohemia Interactive";
-			allowedSlots[] = {801,901,701,605};
-			hiddenSelections[] = {"camo"};
-			mass = 25;
-			scope = 0;
-			modelSides[] = {6};
-			type = 605;
-			uniformModel = "rhsgref\addons\rhsgref_infantry\gear_tanoa\head\pasgt_helmet";
-			class HitpointsProtectionInfo {
-				class Head { armor = 6; hitpointName = "HitHead"; passThrough = 0.3; };
-			};
-		};		
-	};		
+	#include "CfgWeapons_AIStatics.hpp"
+	#include "CfgWeapons_Items.hpp"
+	#include "CfgWeapons_Launchers.hpp"
+	#include "CfgWeapons_Armor3CB.hpp"
+	#include "CfgWeapons_ArmorRHS.hpp"
 
 	// Drone jammer pistol (inspired by Contact DLC ESD)
 	// Drone Disruptor Pistol - Kills drone crew via cone detection
@@ -1102,431 +279,6 @@ class CfgWeapons {
 		};
 	};
 
-	// Custom MMG variants with reduced recoil and custom magazines
-	class MMG_01_tan_F;
-	class MMG_01_hex_F;
-
-	class GOL_MMG_01_tan_F: MMG_01_tan_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "HK121 9.3 mm (Tan/GOL)";
-		baseWeapon = "GOL_MMG_01_tan_F";
-		
-		// Custom recoil presets — heavy tier (9.3mm)
-		recoil = "GOL_recoil_machinegun_heavy";
-		recoilProne = "GOL_recoil_machinegun_heavy_prone";
-
-		// Tightened from vanilla (~0.00069) — still looser than FN MAG (RHS ~0.0003)
-		dispersion = 0.0005;
-
-		// Two full-auto modes — 800 RPM (standard) and 600 RPM (sustained)
-		modes[] = {"GOL_HK121_FullAuto_800", "GOL_HK121_FullAuto_600"};
-		class GOL_HK121_FullAuto_800: Mode_FullAuto {
-			reloadTime = 0.075;
-			autoFire = 1;
-			burst = 1;
-			textureType = "fullAuto";
-			useActionTitle = "800 RPM";
-			class StandardSound {
-				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
-			};
-			class SilencedSound {
-				soundSetShot[] = {"MMG01_silencerShot_SoundSet","MMG01_silencerTail_SoundSet","MMG01_silencerInteriorTail_SoundSet"};
-			};
-		};
-		class GOL_HK121_FullAuto_600: Mode_FullAuto {
-			reloadTime = 0.1;
-			autoFire = 1;
-			burst = 0;
-			textureType = "burst";
-			useActionTitle = "600 RPM";
-			class StandardSound {
-				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
-			};
-			class SilencedSound {
-				soundSetShot[] = {"MMG01_silencerShot_SoundSet","MMG01_silencerTail_SoundSet","MMG01_silencerInteriorTail_SoundSet"};
-			};
-		};
-		
-		// Clear linkedItems to show in arsenal
-		linkedItems[] = {};
-		
-		// Custom magazines with tracer variety
-		magazines[] = {
-			"GOL_150Rnd_93x64_Mag",
-			"GOL_150Rnd_93x64_Mag_Tracer",
-			"GOL_150Rnd_93x64_Mag_Tracer_Red",
-			"GOL_150Rnd_93x64_Mag_Tracer_Green",
-			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
-			"GOL_150Rnd_93x64_Mag_SLAP",
-			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red",
-			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green",
-			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Yellow",
-			"GOL_200Rnd_93x64_Mag",
-			"GOL_200Rnd_93x64_Mag_Tracer",
-			"GOL_200Rnd_93x64_Mag_Tracer_Red",
-			"GOL_200Rnd_93x64_Mag_Tracer_Green",
-			"GOL_200Rnd_93x64_Mag_Tracer_Yellow",
-			"GOL_200Rnd_93x64_Mag_SLAP",
-			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red",
-			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green",
-			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Yellow",
-			// Vanilla compatibility
-			"150Rnd_93x64_Mag"
-		};
-	};
-
-	class GOL_MMG_01_hex_F: MMG_01_hex_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "HK121 9.3 mm (Hex/GOL)";
-		baseWeapon = "GOL_MMG_01_hex_F";
-		
-		// Custom recoil presets — heavy tier (9.3mm)
-		recoil = "GOL_recoil_machinegun_heavy";
-		recoilProne = "GOL_recoil_machinegun_heavy_prone";
-
-		// Tightened from vanilla (~0.00069) — still looser than FN MAG (RHS ~0.0003)
-		dispersion = 0.0005;
-
-		// Two full-auto modes — 800 RPM (standard) and 600 RPM (sustained)
-		modes[] = {"GOL_HK121_FullAuto_800", "GOL_HK121_FullAuto_600"};
-		class GOL_HK121_FullAuto_800: Mode_FullAuto {
-			reloadTime = 0.075;
-			autoFire = 1;
-			burst = 0;
-			class StandardSound {
-				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
-			};
-			class SilencedSound {
-				soundSetShot[] = {"MMG01_silencerShot_SoundSet","MMG01_silencerTail_SoundSet","MMG01_silencerInteriorTail_SoundSet"};
-			};
-		};
-		class GOL_HK121_FullAuto_600: Mode_FullAuto {
-			reloadTime = 0.1;
-			autoFire = 1;
-			burst = 1;
-			textureType = "burst";
-			class StandardSound {
-				soundSetShot[] = {"MMG01_Shot_SoundSet","MMG01_Tail_SoundSet","MMG01_InteriorTail_SoundSet"};
-			};
-			class SilencedSound {
-				soundSetShot[] = {"MMG01_silencerShot_SoundSet","MMG01_silencerTail_SoundSet","MMG01_silencerInteriorTail_SoundSet"};
-			};
-		};
-		
-		// Clear linkedItems to show in arsenal
-		linkedItems[] = {};
-		
-		magazines[] = {
-			"GOL_150Rnd_93x64_Mag",
-			"GOL_150Rnd_93x64_Mag_Tracer",
-			"GOL_150Rnd_93x64_Mag_Tracer_Red",
-			"GOL_150Rnd_93x64_Mag_Tracer_Green",
-			"GOL_150Rnd_93x64_Mag_Tracer_Yellow",
-			"GOL_150Rnd_93x64_Mag_SLAP",
-			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Red",
-			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Green",
-			"GOL_150Rnd_93x64_Mag_SLAP_Tracer_Yellow",
-			"GOL_200Rnd_93x64_Mag",
-			"GOL_200Rnd_93x64_Mag_Tracer",
-			"GOL_200Rnd_93x64_Mag_Tracer_Red",
-			"GOL_200Rnd_93x64_Mag_Tracer_Green",
-			"GOL_200Rnd_93x64_Mag_Tracer_Yellow",
-			"GOL_200Rnd_93x64_Mag_SLAP",
-			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Red",
-			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Green",
-			"GOL_200Rnd_93x64_Mag_SLAP_Tracer_Yellow",
-			"150Rnd_93x64_Mag"
-		};
-	};
-
-	// RHS PKM/PKP variants with red tracers
-	class rhs_weap_pkm;
-	class rhs_weap_pkp;
-
-	class GOL_weap_pkm: rhs_weap_pkm {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "PKM (GOL)";
-		baseWeapon = "GOL_weap_pkm";
-		
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-		
-		magazines[] = {
-			"GOL_100Rnd_762x54mmR",
-			"GOL_100Rnd_762x54mmR_red",
-			"GOL_100Rnd_762x54mmR_green",
-			// Vanilla compatibility
-			"rhs_100Rnd_762x54mmR",
-			"rhs_100Rnd_762x54mmR_green"
-		};
-	};
-
-	class GOL_weap_pkp: rhs_weap_pkp {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "PKP (GOL)";
-		baseWeapon = "GOL_weap_pkp";
-		
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-		
-		magazines[] = {
-			"GOL_100Rnd_762x54mmR",
-			"GOL_100Rnd_762x54mmR_red",
-			"GOL_100Rnd_762x54mmR_green",
-			"rhs_100Rnd_762x54mmR",
-			"rhs_100Rnd_762x54mmR_green"
-		};
-	};
-
-	// MMG_02 SPMG variants (.338)
-	class MMG_02_black_F;
-	class MMG_02_camo_F;
-	class MMG_02_sand_F;
-
-	class GOL_MMG_02_black_F: MMG_02_black_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "LWMMG .338 (Black/GOL)";
-		baseWeapon = "GOL_MMG_02_black_F";
-		
-		// Heavy tier recoil (.338 Norma Magnum)
-		recoil = "GOL_recoil_machinegun_heavy";
-		recoilProne = "GOL_recoil_machinegun_heavy_prone";
-		
-		class manual: Mode_FullAuto {
-			sounds[] = {"StandardSound", "SilencedSound"};
-			class BaseSoundModeType {};
-			class StandardSound: BaseSoundModeType {
-				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
-			};
-			class SilencedSound: BaseSoundModeType {
-				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
-			};
-			reloadTime = 0.0923;
-		};
-		
-		magazines[] = {
-			"GOL_130Rnd_338_Mag",
-			"GOL_130Rnd_338_Mag_red",
-			"GOL_130Rnd_338_Mag_green",
-			"GOL_130Rnd_338_AP",
-			"GOL_130Rnd_338_AP_Tracer_Red",
-			"GOL_130Rnd_338_AP_Tracer_Green",
-			"GOL_200Rnd_338_Mag",
-			"GOL_200Rnd_338_Mag_red",
-			"GOL_200Rnd_338_Mag_green",
-			"GOL_200Rnd_338_AP",
-			"GOL_200Rnd_338_AP_Tracer_Red",
-			"GOL_200Rnd_338_AP_Tracer_Green",
-			// Vanilla compatibility
-			"130Rnd_338_Mag"
-		};
-	};
-
-	class GOL_MMG_02_camo_F: MMG_02_camo_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "LWMMG .338 (Camo/GOL)";
-		baseWeapon = "GOL_MMG_02_camo_F";
-		
-		// Heavy tier recoil (.338 Norma Magnum)
-		recoil = "GOL_recoil_machinegun_heavy";
-		recoilProne = "GOL_recoil_machinegun_heavy_prone";
-		
-		class manual: Mode_FullAuto {
-			sounds[] = {"StandardSound", "SilencedSound"};
-			class BaseSoundModeType {};
-			class StandardSound: BaseSoundModeType {
-				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
-			};
-			class SilencedSound: BaseSoundModeType {
-				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
-			};
-			reloadTime = 0.0923;
-		};
-		
-		magazines[] = {
-			"GOL_130Rnd_338_Mag",
-			"GOL_130Rnd_338_Mag_red",
-			"GOL_130Rnd_338_Mag_green",
-			"GOL_130Rnd_338_AP",
-			"GOL_130Rnd_338_AP_Tracer_Red",
-			"GOL_130Rnd_338_AP_Tracer_Green",
-			"GOL_200Rnd_338_Mag",
-			"GOL_200Rnd_338_Mag_red",
-			"GOL_200Rnd_338_Mag_green",
-			"GOL_200Rnd_338_AP",
-			"GOL_200Rnd_338_AP_Tracer_Red",
-			"GOL_200Rnd_338_AP_Tracer_Green",
-			"130Rnd_338_Mag"
-		};
-	};
-
-	class GOL_MMG_02_sand_F: MMG_02_sand_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "LWMMG .338 (Sand/GOL)";
-		baseWeapon = "GOL_MMG_02_sand_F";
-		
-		// Heavy tier recoil (.338 Norma Magnum)
-		recoil = "GOL_recoil_machinegun_heavy";
-		recoilProne = "GOL_recoil_machinegun_heavy_prone";
-		
-		class manual: Mode_FullAuto {
-			sounds[] = {"StandardSound", "SilencedSound"};
-			class BaseSoundModeType {};
-			class StandardSound: BaseSoundModeType {
-				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
-			};
-			class SilencedSound: BaseSoundModeType {
-				soundSetShot[] = {"MMG02_Shot_SoundSet", "MMG02_Tail_SoundSet", "MMG02_InteriorTail_SoundSet"};
-			};
-			reloadTime = 0.0923;
-		};
-		
-		magazines[] = {
-			"GOL_130Rnd_338_Mag",
-			"GOL_130Rnd_338_Mag_red",
-			"GOL_130Rnd_338_Mag_green",
-			"GOL_130Rnd_338_AP",
-			"GOL_130Rnd_338_AP_Tracer_Red",
-			"GOL_130Rnd_338_AP_Tracer_Green",
-			"GOL_200Rnd_338_Mag",
-			"GOL_200Rnd_338_Mag_red",
-			"GOL_200Rnd_338_Mag_green",
-			"GOL_200Rnd_338_AP",
-			"GOL_200Rnd_338_AP_Tracer_Red",
-			"GOL_200Rnd_338_AP_Tracer_Green",
-			"130Rnd_338_Mag"
-		};
-	};
-
-	// LMG_Zafir_F and other weapons that don't need new mags
-	class LMG_Zafir_F;
-	class rhs_weap_fnmag;
-	class UK3CB_MG3_KWS_B;
-
-	class GOL_LMG_Zafir_F: LMG_Zafir_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "Zafir 7.62mm (GOL)";
-		baseWeapon = "GOL_LMG_Zafir_F";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-
-		magazines[] += {
-			"GOL_100Rnd_762x51_M993",
-			"GOL_100Rnd_762x51_M993_Tracer_Red",
-			"GOL_100Rnd_762x51_M993_Tracer_Green",
-			"GOL_100Rnd_762x51_M993_SLAP",
-			"GOL_100Rnd_762x51_M993_SLAP_Tracer_Red",
-			"GOL_100Rnd_762x51_M993_SLAP_Tracer_Green",
-			"GOL_150Rnd_762x51_M993",
-			"GOL_150Rnd_762x51_M993_Tracer_Red",
-			"GOL_150Rnd_762x51_M993_Tracer_Green",
-			"GOL_200Rnd_762x51_M993",
-			"GOL_200Rnd_762x51_M993_Tracer_Red",
-			"GOL_200Rnd_762x51_M993_Tracer_Green",
-			"GOL_200Rnd_762x51_M993_SLAP",
-			"GOL_200Rnd_762x51_M993_SLAP_Tracer_Red",
-			"GOL_200Rnd_762x51_M993_SLAP_Tracer_Green"
-		};
-	};
-
-	class GOL_weap_fnmag: rhs_weap_fnmag {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "FN MAG (GOL)";
-		baseWeapon = "GOL_weap_fnmag";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-
-		// Suppresses AI heat-signature detection.
-		heatRadiation = 0;
-		// FN MAG inherits RHSUSF_BarrelRefractHeavy — downgrade to standard refract.
-		class GunParticles {
-			class M240_AmmoBeltCaseEject {
-				directionName = "shelleject_end";
-				effectName    = "RHSUSF_762Cartridge";
-				positionName  = "shelleject_start";
-			};
-			class M240_AmmoBeltLinkEject {
-				directionName = "ammobeltlinks_end";
-				effectName    = "MachineGunEject2";
-				positionName  = "ammobeltlinks_start";
-			};
-			class M240_RHSUSF_BarrelRefract {
-				directionName = "usti hlavne up";
-				effectName    = "RHSUSF_BarrelRefract";
-				positionName  = "usti hlavne";
-			};
-			class M240_WhiteGas {
-				directionName = "konec hlavne";
-				effectName    = "RifleAssaultCloud";
-				positionName  = "usti hlavne";
-			};
-		};
-
-		magazines[] += {
-			"GOL_FNMAG_100Rnd_762x51_M993",
-			"GOL_FNMAG_100Rnd_762x51_M993_Tracer_Red",
-			"GOL_FNMAG_100Rnd_762x51_M993_Tracer_Green",
-			"GOL_FNMAG_100Rnd_762x51_M993_SLAP",
-			"GOL_FNMAG_100Rnd_762x51_M993_SLAP_Tracer_Red",
-			"GOL_FNMAG_100Rnd_762x51_M993_SLAP_Tracer_Green",
-			"GOL_FNMAG_150Rnd_762x51_M993",
-			"GOL_FNMAG_150Rnd_762x51_M993_Tracer_Red",
-			"GOL_FNMAG_150Rnd_762x51_M993_Tracer_Green",
-			"GOL_FNMAG_200Rnd_762x51_M993",
-			"GOL_FNMAG_200Rnd_762x51_M993_Tracer_Red",
-			"GOL_FNMAG_200Rnd_762x51_M993_Tracer_Green",
-			"GOL_FNMAG_200Rnd_762x51_M993_SLAP",
-			"GOL_FNMAG_200Rnd_762x51_M993_SLAP_Tracer_Red",
-			"GOL_FNMAG_200Rnd_762x51_M993_SLAP_Tracer_Green"
-		};
-	};
-
-	class GOL_MG3_KWS_B: UK3CB_MG3_KWS_B {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "MG3 KWS (GOL)";
-		baseWeapon = "GOL_MG3_KWS_B";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-
-		magazines[] += {
-			"GOL_MG3_100Rnd_762x51_M993",
-			"GOL_MG3_100Rnd_762x51_M993_Tracer_Red",
-			"GOL_MG3_100Rnd_762x51_M993_Tracer_Green",
-			"GOL_MG3_100Rnd_762x51_M993_SLAP",
-			"GOL_MG3_100Rnd_762x51_M993_SLAP_Tracer_Red",
-			"GOL_MG3_100Rnd_762x51_M993_SLAP_Tracer_Green",
-			"GOL_MG3_250Rnd_762x51_M993",
-			"GOL_MG3_250Rnd_762x51_M993_Tracer_Red",
-			"GOL_MG3_250Rnd_762x51_M993_Tracer_Green",
-			"GOL_MG3_250Rnd_762x51_M993_SLAP",
-			"GOL_MG3_250Rnd_762x51_M993_SLAP_Tracer_Red",
-			"GOL_MG3_250Rnd_762x51_M993_SLAP_Tracer_Green"
-		};
-	};
-
 	// FPV throwables (soft dependency on BOT_FPV_Enhanced)
 	class GrenadeLauncher;
 	class Throw: GrenadeLauncher {
@@ -1562,20 +314,20 @@ class CfgWeapons {
 		muzzles[] = {"this"};
 		magazineWell[] = {"RHS_AutoCannon_30mm_2A42_HE"};
 		displayName = "2A42 HE";
-		dispersion = 0.0012;
+		dispersion = 0.0004;
 	};
 	class GOL_weap_2a42_AP: rhs_weap_2a42 {
 		ballisticsComputer = 18;
 		muzzles[] = {"this"};
 		magazineWell[] = {"RHS_AutoCannon_30mm_2A42_AP"};
 		displayName = "2A42 AP";
-		dispersion = 0.0012;
+		dispersion = 0.0004;
 	};
 
 	class rhs_weap_pkt;
 	class GOL_weap_pkt: rhs_weap_pkt {
 		ballisticsComputer = 18;
-		dispersion = 0.002;
+		dispersion = 0.0006;
 	};
 
 	// AP45 Compatibility patches
@@ -1586,196 +338,8 @@ class CfgWeapons {
 	#include "compat\compat_uk3cb.hpp"
 	#include "compat\compat_uk3cb_factions.hpp"
 	#include "compat\compat_jca.hpp"
-
-	class GOL_weap_m249_pip: rhs_weap_m249_pip {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "M249 PIP (GOL)";
-		baseWeapon = "GOL_weap_m249_pip";
-		
-		// Light tier recoil (5.56mm)
-		recoil = "GOL_recoil_machinegun_light";
-		recoilProne = "GOL_recoil_machinegun_light_prone";
-	};
-
-	// ===== UK59N (7.62x51 NATO) — Medium MG tier =====
-	class UK3CB_UK59N;
-
-	class GOL_weap_UK59N: UK3CB_UK59N {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "UK59N (GOL)";
-		baseWeapon = "GOL_weap_UK59N";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-
-		magazines[] += {
-			"GOL_UK59_100Rnd_762x51_M993",
-			"GOL_UK59_100Rnd_762x51_M993_Tracer_Red",
-			"GOL_UK59_100Rnd_762x51_M993_Tracer_Green",
-			"GOL_UK59_100Rnd_762x51_M993_Tracer_Yellow",
-			"GOL_UK59_200Rnd_762x51_M993",
-			"GOL_UK59_200Rnd_762x51_M993_Tracer_Red",
-			"GOL_UK59_200Rnd_762x51_M993_Tracer_Green",
-			"GOL_UK59_200Rnd_762x51_M993_Tracer_Yellow"
-		};
-	};
-
-	// ===== UK3CB RPD (7.62x39) — Medium MG tier =====
-	// RPD has empty magazineWell[]; GOL mags added directly via magazines[] +=.
-	class UK3CB_RPD;
-
-	class GOL_weap_RPD: UK3CB_RPD {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "RPD (GOL)";
-		baseWeapon = "GOL_weap_RPD";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-
-		magazines[] += {
-			"GOL_RPD_100Rnd_762x39",
-			"GOL_RPD_100Rnd_762x39_Tracer_Red",
-			"GOL_RPD_100Rnd_762x39_Tracer_Green",
-			"GOL_RPD_100Rnd_762x39_Tracer_Yellow"
-		};
-	};
-
-	// ===== RHS M249 (5.56mm) — Light MG tier =====
-	// rhs_weap_m249 already fully defined in compat_rhs.hpp — no forward decl needed.
-	class GOL_weap_m249: rhs_weap_m249 {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "M249 (GOL)";
-		baseWeapon = "GOL_weap_m249";
-
-		recoil = "GOL_recoil_machinegun_light";
-		recoilProne = "GOL_recoil_machinegun_light_prone";
-
-		// Existing GOL 200Rnd AP45 5.56mm belt mags
-		magazines[] += {
-			"GOL_rhsusf_200rnd_556x45_AP45",
-			"GOL_rhsusf_200rnd_556x45_AP45_tracer_red",
-			"GOL_rhsusf_200rnd_556x45_AP45_tracer_green",
-			"GOL_rhsusf_200rnd_556x45_AP45_tracer_yellow"
-		};
-	};
-
-	// ===== LMG Mk200 (6.5mm cased) — Medium MG tier =====
-	// Vanilla Mk200 has no magazineWell[]; GOL mags added directly.
-	class LMG_Mk200_F;
-
-	class GOL_LMG_Mk200_F: LMG_Mk200_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "LMG Mk200 (GOL)";
-		baseWeapon = "GOL_LMG_Mk200_F";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-
-		magazines[] += {
-			"GOL_200Rnd_65x39_cased_Box",
-			"GOL_200Rnd_65x39_cased_Box_Tracer_Red",
-			"GOL_200Rnd_65x39_cased_Box_Tracer_Green",
-			"GOL_200Rnd_65x39_cased_Box_Tracer_Yellow"
-		};
-	};
-
-	// ===== Vanilla RPK-12 (7.62x39) — Medium MG tier =====
-	// GOL 75Rnd drums also injected via CBA_762x39_RPK well for 3CB RPK variants.
-	class arifle_RPK12_F;
-
-	class GOL_weap_RPK12: arifle_RPK12_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "RPK-12 (GOL)";
-		baseWeapon = "GOL_weap_RPK12";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-
-		magazines[] += {
-			"GOL_75Rnd_762x39",
-			"GOL_75Rnd_762x39_Tracer_Red",
-			"GOL_75Rnd_762x39_Tracer_Green",
-			"GOL_75Rnd_762x39_Tracer_Yellow"
-		};
-	};
-
-	// ===== RHS RPK-74M (5.45x39) — Light MG tier =====
-	// GOL 7N22 AP mags available via CBA_545x39_RPK well (CfgMagazineWells).
-	class rhs_weap_rpk74m;
-	class rhs_weap_rpk74m_npz;
-
-	class GOL_weap_rpk74m: rhs_weap_rpk74m {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "RPK-74M (GOL)";
-		baseWeapon = "GOL_weap_rpk74m";
-
-		recoil = "GOL_recoil_machinegun_light";
-		recoilProne = "GOL_recoil_machinegun_light_prone";
-	};
-
-	class GOL_weap_rpk74m_npz: rhs_weap_rpk74m_npz {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "RPK-74M (NPZ/GOL)";
-		baseWeapon = "GOL_weap_rpk74m_npz";
-
-		recoil = "GOL_recoil_machinegun_light";
-		recoilProne = "GOL_recoil_machinegun_light_prone";
-	};
-
-	// ===== Vanilla MX SW variants (6.5mm caseless) — Medium MG tier =====
-	// GOL 100Rnd caseless belt mags available via MX_65x39_Large well (CfgMagazineWells).
-	class arifle_MX_SW_F;
-	class arifle_MX_SW_Black_F;
-	class arifle_MX_SW_khk_F;
-
-	class GOL_arifle_MX_SW_F: arifle_MX_SW_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "MX SW (GOL)";
-		baseWeapon = "GOL_arifle_MX_SW_F";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-	};
-
-	class GOL_arifle_MX_SW_Black_F: arifle_MX_SW_Black_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "MX SW Black (GOL)";
-		baseWeapon = "GOL_arifle_MX_SW_Black_F";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-	};
-
-	class GOL_arifle_MX_SW_khk_F: arifle_MX_SW_khk_F {
-		scope = 2;
-		scopeArsenal = 2;
-		author = "Guerrillas of Liberation";
-		displayName = "MX SW Khaki (GOL)";
-		baseWeapon = "GOL_arifle_MX_SW_khk_F";
-
-		recoil = "GOL_recoil_machinegun";
-		recoilProne = "GOL_recoil_machinegun_prone";
-	};
+	#include "compat\compat_ace_irlight.hpp"
+	#include "CfgWeapons_MachineGuns.hpp"
 
         // ============================================================
         // GOL M230 30mm Chain Gun Pod
@@ -1801,20 +365,39 @@ class CfgWeapons {
 				showToPlayer = 1;
                 aiDispersionCoefY = 0.5;
                 aiDispersionCoefX = 0.5;
+				cartridgePos = "machinegun_eject_pos";
+				cartridgeVel = "machinegun_eject_end";
+				muzzleEnd = "machinegun_end";
+				muzzlePos = "machinegun_beg";
+				selectionFireAnim = "zasleh";
+				flash = "gunfire";
+				flashSize = 0.35;
                 soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
                 rhs_burstLimiter = 1200;
                 magazines[] = {
-                        "GOL_PylonWeapon_M230_HE",
-                        "GOL_PylonWeapon_M230_AP"
+					"GOL_PylonWeapon_M230_HE",
+					"GOL_PylonWeapon_M230_AP",
+					"GOL_PylonWeapon_M230_HE_L",
+					"GOL_PylonWeapon_M230_AP_L"
                 };
-                modes[] = {"HighROF", "LowROF", "close", "short", "medium", "far"};
-
+                modes[] = {"HighROF", "LowROF"};
+				class EventHandlers {};
                 class GunParticles {
-                        class Effect {
-                                effectName = "MachineGun3";
-                                positionName = "memMuzzle";
-                                directionName = "memGunTip";
-                        };
+					class Effect1 {
+						directionName = "machinegun_eject_dir";
+						effectName = "MachineGunCartridge";
+						positionName = "machinegun_eject_pos";
+					};
+					class FirstEffect {
+						directionName = "machinegun_beg";
+						effectName = "MachineGun2";
+						positionName = "machinegun_end";
+					};
+					class SecondEffect {
+						directionName = "machinegun_beg";
+						effectName = "MachineGun2";
+						positionName = "machinegun_end";
+					};										
                 };
 
                 // 650 RPM
@@ -1825,7 +408,6 @@ class CfgWeapons {
                         soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
                         class StandardSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
                         class SilencedSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
-                        flash = "gunfire";
                         flashSize = 0.1;
                         recoil = "Empty";
                         ffMagnitude = 0.25;
@@ -1843,6 +425,8 @@ class CfgWeapons {
                         maxRange = 2;
                         maxRangeProbab = 0.01;
 						rhs_burstLimiter = 1200;
+						selectionFireAnim = "zasleh";
+						flash = "gunfire";
                 };
 
                 // 300 RPM
@@ -1853,7 +437,6 @@ class CfgWeapons {
                         soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"};
                         class StandardSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
                         class SilencedSound { soundSetShot[] = {"RHSUSF_M230_Shot_SoundSet"}; };
-                        flash = "gunfire";
                         flashSize = 0.1;
                         recoil = "Empty";
                         ffMagnitude = 0.25;
@@ -1871,8 +454,426 @@ class CfgWeapons {
                         maxRange = 2;
                         maxRangeProbab = 0.01;
 						rhs_burstLimiter = 1200;
+						selectionFireAnim = "zasleh";
+						flash = "gunfire";
+
                 };
         };
 
+        // ============================================================
+        // GOL "Terror GMG" — same-model GMG/Mk19 weapons re-tuned for AI
+        // gunners on enemy vehicles: 2-round bursts with a long pause
+        // between them (aiRateOfFire = 6s), ~3x vanilla dispersion, and
+        // reduced HE blast/damage (see GOL_ammo_* in CfgAmmo.cpp — rare
+        // direct hits stay dangerous, splash is toned down).
+        //
+        // Swapped in at runtime by fn_RemoveVehicleHE.sqf. The vanilla
+        // base classes (GMG_40MM, RHS_MK19, RHS_MK19_CROWS_M153,
+        // UK3CB_Factions_MK19) are left untouched, so this only affects
+        // vehicles the script has processed — AI-crewed enemy vehicles.
+        // ============================================================
+
+        // NOTE: internal same-name mode inheritance (class manual: manual {})
+        // does NOT resolve in this addon's build pipeline — "manual" (etc.)
+        // comes back as an undefined base class. Every fire mode below is
+        // therefore a full standalone redefinition inheriting the global
+        // Mode_FullAuto base, with every value that mattered (displayName,
+        // reloadTime, aiRateOfFireDistance) copied from the real vanilla/RHS
+        // class via the docs/gmg_terror_dump.sqf dump, plus our overrides
+        // (dispersion ~3x, burst=2, aiRateOfFire=6 for the pause).
+        //
+        // autoFire=1 is REQUIRED here — autoFire=0 (true "stop after N
+        // rounds, wait for a new fire decision") made AI vehicle gunners
+        // refuse to ever select/fire these modes. autoFire=1 + burst=2 is
+        // the only pattern confirmed to make AI actually use a burst on a
+        // turret weapon in this codebase (see M230 LowROF in CfgWeapons.cpp
+        // and /memories/repo/m230-chaingun.md). aiRateOfFire=6 still forces
+        // the pause between burst groups.
+        class GMG_40MM : MGun {
+			class Manual;
+			class close;
+			class short;
+			class medium;
+			class far;
+		};
+        class GOL_weap_GMG40MM_Terror: GMG_40MM {
+                scope = 2;
+                displayName = "GMG 40mm (Suppressive)";
+                dispersion = 0.03;
+				aiBurstTerminable=1;
+                magazines[] = {"GOL_mag_GMG40MM_200","GOL_mag_GMG40MM_96","GOL_mag_GMG40MM_64","GOL_mag_GMG40MM_32"};
+
+                class manual: Mode_FullAuto {
+                        displayName = "Mk 19"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 10;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class close: Mode_FullAuto {
+                        displayName = "Mk 19";
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 50;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class short: Mode_FullAuto {
+                        displayName = "Mk 19"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 150;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class medium: Mode_FullAuto {
+                        displayName = "Mk 19"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 400;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class far: Mode_FullAuto {
+                        displayName = "Mk 19"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.171429; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 1000;
+                        class StandardSound { soundSetShot[] = {"GMG40mm_Shot_SoundSet","GMG40mm_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+        };
+		class GMG_20mm;
+        class RHS_MK19 : GMG_20mm {
+			class manual;
+			class close;
+			class short;
+			class medium;
+			class far;
+		};
+        class GOL_weap_MK19_Terror: RHS_MK19 {
+                scope = 2;
+                displayName = "Mk19 (Suppressive)";
+                dispersion = 0.03;
+				aiBurstTerminable=1;
+                magazines[] = {
+                        "GOL_mag_MK19_48_M384","GOL_mag_MK19_48_M1001","GOL_mag_MK19_48_M430I","GOL_mag_MK19_48_M430A1",
+                        "GOL_mag_MK19_96_M384","GOL_mag_MK19_96_M1001","GOL_mag_MK19_96_M430I","GOL_mag_MK19_96_M430A1"
+                };
+
+                class manual: manual {
+                        displayName = "Mk. 19 Grenade Launcher";
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1;
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 500;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class close: close {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1;
+						reloadTime = 0.15;
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 50;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class short: short {
+                        displayName = "Mk. 19 Grenade Launcher"; dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 300;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class medium: medium {
+                        displayName = "Mk. 19 Grenade Launcher"; dispersion = 0.03;
+						aiBurstTerminable=1;burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 600;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class far: far {
+                        displayName = "Mk. 19 Grenade Launcher"; dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 1000;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+        };
+
+        class RHS_MK19_CROWS_M153 : RHS_MK19 {};
+        class GOL_weap_MK19_CROWS_Terror: RHS_MK19_CROWS_M153 {
+                scope = 2;
+                displayName = "Mk19 CROWS (Suppressive)";
+                dispersion = 0.03;
+				aiBurstTerminable=1;
+                magazines[] = {
+                        "GOL_mag_MK19_48_M384","GOL_mag_MK19_48_M1001","GOL_mag_MK19_48_M430I","GOL_mag_MK19_48_M430A1",
+                        "GOL_mag_MK19_96_M384","GOL_mag_MK19_96_M1001","GOL_mag_MK19_96_M430I","GOL_mag_MK19_96_M430A1"
+                };
+
+                class manual: manual {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 500;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class close: close {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 50;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class short: short {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 300;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class medium: medium {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 600;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class far: far {
+                        displayName = "Mk. 19 Grenade Launcher";
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 1000;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+        };
+
+        class UK3CB_Factions_MK19 : RHS_MK19 {};
+        class GOL_weap_MK19_UK3CB_Terror: UK3CB_Factions_MK19 {
+                scope = 2;
+                displayName = "Mk19 (Suppressive)";
+                dispersion = 0.03;
+				aiBurstTerminable=1;
+                magazines[] = {
+                        "GOL_mag_MK19_48_M384","GOL_mag_MK19_48_M1001","GOL_mag_MK19_48_M430I",
+                        "GOL_mag_MK19_96_M384","GOL_mag_MK19_96_M1001","GOL_mag_MK19_96_M430I"
+                };
+
+                class manual: manual {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 500;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class close: close {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 50;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class short: short {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 300;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class medium: medium {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 600;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+                class far: far {
+                        displayName = "Mk. 19 Grenade Launcher"; 
+						dispersion = 0.03;
+						aiBurstTerminable=1;
+						burst = 1;
+						burstRangeMax = 3;
+						autoFire = 1; 
+						reloadTime = 0.15; 
+						aiRateOfFire = 6; 
+						aiRateOfFireDistance = 1000;
+                        class StandardSound { soundSetShot[] = {"RHSUSF_mk19_Shot_SoundSet","RHSUSF_lmg1_Tail_SoundSet"}; };
+                        class SilencedSound { soundSetShot[] = {}; };
+                };
+        };
+
+		class RHS_weap_Ags30;
+		class RHS_weap_Ags30_tigr: RHS_weap_Ags30 {
+			class manual;
+			class close;
+			class short;
+			class medium;
+			class far;
+		};
+		class RHS_weapon_Ags30_tigr_Terror : RHS_weap_Ags30_tigr {
+			class manual : manual {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 3;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 500;
+			};
+			class close : close {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 4;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 50;
+			};
+			class short : short {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 3;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 300;
+			};
+			class medium : medium {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 2;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 500;
+			};
+			class far : far {
+				displayName = "AGS30 Terror"; 
+				dispersion = 0.03;
+				aiBurstTerminable=1;
+				burst = 1;
+				burstRangeMax = 2;
+				autoFire = 1; 
+				reloadTime = 0.15; 
+				aiRateOfFire = 6; 
+				aiRateOfFireDistance = 1000;
+			};
+		};
+
+#define GOL_GEAR_CFGWEAPONS
+#include "vehicles\gear.hpp"
+#undef GOL_GEAR_CFGWEAPONS
 };
 

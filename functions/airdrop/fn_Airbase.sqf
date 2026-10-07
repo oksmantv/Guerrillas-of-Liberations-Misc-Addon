@@ -53,7 +53,7 @@ params [
     "_ReinforcementZone",         		  // 2: Zone that AI will reinforce if contested by players
     "_Side",                      		  // 3: Side of Helicopter Reinforcements
     "_Classname",                 		  // 4: Helicopter Classname
-    ["_Type","unload"],                   // 5: "unload" or "drop" or "unloadthenpatrol"
+	["_Type","unload"],                   // 5: "unload" or "paradrop" or "unloadthenpatrol" (legacy "drop" maps to "paradrop")
     ["_Troops",[2,0.5]],                  // 6: [ProcentageofCargoSpace, NumberOfTeamsToSplitInto]
     ["_AirbaseRespawnTimer", 900],        // 7: Timer until allowed to respawn another wave
     ["_AirbaseRandomDistanceLZ", 200],    // 8: Distance from player for HLS

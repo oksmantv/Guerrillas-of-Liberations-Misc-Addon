@@ -96,9 +96,12 @@ _Heli AllowDamage _Vulnerable;
 _Pilot = CreateAgent [_PilotClass, [0,0,0], [], 0, "NONE"];
 _Pilot MoveInDriver _Heli;
 _Pilot setRank "SERGEANT";
-_Pilot SetBehaviour "STEALTH";
+_Pilot SetBehaviour "CARELESS";
 _Pilot setCombatMode "BLUE";
 _Pilot disableAI "FSM";
+_Pilot disableAI "LIGHTS";
+_Heli setPilotLight false;
+_Heli setCollisionLight false;
 sleep 1;
 
 /*
@@ -255,9 +258,12 @@ Switch (_Type) do
 					_Pilot = CreateAgent [_PilotClass, [0,0,0], [], 0, "NONE"];		// Ghetto fix for agent getting stuck on "_Heli Land 'LAND'".
 					_Pilot MoveInDriver _Heli;
 					_Pilot setRank "SERGEANT";
-					_Pilot SetBehaviour "STEALTH";
+					_Pilot SetBehaviour "CARELESS";
 					_Pilot setCombatMode "BLUE";
 					_Pilot disableAI "FSM";
+					_Pilot disableAI "LIGHTS";
+					_Heli setPilotLight false;
+					_Heli setCollisionLight false;
 					_Pilot MoveTo (_STD Select 2);
 				};
 			} else {

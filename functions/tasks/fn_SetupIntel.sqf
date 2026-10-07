@@ -1,5 +1,5 @@
 /*
-	Example Short: [intel_1,nil,nil,"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello","Special Intel",nil,false,nil,false] spawn OKS_fnc_SetupIntel;
+	Example Short: [intel_1,nil,nil,"Testing Testing Testing\n\nTesting Testing Testing\nSigned Hello","Special Intel",nil,false,nil,false,"Search for Intel"] spawn OKS_fnc_SetupIntel;
 
 	Example Detailed:
 	[
@@ -10,8 +10,9 @@
 		"Special Intel",														// Custom Header (Text when opening intel on map, nil for "Intel #X")
 		nil,																	// Custom Details (Text inserted as %2 in Custom Text, "" for none)
 		nil,																	// Enable Intel Task Complete (true/false)
-		["marker1","marker2"],													// Turn Markers from Array to (Visibility 0 on start) and when completed (Visibility 1)
-		false																	// Show Task Position on map when ASSIGNED (false = no map marker until task completes)
+		["marker1","marker2"],													// Turn Markers from Array or String to (Visibility 0 on start) and when completed (Visibility 1)
+		false,																	// Show Task Position on map when ASSIGNED (false = no map marker until task completes)
+		"Download Harddrive"													// Custom ACE interact action title ("" or omit for default "Search for Intel")
 	] spawn OKS_fnc_SetupIntel;
 
 	"ENEMY INTEL\nYou have found intel regarding enemy assets.\n\n%1\n%2"
@@ -34,8 +35,10 @@ Params [
 	["_CustomHeader",nil, [""]],
 	["_CustomDetails","", [""]],
 	["_EnableIntelTaskComplete",true, [false]],
-	["_MarkerArray",[""],[[]]],
-	["_ShowTaskPosition",true,[false]]
+	["_MarkerArray",[""],[[],""]],
+	["_ShowTaskPosition",true,[false]],
+	["_CustomActionTitle","Search for Intel",[""]]
+
 ];
 
 if(!isServer) exitWith {
@@ -44,9 +47,20 @@ if(!isServer) exitWith {
 
 Private _AssetText = "";
 Private _AssetList = "";
-{
-	_X setMarkerAlpha 0;
-} foreach _MarkerArray;
+
+if(typename _MarkerArray == "ARRAY") then {
+	{
+		_X setMarkerAlpha 0;
+	} foreach _MarkerArray;
+};
+if(typename _MarkerArray == "STRING") then {
+	_MarkerArray setMarkerAlpha 0;
+};
+if(!(typeName _MarkerArray in ["STRING","ARRAY"])) then {
+	// Invalid types
+	format ["[SetupIntel] ERROR: Invalid _MarkerArray type %1. Must be STRING or ARRAY.", typeName _MarkerArray] spawn OKS_fnc_LogDebug;
+};
+
 
 _AllIntel = missionNamespace getVariable ["GOL_IntelPieces",[]];
 _AllIntel pushBack _IntelPiece;
@@ -180,30 +194,35 @@ if(!isNil "_Target") then {
 };
 
 _MergedText = format[_CustomText, _AssetList, _CustomDetails];
-if(isNil "_CustomHeader") then {
+if(isNil "_CustomHeader" || {_CustomHeader isEqualTo ""}) then {
 	_CustomHeader = format["Intel #%1",(count _AllIntel + 1)];
 };
 
-if(_IntelPiece isKindOf "Man") then {
-	format ["[SetupIntel] Adding ACE unit intel to: %1 (alive: %2)", name _IntelPiece, alive _IntelPiece] spawn OKS_fnc_LogDebug;
-	// Allow players to loot and interact with this unit.
-	// The Framework InventoryOpened handler blocks access to any AI unit that does
-	// not have GW_Common_isPlayer set. HVT intel units must be exempt.
-	_IntelPiece setVariable ["GW_Common_isPlayer", true, true];
-	[_IntelPiece, "acex_intelitems_document", _MergedText, _CustomHeader] call ace_intelitems_fnc_addIntel;
-	// NOTE: ace_intelitems_fnc_addIntel stores unit intel as ACE variables, NOT as a
-	// physical item in the unit's containers. items _unit will always be empty here.
-	// The document is added to the player's inventory when they ACE-interact and take it.
-	format ["[SetupIntel] ACE unit intel registered on %1. GW_Common_isPlayer set to allow looting.", name _IntelPiece] spawn OKS_fnc_LogDebug;
-} else {
-	format ["[SetupIntel] Setting object intel data on: %1", typeOf _IntelPiece] spawn OKS_fnc_LogDebug;
+if ((typeof _IntelPiece) == "acex_intelitems_document") then {
+	// Native ACE document object — ACE adds its own interact action via setObjectData.
+	format ["[SetupIntel] ACE document object, delegating to setObjectData: %1", typeOf _IntelPiece] spawn OKS_fnc_LogDebug;
 	[_IntelPiece, _MergedText, _CustomHeader] call ace_intelitems_fnc_setObjectData;
+} else {
+	// Man, vehicle, prop, or any other world object — attach the GOL custom interact action.
+	_IntelPiece setVariable ["GOL_IntelSearchText", _MergedText, true];
+	_IntelPiece setVariable ["GOL_IntelSearchHeader", _CustomHeader, true];
+	_IntelPiece setVariable ["GOL_IntelClaimed", false, true];
+	_IntelPiece setVariable ["GOL_IntelClaimedBy", objNull, true];
+	if (_IntelPiece isKindOf "Man") then {
+		// Allow players to loot and interact with this unit.
+		// The Framework InventoryOpened handler blocks access to any AI unit that does
+		// not have GW_Common_isPlayer set. HVT intel units must be exempt.
+		_IntelPiece setVariable ["GW_Common_isPlayer", true, true];
+	};
+	private _pieceLabel = if (_IntelPiece isKindOf "Man") then {name _IntelPiece} else {typeOf _IntelPiece};
+	format ["[SetupIntel] Registering Search for Intel action on: %1", _pieceLabel] spawn OKS_fnc_LogDebug;
+	[_IntelPiece, _CustomActionTitle] call OKS_fnc_AddSearchIntelAction;
 };
 
 if(_EnableIntelTaskComplete) then {
 	private _TaskId = format["IntelTask_%1", floor (random 9999999)];
 	private _TaskArray = _TaskId;
-	if(!isNil "_Parent") then {
+	if(!isNil "_Parent" && {_Parent != ""}) then {
 		_TaskArray = [_TaskId, _Parent];
 	};
 
@@ -212,11 +231,11 @@ if(_EnableIntelTaskComplete) then {
 	private _TaskPosition = getPos _IntelPiece;
 
 	// Create the task as ASSIGNED immediately so players see it in their task list
-	// and know to recover the document. State will be updated after the pickup poll.
+	// and know to recover the document. State will be updated after explicit recovery.
 	private _initialDesc = if (_IntelPiece isKindOf "Man") then {
-		"Locate the HVT and recover the intel document."
+		"Locate the HVT and use ACE Interact to Search for Intel."
 	} else {
-		"Recover the intel from the target location."
+		"Use ACE Interact on the target location and select Search for Intel."
 	};
 	[
 		true,
@@ -232,107 +251,42 @@ if(_EnableIntelTaskComplete) then {
 	format ["[SetupIntel] Task %1 created as ASSIGNED (silent).", _TaskId] spawn OKS_fnc_LogDebug;
 
 	if(_IntelPiece isKindOf "Man") then {
-		// Track per-player acex_intelitems_document COUNT each iteration.
-		// Using a count rather than a boolean snapshot prevents false negatives when a
-		// player holds an existing doc at script-spawn time, later discards it, and then
-		// picks up THIS HVT's document — the boolean "had doc" flag would remain true
-		// from the initial snapshot and the new pickup would never be detected.
-		// Count tracking updates the stored baseline every tick, so a discard (count drops)
-		// is recorded immediately; a subsequent pickup (count rises) is detected on the
-		// very next 0.5 s poll regardless of what the player held earlier in the mission.
-		private _intelDocClass = "acex_intelitems_document";
-		private _trackPlayers = allPlayers select {isPlayer _x};
-		private _trackCounts = _trackPlayers apply {
-			{_x == _intelDocClass} count (items _x + magazines _x)
-		};
-		format ["[SetupIntel] Unit path: tracking %1 player(s) for doc count delta. Polling %2 for pickup.", count _trackPlayers, name _IntelPiece] spawn OKS_fnc_LogDebug;
-
-		private _hvtDeadTime = -1;
-		private _capturedTime = -1;
+		private _loggedDeath = false;
+		private _loggedCapture = false;
 		private _diagIter = 0;
 
 		waitUntil {
 			sleep 0.5;
 
-			// Register any player who joined after tracking began.
-			{
-				if ((_trackPlayers find _x) < 0) then {
-					_trackPlayers pushBack _x;
-					_trackCounts pushBack ({_x == _intelDocClass} count (items _x + magazines _x));
-				};
-			} forEach allPlayers;
+			if (isNull _IntelPiece) exitWith { true };
 
-			// While alive: check nearby players (15m).
-			// If the doc has already left the HVT's inventory (taken while alive),
-			// expand to all players — the picker may have moved away since.
-			// After death or capture: always check all players.
-			private _checkPlayers = if (alive _IntelPiece) then {
-				private _docStillOnHvt = _intelDocClass in (items _IntelPiece) || {_intelDocClass in (magazines _IntelPiece)};
-				if (_docStillOnHvt) then {
-					(_IntelPiece nearEntities ["Man", 15]) select {isPlayer _x}
-				} else {
-					allPlayers select {isPlayer _x}
-				}
-			} else {
-				allPlayers select {isPlayer _x}
-			};
+			_Player = _IntelPiece getVariable ["GOL_IntelClaimedBy", objNull];
 
-			{
-				private _pIdx = _trackPlayers find _x;
-				private _prevCount = if (_pIdx >= 0) then {_trackCounts select _pIdx} else {0};
-				private _curCount = {_x == _intelDocClass} count (items _x + magazines _x);
-				if (_curCount > _prevCount) exitWith {
-					format ["[SetupIntel] Intel pickup: player=%1 hvtAlive=%2 (count %3->%4)", name _x, alive _IntelPiece, _prevCount, _curCount] spawn OKS_fnc_LogDebug;
-					_Player = _x;
-				};
-			} forEach _checkPlayers;
-
-			// Update stored doc counts for all tracked players so discards are recorded
-			// and don't leave stale baselines that prevent future pickup detection.
-			{
-				private _pIdx = _trackPlayers find _x;
-				private _curCount = {_x == _intelDocClass} count (items _x + magazines _x);
-				if (_pIdx >= 0) then {
-					_trackCounts set [_pIdx, _curCount];
-				};
-			} forEach _trackPlayers;
-
-			// Death window: 60s after unit dies to allow corpse looting.
-			if (!alive _IntelPiece && {_hvtDeadTime < 0}) then {
-				_hvtDeadTime = time;
+			if (!alive _IntelPiece) then {
 				_TaskPosition = getPos _IntelPiece;
-				format ["[SetupIntel] %1 died. Polling for corpse loot (60s window).", name _IntelPiece] spawn OKS_fnc_LogDebug;
+				if (!_loggedDeath) then {
+					_loggedDeath = true;
+					format ["[SetupIntel] %1 is down. Waiting for a player to use Search for Intel.", name _IntelPiece] spawn OKS_fnc_LogDebug;
+				};
 			};
 
-			// Capture window: 120s after HVT surrenders/is captured to allow intel recovery.
-			// OKS_InterceptHvt_Surrendered is set by fn_InterceptHvt_SetHvtSurrendered.
-			if ((_IntelPiece getVariable ["OKS_InterceptHvt_Surrendered", false]) && {_capturedTime < 0}) then {
-				_capturedTime = time;
+			if ((_IntelPiece getVariable ["OKS_InterceptHvt_Surrendered", false]) && {!_loggedCapture}) then {
+				_loggedCapture = true;
 				_TaskPosition = getPos _IntelPiece;
-				format ["[SetupIntel] %1 captured/surrendered. Polling for intel recovery (120s window).", name _IntelPiece] spawn OKS_fnc_LogDebug;
+				format ["[SetupIntel] %1 surrendered/captured. Waiting for Search for Intel.", name _IntelPiece] spawn OKS_fnc_LogDebug;
 			};
 
-			// Diagnostic: log every 10s so it is always visible in RPT during testing.
 			_diagIter = _diagIter + 1;
 			if (_diagIter >= 20) then {
 				_diagIter = 0;
-				private _docOnHvt = _intelDocClass in (magazines _IntelPiece) || {_intelDocClass in (items _IntelPiece)};
-				format ["[SetupIntel DIAG] alive=%1 docOnHvt=%2 capturedTime=%3 deadTime=%4 checkPlayers=%5", alive _IntelPiece, _docOnHvt, _capturedTime, _hvtDeadTime, count _checkPlayers] spawn OKS_fnc_LogDebug;
-				{
-					private _p = _x;
-					private _diagCur = {_x == _intelDocClass} count (items _p + magazines _p);
-					format ["[SetupIntel DIAG] Player %1: docCount=%2", name _p, _diagCur] spawn OKS_fnc_LogDebug;
-				} forEach _checkPlayers;
+				format ["[SetupIntel DIAG] claimed=%1 player=%2 alive=%3 deleted=%4", _IntelPiece getVariable ["GOL_IntelClaimed", false], if (!isNull _Player) then {name _Player} else {"none"}, alive _IntelPiece, isNull _IntelPiece] spawn OKS_fnc_LogDebug;
 			};
 
-			(!isNull _Player)
-			|| {_hvtDeadTime >= 0 && {time > _hvtDeadTime + 60}}
-			|| {_capturedTime >= 0 && {time > _capturedTime + 120}}
+			(!isNull _Player) || {isNull _IntelPiece}
 		};
 
 		if (isNull _Player) then {
-			private _reason = if (_capturedTime >= 0) then {"capture timeout"} else {"death timeout"};
-			format ["[SetupIntel] Poll ended - no pickup detected (%1).", _reason] spawn OKS_fnc_LogDebug;
+			format ["[SetupIntel] Search ended - no recovery detected (intel deleted before recovery)."] spawn OKS_fnc_LogDebug;
 		};
 		_TaskSucceeded = !isNull _Player;
 	} else {
@@ -358,20 +312,27 @@ if(_EnableIntelTaskComplete) then {
 					};
 				} forEach _nearby;
 			};
-			!alive _IntelPiece
+			(_IntelPiece getVariable ["GOL_IntelClaimed", false]) || {!alive _IntelPiece}
 		};
 
 		_TaskPosition = getPos _IntelPiece;
 
-		{
-			private _snapIdx = _snapPlayers find _X;
-			private _prev = if (_snapIdx >= 0) then {_snapMags select _snapIdx} else {[]};
-			private _gained = (magazines _X) - _prev;
-			if (_gained isNotEqualTo []) exitWith {
-				format ["[SetupIntel] Object path: magazine delta detected for %1: gained %2", name _X, _gained] spawn OKS_fnc_LogDebug;
-				_Player = _X;
-			};
-		} forEach _lastNearPlayers;
+		// GOL interact action sets GOL_IntelClaimedBy directly — use it if available.
+		// Fall back to magazine snapshot for ACE document objects that are destroyed on pickup.
+		if (_IntelPiece getVariable ["GOL_IntelClaimed", false]) then {
+			_Player = _IntelPiece getVariable ["GOL_IntelClaimedBy", objNull];
+			format ["[SetupIntel] Object path: claimed via GOL interact by %1", if (!isNull _Player) then {name _Player} else {"unknown"}] spawn OKS_fnc_LogDebug;
+		} else {
+			{
+				private _snapIdx = _snapPlayers find _X;
+				private _prev = if (_snapIdx >= 0) then {_snapMags select _snapIdx} else {[]};
+				private _gained = (magazines _X) - _prev;
+				if (_gained isNotEqualTo []) exitWith {
+					format ["[SetupIntel] Object path: magazine delta detected for %1: gained %2", name _X, _gained] spawn OKS_fnc_LogDebug;
+					_Player = _X;
+				};
+			} forEach _lastNearPlayers;
+		};
 
 		_TaskSucceeded = !isNull _Player;
 	};
@@ -402,11 +363,16 @@ if(_EnableIntelTaskComplete) then {
 	] call BIS_fnc_taskCreate;
 
 	if (_TaskSucceeded) then {
-		{
-			_X setMarkerAlpha 1;
-		} forEach _MarkerArray;
+		if(typename _MarkerArray == "ARRAY") then {
+			{
+				_X setMarkerAlpha 1;
+			} foreach _MarkerArray;
+		};
+		if(typename _MarkerArray == "STRING") then {
+			_MarkerArray setMarkerAlpha 1;
+		};
 
-		if(!isNil "_Target") then {
+		if(!isNil "_Target" && {(_Target isEqualType objNull && {!isNull _Target}) || (_Target isEqualType [] && {count _Target > 0})}) then {
 			// Clean up any existing intel pieces with the same target to prevent duplicates.
 			// Do NOT delete Man units — the intel piece may be a live HVT character.
 			// Only delete non-Man objects (physical document props, spawned intel objects, etc).

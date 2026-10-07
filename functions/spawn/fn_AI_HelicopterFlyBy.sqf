@@ -17,7 +17,7 @@
         4:  _EnableResupplyDrop  - BOOLEAN - Enable parachute resupply drops using default supplies (default: false)
         5:  _FlyByDelay          - ARRAY   - [min, max] delay in seconds between missions (default: [90, 180])
         6:  _FlightAltitude      - NUMBER  - Flight altitude in meters (default: 250)
-        7:  _FlightBehaviour     - STRING  - Flight behaviour mode, e.g. "STEALTH", "AWARE" (default: "STEALTH")
+        7:  _FlightBehaviour     - STRING  - Flight behaviour mode, e.g. "CARELESS", "AWARE" (default: "CARELESS")
         8:  _ShouldLoop          - BOOLEAN - Enable continuous flyby missions (default: true)
         9:  _MaxFlyByMissions    - NUMBER  - Maximum missions; -1 for infinite (default: -1)
         10: _CleanupDelay        - NUMBER  - Delay in seconds before cleanup after final mission (default: 30)
@@ -48,7 +48,7 @@ params [
     ["_EnableResupplyDrop", false, [false]],         // Enable parachute resupply drops (uses defaults)
     ["_FlyByDelay", [90, 180], [[]]],                // Delay between flyby missions [min, max] seconds
     ["_FlightAltitude", 250, [0]],                   // Flight altitude in meters
-    ["_FlightBehaviour", "STEALTH", [""]],           // Flight behavior mode
+    ["_FlightBehaviour", "CARELESS", [""]],           // Flight behavior mode
     ["_ShouldLoop", true, [false]],                  // Enable continuous flyby missions
     ["_MaxFlyByMissions", -1, [0]],                  // Maximum missions (-1 = infinite)
     ["_CleanupDelay", 30, [0]]                       // Delay before cleanup
@@ -162,6 +162,7 @@ private _helicopterFlyBySystem = {
             if (!isNull _x) then {
                 _x allowFleeing 0;
                 _x setBehaviour _flightBehaviour;
+                _x disableAI "LIGHTS";
 
                 if(toUpper _flightBehaviour == "COMBAT") then {
                     _x setCombatMode "RED";   // Engage enemies
