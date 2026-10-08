@@ -23,9 +23,8 @@ if (hasInterface) then {
         ["[PostInit] GOL IR illuminator active with adjustable beam strength", false, false, true] spawn OKS_fnc_LogDebug;
     };
     
-    // IR Illuminator strength monitor (adjusts BettIR intensity or creates fallback lights)
-    [] spawn OKS_fnc_IRIlluminator_Monitor;
-    ["[PostInit] IR Illuminator strength monitor started", false, false, true] spawn OKS_fnc_LogDebug;
+    // BettIR owns the weapon reflector. The retired monitor attached a second lightpoint to the unit's head.
+    // Starting it here made the IR source appear on the character instead of the weapon.
     
     // Initialize IR illuminator strength (persistent across respawns)
     [] spawn {
