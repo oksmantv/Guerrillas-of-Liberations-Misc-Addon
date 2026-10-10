@@ -683,6 +683,59 @@ class CfgAmmo {
 		};
 	};
 
+	// MAAWS HEDP: native HE primary impact plus a reduced-penetration HEAT jet.
+	class R_MRAAWS_HEAT_F;
+	class R_MRAAWS_HE_F;
+	class ammo_Penetrator_MRAAWS;
+	class GOL_ammo_Penetrator_MRAAWS_HEDP: ammo_Penetrator_MRAAWS {
+		caliber = 0.85; // Below the dedicated HEAT jet's armour penetration.
+	};
+
+	class GOL_ammo_MRAWS_HEDP_F: R_MRAAWS_HE_F {
+
+		// R_MRAAWS_HEAT_F trajectory.
+		simulation = "shotRocket";
+		simulationStep = 0.02;
+		initSpeed = 0;
+		typicalSpeed = 900;
+		maxSpeed = 350;
+		thrust = 0.1;
+		thrustTime = 0.1;
+		airFriction = 0.05;
+		sideAirFriction = 0;
+		maneuvrability = 0;
+		deflecting = 5;
+		timeToLive = 25;
+		fuseDistance = 15;
+
+		// Lower direct impact damage limits structural damage; the larger blast
+		// radius retains anti-personnel effectiveness away from the impact point.
+		hit = 150;
+		indirectHit = 65;
+		indirectHitRange = 10;
+		explosive = 1;
+		warheadName = "HE";
+
+		// Secondary HEAT jet: same delivery as R_MRAAWS_HEAT_F, but the GOL
+		// penetrator has a lower caliber than the dedicated HEAT round.
+		triggerOnImpact = 1;
+		submunitionAmmo = "GOL_ammo_Penetrator_MRAAWS_HEDP";
+		submunitionDirectionType = "SubmunitionModelDirection";
+		submunitionInitSpeed = 1000;
+		submunitionParentSpeedCoef = 0;
+		submunitionInitialOffset[] = {0, 0, -0.2};
+		submunitionConeAngle = 0;
+		submunitionConeAngleHorizontal = 0;
+
+		// ACE Shrapnel
+		ace_frag_charge = 2150;
+		ace_frag_classes[] = {"ace_frag_small_HD","ace_frag_tiny_HD","ace_frag_tiny"};
+		ace_frag_gurney_c = 2700;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 1650;
+		ace_rearm_caliber = 80;
+	};
+
 	// ==================== GOL Accurate RPG-7 Rounds ====================
 	// LEFT   reticle (VM markings) : PG-7VM (HEAT+)
 	// RIGHT  reticle (VL markings) : OG-7V

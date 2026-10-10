@@ -87,7 +87,7 @@ if (!hasInterface) exitWith {};
 
 			[_vehicle, player, [true]] call TFAR_external_intercom_fnc_connect;
 			["Wireless intercom connected."] call ace_common_fnc_displayTextStructured;
-		}, {}, []
+		}, {}, [15, [true, false, false]], false
 	] call CBA_fnc_addKeybind;
 
 	// ── ACE self-interaction: Connect (under TFAR Radio) ─────────────────────

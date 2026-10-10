@@ -27,16 +27,11 @@ _crate setDir _dir;
 _crate disableCollisionWith _target;
 // ACE falls back to [0, 0, 0] for objects without a configured carry offset.
 // Apply the standard forward carry position globally before the player's carry action starts.
-[_crate, true, [0, 1, 1], 0, false, true] call ace_dragging_fnc_setCarryable;
+[_crate, true, [0, 1.25, 0.5], 0, false, true] call ace_dragging_fnc_setCarryable;
 [_crate, _player, _target] spawn {
     Params ["_crate", "_player", "_target"];
     sleep 0.1;
     private _offset = [0, 1.5, 0];
-    if((typeOf _crate) in ["GOL_SquadResupplybox_WEST","GOL_SquadResupplybox_EAST"]) exitWith {
-        _crate hideObjectGlobal false;
-        sleep 3;
-        _crate allowDamage true;
-    };
     _crate setPosASL (_player modelToWorldWorld _offset);
     waitUntil {0.1; _crate distance _player < 5};
     [_player, _crate] call ace_dragging_fnc_startCarry;

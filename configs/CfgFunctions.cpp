@@ -42,6 +42,8 @@ class CfgFunctions // Defines a function
 			class M6_Add_Unpack_Actions {};
 			class M6_Flare_Altitude_Deploy {};
 			class ProxRound_Init {};
+			class ProxRound_AdjustRange {};
+			class ProxRound_ShowRangeHint {};
 			class ProxRound_FiredHandler {};
 			class ProxRound_TrackRound {};
 		};
@@ -202,6 +204,7 @@ class CfgFunctions // Defines a function
 			class ApplyUnitGear {};
 			class SetupMechanized {};				
 			class SetupHelicopter {};				
+			class SetupJet {};
 			class SetupMHQ {};							
 			class ModuleForceKit {};
 			class ModuleSpawnGolVehicle {};

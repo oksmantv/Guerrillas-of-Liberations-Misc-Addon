@@ -96,6 +96,11 @@ class CfgMagazineWells {
         };
     };
 
+    // RHS MAAWS variants consume the CBA Carl Gustaf well.
+    class CBA_Carl_Gustaf {
+        GOL_MRAWS_mags[] = {"GOL_mag_MRAWS_HEDP_F"};
+    };
+
     // Vanilla A3 MX large-capacity well — used by arifle_MX_SW_F and all color variants.
     // GOL 100Rnd caseless belts become available to all MX SW weapons (vanilla + GOL).
     class MX_65x39_Large {

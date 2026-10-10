@@ -34,6 +34,28 @@ diag_log format ["[PROXROUND] FiredEH called | veh=%1 ammo=%2 local_gunner=%3 ac
 // and the gunner's client (where the EH was also added) processes it.
 if !(local _gunner) exitWith { diag_log "[PROXROUND] EXIT: gunner not local"; };
 
+// A fresh lase always replaces any manually selected proximity range. Delay one frame
+// so the engine has applied the laser-designator range to the gunner's FCS zeroing.
+if (_weapon isEqualTo "Laserdesignator_mounted") exitWith {
+    if (_vehicle getVariable ["OKS_ProxRound_Active", false]) then {
+        [{
+            params ["_gunner", "_vehicle"];
+
+            if (
+                !local _gunner ||
+                {vehicle _gunner != _vehicle} ||
+                {!(_vehicle getVariable ["OKS_ProxRound_Active", false])}
+            ) exitWith {};
+
+            private _range = currentZeroing _gunner;
+            if (_range > 0) then {
+                _gunner setVariable ["OKS_ProxRound_Range", _range];
+                [_range] call OKS_fnc_ProxRound_ShowRangeHint;
+            };
+        }, [_gunner, _vehicle], 0.05] call CBA_fnc_waitAndExecute;
+    };
+};
+
 // Proximity fuse must be explicitly enabled by the gunner
 if !(_vehicle getVariable ["OKS_ProxRound_Active", false]) exitWith { diag_log "[PROXROUND] EXIT: fuse not active"; };
 
@@ -53,8 +75,13 @@ private _ignoredWeapons = [
 ];
 if (_weapon in _ignoredWeapons) exitWith { diag_log format ["[PROXROUND] EXIT: weapon %1 in ignore list", _weapon]; };
 
-// --- Fuse distance from the gunner's ACE FCS lase (T) ---
-private _range = (currentZeroing _gunner) + 2;
+// --- Absolute fuse distance ---
+// Default to the current vanilla FCS zeroing until the gunner scroll-adjusts a range.
+// A fresh laser-designator shot clears that manual selection and stores its new range.
+private _range = _gunner getVariable ["OKS_ProxRound_Range", -1];
+if (_range < 1) then {
+    _range = currentZeroing _gunner;
+};
 if (_range <= 0) exitWith { diag_log "[PROXROUND] EXIT: zeroing=0 — lase target first (T)"; };
 
 diag_log format ["[PROXROUND] Tracking round | ammo=%1 range=%2m projectile=%3", _ammo, _range, _projectile];

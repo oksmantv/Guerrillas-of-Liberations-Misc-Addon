@@ -9,11 +9,15 @@ Params
 	["_aircraft", ObjNull, [ObjNull]]
 ];
 
+if (isNull _aircraft) exitWith {};
+if (_aircraft getVariable ["GOL_JetSetup_Initialized", false]) exitWith {};
+_aircraft setVariable ["GOL_JetSetup_Initialized", true, true];
+
 private _radius = missionNamespace getVariable ["GOL_JetSuppression_Radius", 300];
 private _minAGL = missionNamespace getVariable ["GOL_JetSuppression_MinAGL", 250];
 private _minSpeedKph = missionNamespace getVariable ["GOL_JetSuppression_MinSpeed", 500];
 private _multiplier = missionNamespace getVariable ["GOL_JetSuppression_Multiplier", 3];
-private _minSpeed = (_minSpeedKph / 3.6); // Convert km/h to m/s
+private _minSpeed = _minSpeedKph; // speed returns km/h
 
 // Setup Flare Support Counter-measure
 [_aircraft] call OKS_fnc_AircraftFlareSupportInit;

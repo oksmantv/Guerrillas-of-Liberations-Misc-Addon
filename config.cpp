@@ -82,6 +82,7 @@ class CfgPatches
             "GOL_I_E_SAM_System_03_F",
             "OKS_Module_MechanizedSetup",
             "OKS_Module_HelicopterSetup",
+            "OKS_Module_JetSetup",
             "OKS_Module_MHQ",
             "OKS_Module_ApplyUnitGear",
             "OKS_Module_Mortars",
@@ -199,11 +200,13 @@ class CfgPatches
 		magazines[] = {
             "GOL_1Rnd_UGL_FlareIR",
             "GOL_1Rnd_UGL_FlareWhite",
-            // Ghost 9 mm suppressor system.
+            // Stealth magazines
             "GOL_17Rnd_9x19_G17_Subsonic_Mag",
             "GOL_30Rnd_9x21_Subsonic_Mag",
             "GOL_30Rnd_9x19_MP5_Subsonic_Mag",
             "GOL_UK3CB_MP5_30Rnd_9x19_Subsonic_Mag",
+            // MAAWS Round with same trajectory as HEAT
+			"GOL_mag_MRAWS_HEDP_F",
 			// 9.3x64mm for heavy machine guns — ball, tracer, SLAP, and 200-round variants.
 			"GOL_150Rnd_93x64_Mag",
 			"GOL_150Rnd_93x64_Mag_Tracer",

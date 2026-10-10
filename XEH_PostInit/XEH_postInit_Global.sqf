@@ -16,6 +16,7 @@ missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 /* Amphibious IFV water boost (client-only, locality-safe) */
 if (hasInterface) then {
     [] spawn OKS_fnc_Stealth_PlayerVisibility;
+    [] call OKS_fnc_ProxRound_Init;
     
     // GOL IR illuminator auto-activation for GOL_OX3000 beam lights.
     if (isClass (configFile >> "CfgPatches" >> "GOL_IRLLM_Core")) then {

@@ -144,6 +144,18 @@ class CfgMagazines {
 		count = 1;
 	};
 
+    // MAAWS HEDP rocket with HEAT penetration and enhanced HE blast damage.
+    class MRAWS_HEAT_F;
+    class GOL_mag_MRAWS_HEDP_F: MRAWS_HEAT_F {
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "MAAWS HEDP 88 Round";
+        displayNameShort = "HEDP 88";
+        descriptionShort = "Dual-purpose MAAWS rocket with HEAT penetration and enhanced HE blast effects.";
+        ammo = "GOL_ammo_MRAWS_HEDP_F";
+        allowedSlots[] = {701, 901};
+    };
+
     // FPV throwables (soft dependency on BOT_FPV_Enhanced)
     class HandGrenade;
     class GOL_Mag_FPV_AT_Throw: HandGrenade {
