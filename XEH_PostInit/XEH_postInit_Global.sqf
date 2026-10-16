@@ -17,6 +17,7 @@ missionNameSpace setVariable ["GOL_Friendly_Side",(side group player),true];
 if (hasInterface) then {
     [] spawn OKS_fnc_Stealth_PlayerVisibility;
     [] call OKS_fnc_ProxRound_Init;
+    [] call OKS_fnc_LaserMarker_InitClient;
     
     // GOL IR illuminator auto-activation for GOL_OX3000 beam lights.
     if (isClass (configFile >> "CfgPatches" >> "GOL_IRLLM_Core")) then {

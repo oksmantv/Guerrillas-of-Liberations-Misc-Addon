@@ -15,6 +15,10 @@ if(_Debug) then {
 	format["[CARGOSPACE] ACE cargo functions loaded, spawning continuous cargo space management"] spawn OKS_fnc_LogDebug;
 };
 
+// Set the initial capacity synchronously. Callers may load ACE cargo immediately
+// after this function returns; a spawned maintenance loop is too late for that.
+[_Vehicle, _cargoSize] call ace_cargo_fnc_setSpace;
+
 [_Vehicle, _cargoSize] spawn {
 	params ["_Vehicle", "_cargoSize"];
 	private _Debug = missionNamespace getVariable ["GOL_GroundVehicles_Debug",false];

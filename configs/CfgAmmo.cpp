@@ -254,6 +254,20 @@ class CfgAmmo {
 		CraterEffects = "";  // air burst — no ground crater
 	};
 
+	// Short-range air bursts can occur in rapid cannon bursts. This must be a
+	// separate ammo class because ACE fragmentation reads the ammo properties,
+	// not the mine vehicle properties.
+	class OKS_ProxMine_40mm_AP_Ammo_Short : OKS_ProxMine_40mm_AP_Ammo {
+		ace_frag_charge = 2;
+		ace_frag_force = 0.9;
+		ace_frag_metal = 8;
+	};
+
+	class OKS_ProxMine_40mm_AP_Ammo_Short_FX : OKS_ProxMine_40mm_AP_Ammo_Short {
+		explosionEffects = "ExploAmmoExplosion";
+		CraterEffects = "";
+	};
+
 	class OKS_ProxFuze_40mm_Airburst : G_40mm_HE {
 		fuzeMinTime = 0;
 		fuzeMaxTime = 0.05;

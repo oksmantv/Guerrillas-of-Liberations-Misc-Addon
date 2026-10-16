@@ -96,7 +96,7 @@
 	};
 	if(typeName _ClassnameOrNumber == "ARRAY") then {
 		_ClassnameOrNumber = selectRandom _ClassnameOrNumber;
-		_Vehicle = CreateVehicle [_Classname,_Spawn];
+		_Vehicle = CreateVehicle [_ClassnameOrNumber,_Spawn];
 		_Vehicle setDir _Dir;
 		_Group = [_Vehicle,_Side] call OKS_fnc_AddVehicleCrew;
 	};

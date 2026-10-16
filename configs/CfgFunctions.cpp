@@ -356,6 +356,15 @@ class CfgFunctions // Defines a function
 			class SatCamPipRearCamTestAnchor {};
 		};
 
+		class OKS_LaserMarkers {
+			file = "\OKS_GOL_Misc\functions\laserMarkers";
+			class LaserMarker_GetLaserAim {};
+			class LaserMarker_InitClient {};
+			class LaserMarker_Place {};
+			class LaserMarker_Create {};
+			class LaserMarker_UpdateLive {};
+		};
+
 		class OKS_Vehicles {
 			file = "\OKS_GOL_Misc\functions\vehicles";
 			class Retexture {};
