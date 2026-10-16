@@ -213,7 +213,7 @@ format["[Ignore Player Air Targets] Enabled %3 on Group %1 (%2) ", _group, _Vehi
 					_lastInRangeTimes set [_netId, time];
 					_group ignoreTarget [vehicle _aircraft, false];
 					if(missionNamespace getVariable ["GOL_Enemy_IgnorePlayerAir_DetailedDebug", false]) then {
-						systemChat format["[Ignore Player Air Targets] Group %1 (%3) no longer ignoring player air target %2 - Range %4/%5 (%6 range)", _group, name _aircraft, _VehicleDisplayName, _currentRange, _SelectedRange, _RangeTypeLabel];
+						format["[Ignore Player Air Targets] Group %1 (%3) no longer ignoring player air target %2 - Range %4/%5 (%6 range)", _group, name _aircraft, _VehicleDisplayName, _currentRange, _SelectedRange, _RangeTypeLabel] spawn OKS_fnc_logDebug;
 					};
 					diag_log format ["[Ignore Player Air Targets] Group %1 (%3) no longer ignoring player air target %2 - Range %4/%5 (%6 range)", _group, name _aircraft, _VehicleDisplayName, _currentRange, _SelectedRange, _RangeTypeLabel];
 				} else {
@@ -222,7 +222,7 @@ format["[Ignore Player Air Targets] Enabled %3 on Group %1 (%2) ", _group, _Vehi
 						_lastInRangeTimes deleteAt _netId;
 						_group ignoreTarget [vehicle _aircraft, true];
 						if(missionNamespace getVariable ["GOL_Enemy_IgnorePlayerAir_DetailedDebug", false]) then {
-							systemChat format["[Ignore Player Air Targets] Group %1 (%3) ignoring player air target %2 - Range %4/%5 (%6 range)", _group, name _aircraft, _VehicleDisplayName, _currentRange, _SelectedRange, _RangeTypeLabel]; 					
+							format["[Ignore Player Air Targets] Group %1 (%3) ignoring player air target %2 - Range %4/%5 (%6 range)", _group, name _aircraft, _VehicleDisplayName, _currentRange, _SelectedRange, _RangeTypeLabel] spawn OKS_fnc_logDebug; 					
 						};
 						diag_log format ["[Ignore Player Air Targets] Group %1 (%3) ignoring player air target %2 - Range %4/%5 (%6 range)", _group, name _aircraft, _VehicleDisplayName, _currentRange, _SelectedRange, _RangeTypeLabel]; 
 					} else {

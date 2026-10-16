@@ -1108,13 +1108,12 @@ class CfgAmmo {
 		nvgOnly = 0;
 	};
 
-	// M230 30x113mm AP round for the GOL Ghost Hawk chain gun pod.
-	// Based on B_30mm_APFSDS. hit=80, caliber=4 — effective against APCs and IFVs; marginal against MBTs.
+	// Based on B_30mm_APFSDS. hit=60, caliber=4 — effective against APCs and IFVs; marginal against MBTs.
 	// typicalSpeed matches real M230 muzzle velocity: 805 m/s (reduced to 650 here for flatter gameplay balance).
 	class B_30mm_APFSDS;
 	class GOL_ammo_M230_AP: B_30mm_APFSDS
 	{
-		hit = 80;
+		hit = 60;
 		indirectHit = 8;
 		indirectHitRange = 0.2;
 		caliber = 4;
