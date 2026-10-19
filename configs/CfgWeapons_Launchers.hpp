@@ -196,6 +196,43 @@ class GOL_weap_RPG17_Type69II_used: GOL_weap_RPG17_Type69II {
 	class EventHandlers {}; // clear inherited fired EH
 };
 
+// ==================== GOL RPG-26 — disposable precision variant ====================
+// Keeps the RHS warhead and trajectory while eliminating launcher spread and in-flight deflection.
+class rhs_weap_rpg26;
+class GOL_weap_rpg26: rhs_weap_rpg26 {
+	author = "Guerrillas of Liberation";
+	displayName = "RPG-26 (GOL)";
+	descriptionShort = "Disposable RPG-26. Precision-tuned to fly where aimed.";
+	scope = 2;
+	scopeArsenal = 2;
+	baseWeapon = "GOL_weap_rpg26";
+	dispersion = 0;
+	magazines[] = {"CBA_FakeLauncherMagazine"};
+	magazineWell[] = {};
+	magazineReloadTime = 0.1;
+	reloadMagazineSound[] = {"",1,1};
+};
+
+class GOL_weap_rpg26_ready: GOL_weap_rpg26 {
+	scope = 1;
+	scopeArsenal = 1;
+	baseWeapon = "GOL_weap_rpg26";
+	magazines[] = {"GOL_mag_rpg26"};
+	class EventHandlers {
+		fired = "_this call CBA_fnc_firedDisposable";
+	};
+};
+
+class GOL_weap_rpg26_used: GOL_weap_rpg26 {
+	scope = 1;
+	scopeArsenal = 1;
+	baseWeapon = "GOL_weap_rpg26";
+	displayName = "RPG-26 (GOL) (Used)";
+	descriptionShort = "Spent RPG-26 tube. Disposable — cannot be reloaded.";
+	weaponPoolAvailable = 0;
+	magazines[] = {"rhs_launcher_dummy_mag"};
+};
+
 // ==================== GOL NLAW (lightweight, backpack-portable) ====================
 // Uses CBA Disposable Framework: base (Arsenal-visible) → ready (loaded) → used (spent tube).
 class launch_NLAW_F;

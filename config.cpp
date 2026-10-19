@@ -25,6 +25,7 @@ class CfgPatches
             "rhs_c_weapons",
             "rhs_c_bmp",
             "rhsusf_main",
+			"rhsusf_weapons",
             "rhsusf_c_airweapons",
             "rhsusf_c_heavyweapons",
             "UK3CB_BAF_Weapons_Static",
@@ -167,6 +168,7 @@ class CfgPatches
             "GOL_LMG_Zafir_F",
             "GOL_weap_fnmag",
             "GOL_MG3_KWS_B",
+            "GOL_weap_m249_light_S",
             "GOL_weap_2a42_HE",
             "GOL_weap_2a42_AP",
             "GOL_weap_pkt",
@@ -182,6 +184,7 @@ class CfgPatches
             "GOL_launch_NLAW_F",
             "GOL_launch_NLAW_ready_F",
             "GOL_launch_NLAW_used_F",
+			"GOL_weap_rpg26",
             // "Terror GMG" — reduced-lethality AI GMG/Mk19 variants (see fn_RemoveVehicleHE.sqf)
             "GOL_weap_GMG40MM_Terror",
             "GOL_weap_MK19_Terror",
@@ -426,6 +429,7 @@ class RscTitles {
 // CBA intercepts addWeapon of base, gives player the ready variant;
 // after firing, swaps to the used variant.
 class CBA_DisposableLaunchers {
+	GOL_weap_rpg26[] = {"GOL_weap_rpg26_ready", "GOL_weap_rpg26_used"};
     GOL_launch_NLAW_ready_F[] = {"GOL_launch_NLAW_F", "GOL_launch_NLAW_used_F"};
 };
 

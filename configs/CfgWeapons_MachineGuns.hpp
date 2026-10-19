@@ -434,6 +434,20 @@
 		recoilProne = "GOL_recoil_machinegun_light_prone";
 	};
 
+	// RHS M249 PIP Short / LCBA — its direct parent is defined by RHS USF.
+	// Do not locally redeclare that parent: doing so would rebase its inheritance.
+	class rhs_weap_m249_light_S;
+	class GOL_weap_m249_light_S: rhs_weap_m249_light_S {
+		scope = 2;
+		scopeArsenal = 2;
+		author = "Guerrillas of Liberation";
+		displayName = "M249 PIP (Short/LCBA) (GOL)";
+		baseWeapon = "GOL_weap_m249_light_S";
+
+		recoil = "GOL_recoil_machinegun_light";
+		recoilProne = "GOL_recoil_machinegun_light_prone";
+	};
+
 	// ===== UK59N (7.62x51 NATO) — Medium MG tier =====
 	class UK3CB_UK59N;
 

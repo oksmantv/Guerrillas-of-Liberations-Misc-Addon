@@ -761,6 +761,7 @@ class CfgAmmo {
 	class rhs_rpg7v2_pg7vr;
 	class rhs_ammo_spall;
 	class rhs_rpg18_rocket;
+	class rhs_rpg26_rocket;
 
 	// Type-XX custom spall tiers: low / mid / high.
 	// Mid is the current baseline; low and high bracket it for consistent progression.
@@ -905,6 +906,11 @@ class CfgAmmo {
 		airLock = 1;
 		allowAgainstInfantry = 1;
 		cost = 40;
+	};
+
+	// GOL RPG-26 — retains RHS warhead and flight performance without random deflection.
+	class GOL_ammo_rpg26: rhs_rpg26_rocket {
+		deflecting = 0;
 	};
 
 	// OG-7V — HE fragmentation

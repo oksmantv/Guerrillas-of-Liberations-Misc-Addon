@@ -1148,6 +1148,7 @@ class CfgMagazines {
 	class rhs_rpg7_PG7VL_mag;
 	class rhs_rpg7_PG7VR_mag;
 	class rhs_rpg18_mag;
+    class rhs_rpg26_mag;
 
 	class GOL_mag_rpg7_Modern: rhs_rpg7_PG7VM_mag {
 		scope = 2;
@@ -1220,6 +1221,12 @@ class CfgMagazines {
 		mass = 22;
 		ammo = "GOL_ammo_rpg17_Type69II";
 	};
+
+    class GOL_mag_rpg26: rhs_rpg26_mag {
+        scope = 1;
+        displayName = "RPG-26 (GOL)";
+        ammo = "GOL_ammo_rpg26";
+    };
 
 	class GOL_mag_rpg7_OG7V: rhs_rpg7_PG7VL_mag {
 		scope = 2;
