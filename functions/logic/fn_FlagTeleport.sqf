@@ -3,14 +3,14 @@
 */
 
 private _fnc_addTeleportAction = {
-    params ["_flag", "_title", "_destination"];
+    params ["_flag", "_title", "_destination", "_icon"];
     diag_log format ["[addTeleportAction] Params: %1",_this];
 
     [
         _flag, // Object the action is attached to
         _title, // Title of the action
-        "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\move_ca.paa", // Idle icon shown on screen
-        "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\move_ca.paa", // Progress icon shown on screen
+        "\A3\ui_f\data\IGUI\Cfg\holdactions\holdaction_connect_ca.paa", // Idle icon shown on screen
+        "\A3\ui_f\data\IGUI\Cfg\holdactions\holdaction_connect_ca.paa", // Progress icon shown on screen
         "true", // Condition for the action to be shown
         "true", // Condition for the action to progress
         {}, // Code executed when action starts
@@ -30,25 +30,25 @@ private _fnc_addTeleportAction = {
 };
 
 if(!isNil "flag_west_1" && !isNil "flag_west_2") then {
-    [flag_west_1, "<t color='#eeb20e'>Teleport to FARP</t>", flag_west_2] call _fnc_addTeleportAction;
+    [flag_west_1, "<t color='#eeb20e'>Teleport to FARP</t>", flag_west_2,"heli_ca.paa"] call _fnc_addTeleportAction;
     flag_west_1 setFlagTexture "\OKS_GOL_Misc\data\images\hellfishflag.paa";
 
-    [flag_west_2, "<t color='#eeb20e'>Teleport to Staging Area</t>", flag_west_1] call _fnc_addTeleportAction;
+    [flag_west_2, "<t color='#eeb20e'>Teleport to Staging Area</t>", flag_west_1,"scout_ca.paa"] call _fnc_addTeleportAction;
     flag_west_2 setFlagTexture "\OKS_GOL_Misc\data\images\aac.jpg";
 };
 
 if(!isNil "flag_east_1" && !isNil "flag_east_2") then {
-    [flag_east_1, "<t color='#eeb20e'>Teleport to FARP</t>", flag_east_2] call _fnc_addTeleportAction;
+    [flag_east_1, "<t color='#eeb20e'>Teleport to FARP</t>", flag_east_2,"heli_ca.paa"] call _fnc_addTeleportAction;
     flag_east_1 setFlagTexture "\OKS_GOL_Misc\data\images\hellfishflag.paa";
 
-    [flag_east_2, "<t color='#eeb20e'>Teleport to Staging Area</t>", flag_east_1] call _fnc_addTeleportAction;
+    [flag_east_2, "<t color='#eeb20e'>Teleport to Staging Area</t>", flag_east_1,"scout_ca.paa"] call _fnc_addTeleportAction;
     flag_east_2 setFlagTexture "\OKS_GOL_Misc\data\images\aac.jpg";
 };
 
 if(!isNil "flag_independent_1" && !isNil "flag_independent_2") then {
-    [flag_independent_1, "<t color='#eeb20e'>Teleport to FARP</t>", flag_independent_2] call _fnc_addTeleportAction;
+    [flag_independent_1, "<t color='#eeb20e'>Teleport to FARP</t>", flag_independent_2,"heli_ca.paa"] call _fnc_addTeleportAction;
     flag_independent_1 setFlagTexture "\OKS_GOL_Misc\data\images\hellfishflag.paa";
 
-    [flag_independent_2, "<t color='#eeb20e'>Teleport to Staging Area</t>", flag_independent_1] call _fnc_addTeleportAction;
+    [flag_independent_2, "<t color='#eeb20e'>Teleport to Staging Area</t>", flag_independent_1,"scout_ca.paa"] call _fnc_addTeleportAction;
     flag_independent_2 setFlagTexture "\OKS_GOL_Misc\data\images\aac.jpg";
 };

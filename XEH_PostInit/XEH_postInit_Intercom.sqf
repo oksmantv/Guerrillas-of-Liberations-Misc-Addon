@@ -27,10 +27,18 @@ if (!hasInterface) exitWith {};
 
 	// This must persist beyond this postInit callback because CBA keybinds,
 	// ACE actions, and class event handlers execute in later script scopes.
+	OKS_fnc_isIntercomVehicle = {
+		params ["_vehicle"];
+
+		!isNull _vehicle
+		&& {getNumber (configFile >> "CfgVehicles" >> typeOf _vehicle >> "TFAR_hasIntercom") > 0}
+	};
+
 	OKS_fnc_connectWirelessIntercom = {
 		params ["_vehicle", "_unit", ["_showHint", true]];
 
 		if (isNull _vehicle || {!alive _vehicle} || {!alive _unit}) exitWith {false};
+		if !([_vehicle] call OKS_fnc_isIntercomVehicle) exitWith {false};
 		if (isNil "TFAR_external_intercom_fnc_connect") exitWith {false};
 		if !([_unit] call TFAR_external_intercom_fnc_hasWirelessHeadgear) exitWith {false};
 
@@ -67,11 +75,11 @@ if (!hasInterface) exitWith {};
 		};
 	};
 
-	// ── GetOut handler: save channel and clear wireless intercom ───────────────
+	// ── GetOut handler: retain the vehicle and selected channel ────────────────
 	// No role filter — passengers ("cargo") in MRAPs etc. also need this.
 	["AllVehicles", "GetOut", {
 		params ["_vehicle", "_role", "_unit"];
-		if (isPlayer _unit && {local _unit}) then {
+		if (isPlayer _unit && {local _unit} && {[_vehicle] call OKS_fnc_isIntercomVehicle}) then {
 			_unit setVariable ["GOL_lastIntercomVehicle", _vehicle];
 			_unit setVariable ["GOL_lastIntercomChannel", [_vehicle, _unit] call TFAR_fnc_getIntercomChannel];
 			_vehicle setVariable ["TFAR_externalIntercomMaxRange_Wireless", 50, true];
@@ -89,6 +97,60 @@ if (!hasInterface) exitWith {};
 				};
 			}, [_vehicle, _unit], 2, {}] call CBA_fnc_waitUntilAndExecute;
 		};
+	}, true, [], true] call CBA_fnc_addClassEventHandler;
+
+	// ── ACE vehicle interaction: select, assign, and connect manually ─────────
+	// This supports an initial wireless connection without entering the vehicle.
+	OKS_fnc_removeTFARWirelessConnectAction = {
+		params ["_vehicle"];
+
+		// TFAR's runtime action name is lowercase. This must be removed from the
+		// object action list, not the vehicle's config-defined ACE actions.
+		[_vehicle, 0, ["ACE_MainActions", "tfar_external_intercom_wirelessConnect"]] call ace_interact_menu_fnc_removeActionFromObject;
+	};
+
+	OKS_fnc_addWirelessIntercomAction = {
+		params ["_vehicle"];
+
+		if !([_vehicle] call OKS_fnc_isIntercomVehicle) exitWith {};
+
+		// TFAR adds this object action during vehicle initialisation. Its stock
+		// connection has different range/selection behaviour, so GOL replaces it.
+		[_vehicle] call OKS_fnc_removeTFARWirelessConnectAction;
+		[OKS_fnc_removeTFARWirelessConnectAction, [_vehicle], 0] call CBA_fnc_waitAndExecute;
+
+		if (_vehicle getVariable ["GOL_wirelessIntercomActionAdded", false]) exitWith {};
+
+		private _connectAction = [
+			"GOL_IntercomConnectVehicle",
+			"Connect to GOL Intercom",
+			"\A3\ui_f\data\igui\cfg\simpletasks\types\radio_ca.paa",
+			{
+				params ["_target", "_player"];
+				_player setVariable ["GOL_lastIntercomVehicle", _target];
+				_target setVariable ["TFAR_externalIntercomMaxRange_Wireless", 50, true];
+				[_target, _player, true] call OKS_fnc_connectWirelessIntercom;
+			},
+			{
+				params ["_target", "_player"];
+				private _connectedVehicle = _player getVariable ["TFAR_ExternalIntercomVehicle", objNull];
+				[_target] call OKS_fnc_isIntercomVehicle
+				&& {!(_connectedVehicle isEqualTo _target)}
+				&& {[_player] call TFAR_external_intercom_fnc_hasWirelessHeadgear}
+			}
+		] call ace_interact_menu_fnc_createAction;
+
+		[_vehicle, 0, ["ACE_MainActions"], _connectAction] call ace_interact_menu_fnc_addActionToObject;
+		_vehicle setVariable ["GOL_wirelessIntercomActionAdded", true];
+	};
+
+	{
+		[_x] call OKS_fnc_addWirelessIntercomAction;
+	} forEach vehicles;
+
+	["AllVehicles", "Init", {
+		params ["_vehicle"];
+		[_vehicle] call OKS_fnc_addWirelessIntercomAction;
 	}, true, [], true] call CBA_fnc_addClassEventHandler;
 
 	// ── Keybind: Toggle wireless intercom (default Shift+Tab) ─────────────────
@@ -131,12 +193,13 @@ if (!hasInterface) exitWith {};
 		}, {}, [15, [true, false, false]], false
 	] call CBA_fnc_addKeybind;
 
-	// ── ACE self-interaction: Connect (under TFAR Radio) ─────────────────────
+	// ── ACE self-interaction: GOL wireless connection (under TFAR Radio) ──────
+	// This intentionally remains separate from TFAR's own 20 m action.
 	// Disconnect + channel choice are provided natively by TFAR in this category.
 	private _connectAction = [
 		"GOL_IntercomConnect",
-		"Connect Intercom",
-		"\z\tfar\addons\external_intercom\ui\tfar_ace_interaction_external_intercom_wireless.paa",
+		"Connect to GOL Intercom",
+		"\A3\ui_f\data\igui\cfg\simpletasks\types\radio_ca.paa",
 		{
 			private _vehicle = _player getVariable ["GOL_lastIntercomVehicle", objNull];
 			[_vehicle, _player, true] call OKS_fnc_connectWirelessIntercom;
@@ -145,6 +208,7 @@ if (!hasInterface) exitWith {};
 			if (isNil "TFAR_external_intercom_fnc_connect") exitWith {false};
 			private _vehicle = _player getVariable ["GOL_lastIntercomVehicle", objNull];
 			if (isNull _vehicle || {!alive _vehicle}) exitWith {false};
+			if !([_vehicle] call OKS_fnc_isIntercomVehicle) exitWith {false};
 			if !(_player isNil "TFAR_ExternalIntercomVehicle") exitWith {false};
 			if !([_player] call TFAR_external_intercom_fnc_hasWirelessHeadgear) exitWith {false};
 			private _maxRange = (((boundingBoxReal _vehicle) select 2) / 2)
