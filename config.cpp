@@ -137,7 +137,13 @@ class CfgPatches
             "GOL_BMP2DM_GAF",
             "GOL_B_SDV_01_F",
             "GOL_O_SDV_01_F",
-            "GOL_I_SDV_01_F"
+            "GOL_I_SDV_01_F",
+            // TGP Helicopter Variants
+            "GOL_Heli_Transport_01_pylons_laser",
+            "GOL_Heli_Transport_01_laser",
+            "GOL_Heli_Light_01_dynamicLoadout_laser",
+            "GOL_Heli_Light_02_dynamicLoadout_laser",
+            "GOL_Heli_Light_03_dynamicLoadout_laser"
 		};
 		weapons[] = {
             "UK3CB_V_Invisible_Plate_Low",
@@ -172,12 +178,6 @@ class CfgPatches
             "GOL_weap_2a42_HE",
             "GOL_weap_2a42_AP",
             "GOL_weap_pkt",
-            // TGP Helicopter Variants
-            "GOL_Heli_Transport_01_pylons_laser",
-            "GOL_Heli_Transport_01_laser",
-            "GOL_Heli_Light_01_dynamicLoadout_laser",
-            "GOL_Heli_Light_02_dynamicLoadout_laser",
-            "GOL_Heli_Light_03_dynamicLoadout_laser",
             // M230 30mm Chain Gun Pod
             "GOL_weapon_M230_ChainGun",
             // NLAW lightweight variant (CBA Disposable: base / ready / used)
