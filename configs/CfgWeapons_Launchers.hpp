@@ -67,7 +67,7 @@ class GOL_weap_PSRL1: rhs_weap_rpg7 {
 // PSRL-1 is the precision (zero-dispersion) player variant.
 class GOL_weap_RPG7_RHS: rhs_weap_rpg7 {
 	author = "Guerrillas of Liberation";
-	displayName = "RPG-7V2 (GOL)";
+	displayName = "RPG-7V2 [AI] (GOL)";
 	descriptionShort = "Standard RPG-7. Accepts GOL rounds including Type-69 reduced-charge.";
 	scope = 2;
 	scopeArsenal = 2;
@@ -94,7 +94,7 @@ class GOL_weap_RPG7_RHS: rhs_weap_rpg7 {
 class launch_RPG7_F;
 class GOL_weap_RPG7_F: launch_RPG7_F {
 	author = "Guerrillas of Liberation";
-	displayName = "RPG-7 (GOL)";
+	displayName = "RPG-7 [AI] (GOL)";
 	descriptionShort = "Standard RPG-7. Accepts vanilla and Type-69 reduced-charge rounds.";
 	scope = 2;
 	scopeArsenal = 2;
@@ -112,7 +112,7 @@ class GOL_weap_RPG7_F: launch_RPG7_F {
 class rhs_weap_rpg18;
 class GOL_weap_RPG17_Type59: rhs_weap_rpg18 {
 	author = "Guerrillas of Liberation";
-	displayName = "RPG-17 (Type 59)";
+	displayName = "RPG-17 (Type 59) [AI]";
 	descriptionShort = "Disposable RPG. Pre-loaded with Type-59 anti-personnel HEAT round.";
 	scope = 2;
 	scopeArsenal = 2;
@@ -129,8 +129,8 @@ class GOL_weap_RPG17_Type59: rhs_weap_rpg18 {
 class GOL_weap_RPG17_Type59_used: GOL_weap_RPG17_Type59 {
 	scope = 1;
 	scopeArsenal = 1;
-	baseWeapon = "GOL_weap_RPG17_Type59"; // must match base — CBA lookup
-	displayName = "RPG-17 (Type 59) (Used)";
+	baseWeapon = "GOL_weap_RPG17_Type59 "; // must match base — CBA lookup
+	displayName = "RPG-17 (Type 59) [AI] (Used)";
 	descriptionShort = "Spent tube. Disposable — cannot be reloaded.";
 	weaponPoolAvailable = 0;
 	magazines[] = {};
@@ -142,7 +142,7 @@ class GOL_weap_RPG17_Type59_used: GOL_weap_RPG17_Type59 {
 // baseWeapon on _used MUST match base class — that's how CBA locates it.
 class GOL_weap_RPG17_Type69: rhs_weap_rpg18 {
 	author = "Guerrillas of Liberation";
-	displayName = "RPG-17 (Type 69)";
+	displayName = "RPG-17 (Type 69) [AI]";
 	descriptionShort = "Disposable RPG. Pre-loaded with Type-69 reduced-charge HEAT round.";
 	scope = 2;
 	scopeArsenal = 2;
@@ -160,7 +160,7 @@ class GOL_weap_RPG17_Type69_used: GOL_weap_RPG17_Type69 {
 	scope = 1;
 	scopeArsenal = 1;
 	baseWeapon = "GOL_weap_RPG17_Type69"; // must match base — CBA lookup
-	displayName = "RPG-17 (Type 69) (Used)";
+	displayName = "RPG-17 (Type 69) [AI] (Used)";
 	descriptionShort = "Spent tube. Disposable — cannot be reloaded.";
 	weaponPoolAvailable = 0;
 	magazines[] = {};
@@ -171,7 +171,7 @@ class GOL_weap_RPG17_Type69_used: GOL_weap_RPG17_Type69 {
 // Improved Type-69. VL trajectory. Type-69 damage +30%.
 class GOL_weap_RPG17_Type69II: rhs_weap_rpg18 {
 	author = "Guerrillas of Liberation";
-	displayName = "RPG-17 (Type 69-II)";
+	displayName = "RPG-17 (Type 69-II) [AI]";
 	descriptionShort = "Disposable RPG. Pre-loaded with Type 69-II improved HEAT round.";
 	scope = 2;
 	scopeArsenal = 2;
@@ -189,11 +189,48 @@ class GOL_weap_RPG17_Type69II_used: GOL_weap_RPG17_Type69II {
 	scope = 1;
 	scopeArsenal = 1;
 	baseWeapon = "GOL_weap_RPG17_Type69II"; // must match base — CBA lookup
-	displayName = "RPG-17 (Type 69-II) (Used)";
+	displayName = "RPG-17 (Type 69-II) [AI] (Used)";
 	descriptionShort = "Spent tube. Disposable — cannot be reloaded.";
 	weaponPoolAvailable = 0;
 	magazines[] = {};
 	class EventHandlers {}; // clear inherited fired EH
+};
+
+// ==================== GOL RPG-26 — disposable precision variant ====================
+// Keeps the RHS warhead and trajectory while eliminating launcher spread and in-flight deflection.
+class rhs_weap_rpg26;
+class GOL_weap_rpg26: rhs_weap_rpg26 {
+	author = "Guerrillas of Liberation";
+	displayName = "RPG-26 (GOL)";
+	descriptionShort = "Disposable RPG-26. Precision-tuned to fly where aimed.";
+	scope = 2;
+	scopeArsenal = 2;
+	baseWeapon = "GOL_weap_rpg26";
+	dispersion = 0;
+	magazines[] = {"CBA_FakeLauncherMagazine"};
+	magazineWell[] = {};
+	magazineReloadTime = 0.1;
+	reloadMagazineSound[] = {"",1,1};
+};
+
+class GOL_weap_rpg26_ready: GOL_weap_rpg26 {
+	scope = 1;
+	scopeArsenal = 1;
+	baseWeapon = "GOL_weap_rpg26";
+	magazines[] = {"GOL_mag_rpg26"};
+	class EventHandlers {
+		fired = "_this call CBA_fnc_firedDisposable";
+	};
+};
+
+class GOL_weap_rpg26_used: GOL_weap_rpg26 {
+	scope = 1;
+	scopeArsenal = 1;
+	baseWeapon = "GOL_weap_rpg26";
+	displayName = "RPG-26 (GOL) (Used)";
+	descriptionShort = "Spent RPG-26 tube. Disposable — cannot be reloaded.";
+	weaponPoolAvailable = 0;
+	magazines[] = {"rhs_launcher_dummy_mag"};
 };
 
 // ==================== GOL NLAW (lightweight, backpack-portable) ====================

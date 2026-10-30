@@ -1,13 +1,11 @@
-// BettIR NVG compatibility extension.
+// GOL IR illuminator compatibility extension.
 //
-// This file appends additional NVG classnames to BettIR's compatible list
-// and patches BettIR's light objects for stronger illumination.
+// This file appends additional NVG classnames to GOL's compatible list.
 //
-// It is loaded through GOL_MISC_COMPAT_BETTIR, which uses
-// skipWhenMissingDependencies = 1 so the patch is ignored when BettIR is absent.
+// It is loaded through GOL_MISC_COMPAT_IRLLM.
 
-// PART 1: Add GOL items to BettIR's compatibility lists
-class BettIR_Config {
+// PART 1: Add GOL items to the embedded compatibility lists
+class GOL_IRLLM_Config {
     class CompatibleNightvisionGoggles {
         // Common bino offset used by BettIR defaults.
         class ACE_NVG_Gen1 {

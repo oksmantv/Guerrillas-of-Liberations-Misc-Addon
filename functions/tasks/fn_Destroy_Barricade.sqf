@@ -3,7 +3,7 @@
 	// [[barricade_1,barricade_2],"TaskParent"] spawn OKS_fnc_Destroy_Barricade;
 	if(HasInterface && !isServer) exitWith {};
 
-	Params ["_Barricades",["_TaskParent",nil,[""]],["_ShouldAddActionToDestroy",false,[false]]];
+	Params ["_Barricades",["_TaskParent",nil,[""]],["_Indestructible",false,[false]]];
 	Private ["_startmarker","_TaskPosition","_TaskTitle","_BarricadeText"];
 	Private _Debug_Variable = false;
 	_TaskTitle = "Clear Barricade";
@@ -49,9 +49,16 @@
 		};
 	} foreach _Barricades;
 
-	if(_ShouldAddActionToDestroy && count _Barricades == 1) then {
-		_Barricade = _Barricades select 0;
-		[_Barricade] remoteExec ["OKS_fnc_Destroy_Barricade_Action", 0];
+	if(_Indestructible) then {
+		{
+			_X addEventHandler ["AmmoExplodedNear", {	
+				params ["_object", "_shot", "_position", "_velocity", "_ammo", "_explosive", "_indirectHit", "_invArmor", "_damage"];
+				_WhiteListedExplosives = ["SatchelCharge_Remote_Ammo","DemoCharge_Remote_Ammo"];
+				if(_object distance2d _position < 20 && _ammo in _WhiteListedExplosives) then {
+					deleteVehicle _object;	
+				};
+			}];
+		} foreach _Barricades;
 	};
 
 	waitUntil {sleep 10; {_X call BIS_fnc_taskCompleted} count (_TaskMain call BIS_fnc_taskChildren) == count (_TaskMain call BIS_fnc_taskChildren)};

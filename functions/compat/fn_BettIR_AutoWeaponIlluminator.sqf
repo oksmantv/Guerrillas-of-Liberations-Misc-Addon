@@ -18,8 +18,8 @@
 */
 
 if (!hasInterface) exitWith {};
-if (!isClass (configFile >> "CfgPatches" >> "BettIR_Core")) exitWith {
-    ["[BettIR_AutoWeaponIlluminator] BettIR not detected, auto-illuminator disabled.", false, false, true] spawn OKS_fnc_LogDebug;
+if (!isClass (configFile >> "CfgPatches" >> "GOL_IRLLM_Core")) exitWith {
+    ["[GOL_IRLLM_AutoWeaponIlluminator] GOL IR illuminator not detected, auto-illuminator disabled.", false, false, true] spawn OKS_fnc_LogDebug;
 };
 
 // Mode classifications
@@ -54,8 +54,8 @@ private _laserCapableModes = _dualModes + _pointerModes;
     
     if (!alive player) exitWith {};
     
-    // Check if BettIR functions are available
-    if (isNil "BettIR_fnc_weaponIlluminatorOn") exitWith {};
+    if (isNil "GOL_IRLLM_fnc_weaponIlluminatorOn") exitWith {};
+    if !([] call GOL_IRLLM_fnc_initialize) exitWith {};
     
     private _currentWeapon = primaryWeapon player;
     if (_currentWeapon == "") exitWith {
@@ -64,7 +64,7 @@ private _laserCapableModes = _dualModes + _pointerModes;
         private _bettirWeaponOn = player getVariable ["BettIR_weapon_illuminator_on", false];
         
         if (_wasAutoActive && _bettirWeaponOn) then {
-            [player] call BettIR_fnc_weaponIlluminatorOff;
+            [player] call GOL_IRLLM_fnc_weaponIlluminatorOff;
         };
         
         player setVariable ["OKS_BettIR_AutoActive", false];
@@ -114,7 +114,7 @@ private _laserCapableModes = _dualModes + _pointerModes;
         
         // Switching TO flashlight → turn off BettIR illuminator AND flashlight (prevent auto-on)
         if (_isFlashlightMode && _bettirWeaponOn) then {
-            [player] call BettIR_fnc_weaponIlluminatorOff;
+            [player] call GOL_IRLLM_fnc_weaponIlluminatorOff;
             player setVariable ["OKS_BettIR_AutoActive", false];
             
             // Force flashlight OFF to prevent auto-activation
@@ -173,7 +173,7 @@ private _laserCapableModes = _dualModes + _pointerModes;
             private _wasAutoActive = player getVariable ["OKS_BettIR_AutoActive", false];
             private _bettirWeaponOn = player getVariable ["BettIR_weapon_illuminator_on", false];
             if (_wasAutoActive && _bettirWeaponOn) then {
-                [player] call BettIR_fnc_weaponIlluminatorOff;
+                [player] call GOL_IRLLM_fnc_weaponIlluminatorOff;
             };
             player setVariable ["OKS_BettIR_AutoActive", false];
             player setVariable ["OKS_BettIR_AutoMode", ""];
@@ -209,7 +209,7 @@ private _laserCapableModes = _dualModes + _pointerModes;
     
     // Mode type changed? (illuminator ↔ dual) → deactivate first
     if ((_lastAutoMode != "") && (_lastAutoMode != _currentMode) && _wasAutoActive && _bettirWeaponOn) then {
-        [player] call BettIR_fnc_weaponIlluminatorOff;
+        [player] call GOL_IRLLM_fnc_weaponIlluminatorOff;
         player setVariable ["OKS_BettIR_AutoActive", false];
         
         if (missionNamespace getVariable ["GOL_Stealth_PlayerVisibilityDebug", false]) then {
@@ -232,7 +232,7 @@ private _laserCapableModes = _dualModes + _pointerModes;
     
     // Auto-deactivate when conditions no longer met (only if WE activated it)
     if (!_shouldBeOn && _bettirWeaponOn && _wasAutoActive) then {
-        [player] call BettIR_fnc_weaponIlluminatorOff;
+        [player] call GOL_IRLLM_fnc_weaponIlluminatorOff;
         player setVariable ["OKS_BettIR_AutoActive", false];
         
         if (missionNamespace getVariable ["GOL_Stealth_PlayerVisibilityDebug", false]) then {

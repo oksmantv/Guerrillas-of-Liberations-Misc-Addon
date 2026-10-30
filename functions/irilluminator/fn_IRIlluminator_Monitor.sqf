@@ -43,44 +43,19 @@ missionNamespace setVariable ["OKS_IRIlluminator_Monitor_Started", true];
     waitUntil { sleep 0.25; !isNull player };
     
     // Detect if BettIR is present (creates proper beam lights)
-    private _hasBettIR = isClass (configFile >> "CfgPatches" >> "BettIR_Core");
+    private _hasBettIR = isClass (configFile >> "CfgPatches" >> "GOL_IRLLM_Core");
     
-    // Track lights per unit: [[unit, light], [unit, light], ...] (only used when BettIR NOT present)
-    private _unitLights = [];
-    
-    while { true } do {
-        private _enabled = missionNamespace getVariable ["GOL_IRIlluminator_Enabled", true];
-        
-        if (!_enabled) then {
-            // Clean up all lights if system disabled (only if we're managing lights)
-            if (!_hasBettIR) then {
-                {
-                    private _light = _x select 1;
-                    if (!isNull _light) then {
-                        deleteVehicle _light;
-                    };
-                } forEach _unitLights;
-                _unitLights = [];
-            };
-            sleep 1;
-            continue;
-        };
-        
-        // Get all players within reasonable distance (optimization)
-        private _maxDistance = missionNamespace getVariable ["GOL_IRIlluminator_MaxDistance", 150];
-        private _nearPlayers = allPlayers select {
-            alive _x && { (player distance _x) < _maxDistance }
-        };
-        
-        // Track which units should have lights this frame
-        private _unitsWithLights = [];
-        
-        // Check each nearby player
-        {
-            private _unit = _x;
-            private _weapon = currentWeapon _unit;
-            
-            if (_weapon != "") then {
+    /*
+        Client-side, standalone IR illuminator monitor.
+
+        The legacy BettIR bridge was removed. GOL now creates and manages its own
+        local scripted lights for OX3000 dual-mode attachments. Light strength is
+        read from the public GOL_IRIlluminator_Strength unit variable so clients
+        render the same intensity for nearby players.
+
+        Usage:
+        [] spawn OKS_fnc_IRIlluminator_Monitor;
+    */
                 // Get weapon accessories
                 private _accessories = switch (_weapon) do {
                     case (primaryWeapon _unit): { primaryWeaponItems _unit };
@@ -123,18 +98,18 @@ missionNamespace setVariable ["OKS_IRIlluminator_Monitor_Started", true];
                         // Determine which light class to use based on strength
                         private _strength = _strengthMultiplier * 100;
                         private _lightClass = if (_strength >= 3) then {
-                            "BettIR_Illuminator_Weapon_3"  // Maximum (3%) - extended
+                            "GOL_IRLLM_Illuminator_Weapon_3"  // Maximum (3%) - extended
                         } else {
                             if (_strength >= 2.5) then {
-                                "BettIR_Illuminator_Weapon_2_5"  // Very High (2.5%) - extended
+                                "GOL_IRLLM_Illuminator_Weapon_2_5"  // Very High (2.5%) - extended
                             } else {
                                 if (_strength >= 2) then {
-                                    "BettIR_Illuminator_Weapon_2"  // High (2%)
+                                    "GOL_IRLLM_Illuminator_Weapon_2"  // High (2%)
                                 } else {
                                     if (_strength >= 1.5) then {
-                                        "BettIR_Illuminator_Weapon_1_5"  // Medium (1.5%)
+                                        "GOL_IRLLM_Illuminator_Weapon_1_5"  // Medium (1.5%)
                                     } else {
-                                        "BettIR_Illuminator_Weapon_1"  // Low (1%)
+                                        "GOL_IRLLM_Illuminator_Weapon_1"  // Low (1%)
                                     }
                                 }
                             }

@@ -14,10 +14,15 @@ params [
 
 if (!isServer) exitWith { false };
 if (isNull _unit || { !alive _unit }) exitWith { false };
+if (isPlayer _unit || { _unit in playableUnits } || { _unit in switchableUnits }) exitWith { false };
 
 if (!isNil "ace_common_fnc_isAwake" && { !([_unit] call ace_common_fnc_isAwake) }) exitWith { false };
 
-[] call OKS_fnc_Stealth_Init;
+// Normal startup initializes these registries once. Retain lazy initialization
+// only for direct calls made before the stealth bootstrap has run.
+if (isNil "GOL_Stealth_TalkReactionBySide") then {
+    [] call OKS_fnc_Stealth_Init;
+};
 
 private _debug = missionNamespace getVariable ["GOL_Stealth_Debug", false];
 private _log = {

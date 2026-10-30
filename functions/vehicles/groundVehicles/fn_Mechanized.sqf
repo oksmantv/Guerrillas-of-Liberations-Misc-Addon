@@ -123,6 +123,9 @@ if (_Vehicle isKindOf "LandVehicle") then {
 				private _veh    = _this select 0;
 				private _caller = _this select 1;
 				_veh setVariable ["OKS_ProxRound_Active", false, true];
+				_caller setVariable ["OKS_ProxRound_LaseRange", -1];
+				_caller setVariable ["OKS_ProxRound_RangeOffset", 0];
+				_caller setVariable ["OKS_ProxRound_Range", -1];
 				[parseText (
 					"<t align='center'>" +
 					"<img image='\a3\ui_f\data\IGUI\Cfg\Actions\ico_OFF_ca.paa' size='2'/><br/>" +
@@ -141,6 +144,9 @@ if (_Vehicle isKindOf "LandVehicle") then {
 				private _veh    = _this select 0;
 				private _caller = _this select 1;
 				_veh setVariable ["OKS_ProxRound_Active", true, true];
+				_caller setVariable ["OKS_ProxRound_LaseRange", -1];
+				_caller setVariable ["OKS_ProxRound_RangeOffset", 0];
+				_caller setVariable ["OKS_ProxRound_Range", -1];
 				[parseText (
 					"<t align='center'>" +
 					"<img image='\a3\ui_f\data\IGUI\Cfg\Actions\ico_ON_ca.paa' size='2'/><br/>" +

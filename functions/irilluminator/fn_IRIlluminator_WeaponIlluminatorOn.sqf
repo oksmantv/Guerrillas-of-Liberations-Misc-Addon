@@ -13,6 +13,8 @@
 
 params ['_unit'];
 
+if !([] call GOL_IRLLM_fnc_initialize) exitWith {};
+
 if (_unit getVariable ['BettIR_weapon_illuminator_on', false]) exitWith {};
 if (currentVisionMode _unit != 1) exitWith {};
 if (currentWeapon _unit != primaryWeapon _unit) exitWith {}; 
@@ -24,11 +26,17 @@ if (_attachmentClassname != '') then {
     private _attachmentIndex = BettIR_CompatibleAttachments findIf { _x == _attachmentClassname };
 
     if (_attachmentIndex != -1) then {
+		diag_log format ["[GOL_IRLLM] OX3000 auto illuminator accepted attachment: %1.", _attachmentClassname];
         private _offset = BettIR_CompatibleAttachmentsOffsets select _attachmentIndex;
         _unit setVariable ['BettIR_weapon_illuminator_offset', _offset, false];
         _unit setVariable ['BettIR_weapon_illuminator_on', true, true]; 
         
         if (currentVisionMode player == 1) then {
+            // Auto activation must not depend on a later visionMode event.
+            if (isNil "BettIR_EachFrameHandlerId" || {BettIR_EachFrameHandlerId == -1}) then {
+                [true] spawn GOL_IRLLM_fnc_handleVisionModeChange;
+            };
+
             // ** GOL MODIFICATION: Create light with correct strength class **
             // Get unit's strength setting (default 1% - minimum)
             // Note: Load from profileNamespace if unit variable not set yet
@@ -44,18 +52,18 @@ if (_attachmentClassname != '') then {
             
             // Determine which light class to use based on strength
             private _lightClass = if (_strength >= 3) then {
-                "BettIR_Illuminator_Weapon_3"  // Maximum (3%) - extended
+                "GOL_IRLLM_Illuminator_Weapon_3"  // Maximum (3%) - extended
             } else {
                 if (_strength >= 2.5) then {
-                    "BettIR_Illuminator_Weapon_2_5"  // Very High (2.5%) - extended
+                    "GOL_IRLLM_Illuminator_Weapon_2_5"  // Very High (2.5%) - extended
                 } else {
                     if (_strength >= 2) then {
-                        "BettIR_Illuminator_Weapon_2"  // High (2%)
+                        "GOL_IRLLM_Illuminator_Weapon_2"  // High (2%)
                     } else {
                         if (_strength >= 1.5) then {
-                            "BettIR_Illuminator_Weapon_1_5"  // Medium (1.5%)
+                            "GOL_IRLLM_Illuminator_Weapon_1_5"  // Medium (1.5%)
                         } else {
-                            "BettIR_Illuminator_Weapon_1"  // Low (1%)
+                            "GOL_IRLLM_Illuminator_Weapon_1"  // Low (1%)
                         }
                     }
                 }
@@ -69,11 +77,13 @@ if (_attachmentClassname != '') then {
             
             // Update BettIR's unit list
             BettIR_UnitList_LastUpdate = time;
-            [] spawn BettIR_fnc_updateUnitList;
+            [] spawn GOL_IRLLM_fnc_updateUnitList;
             
             if (missionNamespace getVariable ["GOL_IRIlluminator_Debug", false]) then {
                 systemChat format ["[IR Illuminator] Created %1 weapon light using class %2 (%3%% strength)", _attachmentClassname, _lightClass, _strength];
             };
         };
-    };
+        } else {
+		diag_log format ["[GOL_IRLLM] OX3000 auto illuminator rejected unsupported attachment: %1.", _attachmentClassname];
+        };
 };

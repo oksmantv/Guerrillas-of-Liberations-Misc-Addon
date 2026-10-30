@@ -4,8 +4,11 @@ class CfgPatches
 	class GOL_MISC_ADDON {
         requiredAddons[] = { 
             "A3_3DEN",
+            "A3_Characters_F",
+            "A3_Characters_F_Beta",
             "A3_UI_F", 
             "A3_Air_F",
+            "A3_Boat_F_Beta_SDV_01",
             "A3_Soft_F",
             "A3_Soft_F_Beta",
             "A3_Modules_F",
@@ -21,8 +24,8 @@ class CfgPatches
             "rhs_weapons",
             "rhs_c_weapons",
             "rhs_c_bmp",
-            
             "rhsusf_main",
+			"rhsusf_weapons",
             "rhsusf_c_airweapons",
             "rhsusf_c_heavyweapons",
             "UK3CB_BAF_Weapons_Static",
@@ -31,6 +34,8 @@ class CfgPatches
             "UK3CB_BAF_Weapons_L119",
             "UK3CB_BAF_Weapons_L110",
             "UK3CB_Factions_Weapons_G36",
+			"Weapons_F_JCA_IA_Pistols_G17",
+			"Weapons_F_JCA_IA_SMGs_MP5",
             "FPV_UA",
             "Kimi_HMDs_Helos"
         };
@@ -78,6 +83,7 @@ class CfgPatches
             "GOL_I_E_SAM_System_03_F",
             "OKS_Module_MechanizedSetup",
             "OKS_Module_HelicopterSetup",
+            "OKS_Module_JetSetup",
             "OKS_Module_MHQ",
             "OKS_Module_ApplyUnitGear",
             "OKS_Module_Mortars",
@@ -123,11 +129,21 @@ class CfgPatches
             "OKS_Module_SpawnGolVehicle",
             "OKS_Module_SpawnGolMHQ",
 			"GOL_FastRope_DZ",
+            "OKS_InvisibleWall3m",
 			"GOL_Flag_Hellfish",
             "Fennek_wd","Fennek_d","Fennek_e","Fennek_hmg_wd","Fennek_hmg_d","Fennek_hmg_e","Fennek_gmg_wd","Fennek_gmg_d","Fennek_gmg_e",
             "GOL_BMP2DM",
             "GOL_BMP2DM_CDF",
-            "GOL_BMP2DM_GAF"
+            "GOL_BMP2DM_GAF",
+            "GOL_B_SDV_01_F",
+            "GOL_O_SDV_01_F",
+            "GOL_I_SDV_01_F",
+            // TGP Helicopter Variants
+            "GOL_Heli_Transport_01_pylons_laser",
+            "GOL_Heli_Transport_01_laser",
+            "GOL_Heli_Light_01_dynamicLoadout_laser",
+            "GOL_Heli_Light_02_dynamicLoadout_laser",
+            "GOL_Heli_Light_03_dynamicLoadout_laser"
 		};
 		weapons[] = {
             "UK3CB_V_Invisible_Plate_Low",
@@ -145,6 +161,9 @@ class CfgPatches
             "rhs_beret_vdv3_GOL",
             "rhs_ssh68_2_GOL",
             "OKS_DroneDisruptor_Pistol",
+            // Ghost 9 mm suppressor (JCA model; see compat_jca.hpp)
+            "GOL_muzzle_snds_9MM_ghost_black",
+			"GOL_muzzle_snds_mp5_ghost",
             "GOL_MMG_01_tan_F",
             "GOL_MMG_01_hex_F",
             "GOL_weap_pkm",
@@ -155,25 +174,42 @@ class CfgPatches
             "GOL_LMG_Zafir_F",
             "GOL_weap_fnmag",
             "GOL_MG3_KWS_B",
+            "GOL_weap_m249_light_S",
             "GOL_weap_2a42_HE",
             "GOL_weap_2a42_AP",
             "GOL_weap_pkt",
-            // TGP Helicopter Variants
-            "GOL_Heli_Transport_01_pylons_laser",
-            "GOL_Heli_Transport_01_laser",
-            "GOL_Heli_Light_01_dynamicLoadout_laser",
-            "GOL_Heli_Light_02_dynamicLoadout_laser",
-            "GOL_Heli_Light_03_dynamicLoadout_laser",
             // M230 30mm Chain Gun Pod
             "GOL_weapon_M230_ChainGun",
             // NLAW lightweight variant (CBA Disposable: base / ready / used)
             "GOL_launch_NLAW_F",
             "GOL_launch_NLAW_ready_F",
-            "GOL_launch_NLAW_used_F"
+            "GOL_launch_NLAW_used_F",
+			"GOL_weap_rpg26",
+            // "Terror GMG" — reduced-lethality AI GMG/Mk19 variants (see fn_RemoveVehicleHE.sqf)
+            "GOL_weap_GMG40MM_Terror",
+            "GOL_weap_MK19_Terror",
+            "GOL_weap_MK19_CROWS_Terror",
+            "GOL_weap_MK19_UK3CB_Terror",
+            "GOL_V_RebreatherIA",
+            "GOL_V_RebreatherIR",
+            "GOL_V_RebreatherB",
+            "GOL_U_I_Wetsuit",
+            "GOL_U_B_Wetsuit",
+            "GOL_U_O_Wetsuit",
+            "GOL_G_B_Diving",
+            "GOL_G_O_Diving",
+            "GOL_G_I_Diving"
         };
 		magazines[] = {
             "GOL_1Rnd_UGL_FlareIR",
             "GOL_1Rnd_UGL_FlareWhite",
+            // Stealth magazines
+            "GOL_17Rnd_9x19_G17_Subsonic_Mag",
+            "GOL_30Rnd_9x21_Subsonic_Mag",
+            "GOL_30Rnd_9x19_MP5_Subsonic_Mag",
+            "GOL_UK3CB_MP5_30Rnd_9x19_Subsonic_Mag",
+            // MAAWS Round with same trajectory as HEAT
+			"GOL_mag_MRAWS_HEDP_F",
 			// 9.3x64mm for heavy machine guns — ball, tracer, SLAP, and 200-round variants.
 			"GOL_150Rnd_93x64_Mag",
 			"GOL_150Rnd_93x64_Mag_Tracer",
@@ -283,31 +319,53 @@ class CfgPatches
 			"GOL_PylonWeapon_M230_HE",
 			"GOL_PylonWeapon_M230_AP",
 			"GOL_PylonWeapon_M230_HE_L",
-			"GOL_PylonWeapon_M230_AP_L"
+			"GOL_PylonWeapon_M230_AP_L",
+			// "Terror GMG" magazines (reduced-lethality HE, see CfgAmmo.cpp)
+			"GOL_mag_GMG40MM_200",
+			"GOL_mag_GMG40MM_96",
+			"GOL_mag_GMG40MM_64",
+			"GOL_mag_GMG40MM_32",
+			"GOL_mag_MK19_48_M384",
+			"GOL_mag_MK19_48_M1001",
+			"GOL_mag_MK19_48_M430I",
+			"GOL_mag_MK19_48_M430A1",
+			"GOL_mag_MK19_96_M384",
+			"GOL_mag_MK19_96_M1001",
+			"GOL_mag_MK19_96_M430I",
+			"GOL_mag_MK19_96_M430A1"
 		};
 	};
 
+    class GOL_IRLLM_Core {
+        requiredAddons[] = {"A3_UI_F"};
+        requiredVersion = 0.1;
+        author = "OksmanTV";
+        name = "GOL IR Illuminator Core";
+        units[] = {};
+        weapons[] = {};
+        magazines[] = {};
+    };
+
 	class GOL_MISC_COMPAT_JCA {
-		requiredAddons[] = {"Weapons_F_JCA_IA_Rifles_HK437"};
+        requiredAddons[] = {
+            "Weapons_F_JCA_IA_Rifles_HK437",
+            "Weapons_F_JCA_IA_Pistols_G17",
+            "Weapons_F_JCA_IA_SMGs_MP5"
+        };
 		requiredVersion = 2.14;
 		author = "OksmanTV";
 		units[] = {};
 		weapons[] = {
 			"GOL_arifle_HK437_VFG_black_F",
-			"GOL_arifle_HK437_AFG_black_F"
+            "GOL_arifle_HK437_AFG_black_F",
+			"GOL_muzzle_snds_9MM_ghost_black"
 		};
-		magazines[] = {};
+        magazines[] = {
+            "GOL_17Rnd_9x19_G17_Subsonic_Mag",
+            "GOL_30Rnd_9x21_Subsonic_Mag",
+			"GOL_30Rnd_9x19_MP5_Subsonic_Mag"
+        };
 	};
-
-    class GOL_MISC_COMPAT_BETTIR {
-        requiredAddons[] = {"BettIR_Core"};
-        requiredVersion = 2.14;
-        author = "OksmanTV";
-        skipWhenMissingDependencies = 1;
-        units[] = {};
-        weapons[] = {};
-        magazines[] = {};
-    };
 
     class GOL_MISC_COMPAT_RHSGREF {
         requiredAddons[] = {"rhsgref_main"};
@@ -337,6 +395,7 @@ class CfgPatches
 
 #include "version.hpp"
 #include "BIS_AddonInfo.hpp"
+#include "vendor\BettIR_Core\legacy_core.hpp"
 #include "configs\CfgAmmo.cpp"
 #include "configs\CfgBrains.cpp"
 #include "configs\CfgEden.cpp"
@@ -344,6 +403,9 @@ class CfgPatches
 #include "configs\CfgMagazineWells.cpp"
 #include "configs\CfgRecoils.cpp"
 #include "configs\CfgWeapons.cpp"
+#define GOL_GEAR_CFGGLASSES
+#include "configs\vehicles\gear.hpp"
+#undef GOL_GEAR_CFGGLASSES
 #include "configs\CfgVehicles.cpp"
 #include "configs\CfgFunctions.cpp"
 #include "configs\CfgSounds.cpp"
@@ -360,7 +422,6 @@ class RscTitles {
 
 #include "configs\CfgJammerUILayout.cpp"
 #include "configs\CfgOrbat.cfg"
-#include "configs\compat\compat_bettir.hpp"
 #include "configs\compat\compat_ace_irlight_slots.hpp"
 
 // CBA Disposable Framework registration.
@@ -368,14 +429,20 @@ class RscTitles {
 // CBA intercepts addWeapon of base, gives player the ready variant;
 // after firing, swaps to the used variant.
 class CBA_DisposableLaunchers {
+	GOL_weap_rpg26[] = {"GOL_weap_rpg26_ready", "GOL_weap_rpg26_used"};
     GOL_launch_NLAW_ready_F[] = {"GOL_launch_NLAW_F", "GOL_launch_NLAW_used_F"};
 };
 
 class CfgMods {
     class GOL_MISC_ADDON {
         name = "Guerrillas of Liberation Misc";
-        author = "Oksman";
         url = "https://gol-clan.com/home";
+        author = "Guerrillas of Liberation";
+        logo = "\OKS_GOL_Misc\data\images\logo.paa";
+        logoSmall = "\OKS_GOL_Misc\data\images\logo.paa";
+        logoOver = "\OKS_GOL_Misc\data\images\logo.paa";
+        tooltipOwned = "Guerrillas of Liberation Misc";
+        dlcColor[] = {0.1, 0.5, 0.9, 1};
     };
 };
 
@@ -481,6 +548,9 @@ class CfgNotifications
 };
 
 class Extended_PreInit_EventHandlers {
+    class GOL_IRLLM_PreInit {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\vendor\BettIR_Core\XEH_preInit.sqf'";
+    };
     class OKS_PreInit_Core {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_core.sqf'";
     };
@@ -559,9 +629,18 @@ class Extended_PreInit_EventHandlers {
     class OKS_PreInit_Stealth {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_stealth.sqf'";
     };
+    class OKS_PreInit_Weather {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_weather.sqf'";
+    };
+    class OKS_PreInit_SpawnMultiplier {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_spawnMultiplier.sqf'";
+    };
 };
 
 class Extended_PostInit_EventHandlers {
+    class GOL_IRLLM_PostInit {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\vendor\BettIR_Core\XEH_postInit.sqf'";
+    };
     class OKS_PostInit_Global {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_PostInit_Global.sqf'";
     };
@@ -570,6 +649,9 @@ class Extended_PostInit_EventHandlers {
     };
     class OKS_PostInit_Intercom {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_postInit_Intercom.sqf'";
+    };
+    class OKS_PostInit_Weather {
+        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_postInit_weather.sqf'";
     };
 };
 
@@ -598,6 +680,7 @@ class CfgSettings {
             class GOL_MISC_ADDON {
                 main_addon = "GOL_MISC_ADDON";
             };
+            class GOL_IRLLM_Core {};
         };
     };
 };

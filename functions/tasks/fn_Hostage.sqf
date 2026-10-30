@@ -19,7 +19,8 @@ Private _HostageDebug = missionNamespace getVariable ["GOL_HVT_Debug",false];
 	Params [
 		["_UnitsOrGroupOrArray",[],[[],grpNull,objNull]],
 		["_TaskParent",nil,[""]],
-		["_TaskOnStart",false,[false]]
+		["_TaskOnStart",false,[false]],
+		["_ExitPosition", [], [[], objNull,""]]
 	];
 
 	if(_HostageDebug) then {
@@ -56,21 +57,67 @@ Private _HostageDebug = missionNamespace getVariable ["GOL_HVT_Debug",false];
 		_X disableAI "MOVE";
 		_X setUnitPos "UP";
 		_X setCaptive true;
-		[_X, true] call ACE_captives_fnc_setHandcuffed;
+		_x switchMove "acts_aidlpsitmstpssurwnondnon04";
 		removeAllWeapons _X;
 		removeGoggles _X;
 		removeBackpack _X;
 		removeHeadgear _X;
 		_X addGoggles "G_Blindfold_01_black_F";
 
-		_X spawn {
-			waitUntil {sleep 1; !(_this getVariable ["ace_captives_isHandcuffed", true]) || !Alive _this};
-			if(alive _this) then {
-				removeGoggles _this;
-			};			
+		[_X,_ExitPosition] spawn {
+			_this params ["_X","_exitPos"];
+			waitUntil {sleep 1; animationState _X != "acts_aidlpsitmstpssurwnondnon_loop" || !Alive _X};
+			if(alive _X) then {
+				removeGoggles _X;
+			};
+			if(_exitPos isNotEqualTo []) then {
+				_trueExitPos = [];
+				_X enableAI "ALL";
+				_X allowFleeing 0;
+				_X setCaptive false;
+				if(typeName _exitPos == "ARRAY") then {
+					_X doMove _exitPos;
+					_trueExitPos = _exitPos;
+				} else {
+					if(typeName _exitPos == "OBJECT") then {
+						_X doMove (getPos _exitPos);
+						_trueExitPos = getPos _exitPos;
+					} else {
+						_X doMove (getMarkerPos _exitPos);
+						_trueExitPos = getMarkerPos _exitPos;
+					};
+				};
+
+				waitUntil { !Alive _X || (_X distance _trueExitPos < 10) };
+				deleteVehicle _X;
+			};
 		};			
 		_X setVariable ["GOL_IsStatic",true,true];
 		_X setVariable ["GOL_HVT",true,true];
+
+		[
+			_X,																// Object the action is attached to
+			"Release Prisoner",													// Title of the action
+			"\a3\ui_f\data\IGUI\Cfg\holdactions\holdaction_unbind_ca.paa",	// Idle icon shown on screen
+			"\a3\ui_f\data\IGUI\Cfg\holdactions\holdaction_unbind_ca.paa",	// Progress icon shown on screen
+			"_this distance _target < 3",									// Condition for the action to be shown
+			"_caller distance _target < 3",									// Condition for the action to progress
+			{},																// Code executed when action starts
+			{},																// Code executed on every progress tick
+			{ 
+				params ["_target", "_caller", "_actionId"];
+				[
+					_target,
+					"Acts_AidlPsitMstpSsurWnonDnon_out"						// Code executed on completion
+				] remoteExec ["playMove",0];			
+			},							
+			{},																// Code executed on interrupted
+			[],																// Arguments passed to the scripts as _this select 3
+			1,																// Action duration in seconds
+			0,																// Priority
+			true,															// Remove on completion
+			false															// Show in unconscious state
+		] remoteExec ["BIS_fnc_holdActionAdd", 0, true];					// MP-compatible implementation
 	} forEach _Units;
 	
 	Private _TaskId = format["HostageTask_%1",(random 9999)];
@@ -86,13 +133,13 @@ Private _HostageDebug = missionNamespace getVariable ["GOL_HVT_Debug",false];
 	_TaskPosition = _TaskPosition vectorMultiply (1 / (count _Units));		
 
 	if(_TaskOnStart) then {
-		_TaskDescription = format["You have been tasked with rescuing the hostages, there are %1 in total. Once released, leave them and move on with your mission.",count _Units];
+		_TaskDescription = format["You have been tasked with rescuing the hostages, there are %1 in total. Free them using the hold action (default: spacebar)",count _Units];
 		[
 			true,
 			_TaskArray,
 			[
 				_TaskDescription,
-				"Rescued Hostages",
+				"Rescue Hostages",
 				"Rescue"
 			],
 			_TaskPosition,
@@ -107,7 +154,12 @@ Private _HostageDebug = missionNamespace getVariable ["GOL_HVT_Debug",false];
 		};
 	};
 
-	waitUntil {sleep 5; {(_X getVariable ["ace_captives_isHandcuffed", true])} count _Units == 0 || {!Alive _X} count _Units == count _Units};
+	waitUntil {
+		sleep 5;
+		{animationState _X == "acts_aidlpsitmstpssurwnondnon_loop"} count _Units == 0 
+		|| {!Alive _X} count _Units == count _Units
+	};
+
 	if({!Alive _X} count _Units == count _Units) exitWith {
 		// Fail
 		if(_HostageDebug) then {

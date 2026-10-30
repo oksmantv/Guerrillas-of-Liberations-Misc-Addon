@@ -1,5 +1,23 @@
 class CfgFunctions // Defines a function
-{	
+{
+	class GOL_IRLLM
+	{
+		class Core
+		{
+			class initialize { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_initialize.sqf"; };
+			class getCompatibleNVGs { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_getCompatibleNVGs.sqf"; };
+			class getCompatibleWeaponAttachments { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_getCompatibleWeaponAttachments.sqf"; };
+			class updateUnitList { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_updateUnitList.sqf"; };
+			class nvgIlluminatorOn { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_nvgIlluminatorOn.sqf"; };
+			class nvgIlluminatorOff { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_nvgIlluminatorOff.sqf"; };
+			class toggleNvgIlluminator { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_toggleNvgIlluminator.sqf"; };
+			class weaponIlluminatorOn { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_weaponIlluminatorOn.sqf"; };
+			class weaponIlluminatorOff { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_weaponIlluminatorOff.sqf"; };
+			class toggleWeaponIlluminator { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_toggleWeaponIlluminator.sqf"; };
+			class handleVisionModeChange { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_handleVisionModeChange.sqf"; };
+		};
+	};
+
 	class OKS {
 		class OKS_Packing {
 			file = "\OKS_GOL_Misc\functions\staticWeapons";
@@ -24,8 +42,11 @@ class CfgFunctions // Defines a function
 			class M6_Add_Unpack_Actions {};
 			class M6_Flare_Altitude_Deploy {};
 			class ProxRound_Init {};
+			class ProxRound_AdjustRange {};
+			class ProxRound_ShowRangeHint {};
 			class ProxRound_FiredHandler {};
 			class ProxRound_TrackRound {};
+			class SearchLight {};
 		};
 
 		class OKS_Tasks {
@@ -78,6 +99,7 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\logic";
 			class GetClientId {};
 			class LogDebug {};
+			class MissionCompleteHint {};
 			class TrimLeadingAndTrailingWhitespaceFromString {};
 			class SteerVehicleToTarget {};
 			class FlagTeleport {};
@@ -184,6 +206,7 @@ class CfgFunctions // Defines a function
 			class ApplyUnitGear {};
 			class SetupMechanized {};				
 			class SetupHelicopter {};				
+			class SetupJet {};
 			class SetupMHQ {};							
 			class ModuleForceKit {};
 			class ModuleSpawnGolVehicle {};
@@ -204,16 +227,32 @@ class CfgFunctions // Defines a function
 			class ModuleAirBase {};
 		};				
 
+		class OKS_Weather {
+			file = "\OKS_GOL_Misc\functions\weather";
+			class Weather_Start {};
+			class Weather_Stop {};
+			class Weather_ServerLoop {};
+			class Weather_ClientStart {};
+			class Weather_ClientPosition {};
+			class Weather_ClientSnow {};
+			class Weather_ClientFog {};
+			class Weather_ClientBreath {};
+			class Weather_ClientAmbient {};
+			class Weather_ClientWind {};
+			class Weather_ClientCough {};
+			class Weather_ClientGust {};
+		};
+
 		class OKS_Enemy {
 			file = "\OKS_GOL_Misc\functions\enemy";
 			class ReplaceUnitGear {};
 			class EnablePath {};
 			class SetStatic {};
 			class AbandonVehicle {};
-			class SearchLight {};
 			class AdjustDamage {};
 			class ForceVehicleSpeed {};	
-			class RemoveVehicleHE {};					
+			class RemoveVehicleHE {};
+			class CycleVehicleWeapon {};
 			class FaceSwap {};
 			class GetEthnicity {};
 			class GetEthnicityFromFace {};
@@ -229,10 +268,22 @@ class CfgFunctions // Defines a function
 			class Ignore_PlayerAir {};
 		};	
 
+		class OKS_SDV {
+			file = "\OKS_GOL_Misc\functions\vehicles\sdv";
+			class SDV_DepthHoldToggle {};
+		};
+
 		class OKS_Stealth_Core {
 			file = "\OKS_GOL_Misc\functions\stealth\core";
 			class Stealth_Init {};
 			class Stealth_AutoEnable {};
+			class Stealth_Alert {};
+			class Stealth_Alert_SavePatrol {};
+			class Stealth_Alert_RestorePatrol {};
+			class Stealth_Alert_SearchGrid {};
+			class Stealth_Alert_DisableAlarm {};
+			class Stealth_Alert_AddDisableAlarmAction {};
+			class Stealth_EnableVehicleLights {};
 			class Stealth_PlayerVisibility {};
 			class Stealth_GetLightingServer {};
 			class Stealth_ReceiveLighting {};
@@ -265,11 +316,13 @@ class CfgFunctions // Defines a function
 		
 		class OKS_IRIlluminator {
 			file = "\OKS_GOL_Misc\functions\irilluminator";
-			class IRIlluminator_Monitor {};
+			// The former BettIR-backed source is retained only as migration history.
+			class IRIlluminator_Monitor {
+				file = "\OKS_GOL_Misc\functions\irilluminator\fn_IRIlluminator_StandaloneMonitor.sqf";
+			};
 			class IRIlluminator_InitSettings {};
 			class IRIlluminator_AdjustStrength {};
 			class IRIlluminator_DebugTest {};
-			class IRIlluminator_WeaponIlluminatorOn {};
 		};
 		
 		class OKS_Suppression {
@@ -309,6 +362,15 @@ class CfgFunctions // Defines a function
 			class SatCamPipCycleVisionMode {};
 			class SatCamPipDebugVehicle {};
 			class SatCamPipRearCamTestAnchor {};
+		};
+
+		class OKS_LaserMarkers {
+			file = "\OKS_GOL_Misc\functions\laserMarkers";
+			class LaserMarker_GetLaserAim {};
+			class LaserMarker_InitClient {};
+			class LaserMarker_Place {};
+			class LaserMarker_Create {};
+			class LaserMarker_UpdateLive {};
 		};
 
 		class OKS_Vehicles {
@@ -709,6 +771,7 @@ class CfgFunctions // Defines a function
 
 		class compat {
 				file = "\OKS_GOL_Misc\functions\compat";
-				class BettIR_AutoWeaponIlluminator {};		};
-        };
+				class GOL_IRLLM_AutoWeaponIlluminator { file = "\OKS_GOL_Misc\functions\compat\fn_BettIR_AutoWeaponIlluminator.sqf"; };
+		};       
+  };
 };

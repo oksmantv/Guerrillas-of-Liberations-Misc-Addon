@@ -14,7 +14,7 @@ switch (typeName _unitOrGroup) do {
         private _unit = _unitOrGroup;
         private _side = side group _unit;
         _nearFriendliesWithRadio = (_unit nearEntities ["Man", 100]) select {
-            !isPlayer _x
+            !(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits })
             && { side group _x == _side }
             && { _x getVariable ["GOL_HasRadio", false] }
             && { alive _x }
@@ -23,7 +23,8 @@ switch (typeName _unitOrGroup) do {
     };
     case "GROUP": {
         _nearFriendliesWithRadio = units _unitOrGroup select {
-            _x getVariable ["GOL_HasRadio", false]
+            !(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits })
+            && { _x getVariable ["GOL_HasRadio", false] }
             && { alive _x }
             && { isNil "ace_common_fnc_isAwake" || { [_x] call ace_common_fnc_isAwake } }
         };

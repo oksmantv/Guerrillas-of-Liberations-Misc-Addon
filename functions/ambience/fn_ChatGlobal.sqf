@@ -17,7 +17,7 @@ params [
   "_Message",
   ["_Callsign", "", [""]],
   ["_TargetSide", sideUnknown],
-  ["_IconPath", "\\A3\\ui_f\\data\\IGUI\\Cfg\\simpleTasks\\types\\radio_ca.paa", [""]],
+  ["_IconPath", "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\radio_ca.paa", [""]],
   ["_ShowNotification", true, [true]]
 ];
 

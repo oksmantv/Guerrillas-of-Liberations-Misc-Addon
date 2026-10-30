@@ -13,6 +13,16 @@ if !(is3DEN) exitWith { false };
     1
 ] call cba_settings_fnc_init;
 
+// CBA Settings for Eden Editor Copy Tools
+[
+    "OKS_3DEN_COPY_EXPORT_COMMENTS",
+    "CHECKBOX",
+    ["Append Copy Export Comments", "Appends side, group callsigns, and copied-entity counts as a trailing comment on generated Copy Static, Copy Group, and Copy Objects commands."],
+    ["GOL Eden", "Copy"],
+    false,
+    1
+] call CBA_fnc_addSetting;
+
 // CBA Settings for Eden Editor Task Tools
 [
     "OKS_3DEN_INTEL_CLASS",

@@ -51,8 +51,8 @@ class GOL_OX3000_II: GOL_OX3000 {
     MRT_SwitchItemHintText = "OX3000 IR Illuminator";
 
     class ItemInfo: InventoryFlashLightItem_Base_F {
-        // IR ILLUMINATOR ONLY: No laser pointer, no built-in flashlight.
-        // BettIR weapon illuminator auto-activates with NVGs (see fn_BettIR_AutoWeaponIlluminator.sqf)
+        // IR ILLUMINATOR ONLY: No laser pointer or built-in flashlight.
+        // Legacy BettIR auto-activation was removed with the obsolete dependency.
         class Flashlight {};
         class Pointer {};
         

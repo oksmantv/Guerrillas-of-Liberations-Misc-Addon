@@ -42,16 +42,24 @@ if (_type isEqualTo "") exitWith {
 };
 
 private _templateVarName = _type + "_1";
+private _templateNameLower = toLower _templateVarName;
+private _template = missionNamespace getVariable [_templateVarName, objNull];
 
-if (isNil _templateVarName) exitWith {
-    hint format ["GOL Supply - Spawn New GOL %1: '%2' does not exist yet. Place/name a template vehicle first.", _type, _templateVarName];
-    deleteVehicle _logic;
+// Eden object names normally become missionNamespace variables. Fall back to
+// vehicleVarName so an existing template is still found if that variable was
+// not exported to the current namespace (or uses different letter casing).
+if !(_template isEqualType objNull) then {
+    _template = objNull;
 };
 
-private _template = missionNamespace getVariable _templateVarName;
+if (isNull _template) then {
+    _template = (vehicles select {
+        (toLower (vehicleVarName _x)) isEqualTo _templateNameLower
+    }) param [0, objNull];
+};
 
 if (isNull _template) exitWith {
-    hint format ["GOL Supply - Spawn New GOL %1: '%2' no longer exists (destroyed/deleted).", _type, _templateVarName];
+    hint format ["GOL Supply - Spawn New GOL %1: '%2' does not exist yet. Place/name a template vehicle first.", _type, _templateVarName];
     deleteVehicle _logic;
 };
 
@@ -60,7 +68,13 @@ private _appearanceCode = compile ([_template, ""] call BIS_fnc_exportVehicle);
 
 private _index = 1;
 private _varName = format ["%1_%2", _type, _index];
-while { !(isNil _varName) } do {
+while {
+    !(isNil _varName) || {
+        (vehicles findIf {
+            (toLower (vehicleVarName _x)) isEqualTo (toLower _varName)
+        }) != -1
+    }
+} do {
     _index = _index + 1;
     _varName = format ["%1_%2", _type, _index];
 };

@@ -12,6 +12,10 @@
 		Params["_Position","_Range","_Side"];
 		Private ["_Statics","_StaticGroup","_Units"];
 
+		private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+		private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_StaticWeapons", false];
+		private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+
 		Switch (_Side) do
 		{
 			case BLUFOR:	// BLUFOR settings
@@ -42,6 +46,13 @@
 			case "OBJECT":{
 				_Statics = Vehicles select {_X isKindOf "StaticWeapon" && _X inArea _Position && _X emptyPositions "gunner" > 0};
 
+				if (_oks_applyMultiplier && { count _Statics > 0 }) then {
+					_Statics = _Statics call BIS_fnc_arrayShuffle;
+					private _keepCount = ceil (count _Statics * _oks_multiplier / 100);
+					{ deleteVehicle _x } forEach (_Statics select [_keepCount, (count _Statics) - _keepCount]);
+					_Statics = _Statics select [0, _keepCount];
+				};
+
 				if(!(_Statics isEqualTo [])) then {
 					{
 						_StaticGroup = CreateGroup _Side;
@@ -61,6 +72,12 @@
 				_Statics = nearestObjects [_Position,["StaticWeapon"],_Range];
 				_Statics = _Statics select {_X emptyPositions "gunner" > 0};
 
+				if (_oks_applyMultiplier && { count _Statics > 0 }) then {
+					_Statics = _Statics call BIS_fnc_arrayShuffle;
+					private _keepCount = ceil (count _Statics * _oks_multiplier / 100);
+					{ deleteVehicle _x } forEach (_Statics select [_keepCount, (count _Statics) - _keepCount]);
+					_Statics = _Statics select [0, _keepCount];
+				};
 
 				if(!(_Statics isEqualTo [])) then {
 					{

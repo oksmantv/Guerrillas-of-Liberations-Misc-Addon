@@ -5,7 +5,7 @@
     - Right-click in Eden or select an existing searchlight vehicle
     - Spawns the correct UK3CB searchlight class for the chosen side in Eden
       (or re-uses the selected vehicle if it is already a searchlight type)
-    - Names it "searchlight_N" and copies a spawnList-ready call to clipboard
+    - Names it "searchlight_N" and copies a scan-ready call to clipboard
 
     Vehicle classes by side:
       east        -> UK3CB_O_SearchlightAA_CSAT_B
@@ -130,9 +130,8 @@ if (isNull _slObj) exitWith {
 private _slName = [_slObj, "searchlight"] call _ensureNamed;
 
 private _example = format [
-    "[%1, %2] spawn OKS_fnc_SearchLight;",
-    _slName,
-    _sideStr
+    "[%1, 360, false, true, 3] spawn OKS_fnc_SearchLight;",
+    _slName
 ];
 
 copyToClipboard _example;

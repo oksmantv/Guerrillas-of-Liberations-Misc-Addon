@@ -21,6 +21,20 @@
         isTriggerActivated = 1;
         curatorCanAttach = 1;
     };
+    class OKS_Module_JetSetup : Module_F {
+        scope = 2;
+        scopeCurator = 2;
+        displayName = "Jet Setup";
+        category = "GOL_Modules";
+        function = "OKS_fnc_SetupJet";
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 1;
+        curatorCanAttach = 1;
+        class ModuleDescription {
+            description = "Initializes the nearest plane with jet flyby suppression and flare support. Place the module beside or attach it to the plane.";
+        };
+    };
     class OKS_Module_MHQ : Module_F {
         scope = 2;
         scopeCurator = 2;

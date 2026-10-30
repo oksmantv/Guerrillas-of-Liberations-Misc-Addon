@@ -3,6 +3,34 @@ class CfgAmmo {
 	class F_40mm_White;
 	class Flare_82mm_AMOS_White;
 	class Sh_82mm_AMOS;
+	class JCA_B_9x19_Ball;
+	class B_9x21_Ball;
+
+	// Subsonic 9 mm ammunition for the Ghost Suppressor system. The low
+	// audibleFire value is further reduced by the suppressor's AmmoCoef.
+	class GOL_B_9x19_Subsonic: JCA_B_9x19_Ball {
+		audibleFire = 0.1;
+		audibleFireTime = 0.1;
+		visibleFire = 0.1;
+		visibleFireTime = 0.1;
+		typicalSpeed = 300;
+		dangerRadiusBulletClose = 0;
+		dangerRadiusHit = 0;
+		suppressionRadiusBulletClose = 0;
+		suppressionRadiusHit = 0;
+	};
+
+	class GOL_B_9x21_Subsonic: B_9x21_Ball {
+		audibleFire = 0.1;
+		audibleFireTime = 0.1;
+		visibleFire = 0.1;
+		visibleFireTime = 0.1;
+		typicalSpeed = 300;
+		dangerRadiusBulletClose = 0;
+		dangerRadiusHit = 0;
+		suppressionRadiusBulletClose = 0;
+		suppressionRadiusHit = 0;
+	};
 	
 	// Actual illumination flare - spawned by script at 150-200m altitude
 	class OKS_60mm_Flare_Spawned : F_40mm_White {
@@ -226,6 +254,20 @@ class CfgAmmo {
 		CraterEffects = "";  // air burst — no ground crater
 	};
 
+	// Short-range air bursts can occur in rapid cannon bursts. This must be a
+	// separate ammo class because ACE fragmentation reads the ammo properties,
+	// not the mine vehicle properties.
+	class OKS_ProxMine_40mm_AP_Ammo_Short : OKS_ProxMine_40mm_AP_Ammo {
+		ace_frag_charge = 2;
+		ace_frag_force = 0.9;
+		ace_frag_metal = 8;
+	};
+
+	class OKS_ProxMine_40mm_AP_Ammo_Short_FX : OKS_ProxMine_40mm_AP_Ammo_Short {
+		explosionEffects = "ExploAmmoExplosion";
+		CraterEffects = "";
+	};
+
 	class OKS_ProxFuze_40mm_Airburst : G_40mm_HE {
 		fuzeMinTime = 0;
 		fuzeMaxTime = 0.05;
@@ -299,7 +341,6 @@ class CfgAmmo {
 	};
 
 	// Drone disruptor pistol ammo - EMP pulses (no physical projectile)
-	class B_9x21_Ball;
 	class OKS_Ammo_DisruptorPulse: B_9x21_Ball {
 		hit = 0;
 		indirectHit = 0;
@@ -656,6 +697,59 @@ class CfgAmmo {
 		};
 	};
 
+	// MAAWS HEDP: native HE primary impact plus a reduced-penetration HEAT jet.
+	class R_MRAAWS_HEAT_F;
+	class R_MRAAWS_HE_F;
+	class ammo_Penetrator_MRAAWS;
+	class GOL_ammo_Penetrator_MRAAWS_HEDP: ammo_Penetrator_MRAAWS {
+		caliber = 0.85; // Below the dedicated HEAT jet's armour penetration.
+	};
+
+	class GOL_ammo_MRAWS_HEDP_F: R_MRAAWS_HE_F {
+
+		// R_MRAAWS_HEAT_F trajectory.
+		simulation = "shotRocket";
+		simulationStep = 0.02;
+		initSpeed = 0;
+		typicalSpeed = 900;
+		maxSpeed = 350;
+		thrust = 0.1;
+		thrustTime = 0.1;
+		airFriction = 0.05;
+		sideAirFriction = 0;
+		maneuvrability = 0;
+		deflecting = 5;
+		timeToLive = 25;
+		fuseDistance = 15;
+
+		// Lower direct impact damage limits structural damage; the larger blast
+		// radius retains anti-personnel effectiveness away from the impact point.
+		hit = 150;
+		indirectHit = 65;
+		indirectHitRange = 10;
+		explosive = 1;
+		warheadName = "HE";
+
+		// Secondary HEAT jet: same delivery as R_MRAAWS_HEAT_F, but the GOL
+		// penetrator has a lower caliber than the dedicated HEAT round.
+		triggerOnImpact = 1;
+		submunitionAmmo = "GOL_ammo_Penetrator_MRAAWS_HEDP";
+		submunitionDirectionType = "SubmunitionModelDirection";
+		submunitionInitSpeed = 1000;
+		submunitionParentSpeedCoef = 0;
+		submunitionInitialOffset[] = {0, 0, -0.2};
+		submunitionConeAngle = 0;
+		submunitionConeAngleHorizontal = 0;
+
+		// ACE Shrapnel
+		ace_frag_charge = 2150;
+		ace_frag_classes[] = {"ace_frag_small_HD","ace_frag_tiny_HD","ace_frag_tiny"};
+		ace_frag_gurney_c = 2700;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 1650;
+		ace_rearm_caliber = 80;
+	};
+
 	// ==================== GOL Accurate RPG-7 Rounds ====================
 	// LEFT   reticle (VM markings) : PG-7VM (HEAT+)
 	// RIGHT  reticle (VL markings) : OG-7V
@@ -667,6 +761,7 @@ class CfgAmmo {
 	class rhs_rpg7v2_pg7vr;
 	class rhs_ammo_spall;
 	class rhs_rpg18_rocket;
+	class rhs_rpg26_rocket;
 
 	// Type-XX custom spall tiers: low / mid / high.
 	// Mid is the current baseline; low and high bracket it for consistent progression.
@@ -811,6 +906,11 @@ class CfgAmmo {
 		airLock = 1;
 		allowAgainstInfantry = 1;
 		cost = 40;
+	};
+
+	// GOL RPG-26 — retains RHS warhead and flight performance without random deflection.
+	class GOL_ammo_rpg26: rhs_rpg26_rocket {
+		deflecting = 0;
 	};
 
 	// OG-7V — HE fragmentation
@@ -1014,13 +1114,12 @@ class CfgAmmo {
 		nvgOnly = 0;
 	};
 
-	// M230 30x113mm AP round for the GOL Ghost Hawk chain gun pod.
-	// Based on B_30mm_APFSDS. hit=80, caliber=4 — effective against APCs and IFVs; marginal against MBTs.
+	// Based on B_30mm_APFSDS. hit=60, caliber=4 — effective against APCs and IFVs; marginal against MBTs.
 	// typicalSpeed matches real M230 muzzle velocity: 805 m/s (reduced to 650 here for flatter gameplay balance).
 	class B_30mm_APFSDS;
 	class GOL_ammo_M230_AP: B_30mm_APFSDS
 	{
-		hit = 80;
+		hit = 60;
 		indirectHit = 8;
 		indirectHitRange = 0.2;
 		caliber = 4;
@@ -1037,5 +1136,93 @@ class CfgAmmo {
 		caliber = 90;    // ~1350mm RHA pen via ACE formula (typicalSpeed*caliber*15/1000)
 		hit = 1100;
 		warheadName = "HEAT";
+	};
+
+	// ============================================================
+	// GOL "Terror GMG" ammo — reduced-lethality HE variants of the
+	// vanilla/RHS 40mm grenades used by AI-crewed enemy GMG/Mk19 vehicles
+	// (see functions/enemy/fn_RemoveVehicleHE.sqf). A direct hit is still
+	// dangerous, but blast damage/radius is toned down so a single grenade
+	// landing near a squad suppresses instead of wiping it out.
+	// Ratio applied uniformly vs each base ammo class:
+	//   hit x0.7 (-30%), indirectHit x0.5 (-50%), indirectHitRange x0.6 (-40%)
+	// ============================================================
+	class G_40mm_HEDP;
+	class GOL_ammo_GMG40MM_Terror: G_40mm_HEDP {
+		hit = 50;
+		indirectHit = 3;
+		indirectHitRange = 2.4;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
+
+	class rhs_ammo_mk19m3_M384;
+	class GOL_ammo_MK19_M384_Terror: rhs_ammo_mk19m3_M384 {
+		hit = 28;
+		indirectHit = 4;
+		indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+
+	};
+
+	class rhs_ammo_mk19m3_M1001;
+	class GOL_ammo_MK19_M1001_Terror: rhs_ammo_mk19m3_M1001 {
+		hit = 28;
+		indirectHit = 4;
+		indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
+
+	class rhs_ammo_mk19m3_M430I;
+	class GOL_ammo_MK19_M430I_Terror: rhs_ammo_mk19m3_M430I {
+		hit = 25;
+		indirectHit = 4;
+	indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
+
+	class rhs_ammo_mk19m3_M430A1;
+	class GOL_ammo_MK19_M430A1_Terror: rhs_ammo_mk19m3_M430A1 {
+		hit = 25;
+		indirectHit = 4;
+		indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
+	};
+
+	class rhs_ammo_VOG30;
+	class GOL_ammo_VOG30_Terror: rhs_ammo_VOG30 {
+		hit = 25;
+		indirectHit = 4;
+		indirectHitRange = 3.6;
+		ace_frag_charge = 35;
+		ace_frag_classes[] = {"ace_frag_tiny_HD","ace_frag_small_HD","ace_frag_small_HD"};
+		ace_frag_gurney_c = 2830;
+		ace_frag_gurney_k = 0.5;
+		ace_frag_metal = 150;
+		ace_frag_force = 0.8;
 	};
 };

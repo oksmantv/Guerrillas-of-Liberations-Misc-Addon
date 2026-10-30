@@ -164,7 +164,7 @@ if (_show) then {
                 _friendlyFirePath               // 26
             ];
 
-            parseText _hintText remoteExec ["hintSilent",0];
+            [_hintText] remoteExec ["OKS_fnc_MissionCompleteHint", 0];
 
             // Safety Zone
             {
@@ -220,7 +220,7 @@ if (_show) then {
             sleep 0.5;
         };
 
-        hintSilent "";
+        [""] remoteExec ["OKS_fnc_MissionCompleteHint", 0];
         {
             _Player = _X;
             _Player allowDamage true;
@@ -241,7 +241,7 @@ if (_show) then {
         missionNamespace setVariable ["ThrowableHandlerActive", false, true];   
     };
 } else {
-    hintSilent "";
+    [""] remoteExec ["OKS_fnc_MissionCompleteHint", 0];
     {
         _Player = _X;
         _Player allowDamage true;

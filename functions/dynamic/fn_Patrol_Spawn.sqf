@@ -11,6 +11,13 @@
 		["_Range",250,[0]],
 		["_Side",east,[sideUnknown]]
 	];
+
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_Patrol", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier) then {
+		_NumberInfantry = (ceil (_NumberInfantry * _oks_multiplier / 100)) max 2;
+	};
 	
 	private ["_Spawnpos","_RandomPos"];
 	private _Exit = false;
