@@ -53,7 +53,25 @@ diag_log "OKS_GOL_Misc: XEH_preInit_stealth.sqf executed";
     "CHECKBOX",
     ["Auto Enable on Statics", "Automatically starts stealth sentry behavior on groups marked as static using GOL_IsStatic or GOL_isStatic."],
     ["GOL Stealth", "General"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Stealth_EnableVehicleLights",
+    "CHECKBOX",
+    ["Enable AI Vehicle Lights", "Forces AI vehicles spawned through the GW spawn system, including helicopters, to keep their lights enabled."],
+    ["GOL Stealth", "General"],
     false,
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_Stealth_AlertGridCellSize",
+    "SLIDER",
+    ["Alert Search Grid Cell Size (m)", "Spacing between dry-terrain search positions created after patrols investigate an alert."],
+    ["GOL Stealth", "Alert Response"],
+    [25, 150, 60, 0],
     1
 ] call CBA_fnc_addSetting;
 

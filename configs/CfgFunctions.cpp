@@ -46,6 +46,7 @@ class CfgFunctions // Defines a function
 			class ProxRound_ShowRangeHint {};
 			class ProxRound_FiredHandler {};
 			class ProxRound_TrackRound {};
+			class SearchLight {};
 		};
 
 		class OKS_Tasks {
@@ -248,7 +249,6 @@ class CfgFunctions // Defines a function
 			class EnablePath {};
 			class SetStatic {};
 			class AbandonVehicle {};
-			class SearchLight {};
 			class AdjustDamage {};
 			class ForceVehicleSpeed {};	
 			class RemoveVehicleHE {};
@@ -277,6 +277,13 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\stealth\core";
 			class Stealth_Init {};
 			class Stealth_AutoEnable {};
+			class Stealth_Alert {};
+			class Stealth_Alert_SavePatrol {};
+			class Stealth_Alert_RestorePatrol {};
+			class Stealth_Alert_SearchGrid {};
+			class Stealth_Alert_DisableAlarm {};
+			class Stealth_Alert_AddDisableAlarmAction {};
+			class Stealth_EnableVehicleLights {};
 			class Stealth_PlayerVisibility {};
 			class Stealth_GetLightingServer {};
 			class Stealth_ReceiveLighting {};

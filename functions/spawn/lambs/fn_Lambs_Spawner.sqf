@@ -20,10 +20,12 @@
 	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_LambsSpawner", false];
 	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
 	if (_oks_applyMultiplier) then {
-		_NumberInfantry = (ceil (_NumberInfantry * _oks_multiplier / 100)) max 2;
+		_NumberInfantry = (ceil (_NumberInfantry * _oks_multiplier / 100)) max 1;
 	};
 
-	private ["_RandomPos","_Center","_Condition1","_Condition2"];
+	private ["_RandomPos","_Center"];
+	private _Condition1 = false;
+	private _Condition2 = false;
 
 	_Settings = [_Side] call OKS_fnc_Dynamic_Settings;
 	_Settings Params ["_UnitArray","_SideMarker","_SideColor","_Vehicles","_Civilian","_Trigger"];
@@ -34,15 +36,16 @@
 	waitUntil {sleep 1; {_X distance _SpawnPos < _Range} count allPlayers > 0};
 
 	while {true} do {
+		_Condition1 = false;
+		_Condition2 = false;
 
 		if(typeName _ActivatedToDisableSpawner == "OBJECT") then {
 			_Condition1 = (!triggerActivated _ActivatedToDisableSpawner);
 			_Condition2 = (triggerActivated _ActivatedToDisableSpawner);
 		};
 		if(typeName _ActivatedToDisableSpawner == "STRING") then {
-			Call Compile Format ["%1 = false",_ActivatedToDisableSpawner];
-			_Condition1 = (Call Compile Format ["%1 == false",_ActivatedToDisableSpawner]);
-			_Condition2 = (Call Compile Format ["%1 == true",_ActivatedToDisableSpawner]);
+			_Condition2 = missionNamespace getVariable [_ActivatedToDisableSpawner, false];
+			_Condition1 = !_Condition2;
 		};
 		if(!((typeName _ActivatedToDisableSpawner) in ["OBJECT","STRING"])) exitWith {
 			"[LambsSpawner] ActivatedToDisableSpawner is not string or object. Check parameters for Lambs Spawner.." spawn OKS_fnc_LogDebug;
@@ -66,7 +69,6 @@
 				sleep 0.5;
 			};
 			{[_x] remoteExec ["GW_SetDifficulty_fnc_setSkill"]; _Array pushBackUnique _X } foreach units _Group;
-			Call Compile Format ["PublicVariable '%1'",_Array];
 
 			/* 
 				Arguments:

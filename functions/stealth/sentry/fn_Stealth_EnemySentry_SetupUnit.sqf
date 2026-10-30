@@ -5,10 +5,11 @@
 params ["_Unit"];
 
 if (isNull _Unit || { isPlayer _Unit } || { _Unit in playableUnits } || { _Unit in switchableUnits }) exitWith { false };
+if !(local _Unit) exitWith { false };
 
 if (count units group _Unit > 1) then {
-	private _SingleGroup = createGroup (side _Unit);
-	[_Unit] joinSilent _SingleGroup;
+	private _singleGroup = createGroup (side _Unit);
+	[_Unit] joinSilent _singleGroup;
 };
 private _group = group _Unit;
 _group setVariable ["GOL_IsStatic", true, true];
@@ -20,11 +21,11 @@ _group setVariable ["lambs_danger_disableGroupAI", true, true];
 _Unit setVariable ["GOL_IsSentry", true, true];
 _Unit setCombatMode "GREEN";
 
-if (count waypoints _Unit <= 1) then {
+if (count waypoints _group <= 1) then {
 	_Unit disableAI "PATH";
 };
 
-if (toLower (unitPos _Unit) isEqualTo "auto" && count waypoints _Unit <= 1) then {
+if (toLower (unitPos _Unit) isEqualTo "auto" && count waypoints _group <= 1) then {
 	_Unit setUnitPos selectRandom ["UP", "UP", "UP", "UP", "UP", "MIDDLE"];
 };
 _Unit setSkill ["commanding", 0];
@@ -82,3 +83,5 @@ _Unit addEventHandler ["Suppressed", {
 		};
 	};
 }];
+
+true

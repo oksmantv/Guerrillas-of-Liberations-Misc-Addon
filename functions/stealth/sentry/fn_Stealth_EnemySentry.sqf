@@ -18,11 +18,20 @@ params [
 private _unitArray = [_Unit, _Side, _ChanceForRadioEquipment, _RequiresRadioToCallHunt] call OKS_fnc_Stealth_EnemySentry_CreateUnit;
 _unitArray = _unitArray select { !(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits }) };
 
+// Sentries must be isolated before their behavior loops start. Running this here
+// avoids a scheduled-code race where multiple sentries can remain in one group.
+private _configuredUnits = [];
+{
+	if (([_x] call OKS_fnc_Stealth_EnemySentry_SetupUnit) && {count units group _x == 1}) then {
+		_configuredUnits pushBack _x;
+	};
+} forEach _unitArray;
+_unitArray = _configuredUnits;
+
 {
 	[_X, _NearbyHunterRange, _RequiresRadioToCallHunt, _ShouldSetNearbyToHunt, _Side, _HuntRange] spawn {
 		params ["_Unit", "_NearbyHunterRange", "_RequiresRadioToCallHunt", "_ShouldSetNearbyToHunt", "_Side", "_HuntRange"];
 
-		[_Unit] call OKS_fnc_Stealth_EnemySentry_SetupUnit;
 		waitUntil {
 			sleep 0.1;
 			{
@@ -33,11 +42,11 @@ _unitArray = _unitArray select { !(isPlayer _x || { _x in playableUnits } || { _
 			} count (_Unit targets [true]) > 0 || !alive _Unit
 		};
 
-		if (alive _Unit || [_Unit] call ace_common_fnc_isAwake) then {
+		if (alive _Unit && {[_Unit] call ace_common_fnc_isAwake}) then {
 			[_Unit] call OKS_fnc_Stealth_EnemySentry_Yell;
 			sleep 3;
 		};
-		if (alive _Unit || [_Unit] call ace_common_fnc_isAwake) then {
+		if (alive _Unit && {[_Unit] call ace_common_fnc_isAwake}) then {
 			private _radioData = [_Unit] call OKS_fnc_Stealth_FindNearRadioMen;
 			_radioData params ["_radioNearby", "_nearFriendliesWithRadio"];
 			if (_ShouldSetNearbyToHunt && _radioNearby) then {

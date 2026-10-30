@@ -3,21 +3,19 @@
 */
 
 params ["_UnitOrGroup"];
-private ["_Yeller", "_Unit"];
-
-switch (typeName _UnitOrGroup) do {
-	case "OBJECT": { _Yeller = [_UnitOrGroup]; };
-	case "GROUP": { _Yeller = units _UnitOrGroup; };
-	default { systemChat format ["What the fuck am I going to do with a %1 value in _UNITorGROUP?", typeName _UnitOrGroup] };
+private _yellers = switch (typeName _UnitOrGroup) do {
+	case "OBJECT": { [_UnitOrGroup] };
+	case "GROUP": { units _UnitOrGroup };
+	default { [] };
 };
 
-_Yeller = _Yeller select { !(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits }) };
-if (_Yeller isEqualTo []) exitWith { false };
-
-_Unit = selectRandom _Yeller;
-if (alive _Unit && [_Unit] call ace_common_fnc_isAwake) then {
-	private _SoundFileName = selectRandom ["yell_1", "yell_2", "yell_3", "yell_4", "yell_5", "yell_6", "yell_7", "yell_8", "yell_9"];
-	[_Unit, _SoundFileName] remoteExec ["say3D", 0];
-	_Unit setBehaviour "COMBAT";
-	_Unit setCombatMode "RED";
+_yellers = _yellers select {
+	alive _x &&
+	!(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits })
 };
+if (_yellers isEqualTo []) exitWith { false };
+
+// The old say3D implementation referenced yell_1..yell_9 CfgSounds classes,
+// but those classes do not exist. SentryAlert uses the side-language sound-path
+// registry and playSound3D, so every selected reaction is a real packaged file.
+[selectRandom _yellers, true, true, true] call OKS_fnc_Stealth_SentryAlert;

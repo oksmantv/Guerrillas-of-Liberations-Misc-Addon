@@ -168,6 +168,44 @@ Params:
 3. Require radio to call (`true`)
 4. Set combat behavior (`true`)
 
+### `OKS_fnc_Stealth_Alert`
+
+Purpose:
+- Redirects a percentage of eligible friendly patrols to an alert site, then has them search nearby dry terrain before resuming their original simple patrol route.
+
+Params:
+1. Alert source: alarm object or ASL position
+2. Alert side (`east` default)
+3. Responder range (`750` m)
+4. Responder percentage (`0.35`)
+5. Play the addon siren (`false`)
+6. Investigation duration (`90` s)
+7. Search radius (`250` m)
+8. Search duration (`240` s)
+
+Eligibility:
+- Requires `GOL_Stealth_Enabled`.
+- Selects non-static, non-player, non-civilian, non-hunting groups that already have waypoints and are friendly to the alert side.
+- Excludes groups marked `OKS_Stealth_AlertOptOut` and groups already servicing an alert.
+
+Behavior:
+- When enabled, the existing addon siren is played once from the server at a fixed 500 m audible range; `playSound3D` has global effect. It does not change AI response range.
+- When the alarm Boolean is enabled, an object source must be alive and must not have `OKS_Stealth_AlarmDisabled` set, otherwise the alert does nothing. ASL position sources always remain valid.
+- Responders are randomized from the eligible pool, then receive the configured percentage.
+- Original simple waypoint positions, types, completion radii, and formations are restored after the search.
+- Responders remain `AWARE`, use `NORMAL` speed, and use `YELLOW` combat mode after returning to patrol.
+- `GOL_Stealth_AlertGridCellSize` controls the spacing of water-safe grid positions.
+
+### `OKS_fnc_Stealth_Alert_AddDisableAlarmAction`
+
+Purpose:
+- Adds a multiplayer-safe three-metre hold action to an alarm speaker. Completing it calls `OKS_fnc_Stealth_Alert_DisableAlarm` on the server and sets `OKS_Stealth_AlarmDisabled` globally.
+
+Params:
+1. Alarm speaker object
+2. Action title (`"Disable Alarm"`)
+3. Hold duration (`5` s)
+
 ## 4) Sentry Functions
 
 ### `OKS_fnc_Stealth_EnemySentry`
