@@ -12,8 +12,25 @@ class GOL_B_SDV_01_F: B_SDV_01_F {
 	visualTargetSize = 0.1;
 	irTarget = 0;
 	TFAR_hasIntercom = 1;
+	enginePower = 80;
+	waterResistanceCoef = 0.015;
+	rudderForceCoef = 0.16;
+	rudderForceCoefAtMaxSpeed = 0.015;
+	maxSpeed = 70;
 
 	class ACE_SelfActions {
+		class GOL_SDVDepthHoldEnable {
+			displayName = "Enable Depth Hold";
+			condition = "_player isEqualTo driver _target && {local _target} && {!(_target getVariable ['GOL_SDV_DepthHold', false])} && {underwater _target}";
+			statement = "[_target] call OKS_fnc_SDV_DepthHoldToggle";
+			icon = "";
+		};
+		class GOL_SDVDepthHoldDisable {
+			displayName = "Disable Depth Hold";
+			condition = "_player isEqualTo driver _target && {local _target} && {_target getVariable ['GOL_SDV_DepthHold', false]}";
+			statement = "[_target] call OKS_fnc_SDV_DepthHoldToggle";
+			icon = "";
+		};
 		class TFAR_IntercomChannel {
 			displayName = "Intercom Channel";
 			condition = "true";
@@ -51,8 +68,25 @@ class GOL_O_SDV_01_F: O_SDV_01_F {
 	visualTargetSize = 0.1;
 	irTarget = 0;
 	TFAR_hasIntercom = 1;
+	enginePower = 80;
+	waterResistanceCoef = 0.015;
+	rudderForceCoef = 0.16;
+	rudderForceCoefAtMaxSpeed = 0.015;
+	maxSpeed = 70;
 
 	class ACE_SelfActions {
+		class GOL_SDVDepthHoldEnable {
+			displayName = "Enable Depth Hold";
+			condition = "_player isEqualTo driver _target && {local _target} && {!(_target getVariable ['GOL_SDV_DepthHold', false])} && {underwater _target}";
+			statement = "[_target] call OKS_fnc_SDV_DepthHoldToggle";
+			icon = "";
+		};
+		class GOL_SDVDepthHoldDisable {
+			displayName = "Disable Depth Hold";
+			condition = "_player isEqualTo driver _target && {local _target} && {_target getVariable ['GOL_SDV_DepthHold', false]}";
+			statement = "[_target] call OKS_fnc_SDV_DepthHoldToggle";
+			icon = "";
+		};
 		class TFAR_IntercomChannel {
 			displayName = "Intercom Channel";
 			condition = "true";
@@ -90,8 +124,25 @@ class GOL_I_SDV_01_F: I_SDV_01_F {
 	visualTargetSize = 0.1;
 	irTarget = 0;
 	TFAR_hasIntercom = 1;
+	enginePower = 80;
+	waterResistanceCoef = 0.015;
+	rudderForceCoef = 0.16;
+	rudderForceCoefAtMaxSpeed = 0.015;
+	maxSpeed = 70;
 
 	class ACE_SelfActions {
+		class GOL_SDVDepthHoldEnable {
+			displayName = "Enable Depth Hold";
+			condition = "_player isEqualTo driver _target && {local _target} && {!(_target getVariable ['GOL_SDV_DepthHold', false])} && {underwater _target}";
+			statement = "[_target] call OKS_fnc_SDV_DepthHoldToggle";
+			icon = "";
+		};
+		class GOL_SDVDepthHoldDisable {
+			displayName = "Disable Depth Hold";
+			condition = "_player isEqualTo driver _target && {local _target} && {_target getVariable ['GOL_SDV_DepthHold', false]}";
+			statement = "[_target] call OKS_fnc_SDV_DepthHoldToggle";
+			icon = "";
+		};
 		class TFAR_IntercomChannel {
 			displayName = "Intercom Channel";
 			condition = "true";

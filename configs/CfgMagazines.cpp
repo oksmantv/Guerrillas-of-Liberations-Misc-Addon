@@ -4,6 +4,59 @@ class CfgMagazines {
     class UK3CB_BAF_1Rnd_81mm_Mo_Shells;
     class UK3CB_BAF_1Rnd_81mm_Mo_AB_Shells;
     class UK3CB_BAF_1Rnd_81mm_Mo_Smoke_White;
+    class JCA_17Rnd_9x19_G17_Mag;
+    class JCA_30Rnd_9x19_MP5_Mag;
+    class UK3CB_MP5_30Rnd_9x19_Magazine;
+    class 30Rnd_9x21_Mag;
+
+    // Subsonic magazines retain the physical compatibility of their parents.
+    class GOL_17Rnd_9x19_G17_Subsonic_Mag: JCA_17Rnd_9x19_G17_Mag {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = "Guerrillas of Liberation";
+        displayName = "Ghost 9 mm 17Rnd G17 Subsonic Mag";
+        displayNameShort = "Ghost 9 mm";
+        descriptionShort = "Caliber: 9x19 mm<br />Rounds: 17<br />Subsonic ammunition for suppressed G17 pistols.";
+        ammo = "GOL_B_9x19_Subsonic";
+        initSpeed = 300;
+    };
+
+    class GOL_30Rnd_9x21_Subsonic_Mag: 30Rnd_9x21_Mag {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = "Guerrillas of Liberation";
+        displayName = "Ghost 9 mm 30Rnd Subsonic Mag";
+        displayNameShort = "Ghost 9 mm";
+        descriptionShort = "Caliber: 9x21 mm<br />Rounds: 30<br />Subsonic ammunition for suppressed 9 mm weapons.";
+        ammo = "GOL_B_9x21_Subsonic";
+        initSpeed = 300;
+    };
+
+    class GOL_30Rnd_9x19_MP5_Subsonic_Mag: JCA_30Rnd_9x19_MP5_Mag {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = "Guerrillas of Liberation";
+        displayName = "Ghost 9 mm 30Rnd MP5 Subsonic Mag";
+        displayNameShort = "Ghost 9 mm";
+        descriptionShort = "Caliber: 9x19 mm<br />Rounds: 30<br />Subsonic ammunition for suppressed JCA MP5 submachine guns.";
+        ammo = "GOL_B_9x19_Subsonic";
+        initSpeed = 300;
+    };
+
+    class GOL_UK3CB_MP5_30Rnd_9x19_Subsonic_Mag: UK3CB_MP5_30Rnd_9x19_Magazine {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = "Guerrillas of Liberation";
+        displayName = "Ghost 9 mm 30Rnd MP5 Subsonic Mag (3CB)";
+        displayNameShort = "Ghost 9 mm";
+        descriptionShort = "Caliber: 9x19 mm<br />Rounds: 30<br />Subsonic ammunition for suppressed 3CB MP5 submachine guns.";
+        ammo = "GOL_B_9x19_Subsonic";
+        initSpeed = 300;
+    };
     
     // UK3CB 60mm flare - fires dummy ballistic carrier that deploys flare at altitude
     class UK3CB_BAF_1Rnd_60mm_Mo_Flare_White : UK3CB_BAF_1Rnd_81mm_Mo_Flare_White {
@@ -90,6 +143,18 @@ class CfgMagazines {
 		ammo = "gol_ammo_shorad_heavy";
 		count = 1;
 	};
+
+    // MAAWS HEDP rocket with HEAT penetration and enhanced HE blast damage.
+    class MRAWS_HEAT_F;
+    class GOL_mag_MRAWS_HEDP_F: MRAWS_HEAT_F {
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "MAAWS HEDP 88 Round";
+        displayNameShort = "HEDP 88";
+        descriptionShort = "Dual-purpose MAAWS rocket with HEAT penetration and enhanced HE blast effects.";
+        ammo = "GOL_ammo_MRAWS_HEDP_F";
+        allowedSlots[] = {701, 901};
+    };
 
     // FPV throwables (soft dependency on BOT_FPV_Enhanced)
     class HandGrenade;
@@ -1083,6 +1148,7 @@ class CfgMagazines {
 	class rhs_rpg7_PG7VL_mag;
 	class rhs_rpg7_PG7VR_mag;
 	class rhs_rpg18_mag;
+    class rhs_rpg26_mag;
 
 	class GOL_mag_rpg7_Modern: rhs_rpg7_PG7VM_mag {
 		scope = 2;
@@ -1155,6 +1221,12 @@ class CfgMagazines {
 		mass = 22;
 		ammo = "GOL_ammo_rpg17_Type69II";
 	};
+
+    class GOL_mag_rpg26: rhs_rpg26_mag {
+        scope = 1;
+        displayName = "RPG-26 (GOL)";
+        ammo = "GOL_ammo_rpg26";
+    };
 
 	class GOL_mag_rpg7_OG7V: rhs_rpg7_PG7VL_mag {
 		scope = 2;
@@ -1502,7 +1574,7 @@ class CfgMagazines {
 		displayNameShort = "M230 HE Belt";
 		descriptionShort = "M230 30mm Chain Gun | HE 300 rounds";
         selectionFireAnim = "zasleh";
-		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.05, 0.2};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
 		count = 300;
         model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun_Right.p3d";
 		muzzlePos = "machinegun_beg";
@@ -1524,7 +1596,7 @@ class CfgMagazines {
 		descriptionShort = "M230 30mm Chain Gun | AP 300 rounds";
         selectionFireAnim = "zasleh";
 		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
-		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.05, 0.2};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
 		count = 300;
         model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun_Right.p3d";
         muzzlePos = "machinegun_beg";
@@ -1543,7 +1615,7 @@ class CfgMagazines {
 		displayNameShort = "M230 HE Belt";
 		descriptionShort = "M230 30mm Chain Gun | HE 300 rounds";
         selectionFireAnim = "zasleh";
-		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.05, 0.2};   // vanilla parent is {1,4} — reduced to limit nose kick at high ROF
 		count = 300;
         model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun_Left.p3d";
 		muzzlePos = "machinegun_beg";
@@ -1565,7 +1637,7 @@ class CfgMagazines {
 		descriptionShort = "M230 30mm Chain Gun | AP 300 rounds";
         selectionFireAnim = "zasleh";
 		ammo = "GOL_ammo_M230_AP"; // custom APFSDS-class round; see CfgAmmo
-		muzzleImpulseFactor[] = {0.1, 0.3};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
+		muzzleImpulseFactor[] = {0.05, 0.2};   // vanilla parent is {0.5,2} — reduced to limit nose kick at high ROF
 		count = 300;
         model = "\OKS_GOL_Misc\data\models\OKS_M230_Chaingun_Left.p3d";
 		muzzlePos = "machinegun_beg";

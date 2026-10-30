@@ -413,6 +413,7 @@ class GOL_Heli_Transport_01_laser : B_Heli_Transport_01_F {
 
 	memoryPointDriverOptics = "light_l_end";
 	driverWeaponsInfoType = "RscOptics_CAS_01_TGP";
+	laserScanner = 1;
 	magazines[] += {"Laserbatteries"};
 	weapons[] += {"Laserdesignator_pilotCamera"};
 
@@ -485,6 +486,7 @@ class GOL_Heli_Light_01_dynamicLoadout_laser : B_Heli_Light_01_dynamicLoadout_F 
 
 	memoryPointDriverOptics = "light_pos";
 	driverWeaponsInfoType = "RscOptics_CAS_01_TGP";
+	laserScanner = 1;
 	magazines[] += {"Laserbatteries"};
 	weapons[] += {"Laserdesignator_pilotCamera"};
 
@@ -557,6 +559,7 @@ class GOL_Heli_Light_02_dynamicLoadout_laser : O_Heli_Light_02_dynamicLoadout_F 
 
 	memoryPointDriverOptics = "light_r_pos";
 	driverWeaponsInfoType = "RscOptics_CAS_01_TGP";
+	laserScanner = 1;
 	magazines[] += {"Laserbatteries"};
 	weapons[] += {"Laserdesignator_pilotCamera"};
 
@@ -698,6 +701,7 @@ class GOL_Heli_Light_03_dynamicLoadout_laser : I_Heli_Light_03_dynamicLoadout_F 
 
 	memoryPointDriverOptics = "laserstart";
 	driverWeaponsInfoType = "RscOptics_CAS_01_TGP";
+	laserScanner = 1;
 	magazines[] += {"Laserbatteries"};
 	weapons[] += {"Laserdesignator_pilotCamera"};
 

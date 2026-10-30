@@ -176,23 +176,54 @@ missionNamespace setVariable [
     1
 ] call CBA_fnc_addSetting;
 
+[
+    "GOL_LaserMarker_Enabled",
+    "CHECKBOX",
+    ["Enable Aircraft Aim Markers", "Enable the map-only aircraft aim overlay and aircraft target-marker keybind on this client."],
+    ["GOL Laser Markers", "Preview"],
+    false,
+    0
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_LaserMarker_Expiry",
+    "SLIDER",
+    ["Shared Marker Expiry (s)", "Lifetime for placed laser-target markers. Set to 0 to keep them until a player deletes them."],
+    ["GOL Laser Markers", "Shared Markers"],
+    [0, 3600, 900, 0],
+    1
+] call CBA_fnc_addSetting;
+
+[
+    "GOL_LaserMarker_UpdateRate",
+    "SLIDER",
+    ["Aircraft Aim Map Update Rate (Hz)", "How often your map-only aircraft aim overlay updates. Set to 0 to update every frame (limited by your FPS). Higher rates use more client and network performance."],
+    ["GOL Laser Markers", "Preview"],
+    [0, 60, 30, 0],
+    0
+] call CBA_fnc_addSetting;
+
 // Camera: keybinds
 // Note: CBA keybinds are configured by users in Controls -> Addon Options -> CBA.
+["GOL Custom Controls", "OKS_LaserMarker_Place", ["Mark Aircraft Laser Target", "Place a shared target marker in your side channel at the aircraft aim point."], {
+    [] call OKS_fnc_LaserMarker_Place;
+}, {}, [38, [true, true, false]], false] call CBA_fnc_addKeybind;
+
 ["GOL Custom Controls", "OKS_SatCam_CommanderView", ["Commander Camera", "Toggle PiP camera. Driver: rear camera. Cargo/other turrets: commander view. (ESC closes)."], {
     [] call OKS_fnc_SatCamPipToggleCommanderView;
-}, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
+}, {}, [57, [false, true, false]], false] call CBA_fnc_addKeybind;
 
 ["GOL Custom Controls", "OKS_SatCam_CommanderZoomIn", ["Commander Camera Zoom In", "Commander/gunner PiP: zoom in (cycles through 5 levels)."], {
     [] call OKS_fnc_SatCamPipCommanderZoomIn;
-}, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
+}, {}, [0xF8, [false, true, false]], false] call CBA_fnc_addKeybind;
 
 ["GOL Custom Controls", "OKS_SatCam_CommanderZoomOut", ["Commander Camera Zoom Out", "Commander/gunner PiP: zoom out (cycles through 5 levels)."], {
     [] call OKS_fnc_SatCamPipCommanderZoomOut;
-}, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
+}, {}, [0xF9, [false, true, false]], false] call CBA_fnc_addKeybind;
 
 ["GOL Custom Controls", "OKS_SatCam_VisionMode", ["Camera Vision Mode", "Cycle camera vision mode: Normal -> Night Vision -> Thermal."], {
     [] call OKS_fnc_SatCamPipCycleVisionMode;
-}, {}, [0, [false, false, false]], false] call CBA_fnc_addKeybind;
+}, {}, [49, [false, false, false]], false] call CBA_fnc_addKeybind;
 
 // Missile Warning display mode
 [

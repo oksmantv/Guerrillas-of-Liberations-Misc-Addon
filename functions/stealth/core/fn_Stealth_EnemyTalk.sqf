@@ -16,6 +16,7 @@ params [
 
 if (!isServer) exitWith { false };
 if (isNull _group) exitWith { false };
+if ({ isPlayer _x || { _x in playableUnits } || { _x in switchableUnits } } count units _group > 0) exitWith { false };
 
 [] call OKS_fnc_Stealth_Init;
 
@@ -53,7 +54,11 @@ private _canSpeak = {
     } count (units _group)) > 0
 };
 
-while { !isNull _group && { { alive _x } count units _group > 0 } } do {
+while {
+    !isNull _group
+    && { { alive _x } count units _group > 0 }
+    && { { isPlayer _x || { _x in playableUnits } || { _x in switchableUnits } } count units _group == 0 }
+} do {
     private _inCombat = ({ behaviour _x == "COMBAT" } count units _group) > 0;
     if (_inCombat) then {
         if !(_group getVariable ["OKS_Stealth_ReactionFired", false]) then {
@@ -86,7 +91,7 @@ while { !isNull _group && { { alive _x } count units _group > 0 } } do {
         {
             _pairs pushBack [_x, _enemy, _x distance _enemy];
         } forEach _nearPlayers;
-    } forEach units _group;
+    } forEach ((units _group) select { !(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits }) });
 
     if (_pairs isEqualTo []) then {
         sleep _loopDelayToCheckNearby;

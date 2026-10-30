@@ -40,21 +40,21 @@ private _arabTalk = ["\OKS_GOL_Misc\functions\stealth\audio\Arab\talk_", 1, 27] 
 private _arabYell = ["\OKS_GOL_Misc\functions\stealth\audio\Arab\yell_", 1, 9] call _buildNumberedPaths;
 private _arabRadio = ["\OKS_GOL_Misc\functions\stealth\audio\Arab\Radio", 1, 5] call _buildNumberedPaths;
 
-private _vietTalkN = ["\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-n-", 1, 30, true] call _buildNumberedPaths;
+private _vietnameseTalk = ["\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\conversations\talk_", 1, 30, true] call _buildNumberedPaths;
 private _vietTalkY = [
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-07.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-08.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-09.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-17.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-20.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-talks-y-26.ogg"
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\reactions\yell_07.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\reactions\yell_08.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\reactions\yell_09.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\reactions\yell_17.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\reactions\yell_20.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\reactions\yell_26.ogg"
 ];
 private _vietRadio = [
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-05.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-09.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-17.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-18.ogg",
-    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\vn-radio-y-19.ogg"
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\radio\radio_05.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\radio\radio_09.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\radio\radio_17.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\radio\radio_18.ogg",
+    "\OKS_GOL_Misc\functions\stealth\audio\Vietnamese\radio\radio_19.ogg"
 ];
 
 
@@ -69,7 +69,7 @@ private _languageTalk = createHashMapFromArray [
     ["NONE", []],
     ["ARAB", _arabTalk],
     ["RUSSIAN", _russianRadio],
-    ["VIETNAMESE", _vietTalkN]
+    ["VIETNAMESE", _vietnameseTalk]
 ];
 
 private _languageReaction = createHashMapFromArray [

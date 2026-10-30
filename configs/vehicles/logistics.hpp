@@ -547,6 +547,23 @@
 			init = "(_this select 0) setVariable ['ace_rearm_isSupplyVehicle', true]";
 		};
 	};
+
+	class GOL_Helipad_Invisible: ReammoBox_F
+	{
+        displayName = "GOL Helipad (Invisible)";
+		scope = 2;
+    	scopeCurator = 2;
+		editorCategory = "GOL_GuerrillasOfLiberation";
+		editorSubcategory = "GOL_Resupply";		
+		model = "\A3\Structures_F\Mil\Helipads\HelipadEmpty_F.p3d";
+		class TransportMagazines {};
+        class TransportWeapons {};
+        class TransportItems {};
+        class TransportBackpacks {};
+		class EventHandlers {
+			init = "(_this select 0) setVariable ['ace_rearm_isSupplyVehicle', true]";
+		};
+	};	
 	
     class GOL_MobileServiceStation: Box_Syndicate_Ammo_F
 	{

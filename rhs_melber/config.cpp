@@ -1691,6 +1691,7 @@ class CfgVehicles
 		memoryPointsGetInCargoPrecise[] = {"pos rack"};
 		usePreciseGetInAction = 1;
 		availableForSupportTypes[] = {"CAS_Heli"};
+		laserScanner = 1;
 		weapons[] = {"Laserdesignator_mounted","rhs_weap_MASTERSAFE","rhsusf_weap_LWIRCM"};
 		magazines[] = {"Laserbatteries","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM","rhsusf_mag_LWIRCM"};
 		threat[] = {0.6,0.4,0.1};

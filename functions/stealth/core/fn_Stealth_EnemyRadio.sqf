@@ -42,7 +42,7 @@ private _isEnemyCorpse = {
     params ["_unit", "_side"];
     (!isNull _unit)
     && { !alive _unit }
-    && { !isPlayer _unit }
+    && { !(isPlayer _unit || { _unit in playableUnits } || { _unit in switchableUnits }) }
     && { _unit isKindOf "Man" }
     && { side group _unit == _side }
 };
@@ -55,7 +55,7 @@ private _enemyKnowsPlayers = {
 
     private _enemyUnits = allUnits select {
         alive _x
-        && { !isPlayer _x }
+        && { !(isPlayer _x || { _x in playableUnits } || { _x in switchableUnits }) }
         && { side group _x == _side }
     };
 

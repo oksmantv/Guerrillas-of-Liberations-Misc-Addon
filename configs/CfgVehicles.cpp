@@ -152,7 +152,7 @@ class CfgVehicles {
 
     // Short-range air burst — range < 100m, AGL <= 10m. Reduced to prevent ACE frag lag spike.
     class OKS_ProxMine_40mm_AP_Short : APERSMine {
-        ammo = "OKS_ProxMine_40mm_AP_Ammo";
+        ammo = "OKS_ProxMine_40mm_AP_Ammo_Short";
         indirectHit = 4;
         indirectHitRange = 3;
         explosionEffects = "";
@@ -185,7 +185,7 @@ class CfgVehicles {
         CraterEffects = "";  // air burst — no ground crater
     };
     class OKS_ProxMine_40mm_AP_Short_FX : OKS_ProxMine_40mm_AP_Short {
-        ammo = "OKS_ProxMine_40mm_AP_Ammo_FX";
+        ammo = "OKS_ProxMine_40mm_AP_Ammo_Short_FX";
         explosionEffects = "ExploAmmoExplosion";
         CraterEffects = "";  // air burst — no ground crater
     };
@@ -207,6 +207,9 @@ class CfgVehicles {
 
 // Light vehicles — FastRope, Plane actions, Fennek variants
 #include "vehicles\light_vehicles.hpp"
+
+// Placeable environment objects
+#include "vehicles\objects.hpp"
 
 // Tracked vehicles — BMP-2DM
 #include "vehicles\bmp2dm.hpp"

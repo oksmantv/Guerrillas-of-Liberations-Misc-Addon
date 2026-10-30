@@ -42,8 +42,11 @@ class CfgFunctions // Defines a function
 			class M6_Add_Unpack_Actions {};
 			class M6_Flare_Altitude_Deploy {};
 			class ProxRound_Init {};
+			class ProxRound_AdjustRange {};
+			class ProxRound_ShowRangeHint {};
 			class ProxRound_FiredHandler {};
 			class ProxRound_TrackRound {};
+			class SearchLight {};
 		};
 
 		class OKS_Tasks {
@@ -96,6 +99,7 @@ class CfgFunctions // Defines a function
 			file = "\OKS_GOL_Misc\functions\logic";
 			class GetClientId {};
 			class LogDebug {};
+			class MissionCompleteHint {};
 			class TrimLeadingAndTrailingWhitespaceFromString {};
 			class SteerVehicleToTarget {};
 			class FlagTeleport {};
@@ -202,6 +206,7 @@ class CfgFunctions // Defines a function
 			class ApplyUnitGear {};
 			class SetupMechanized {};				
 			class SetupHelicopter {};				
+			class SetupJet {};
 			class SetupMHQ {};							
 			class ModuleForceKit {};
 			class ModuleSpawnGolVehicle {};
@@ -222,13 +227,28 @@ class CfgFunctions // Defines a function
 			class ModuleAirBase {};
 		};				
 
+		class OKS_Weather {
+			file = "\OKS_GOL_Misc\functions\weather";
+			class Weather_Start {};
+			class Weather_Stop {};
+			class Weather_ServerLoop {};
+			class Weather_ClientStart {};
+			class Weather_ClientPosition {};
+			class Weather_ClientSnow {};
+			class Weather_ClientFog {};
+			class Weather_ClientBreath {};
+			class Weather_ClientAmbient {};
+			class Weather_ClientWind {};
+			class Weather_ClientCough {};
+			class Weather_ClientGust {};
+		};
+
 		class OKS_Enemy {
 			file = "\OKS_GOL_Misc\functions\enemy";
 			class ReplaceUnitGear {};
 			class EnablePath {};
 			class SetStatic {};
 			class AbandonVehicle {};
-			class SearchLight {};
 			class AdjustDamage {};
 			class ForceVehicleSpeed {};	
 			class RemoveVehicleHE {};
@@ -248,10 +268,22 @@ class CfgFunctions // Defines a function
 			class Ignore_PlayerAir {};
 		};	
 
+		class OKS_SDV {
+			file = "\OKS_GOL_Misc\functions\vehicles\sdv";
+			class SDV_DepthHoldToggle {};
+		};
+
 		class OKS_Stealth_Core {
 			file = "\OKS_GOL_Misc\functions\stealth\core";
 			class Stealth_Init {};
 			class Stealth_AutoEnable {};
+			class Stealth_Alert {};
+			class Stealth_Alert_SavePatrol {};
+			class Stealth_Alert_RestorePatrol {};
+			class Stealth_Alert_SearchGrid {};
+			class Stealth_Alert_DisableAlarm {};
+			class Stealth_Alert_AddDisableAlarmAction {};
+			class Stealth_EnableVehicleLights {};
 			class Stealth_PlayerVisibility {};
 			class Stealth_GetLightingServer {};
 			class Stealth_ReceiveLighting {};
@@ -330,6 +362,15 @@ class CfgFunctions // Defines a function
 			class SatCamPipCycleVisionMode {};
 			class SatCamPipDebugVehicle {};
 			class SatCamPipRearCamTestAnchor {};
+		};
+
+		class OKS_LaserMarkers {
+			file = "\OKS_GOL_Misc\functions\laserMarkers";
+			class LaserMarker_GetLaserAim {};
+			class LaserMarker_InitClient {};
+			class LaserMarker_Place {};
+			class LaserMarker_Create {};
+			class LaserMarker_UpdateLive {};
 		};
 
 		class OKS_Vehicles {

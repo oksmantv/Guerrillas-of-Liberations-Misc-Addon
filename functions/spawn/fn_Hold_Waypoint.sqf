@@ -37,6 +37,14 @@
 		["_ClassnameOrNumber",5,[0,""]],
 		["_Side",east,[sideUnknown]]
 	];
+
+	private _oks_multiplier = missionNamespace getVariable ["GOL_SpawnMultiplier", 100];
+	private _oks_blacklisted = missionNamespace getVariable ["GOL_SpawnMultiplier_Blacklist_HoldWaypoint", false];
+	private _oks_applyMultiplier = (_oks_multiplier < 100) && {!_oks_blacklisted};
+	if (_oks_applyMultiplier && { _ClassnameOrNumber isEqualType 0 }) then {
+		_ClassnameOrNumber = (_ClassnameOrNumber * _oks_multiplier / 100) max 1;
+	};
+
 	Private ["_Dir"];
 	
 	if(typeName _Spawn == "OBJECT") then {

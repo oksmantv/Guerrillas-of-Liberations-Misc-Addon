@@ -22,8 +22,10 @@ if(_ServiceStation) then {
 			format["[SERVICESTATION] Creating mobile service station for non-MHQ vehicle: %1", typeOf _Vehicle] spawn OKS_fnc_LogDebug;
 		};
 		
-		waitUntil {sleep 0.1; isNull (attachedTo _Vehicle)};		
-		_Crate = "GOL_MobileServiceStation" createVehicle (getPosATL _Vehicle);
+		waitUntil {sleep 0.1; isNull (attachedTo _Vehicle)};
+		// Spawn above the vehicle so an unsuccessful ACE load cannot leave an
+		// explosive physics object intersecting its source vehicle.
+		_Crate = "GOL_MobileServiceStation" createVehicle ((getPosATL _Vehicle) vectorAdd [0, 0, 50]);
 		_Crate allowDamage false;
 		_Crate disableCollisionWith _Vehicle;
 		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;
@@ -41,7 +43,7 @@ if(_ServiceStation) then {
 	_MHQShouldBeMobileServiceStation = missionNamespace getVariable ["MHQ_ShouldBe_ServiceStation",false];
 	if(_Vehicle getVariable ["GOL_isMHQ",false] && !(_MHQShouldBeMobileServiceStation)) then {
 		waitUntil {sleep 0.1; isNull (attachedTo _Vehicle)};
-		_Crate = "GOL_MobileServiceStation" createVehicle (getPosATL _Vehicle);
+		_Crate = "GOL_MobileServiceStation" createVehicle ((getPosATL _Vehicle) vectorAdd [0, 0, 50]);
 		_Crate allowDamage false;
 		_Crate disableCollisionWith _Vehicle;
 		[_Crate,_Vehicle,true] call ace_cargo_fnc_loadItem;
@@ -53,7 +55,7 @@ if(_ServiceStation) then {
 	};
 } else {
 	{
-		_fuelCan = "FlexibleTank_01_forest_F" createVehicle (getPosATL _Vehicle);
+		_fuelCan = "FlexibleTank_01_forest_F" createVehicle ((getPosATL _Vehicle) vectorAdd [0, 0, 50]);
 		_fuelCan allowDamage false;
 		_fuelCan disableCollisionWith _Vehicle;
 		[_fuelCan,1000] call ace_refuel_fnc_setFuel;

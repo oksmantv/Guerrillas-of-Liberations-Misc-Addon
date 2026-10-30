@@ -1,3 +1,8 @@
+/*
+
+OBSOLETE:
+- This function is no longer used, AmmoExplodedNear eventHandler is now used to find the nearest correct explosion to destroy indestructible objects.
+- The function is kept for reference, but is not called anywhere in the code.
 
 Params ["_Barricade"];
 

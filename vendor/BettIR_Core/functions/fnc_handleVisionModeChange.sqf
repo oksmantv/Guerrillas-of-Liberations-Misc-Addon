@@ -93,37 +93,28 @@ if (_isOn) then {
 				};
 
 				if ((_light != objNull) && (primaryWeapon _x) == (currentWeapon _x)) then {
-					// get the gun position from proxy, it's still a weird position but it's better than nothing
-					_gunPos = _x selectionPosition ['proxy:\a3\characters_f\proxies\weapon.001', "Memory"];
+					// The weapon proxy can resolve at the unit's torso for several current character animations.
+					// Use the right-hand selection and an orthonormal weapon basis instead.
+					_gunPos = _x modelToWorldWorld (_x selectionPosition "rightHand");
+					_dir = vectorNormalized (_x weaponDirection (currentWeapon _x));
+					_right = vectorNormalized (_dir vectorCrossProduct [0, 0, 1]);
+					_up = vectorNormalized (_right vectorCrossProduct _dir);
 
-					// get the direction vector of the weapon
-					_dir = (_x weaponDirection (currentWeapon _x));
-					_xDir = _dir select 0;
-					_yDir = _dir select 1;
-					_zDir = _dir select 2;
-
-					// calculate the offset
+					// Transform the attachment's local right/forward/up offset into world space.
 					_nvgOffset = _x getVariable ['BettIR_weapon_illuminator_offset', [0,0,0]];
 					_offsetX = _nvgOffset select 0;
 					_offsetY = _nvgOffset select 1;
 					_offsetZ = _nvgOffset select 2;
-
-					_pitch = asin _zDir;
-					_offset = [_offsetX, _offsetY * cos (_pitch), _offsetZ + (_offsetY * _zDir)];
-
-					// add the local offset to the local weapon position
-					_illumPos = _gunPos vectorAdd _offset;
-
-					// calculate the global position from local coordinates
-					_muzzlePos = _x modelToWorldWorld _illumPos;
+					_muzzlePos = _gunPos
+						vectorAdd (_right vectorMultiply _offsetX)
+						vectorAdd (_dir vectorMultiply _offsetY)
+						vectorAdd (_up vectorMultiply _offsetZ);
 					_light setPosASL _muzzlePos;
 
-					// needed to determine the rotation for vectorUp 
-					_pitchCoef = if (_zDir < 0) then {-1} else {1};
-					// apply rotations
+					// Keep the reflector aligned with the actual weapon direction.
 					_light setVectorDirAndUp [
 						_dir,
-						[_pitchCoef * _yDir, _pitchCoef * _xDir, _zDir]
+						_up
 					];
 				} else {
 					[_x] call GOL_IRLLM_fnc_weaponIlluminatorOff;
