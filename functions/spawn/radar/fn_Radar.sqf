@@ -89,10 +89,12 @@ while {Alive _Radar} do {
 	private _proxyRangeMultiplier = 2;
 
 	// Prefer OKS missile proxy vehicles via registry (fast; avoids world scanning)
-	private _activeProxies = missionNamespace getVariable ["OKS_ScudIntercept_activeProxies", []];
-	// Prune dead/null entries occasionally
-	_activeProxies = _activeProxies select { !isNull _x && {alive _x} };
-	missionNamespace setVariable ["OKS_ScudIntercept_activeProxies", _activeProxies, true];
+	private _activeProxiesRaw = missionNamespace getVariable ["OKS_ScudIntercept_activeProxies", []];
+	// Prune dead/null entries; only broadcast when the list actually changed
+	private _activeProxies = _activeProxiesRaw select { !isNull _x && {alive _x} };
+	if !(_activeProxies isEqualTo _activeProxiesRaw) then {
+		missionNamespace setVariable ["OKS_ScudIntercept_activeProxies", _activeProxies, true];
+	};
 
 	private _missileTargets = _activeProxies select {
 		private _inRange = (_Radar distance _x) <= (_MaxRangeAAA * _proxyRangeMultiplier);
@@ -181,9 +183,12 @@ while {Alive _Radar} do {
 			_aaaSide = side (group _aaaGunner);
 		};
 
-		// Improve datalink-style sharing for AAA assets too
-		_aaa setVehicleReportRemoteTargets true;
-		_aaa setVehicleReceiveRemoteTargets true;
+		// Improve datalink-style sharing for AAA assets too (once per vehicle)
+		if !(_aaa getVariable ["OKS_Radar_linkSet", false]) then {
+			_aaa setVehicleReportRemoteTargets true;
+			_aaa setVehicleReceiveRemoteTargets true;
+			_aaa setVariable ["OKS_Radar_linkSet", true];
+		};
 
 		{
 			private _target = _x;
@@ -219,21 +224,29 @@ while {Alive _Radar} do {
 
 			// Share knowledge and force target selection
 			if (!isNull _aaaGunner) then {
-				// Make sure gunner AI is allowed to engage
-				_aaaGunner enableAI "TARGET";
-				_aaaGunner enableAI "AUTOTARGET";
-				(group _aaaGunner) setCombatMode "RED";
-				(group _aaaGunner) setBehaviourStrong "COMBAT";
-				(group _aaaGunner) allowFleeing 0;
+				// Make sure gunner AI is allowed to engage (once per gunner)
+				if !(_aaaGunner getVariable ["OKS_Radar_aiSetup", false]) then {
+					_aaaGunner enableAI "TARGET";
+					_aaaGunner enableAI "AUTOTARGET";
+					(group _aaaGunner) setCombatMode "RED";
+					(group _aaaGunner) setBehaviourStrong "COMBAT";
+					(group _aaaGunner) allowFleeing 0;
+					_aaaGunner setVariable ["OKS_Radar_aiSetup", true];
+				};
 				_aaaGunner reveal [_target, _radarKnowledge];
-				_aaaGunner doTarget _target;
-				_aaaGunner doFire _target;
-				// More forceful orders (often helps vehicle turrets actually commit)
-				_aaaGunner commandTarget _target;
-				_aaaGunner commandFire _target;
+				// Skip re-issuing orders if the gunner is already assigned to this target
+				if !((assignedTarget _aaaGunner) isEqualTo _target) then {
+					_aaaGunner doTarget _target;
+					_aaaGunner doFire _target;
+					// More forceful orders (often helps vehicle turrets actually commit)
+					_aaaGunner commandTarget _target;
+					_aaaGunner commandFire _target;
+				};
 			} else {
 				_aaa reveal [_target, _radarKnowledge];
-				_aaa doTarget _target;
+				if !((assignedTarget _aaa) isEqualTo _target) then {
+					_aaa doTarget _target;
+				};
 			};
 			private _assignedAfter = if (!isNull _aaaGunner) then { assignedTarget _aaaGunner } else { assignedTarget _aaa };
 

@@ -1,23 +1,5 @@
 class CfgFunctions // Defines a function
 {
-	class GOL_IRLLM
-	{
-		class Core
-		{
-			class initialize { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_initialize.sqf"; };
-			class getCompatibleNVGs { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_getCompatibleNVGs.sqf"; };
-			class getCompatibleWeaponAttachments { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_getCompatibleWeaponAttachments.sqf"; };
-			class updateUnitList { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_updateUnitList.sqf"; };
-			class nvgIlluminatorOn { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_nvgIlluminatorOn.sqf"; };
-			class nvgIlluminatorOff { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_nvgIlluminatorOff.sqf"; };
-			class toggleNvgIlluminator { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_toggleNvgIlluminator.sqf"; };
-			class weaponIlluminatorOn { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_weaponIlluminatorOn.sqf"; };
-			class weaponIlluminatorOff { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_weaponIlluminatorOff.sqf"; };
-			class toggleWeaponIlluminator { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_toggleWeaponIlluminator.sqf"; };
-			class handleVisionModeChange { file = "\OKS_GOL_Misc\vendor\BettIR_Core\functions\fnc_handleVisionModeChange.sqf"; };
-		};
-	};
-
 	class OKS {
 		class OKS_Packing {
 			file = "\OKS_GOL_Misc\functions\staticWeapons";
@@ -68,6 +50,7 @@ class CfgFunctions // Defines a function
 			class RandomArtillery {};			
 			class Hostage {};			
 			class Request_Intel {};
+			class SeizeAsset {};
 			class Task_Settings {};
 			class TaskRun {};
 			class NekyTasks {};
@@ -266,6 +249,7 @@ class CfgFunctions // Defines a function
 			class RestCamp_WakeUp {};
 			class GarrisonBuildingsInArea {};
 			class Ignore_PlayerAir {};
+			class Ignore_PlayerAir_Manager {};
 		};	
 
 		class OKS_SDV {
@@ -314,15 +298,18 @@ class CfgFunctions // Defines a function
 			class Stealth_Tracker {};
 		};
 		
-		class OKS_IRIlluminator {
-			file = "\OKS_GOL_Misc\functions\irilluminator";
-			// The former BettIR-backed source is retained only as migration history.
-			class IRIlluminator_Monitor {
-				file = "\OKS_GOL_Misc\functions\irilluminator\fn_IRIlluminator_StandaloneMonitor.sqf";
-			};
-			class IRIlluminator_InitSettings {};
-			class IRIlluminator_AdjustStrength {};
-			class IRIlluminator_DebugTest {};
+		class OKS_OX3000 {
+			file = "\OKS_GOL_Misc\functions\ox3000";
+			class OX3000_ParseClass {};
+			class OX3000_ComposeClass {};
+			class OX3000_AdjustStrength {};
+			class BettIR_onStepper {};
+		};
+
+		class OKS_NVGIllum {
+			file = "\OKS_GOL_Misc\functions\nvgillum";
+			class NVGIllum_Adjust {};
+			class NVGIllum_Init {};
 		};
 		
 		class OKS_Suppression {
@@ -763,15 +750,23 @@ class CfgFunctions // Defines a function
 			class M6RangeCardStep {};
 			class M6_BallisticsFix {};
 		};
-
-		class ace_irlight {
-			file = "\OKS_GOL_Misc\functions\compat\ace_irlight";
-			class initItemContextMenu {};
-		};
-
-		class compat {
-				file = "\OKS_GOL_Misc\functions\compat";
-				class GOL_IRLLM_AutoWeaponIlluminator { file = "\OKS_GOL_Misc\functions\compat\fn_BettIR_AutoWeaponIlluminator.sqf"; };
-		};       
   };
+
+	// BettIR patches (requiredAddons load BettIR first, so these paths win).
+	// Attachments: BettIR's L-key hook and power button skip the GOL OX3000.
+	class BettIR_Attachments {
+		class Core {
+			class canUnitUseLaserDevice {
+				file = "\OKS_GOL_Misc\functions\ox3000\fn_BettIR_canUnitUseLaserDevice.sqf";
+			};
+		};
+	};
+	// NVG: illuminator intensity follows the per-unit GOL level (Alt + mouse wheel).
+	class BettIR_NVG {
+		class Core {
+			class validateUnitLight {
+				file = "\OKS_GOL_Misc\functions\nvgillum\fn_BettIR_validateUnitLight.sqf";
+			};
+		};
+	};
 };

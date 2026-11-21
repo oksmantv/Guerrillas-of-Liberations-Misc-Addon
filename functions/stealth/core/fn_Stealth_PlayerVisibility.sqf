@@ -121,20 +121,15 @@ missionNamespace setVariable ["OKS_Stealth_PlayerVisibility_Started", true];
         private _flashlightItem = _currentAccessories param [1, ""]; // Index 1 = flashlight/laser slot
         
         // Known IR-only illuminators (no visibility penalty to AI).
-        // GOL renders its OX3000 illumination with scripted client-side lights.
-        // This keeps irLight OFF in configs to prevent AI detection.
+        // Any accessory whose flashlight is an engine IR light (irLight = 1) also counts:
+        // OX3000 DP variants (and legacy _II/_LR aliases), ACE SPIR and BettIR devices.
+        // OX3000 FL variants use irLight = 0 and still trigger the visible-light penalty.
         private _irOnlyIlluminators = [
-            "ACE_SPIR",         // ACE dedicated IR illuminator
-            "GOL_OX3000",       // Base GOL dual mode
-            "GOL_OX3000_LR"     // Long range GOL dual mode
+            "ACE_SPIR"          // ACE dedicated IR illuminator
         ];
         
-        // GOL OX3000 modes:
-        // GOL_OX3000, GOL_OX3000_LR = dual mode (empty config, scripted light, no penalty)
-        // GOL_OX3000_II, GOL_OX3000_LR_II = dedicated illuminator (empty config, STRONGER light, no penalty)
-        // GOL_OX3000_FL, GOL_OX3000_LR_FL = visible flashlight (real config, DOES trigger penalty)
         private _hasIrIlluminator = (_flashlightItem in _irOnlyIlluminators) 
-            || {(_flashlightItem find "_II") > -1};
+            || {_flashlightItem != "" && {getNumber (configFile >> "CfgWeapons" >> _flashlightItem >> "ItemInfo" >> "Flashlight" >> "irLight") == 1}};
         
         // IR illuminator modes may report flashlight-on; do not treat those as visible light.
         // Visible flashlight = flashlight on AND (no IR laser OR no IR illuminator accessory)

@@ -18,35 +18,7 @@ if (hasInterface) then {
     [] spawn OKS_fnc_Stealth_PlayerVisibility;
     [] call OKS_fnc_ProxRound_Init;
     [] call OKS_fnc_LaserMarker_InitClient;
-    
-    // GOL IR illuminator auto-activation for GOL_OX3000 beam lights.
-    if (isClass (configFile >> "CfgPatches" >> "GOL_IRLLM_Core")) then {
-        [] call OKS_fnc_GOL_IRLLM_AutoWeaponIlluminator;
-        ["[PostInit] GOL IR illuminator active with adjustable beam strength", false, false, true] spawn OKS_fnc_LogDebug;
-    };
-    
-    // BettIR owns the weapon reflector. The retired monitor attached a second lightpoint to the unit's head.
-    // Starting it here made the IR source appear on the character instead of the weapon.
-    
-    // Initialize IR illuminator strength (persistent across respawns)
-    [] spawn {
-        waitUntil { sleep 0.25; !isNull player };
-        
-        // Load saved strength from profile or use default 1% (minimum)
-        private _savedStrength = profileNamespace getVariable ["GOL_IRIlluminator_Strength", 1];
-        player setVariable ["GOL_IRIlluminator_Strength", _savedStrength, true];
-        
-        // Add respawn handler to restore strength setting
-        player addEventHandler ["Respawn", {
-            params ["_unit", "_corpse"];
-            private _savedStrength = profileNamespace getVariable ["GOL_IRIlluminator_Strength", 1];
-            _unit setVariable ["GOL_IRIlluminator_Strength", _savedStrength, true];
-        }];
-        
-        if (missionNamespace getVariable ["GOL_IRIlluminator_Debug", false]) then {
-            systemChat format ["[IR Illuminator] Initialized strength at %1%%", _savedStrength];
-        };
-    };
+    [] call OKS_fnc_NVGIllum_Init;
     
     [] spawn {
         ["[AMPHIB_IFV_BOOST] PostInit: client init thread started", false, false, true] spawn OKS_fnc_LogDebug;

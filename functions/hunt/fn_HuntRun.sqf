@@ -93,8 +93,9 @@ if(_isSide) then {
 	_FactionSide = side _Side;
 };
 if (_Number == 0 && _isSide) exitWith {"[Hunt] NEKY_Hunt: ERROR, spawn 0 units" spawn OKS_fnc_LogDebug};
-if (isNull _Zone) exitWith {"[Hunt] NEKY_Hunt: ERROR, No trigger zone." spawn OKS_fnc_LogDebug};
-if (_Zone getVariable ["NEKY_Hunt_Disabled",false]) exitWith {}; // Exit if Zone is disabled.
+// No trigger zone (nil / missing object) = zoneless mode: hunt the nearest ground player anywhere on the map.
+private _NoZone = isNull _Zone;
+if (!_NoZone && {_Zone getVariable ["NEKY_Hunt_Disabled",false]}) exitWith {}; // Exit if Zone is disabled.
 
 _Settings = [_FactionSide] call OKS_fnc_Hunt_Settings;
 _Settings Params ["_MinDistance","_UpdateFreqSettings","_SkillVariables","_Skill","_Leaders","_Units", "_MaxCargoSeat", "_HeliClass", "_PilotClasses", "_CrewClasses", "_ForceRespawnMultiplier"];
@@ -107,12 +108,14 @@ WaitUntil {Sleep 1; !isNil "_Temp"};
 
 // Select a player to hunt and find suitable position to spawn
 _Players = _Temp;
-_Temp = [_Players,_Zone,_Distance] call OKS_fnc_SelectPlayer; // Returns [Number of Players too close, Position to spawn at, Selected player]
+// Zoneless: pick the ground player nearest the group leader. Zone mode: random player.
+private _NearestRef = if (_NoZone && {_Side isEqualType grpNull} && {!isNull leader _Side}) then {getPosATL leader _Side} else {[]};
+_Temp = [_Players,_Zone,_Distance,_NearestRef] call OKS_fnc_SelectPlayer; // Returns [Number of Players too close, Position to spawn at, Selected player]
 WaitUntil {Sleep 1; !isNil "_Temp"};
 
-if (_Zone getVariable ["NEKY_Hunt_Disabled",false]) exitWith {};
+if (!_NoZone && {_Zone getVariable ["NEKY_Hunt_Disabled",false]}) exitWith {};
 _Temp Params ["_Count","_SpawnPos","_Player"];
-if (_Count != 0) exitWith {_This Spawn OKS_fnc_HuntRun};	// Exits and loops function.
+if (_Count != 0 && {!_NoZone}) exitWith {_This Spawn OKS_fnc_HuntRun};	// Exits and loops function. (Zoneless: spawn pos is unused for an existing group, so never retry.)
 
 if ((typeName _Side) == "GROUP") then {_Grp = _Side};
 if(isNil "_Grp") exitWith { "[Hunt] Run.sqf _Grp is null.. exiting" spawn OKS_fnc_LogDebug };

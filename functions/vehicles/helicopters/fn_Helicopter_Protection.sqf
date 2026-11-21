@@ -7,7 +7,7 @@ _Helicopter setVariable ["NEKY_OldDamage",0];
 private _isWhiteList = {
 	Params ["_Helicopter"];
 	Private "_return";
-	_WhiteListWords = ["mi24","mi8","mi_24"];
+	_WhiteListWords = ["mi24","mi8","mi_24","uh1y"];
 	{
 		if (((ToLower typeOf _Helicopter) find _X) == -1) then {
 			_return = false;
@@ -39,7 +39,7 @@ if([_Helicopter] call _isWhiteList) then {
 		// Exits
 		if !(Alive _Unit) exitWith {};
 		//format["Rotor Protection: Hit on %1",_Selection] spawn OKS_fnc_LogDebug;
-		if (!((toLower _selection) in ["main_rotor_hit","tail_rotor_hit"])) exitWith {
+		if (!((toLower _selection) in ["main_rotor_hit","tail_rotor_hit","velka vrtule","mala vrtule"])) exitWith {
 			//format["Rotor Protection: Not Rotor - Exited",_Selection] spawn OKS_fnc_LogDebug;
 		};		
 

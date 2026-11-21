@@ -1,8 +1,5 @@
 diag_log "OKS_GOL_Misc: XEH_preInit_stealth.sqf executed";
 
-// Initialize IR illuminator settings (related to stealth/visibility system)
-[] call OKS_fnc_IRIlluminator_InitSettings;
-
 [
     "GOL_Stealth_Enabled",
     "CHECKBOX",

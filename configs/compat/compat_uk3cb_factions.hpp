@@ -80,7 +80,6 @@ class UK3CB_MP5_Base: SMG_02_F {
     class WeaponSlotsInfo {
         class MuzzleSlot {
             compatibleItems[] += {
-                "GOL_muzzle_snds_9MM_ghost_black",
                 "GOL_muzzle_snds_mp5_ghost"
             };
         };

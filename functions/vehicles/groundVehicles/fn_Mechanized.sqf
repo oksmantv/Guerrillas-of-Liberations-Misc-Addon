@@ -135,7 +135,7 @@ if (_Vehicle isKindOf "LandVehicle") then {
 				)] remoteExec ["hintSilent", _caller];
 				[{ hintSilent ""; }, [], 3.0] remoteExec ["CBA_fnc_waitAndExecute", _caller];
 			},
-            nil, 1.5, true, true, "",
+            nil, 1.5, false, true, "",
             "(_this != vehicle _this) && (gunner _target == _this) && (_target getVariable ['OKS_ProxRound_Active', false])"
         ]] remoteExec ["addAction", 0, true];
         [_Vehicle, [
@@ -157,7 +157,7 @@ if (_Vehicle isKindOf "LandVehicle") then {
 				)] remoteExec ["hintSilent", _caller];
 				[{ hintSilent ""; }, [], 4.0] remoteExec ["CBA_fnc_waitAndExecute", _caller];
 			},
-            nil, 1.5, true, true, "",
+            nil, 1.5, false, true, "",
             "(_this != vehicle _this) && (gunner _target == _this) && !(_target getVariable ['OKS_ProxRound_Active', false])"
         ]] remoteExec ["addAction", 0, true];
 

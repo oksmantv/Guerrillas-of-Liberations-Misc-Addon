@@ -167,21 +167,32 @@ if (_overwriteProxRoundDefaults) then {
     // FiredEH added locally only works when the client also holds vehicle locality
     // (i.e. singleplayer or hosted server). On a dedicated server the vehicle is
     // server-local and local _vehicle is false on the client, so FiredHandler exits.
+    private _vehClass = typeOf _vehicle;
+    diag_log format ["[PROXROUND_INIT] Checking non-Mechanized vehicle: %1", _vehClass];
+    
     private _capable = (allTurrets _vehicle) findIf {
-        private _mag = "";
-        {
-            if (_x isEqualType "" && _x != "" && isClass (configFile >> "CfgMagazines" >> _x))
-                exitWith { _mag = _x; };
-        } forEach (weaponState [_vehicle, _x]);
+        private _turret = _x;
+        private _state = weaponState [_vehicle, _turret];
+        private _magIndex = _state findIf {
+            _x isEqualType "" && {_x != ""} && {isClass (configFile >> "CfgMagazines" >> _x)}
+        };
+        private _mag = if (_magIndex < 0) then { "" } else { _state select _magIndex };
+        if (_mag isNotEqualTo "") then {
+            diag_log format ["[PROXROUND_INIT]   Turret %1: weapon=%2 magazine=%3", _turret, _state select 0, _mag];
+        };
         if (_mag isEqualTo "") then {
+            diag_log format ["[PROXROUND_INIT]   Turret %1: no valid magazine found", _turret];
             false
         } else {
             private _ammo = getText (configFile >> "CfgMagazines" >> _mag >> "ammo");
-            (getNumber (configFile >> "CfgAmmo" >> _ammo >> "indirectHit") > 0) &&
-            (getNumber (configFile >> "CfgAmmo" >> _ammo >> "explosive")   > 0)
+            private _indirectHit = getNumber (configFile >> "CfgAmmo" >> _ammo >> "indirectHit");
+            private _explosive = getNumber (configFile >> "CfgAmmo" >> _ammo >> "explosive");
+            diag_log format ["[PROXROUND_INIT]   Turret %1: ammo=%2 indirectHit=%3 explosive=%4 -> %5", _turret, _ammo, _indirectHit, _explosive, (_indirectHit > 0 && _explosive > 0)];
+            (_indirectHit > 0) && (_explosive > 0)
         }
     } >= 0;
-    if (!_capable) exitWith {};
+    if (!_capable) exitWith { diag_log format ["[PROXROUND_INIT] %1: NO HE cannon found (proximity fuse disabled)", _vehClass]; };
+    diag_log format ["[PROXROUND_INIT] %1: HE cannon DETECTED (proximity fuse enabled)", _vehClass];
 
     // Fired EH — local to this client; fires on whichever machine holds vehicle locality
     private _firedID = _vehicle addEventHandler ["Fired", {_this call OKS_fnc_ProxRound_FiredHandler}];
@@ -189,6 +200,8 @@ if (_overwriteProxRoundDefaults) then {
     _unit setVariable ["OKS_ProxRound_LastVeh",    _vehicle];
 
     // Scroll-wheel toggle actions — condition restricts visibility to the gunner seat
+    // Note: showWindow=false (hidden from action menu), hideOnUse=true (hide after use)
+    // Actions still work via keybinds (Ctrl + mouse wheel) even when hidden from menu
     private _enID = _vehicle addAction [
         "<t color='#FFB300'>Proximity Fuse: </t><img image='\a3\ui_f\data\IGUI\Cfg\Actions\ico_OFF_ca.paa' size='1'/>",
         {
@@ -197,7 +210,7 @@ if (_overwriteProxRoundDefaults) then {
             (_this select 1) setVariable ["OKS_ProxRound_RangeOffset", 0];
             (_this select 1) setVariable ["OKS_ProxRound_Range", -1];
         },
-        nil, 1.5, true, true, "",
+        nil, 1.5, false, true, "",
         "!(vehicle _this getVariable ['OKS_ProxRound_Active', false]) && gunner (vehicle _this) == _this"
     ];
     private _disID = _vehicle addAction [
@@ -208,7 +221,7 @@ if (_overwriteProxRoundDefaults) then {
             (_this select 1) setVariable ["OKS_ProxRound_RangeOffset", 0];
             (_this select 1) setVariable ["OKS_ProxRound_Range", -1];
         },
-        nil, 1.5, true, true, "",
+        nil, 1.5, false, true, "",
         "(vehicle _this getVariable ['OKS_ProxRound_Active', false]) && gunner (vehicle _this) == _this"
     ];
     _unit setVariable ["OKS_ProxRound_Actions", [_enID, _disID]];

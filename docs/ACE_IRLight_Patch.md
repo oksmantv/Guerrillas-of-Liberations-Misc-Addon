@@ -29,13 +29,13 @@ MRT_SwitchItemNextClass = "ACE_DBAL_A3_Red_IP";
 MRT_SwitchItemPrevClass = "ACE_DBAL_A3_Red_VP";
 ```
 
-The ACE function `ace_irlight_fnc_initItemContextMenu` registers a context menu for each mode variant using `CBA_fnc_addItemContextMenuOption`.
+The ACE function `ace_irlight_fnc_initItemContextMenu` registers a context menu for ACE's own mode variants. GOL does not override it.
 
 ---
 
 ## Approach: GOL-Tagged Copies (Correct)
 
-**Do not override ACE classes directly.** Instead, create GOL-prefixed child classes that inherit from the ACE bases, then override the function that builds the context menu.
+**Do not override ACE classes directly.** Instead, create GOL-prefixed child classes that inherit from the ACE bases.
 
 ### Why not direct overrides?
 
@@ -109,45 +109,13 @@ Pointer-only (`_IP`) classes have no `Flashlight` block, so no change needed the
 
 ---
 
-## Overriding the Context Menu Function
-
-ACE builds the right-click menu via `ace_irlight_fnc_initItemContextMenu`. To override it, register a new function under the **same namespace** in `CfgFunctions`:
-
-```cpp
-// configs/CfgFunctions.cpp — inside class OKS {}
-class ace_irlight {
-    file = "\OKS_GOL_Misc\functions\compat\ace_irlight";
-    class initItemContextMenu {};
-};
-```
-
-This registers `ace_irlight_fnc_initItemContextMenu` from your path, overriding ACE's version.
-
-The replacement function loops over GOL classnames with only 3 modes (no `_VP` entry):
-
-```sqf
-{
-    _x params ["_variant", "_displayName"];
-    // ... register menu option for each variant ...
-} forEach [
-    ["",    LSTRING(Mode_IRDual)],
-    ["_IP", LSTRING(Mode_IRPointer)],
-    ["_II", LSTRING(Mode_IRIlluminator)]
-    // ["_VP", ...] intentionally absent
-];
-```
-
----
-
 ## File Structure
 
 | File | Purpose |
 |---|---|
 | `config.cpp` | `GOL_MISC_COMPAT_ACE_IRLIGHT` CfgPatches block with `skipWhenMissingDependencies = 1` |
 | `configs/CfgWeapons.cpp` | `#include "compat\compat_ace_irlight.hpp"` (inside `class CfgWeapons {}`) |
-| `configs/CfgFunctions.cpp` | `class ace_irlight { class initItemContextMenu {}; }` registration |
-| `configs/compat/compat_ace_irlight.hpp` | All GOL-tagged class definitions |
-| `functions/compat/ace_irlight/fnc_initItemContextMenu.sqf` | Replacement context menu function |
+| `configs/compat/compat_ace_irlight.hpp` | All GOL-tagged class definitions (OX3000, see IR_Illuminator_Implementation.md) |
 
 ---
 

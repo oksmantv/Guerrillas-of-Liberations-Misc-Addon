@@ -60,7 +60,7 @@
 			],
 			[0,0,0,0,0] // Infantry, Wheeled, APCs, Tanks, Air Assault - Hunt Bases - Preferred Game Logic Location 'Respawn Point'"
 			,false      // Should Enable Civilian Presence - Required Game Logic Location 'Village'"
-		] spawn OKS_CreateZone;
+		] spawn OKS_fnc_CreateZone;
 		/// END ZONE 1 ///
 */
 

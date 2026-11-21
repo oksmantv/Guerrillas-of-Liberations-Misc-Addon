@@ -332,12 +332,12 @@ class CfgWeapons {
 
 	// AP45 Compatibility patches
 	// NOTE: UK3CB Factions (ACR/M16/G36/AUG) AP45 mags handled via CfgMagazineWells.
-	// JCA HK437 5.56 conversion is in compat_jca.hpp (soft dependency via GOL_MISC_COMPAT_JCA).
+	// JCA rifles get AP45 mags via the STANAG_556x45 magazine well (CfgMagazineWells.cpp);
+	// no JCA classes are referenced here, so JCA is not a dependency.
 	#include "compat\compat_vanilla.hpp"
 	#include "compat\compat_rhs.hpp"
 	#include "compat\compat_uk3cb.hpp"
 	#include "compat\compat_uk3cb_factions.hpp"
-	#include "compat\compat_jca.hpp"
 	#include "compat\compat_ace_irlight.hpp"
 	#include "CfgWeapons_MachineGuns.hpp"
 

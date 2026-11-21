@@ -8,6 +8,7 @@ Params["_Side"];
 Private ["_Units","_SideMarker","_SideColor","_Vehicles","_Wheeled","_APC","_Tank","_Artillery","_Supply","_Transport","_Civilian","_Officer","_Settings","_AntiAir","_EnableEnemyMarkers","_RoadblockVehicleType","_UnitArray","_MarkerColor"];
 
 Private _Faction = toUpper(missionNamespace getVariable ["GOL_Dynamic_Faction","CSAT"]);
+_Wheeled = []; _APC = []; _Tank = []; _Artillery = []; _AntiAir = []; _Helicopter = []; _Transport = []; _Supply = []; _Vehicles = [];
 _Debug = missionNamespace getVariable ["GOL_Dynamic_Debug",false];
 if(_Debug) then {
 	format["[DEBUG] Dynamic Faction Selected - %1",_Faction] call OKS_fnc_LogDebug;
@@ -205,15 +206,7 @@ Switch (_Faction) do {
 
 	case "CUSTOM":
 	{
-		_Wheeled    = (missionNamespace getVariable ["GOL_Dynamic_Custom_Wheeled", ""]) splitString ",";
-		_APC        = (missionNamespace getVariable ["GOL_Dynamic_Custom_APC", ""]) splitString ",";
-		_Tank       = (missionNamespace getVariable ["GOL_Dynamic_Custom_Tank", ""]) splitString ",";
-		_Artillery  = (missionNamespace getVariable ["GOL_Dynamic_Custom_Artillery", ""]) splitString ",";
-		_AntiAir    = (missionNamespace getVariable ["GOL_Dynamic_Custom_AntiAir", ""]) splitString ",";
-		_Helicopter = (missionNamespace getVariable ["GOL_Dynamic_Custom_Helicopter", ""]) splitString ",";
-		_Transport  = (missionNamespace getVariable ["GOL_Dynamic_Custom_Transport", ""]) splitString ",";
-		_Supply     = (missionNamespace getVariable ["GOL_Dynamic_Custom_Supply", ""]) splitString ",";
-		_Vehicles   = [_Wheeled,_APC,_Tank,_Artillery,_Helicopter,_Transport,_Supply,_AntiAir];
+		// Empty base kit, fill the per-type overrides in CBA settings.
 	};	
 
 	Default {
@@ -222,6 +215,26 @@ Switch (_Faction) do {
 		};	
 	};
 };
+
+// Per-type overrides: any non-empty custom setting replaces that vehicle type of the selected faction.
+private _fnc_Override = {
+	params ["_Var","_Base","_Label"];
+	private _Custom = (missionNamespace getVariable [_Var, ""]) splitString ", ";
+	if (_Custom isEqualTo []) exitWith {_Base};
+	if (_Debug) then {
+		format["[DEBUG] Dynamic Override - %1: %2",_Label,_Custom] call OKS_fnc_LogDebug;
+	};
+	_Custom
+};
+_Wheeled    = ["GOL_Dynamic_Custom_Wheeled",_Wheeled,"Wheeled"] call _fnc_Override;
+_APC        = ["GOL_Dynamic_Custom_APC",_APC,"APC"] call _fnc_Override;
+_Tank       = ["GOL_Dynamic_Custom_Tank",_Tank,"Tank"] call _fnc_Override;
+_Artillery  = ["GOL_Dynamic_Custom_Artillery",_Artillery,"Artillery"] call _fnc_Override;
+_AntiAir    = ["GOL_Dynamic_Custom_AntiAir",_AntiAir,"AntiAir"] call _fnc_Override;
+_Helicopter = ["GOL_Dynamic_Custom_Helicopter",_Helicopter,"Helicopter"] call _fnc_Override;
+_Transport  = ["GOL_Dynamic_Custom_Transport",_Transport,"Transport"] call _fnc_Override;
+_Supply     = ["GOL_Dynamic_Custom_Supply",_Supply,"Supply"] call _fnc_Override;
+_Vehicles   = [_Wheeled,_APC,_Tank,_Artillery,_Helicopter,_Transport,_Supply,_AntiAir];
 
 Switch (_Side) do
 {

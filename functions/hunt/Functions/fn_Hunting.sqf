@@ -55,7 +55,7 @@ While {
 	Alive _Player && 
 	({ (Alive _x) &&
 	!(Captive _x) } count _AI) != 0 &&
-	(Vehicle _Player) in (List _Zone) &&
+	(isNull _Zone || {(Vehicle _Player) in (List _Zone)}) &&
 	!(_Zone getVariable ["NEKY_Hunt_Disabled",false]) &&
 	(((getPosATL _Player) select 2) < 6) &&
 	((
@@ -123,10 +123,10 @@ if (({ (Alive _x) && !(Captive _x) } count _AI) == 0) exitWith
 	if (_Repeat > 0) then
 	{
 		_Repeat = _Repeat -1;
-		[(Side _Grp), _Number, _Zone, _Distance, _UpdateFreq, _Repeat, _Code] spawn OKS_fnc_HuntRun;
+		[(Side _Grp), _Number, _Zone, _Distance, _UpdateFreq, _Repeat, _Code, _WaypointBehaviour] spawn OKS_fnc_HuntRun;
 	} else {
 		False;
 	};
 };
 // Select a new prey and continue hunting
-[_Grp, _Number, _Zone, _Distance, _UpdateFreq, _Repeat, _Code] spawn OKS_fnc_HuntRun;
+[_Grp, _Number, _Zone, _Distance, _UpdateFreq, _Repeat, _Code, _WaypointBehaviour] spawn OKS_fnc_HuntRun;

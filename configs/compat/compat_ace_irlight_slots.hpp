@@ -1,10 +1,18 @@
 // Slot compatibility extension for GOL OX3000 variants.
 // This file is loaded at top-level config scope (outside CfgWeapons).
 
+#define GOL_OX3000_SLOT_ENTRIES \
+    GOL_OX3000_DP_P1 = 1; GOL_OX3000_DP_P2 = 1; GOL_OX3000_DP_P3 = 1; GOL_OX3000_DP_P4 = 1; GOL_OX3000_DP_P5 = 1; \
+    GOL_OX3000_LS_P1 = 1; GOL_OX3000_LS_P2 = 1; GOL_OX3000_LS_P3 = 1; GOL_OX3000_LS_P4 = 1; GOL_OX3000_LS_P5 = 1; \
+    GOL_OX3000_FL_P1 = 1; GOL_OX3000_FL_P2 = 1; GOL_OX3000_FL_P3 = 1; GOL_OX3000_FL_P4 = 1; GOL_OX3000_FL_P5 = 1
+
 class SlotInfo;
 class PointerSlot: SlotInfo {
     compatibleItems[] += {
         "GOL_OX3000",
+        "GOL_OX3000_DP_P1", "GOL_OX3000_DP_P2", "GOL_OX3000_DP_P3", "GOL_OX3000_DP_P4", "GOL_OX3000_DP_P5",
+        "GOL_OX3000_LS_P1", "GOL_OX3000_LS_P2", "GOL_OX3000_LS_P3", "GOL_OX3000_LS_P4", "GOL_OX3000_LS_P5",
+        "GOL_OX3000_FL_P1", "GOL_OX3000_FL_P2", "GOL_OX3000_FL_P3", "GOL_OX3000_FL_P4", "GOL_OX3000_FL_P5",
         "GOL_OX3000_IP",
         "GOL_OX3000_II",
         "GOL_OX3000_FL",
@@ -51,6 +59,7 @@ class PointerSlot_Rail: PointerSlot {
         GOL_OX3000_LR_II = 1;
         GOL_OX3000_LR_FL = 1;
         GOL_OX3000_LR_FL_Low = 1;
+        GOL_OX3000_SLOT_ENTRIES;
     };
 };
 
@@ -89,5 +98,8 @@ class asdg_FrontSideRail: asdg_SlotInfo {
         GOL_OX3000_LR_II = 1;
         GOL_OX3000_LR_FL = 1;
         GOL_OX3000_LR_FL_Low = 1;
+        GOL_OX3000_SLOT_ENTRIES;
     };
 };
+
+#undef GOL_OX3000_SLOT_ENTRIES

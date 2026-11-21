@@ -210,6 +210,19 @@ Edited by OksmanTV & Bluwolf.
   ### Example Usage
   Set in CBA Addon Options under "GOL_Dynamic".
 </details>
+<details>
+  <summary>GOL_Dynamic_Custom_* (Vehicle Overrides)</summary>
+
+  ### Description
+  Per-type vehicle overrides. Any filled field replaces that vehicle type for the selected faction; empty fields keep the faction default.
+
+  ### Parameters
+  Wheeled, APC, Tank, Artillery, AntiAir, Helicopter, Transport, Supply. Comma-separated classnames.
+
+  ### Example Usage
+  Faction = TKA, Custom APCs = `UK3CB_TKA_O_BMP2,UK3CB_TKA_O_BTR70` : TKA APCs are replaced, all other types stay TKA.
+  Faction = Custom : empty base, fill every type you want.
+</details>
 </details>
 <details>
   <summary>🔧 MHQ Settings</summary>

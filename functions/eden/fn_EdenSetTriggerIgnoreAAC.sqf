@@ -2,15 +2,16 @@
     OKS_fnc_EdenSetTriggerIgnoreAAC
 
     Description:
-    Converts selected triggers' activation conditions to ignore aircraft (AAC - Army Air Corps).
+    Converts selected triggers' activation conditions to ground-only (ignores aircraft, parachutes
+    and free-falling players). Uses GW_Common_Fnc_hasGroundPlayer / GW_Common_Fnc_getPlayersInList
+    from the GW addon (infantry, ground vehicles and boats count; headless clients do not).
     Detects whether each trigger uses a default spawn condition or a default reaction condition,
-    and replaces it with the AAC-ignoring equivalent. Also sets the trigger's vertical size (sizeC)
-    to -1 (unlimited) so aircraft at any altitude still enter thisList and get properly filtered
-    by the condition. Triggers with custom (non-default) conditions are skipped and reported to
-    the user for manual editing.
+    and replaces it with the ground-only equivalent. The trigger's size is left untouched.
+    Triggers with custom (non-default) conditions are skipped and reported to
+    the user for manual editing. Triggers already using the new condition are left untouched.
 
-    Default spawn condition key markers: "objectParent" + "thislist"
-    Default reaction condition key markers: "ace_common_fnc_isAwake" + "getFriend" + "isPlayer"
+    Default spawn condition key markers: "hasAircraftPlayer" (current) or "objectParent" + "thislist" (legacy)
+    Default reaction condition key markers: "ace_common_fnc_isAwake" + "getFriend"
 
     Usage:
     Called from Eden context menu: Right-click trigger > GOL TOOLS > Set Trigger Ignore AAC
@@ -22,38 +23,44 @@
 
 // --- Replacement conditions ---
 
-// Spawn trigger: original checks for units on foot; AAC version adds air vehicle exclusion
-private _spawnConditionAAC = "call{!({(isNull (objectParent _x)) && {!(vehicle _x isKindOf ""Air"")}} count thislist isEqualTo 0) && isServer}";
+// Spawn trigger: only activates while a ground player (infantry, ground vehicle, boat) is inside
+private _spawnConditionAAC = "call{isServer && {[thisList] call GW_Common_Fnc_hasGroundPlayer}}";
 
 // Reaction trigger: original checks for hostile awake units vs players;
-// AAC version ensures players inside aircraft do not activate the trigger
+// ground version requires a ground player and ignores aircraft/parachute players
 private _reactionConditionAAC = "call{
 	if (!isServer) exitWith {false};
-	private _players = thisList select {isPlayer _x && {!(vehicle _x isKindOf ""Air"")}};
-	if (_players isEqualTo []) exitWith {false};
+	if !([thisList] call GW_Common_Fnc_hasGroundPlayer) exitWith {false};
+	private _players = [thisList] call GW_Common_Fnc_getPlayersInList;
 	private _ps = side group (_players # 0);
 	({ ((side group _x) getFriend _ps) < 0.6 && {[_x] call ace_common_fnc_isAwake} } count thisList) == 0
 }";
 
 // --- Helper: classify a trigger condition ---
-// Returns: "spawn" | "reaction" | "custom"
+// Returns: "spawn" | "reaction" | "done" | "custom"
 private _fnc_classifyCondition = {
     params ["_condition"];
     // Normalize: lowercase, strip all whitespace for reliable matching
     private _norm = toLower _condition;
     _norm = _norm regexReplace ["\s+", ""];
 
-    // Reaction trigger: must contain all three key markers
+    // Already converted: ground-only check present, aircraft check absent.
+    // (The default condition contains BOTH hasGroundPlayer and hasAircraftPlayer and must be converted.)
+    if (
+        ("hasgroundplayer" in _norm) &&
+        {!("hasaircraftplayer" in _norm)}
+    ) exitWith { "done" };
+
+    // Reaction trigger: must contain both key markers (old defaults also had isplayer)
     if (
         ("ace_common_fnc_isawake" in _norm) &&
-        {"getfriend" in _norm} &&
-        {"isplayer" in _norm}
+        {"getfriend" in _norm}
     ) exitWith { "reaction" };
 
-    // Spawn trigger: must contain objectparent + thislist
+    // Spawn trigger: legacy objectparent + thislist, or current default using hasAircraftPlayer
     if (
-        ("objectparent" in _norm) &&
-        {"thislist" in _norm}
+        (("objectparent" in _norm) && {"thislist" in _norm}) ||
+        {"hasaircraftplayer" in _norm}
     ) exitWith { "spawn" };
 
     // Anything else is custom
@@ -78,16 +85,13 @@ private _customTriggers = [];
     switch (_type) do {
         case "spawn": {
             _x set3DENAttribute ["condition", _spawnConditionAAC];
-            private _curSize = _x get3DENAttribute "size3" select 0;
-            _x set3DENAttribute ["size3", [_curSize select 0, _curSize select 1, -1]];
             _countSpawn = _countSpawn + 1;
         };
         case "reaction": {
             _x set3DENAttribute ["condition", _reactionConditionAAC];
-            private _curSize = _x get3DENAttribute "size3" select 0;
-            _x set3DENAttribute ["size3", [_curSize select 0, _curSize select 1, -1]];
             _countReaction = _countReaction + 1;
         };
+        case "done": {};
         case "custom": {
             _customTriggers pushBack _x;
         };
@@ -104,7 +108,7 @@ if (_totalChanged > 0) then {
     if (_countSpawn > 0)    then { _parts pushBack format ["%1 spawn", _countSpawn] };
     if (_countReaction > 0) then { _parts pushBack format ["%1 reaction", _countReaction] };
     private _detail = _parts joinString ", ";
-    private _msg = format ["Ignore AAC applied: %1 trigger%2 updated (%3). SizeC set to -1 (unlimited Z).", _totalChanged, ["","s"] select (_totalChanged > 1), _detail];
+    private _msg = format ["Ignore AAC applied: %1 trigger%2 updated (%3).", _totalChanged, ["","s"] select (_totalChanged > 1), _detail];
     [_msg, 0, 5, true] call BIS_fnc_3DENNotification;
     systemChat _msg;
 };
@@ -126,7 +130,7 @@ if (_totalCustom > 0) then {
 
 // Nothing changed at all
 if (_totalChanged == 0 && _totalCustom == 0) then {
-    private _msg = "Ignore AAC: Selected triggers had no recognizable conditions to update.";
+    private _msg = "Ignore AAC: Selected triggers are already ground-only or had no recognizable conditions to update.";
     [_msg, 1, 5, true] call BIS_fnc_3DENNotification;
     systemChat _msg;
 };

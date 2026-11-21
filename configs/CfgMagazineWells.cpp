@@ -8,7 +8,7 @@
 //   CBA_556x45_STANAG  — UK3CB Factions M16/ACR/Khaybar + any CBA mod
 //   CBA_556x45_G36     — UK3CB Factions G36 family
 //   CBA_556x45_STEYR   — UK3CB Factions AUG family
-//   STANAG_556x45       — JCA rifles (M4A1, M16A4, HK433, M4A4)
+//   STANAG_556x45       — JCA rifles (soft compat: no requiredAddons; merges if JCA is loaded)
 
 class CfgMagazineWells {
 
@@ -56,9 +56,10 @@ class CfgMagazineWells {
         };
     };
 
-    // JCA custom STANAG well — used by JCA rifles (M4A1, M16A4, HK433, M4A4)
-    // All JCA variants (black, sand, olive) inherit from bases that use this well,
-    // so all color variants get our mags automatically — including sand!
+    // JCA custom STANAG well — SOFT compat, no JCA classes or requiredAddons involved.
+    // Magazine wells merge by class name, so these members are picked up by JCA rifles
+    // (M4A1, M16A4, HK433, M4A4, all colour variants) when JCA is loaded, and are an
+    // unused, harmless well when it is not.
     class STANAG_556x45 {
         GOL_AP45_mags[] = {
             "GOL_30Rnd_556x45_AP45",

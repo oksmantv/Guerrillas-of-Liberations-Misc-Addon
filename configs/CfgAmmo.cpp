@@ -3,12 +3,12 @@ class CfgAmmo {
 	class F_40mm_White;
 	class Flare_82mm_AMOS_White;
 	class Sh_82mm_AMOS;
-	class JCA_B_9x19_Ball;
 	class B_9x21_Ball;
 
 	// Subsonic 9 mm ammunition for the Ghost Suppressor system. The low
 	// audibleFire value is further reduced by the suppressor's AmmoCoef.
-	class GOL_B_9x19_Subsonic: JCA_B_9x19_Ball {
+	// Used by the 3CB MP5 subsonic magazine (vanilla-derived; no JCA dependency).
+	class GOL_B_9x19_Subsonic: B_9x21_Ball {
 		audibleFire = 0.1;
 		audibleFireTime = 0.1;
 		visibleFire = 0.1;

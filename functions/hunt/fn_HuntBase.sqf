@@ -9,6 +9,8 @@
 		Base              - Destructible object. When destroyed, no further waves spawn.
 		SpawnPos          - Small object defining the spawn position and direction (face in the direction vehicles should spawn).
 		HuntZone          - Trigger defining the hunt area (set to "Any Players", repeatable).
+		                    OPTIONAL: pass nil / a non-existent trigger to run zoneless. No zone or knowsAbout checks are made;
+		                    a wave spawns whenever any ground player is alive, and the nearest ground player is hunted.
 		Waves             - Maximum number of waves (0–999). Scaled by GOL_ForceMultiplier at runtime.
 		RespawnDelay      - Seconds between waves. Scaled by GOL_ResponseMultiplier.
 		Side              - Faction side of spawned units (east, west, independent).
@@ -132,6 +134,24 @@ if(isNil "_WaypointBehaviour") then {
 	_WaypointBehaviour = "SAFE";
 };
 
+// Zoneless mode: no hunt trigger supplied (nil / missing object) -> skip zone + knowsAbout checks.
+private _NoZone = isNull _HuntZone;
+if(_Debug && _NoZone) then {
+	"[HUNT] No HuntZone supplied - running zoneless (nearest ground player)" call OKS_fnc_LogDebug;
+};
+
+// Returns true when a player is known to the spawner inside the zone, or (zoneless) any ground player is alive.
+private _fnc_PlayersKnown = {
+	params ["_zone","_side","_thirdSide","_knows"];
+	if (isNull _zone) exitWith {
+		({isPlayer _x && {alive _x} && {_x isKindOf "CAManBase"} && {isTouchingGround (vehicle _x)}} count allPlayers) > 0
+	};
+	({
+		((_side knowsAbout _X > _knows || _side knowsAbout vehicle _X > _knows) && isTouchingGround (vehicle _X) && (isPlayer _X)) ||
+		((_thirdSide knowsAbout _X > _knows || _thirdSide knowsAbout vehicle _X > _knows) && isTouchingGround (vehicle _X) && (isPlayer _X) && (_thirdSide getFriend (side group _X) <= 0.6) )
+	} count list _zone > 0)
+};
+
 while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 {
 	_CurrentHuntCount = missionNamespace getVariable ["GOL_CurrentHuntCount",[]];
@@ -151,10 +171,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 		_ThirdSide = east;
 	};
 
-	_PlayerKnownToSpawner = ({
-		((_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)) ||
-		((_ThirdSide knowsAbout _X > _KnowsAboutValue || _ThirdSide knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X) && (_ThirdSide getFriend (side group _X) <= 0.6) ) 
-	} count list _HuntZone > 0);
+	_PlayerKnownToSpawner = [_HuntZone,_Side,_ThirdSide,_KnowsAboutValue] call _fnc_PlayersKnown;
 	if(_PlayerKnownToSpawner) then {
 		_DetectDelay = round((_RefreshRate * _ResponseMultiplier) + (Random _RefreshRate * _ResponseMultiplier));
 		if(_Debug) then {
@@ -173,10 +190,7 @@ while {alive _Base && (_Waves * _ForceMultiplier) > 0} do
 		}
 		else
 		{
-			_PlayerKnownToSpawner = ({
-				((_Side knowsAbout _X > _KnowsAboutValue || _Side knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X)) ||
-				((_ThirdSide knowsAbout _X > _KnowsAboutValue || _ThirdSide knowsAbout vehicle _X > _KnowsAboutValue) && isTouchingGround (vehicle _X) && (isPlayer _X) && (_ThirdSide getFriend (side group _X) <= 0.6) ) 
-			} count list _HuntZone > 0);
+			_PlayerKnownToSpawner = [_HuntZone,_Side,_ThirdSide,_KnowsAboutValue] call _fnc_PlayersKnown;
 			if(_PlayerKnownToSpawner) then {
 				if(_Debug) then {
 					format["[HUNT] Players confirmed in %1",_HuntZone] call OKS_fnc_LogDebug;

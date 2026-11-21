@@ -3,6 +3,7 @@
 //	This scans the zone for players to stalk.
 //
 //	Returns: [Players]
+//	If Zone is null (zoneless mode) all alive ground players on the map are returned.
 //
 //	Made by NeKo-ArroW
 
@@ -12,7 +13,11 @@ Params ["_Zone"];
 _Players = [];
 While {(Count _Players) == 0} do
 {
-	_Players = (List _Zone) select {(isPlayer (Vehicle _x)) && (Alive _x) && (((getPosATL _x) select 2) < 6)};
+	if (isNull _Zone) then {
+		_Players = allPlayers select {(_x isKindOf "CAManBase") && (Alive _x) && (((getPosATL _x) select 2) < 6)};
+	} else {
+		_Players = (List _Zone) select {(isPlayer (Vehicle _x)) && (Alive _x) && (((getPosATL _x) select 2) < 6)};
+	};
 	if ((Count _Players) == 0) then {Sleep 10};
 };
 _Players;

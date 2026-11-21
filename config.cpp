@@ -34,10 +34,12 @@ class CfgPatches
             "UK3CB_BAF_Weapons_L119",
             "UK3CB_BAF_Weapons_L110",
             "UK3CB_Factions_Weapons_G36",
-			"Weapons_F_JCA_IA_Pistols_G17",
-			"Weapons_F_JCA_IA_SMGs_MP5",
             "FPV_UA",
-            "Kimi_HMDs_Helos"
+            "Kimi_HMDs_Helos",
+            "BettIR_Attachments",
+            "BettIR_Attachments_Compat_Core",
+            "BettIR_Attachments_Compat_ACE",
+            "BettIR_NVG"
         };
         requiredVersion = 2.14;
 		author = "OksmanTV";
@@ -161,8 +163,7 @@ class CfgPatches
             "rhs_beret_vdv3_GOL",
             "rhs_ssh68_2_GOL",
             "OKS_DroneDisruptor_Pistol",
-            // Ghost 9 mm suppressor (JCA model; see compat_jca.hpp)
-            "GOL_muzzle_snds_9MM_ghost_black",
+			// Ghost MP5 suppressor (3CB model; see compat_uk3cb_factions.hpp)
 			"GOL_muzzle_snds_mp5_ghost",
             "GOL_MMG_01_tan_F",
             "GOL_MMG_01_hex_F",
@@ -204,9 +205,7 @@ class CfgPatches
             "GOL_1Rnd_UGL_FlareIR",
             "GOL_1Rnd_UGL_FlareWhite",
             // Stealth magazines
-            "GOL_17Rnd_9x19_G17_Subsonic_Mag",
             "GOL_30Rnd_9x21_Subsonic_Mag",
-            "GOL_30Rnd_9x19_MP5_Subsonic_Mag",
             "GOL_UK3CB_MP5_30Rnd_9x19_Subsonic_Mag",
             // MAAWS Round with same trajectory as HEAT
 			"GOL_mag_MRAWS_HEDP_F",
@@ -336,37 +335,6 @@ class CfgPatches
 		};
 	};
 
-    class GOL_IRLLM_Core {
-        requiredAddons[] = {"A3_UI_F"};
-        requiredVersion = 0.1;
-        author = "OksmanTV";
-        name = "GOL IR Illuminator Core";
-        units[] = {};
-        weapons[] = {};
-        magazines[] = {};
-    };
-
-	class GOL_MISC_COMPAT_JCA {
-        requiredAddons[] = {
-            "Weapons_F_JCA_IA_Rifles_HK437",
-            "Weapons_F_JCA_IA_Pistols_G17",
-            "Weapons_F_JCA_IA_SMGs_MP5"
-        };
-		requiredVersion = 2.14;
-		author = "OksmanTV";
-		units[] = {};
-		weapons[] = {
-			"GOL_arifle_HK437_VFG_black_F",
-            "GOL_arifle_HK437_AFG_black_F",
-			"GOL_muzzle_snds_9MM_ghost_black"
-		};
-        magazines[] = {
-            "GOL_17Rnd_9x19_G17_Subsonic_Mag",
-            "GOL_30Rnd_9x21_Subsonic_Mag",
-			"GOL_30Rnd_9x19_MP5_Subsonic_Mag"
-        };
-	};
-
     class GOL_MISC_COMPAT_RHSGREF {
         requiredAddons[] = {"rhsgref_main"};
         requiredVersion = 2.14;
@@ -395,7 +363,6 @@ class CfgPatches
 
 #include "version.hpp"
 #include "BIS_AddonInfo.hpp"
-#include "vendor\BettIR_Core\legacy_core.hpp"
 #include "configs\CfgAmmo.cpp"
 #include "configs\CfgBrains.cpp"
 #include "configs\CfgEden.cpp"
@@ -423,6 +390,7 @@ class RscTitles {
 #include "configs\CfgJammerUILayout.cpp"
 #include "configs\CfgOrbat.cfg"
 #include "configs\compat\compat_ace_irlight_slots.hpp"
+#include "configs\compat\compat_bettir.hpp"
 
 // CBA Disposable Framework registration.
 // Maps ready_variant[] = {base_classname, used_classname}.
@@ -548,9 +516,6 @@ class CfgNotifications
 };
 
 class Extended_PreInit_EventHandlers {
-    class GOL_IRLLM_PreInit {
-        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\vendor\BettIR_Core\XEH_preInit.sqf'";
-    };
     class OKS_PreInit_Core {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PreInit\XEH_preInit_core.sqf'";
     };
@@ -638,9 +603,6 @@ class Extended_PreInit_EventHandlers {
 };
 
 class Extended_PostInit_EventHandlers {
-    class GOL_IRLLM_PostInit {
-        init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\vendor\BettIR_Core\XEH_postInit.sqf'";
-    };
     class OKS_PostInit_Global {
         init = "call compile preprocessFileLineNumbers '\OKS_GOL_Misc\XEH_PostInit\XEH_PostInit_Global.sqf'";
     };
@@ -680,7 +642,6 @@ class CfgSettings {
             class GOL_MISC_ADDON {
                 main_addon = "GOL_MISC_ADDON";
             };
-            class GOL_IRLLM_Core {};
         };
     };
 };

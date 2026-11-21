@@ -27,7 +27,7 @@ The entry point is `OKS_fnc_HuntBase`. All logic runs on the server only.
 |-------|------|------|---------|-------------|
 | 0 | `_Base` | Object | `ObjNull` | The "base" object. When destroyed, no more waves will spawn. |
 | 1 | `_SpawnPos` | Object | `ObjNull` | Editor object marking the spawn point and spawn direction. |
-| 2 | `_HuntZone` | Object (Trigger) | `ObjNull` | Trigger defining the area where players are hunted. |
+| 2 | `_HuntZone` | Object (Trigger) | `ObjNull` | Trigger defining the area where players are hunted. Optional: pass `nil` (or a trigger name that does not exist) for zoneless mode. |
 | 3 | `_Waves` | Number | `0` | Maximum number of waves to spawn (multiplied by `GOL_ForceMultiplier` at runtime). |
 | 4 | `_RespawnDelay` | Number | `0` | Time in seconds between wave spawns. Scaled by `GOL_ResponseMultiplier`. |
 | 5 | `_Side` | Side | `East` | Faction side of spawned AI. |
@@ -176,6 +176,14 @@ After waiting the randomised detect delay, the script performs a stricter double
 2. **Proximity trigger** — Players inside the small internal `_Trigger` (300 × 300 m around the spawn).
 
 If neither condition is met, the script re-checks `knowsAbout` and only proceeds if awareness is still above the threshold.
+
+### Zoneless Mode (no `_HuntZone`)
+
+If `_HuntZone` is `nil` / `objNull`, zone and `knowsAbout` checks are skipped:
+- A wave is eligible whenever any alive, grounded player exists anywhere on the map.
+- The spawn-safety confirmation (line-of-sight to the spawn and 300 m proximity) still applies, so waves never spawn in view of players.
+- `OKS_fnc_HuntRun` / `OKS_fnc_ScanZone` use all grounded players, and `OKS_fnc_SelectPlayer` picks the one nearest the group leader. `OKS_fnc_Hunting` ignores zone membership and retargets the nearest ground player when the current target dies, goes airborne, or the group needs a new target.
+- Any `OKS_fnc_HuntRun` caller passing a null trigger (e.g. `OKS_fnc_Mechanized_Spawn`) now behaves the same way instead of exiting with an error.
 
 ---
 

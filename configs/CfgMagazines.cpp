@@ -4,24 +4,10 @@ class CfgMagazines {
     class UK3CB_BAF_1Rnd_81mm_Mo_Shells;
     class UK3CB_BAF_1Rnd_81mm_Mo_AB_Shells;
     class UK3CB_BAF_1Rnd_81mm_Mo_Smoke_White;
-    class JCA_17Rnd_9x19_G17_Mag;
-    class JCA_30Rnd_9x19_MP5_Mag;
     class UK3CB_MP5_30Rnd_9x19_Magazine;
     class 30Rnd_9x21_Mag;
 
     // Subsonic magazines retain the physical compatibility of their parents.
-    class GOL_17Rnd_9x19_G17_Subsonic_Mag: JCA_17Rnd_9x19_G17_Mag {
-        scope = 2;
-        scopeArsenal = 2;
-        scopeCurator = 2;
-        author = "Guerrillas of Liberation";
-        displayName = "Ghost 9 mm 17Rnd G17 Subsonic Mag";
-        displayNameShort = "Ghost 9 mm";
-        descriptionShort = "Caliber: 9x19 mm<br />Rounds: 17<br />Subsonic ammunition for suppressed G17 pistols.";
-        ammo = "GOL_B_9x19_Subsonic";
-        initSpeed = 300;
-    };
-
     class GOL_30Rnd_9x21_Subsonic_Mag: 30Rnd_9x21_Mag {
         scope = 2;
         scopeArsenal = 2;
@@ -31,18 +17,6 @@ class CfgMagazines {
         displayNameShort = "Ghost 9 mm";
         descriptionShort = "Caliber: 9x21 mm<br />Rounds: 30<br />Subsonic ammunition for suppressed 9 mm weapons.";
         ammo = "GOL_B_9x21_Subsonic";
-        initSpeed = 300;
-    };
-
-    class GOL_30Rnd_9x19_MP5_Subsonic_Mag: JCA_30Rnd_9x19_MP5_Mag {
-        scope = 2;
-        scopeArsenal = 2;
-        scopeCurator = 2;
-        author = "Guerrillas of Liberation";
-        displayName = "Ghost 9 mm 30Rnd MP5 Subsonic Mag";
-        displayNameShort = "Ghost 9 mm";
-        descriptionShort = "Caliber: 9x19 mm<br />Rounds: 30<br />Subsonic ammunition for suppressed JCA MP5 submachine guns.";
-        ammo = "GOL_B_9x19_Subsonic";
         initSpeed = 300;
     };
 

@@ -62,10 +62,10 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     "GOL_Dynamic_Custom_Wheeled",
     "EDITBOX",
     [
-        "Custom Wheeled Vehicles",
-        "Comma-separated classnames for custom faction wheeled vehicles."
+        "Override: Wheeled Vehicles",
+        "Replaces the selected faction's wheeled vehicles (jeeps, technicals, light armed cars).<br/>Format: vehicle classnames separated by commas, no quotes, no spaces needed (spaces are also tolerated).<br/>Example: UK3CB_TKA_O_Hilux_M2,UK3CB_TKA_O_UAZ_MG<br/>Filled = replaces the faction list. Empty = faction default."
     ],
-    ["GOL Dynamic", "Custom Faction"],
+    ["GOL Dynamic", "Vehicle Overrides"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -74,10 +74,10 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     "GOL_Dynamic_Custom_APC",
     "EDITBOX",
     [
-        "Custom APCs",
-        "Comma-separated classnames for custom faction APCs."
+        "Override: APCs / IFVs",
+        "Replaces the selected faction's APCs and IFVs.<br/>Format: vehicle classnames separated by commas, no quotes, no spaces needed (spaces are also tolerated).<br/>Example: UK3CB_TKA_O_BMP1,UK3CB_TKA_O_BTR70<br/>Filled = replaces the faction list. Empty = faction default."
     ],
-    ["GOL Dynamic", "Custom Faction"],
+    ["GOL Dynamic", "Vehicle Overrides"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -86,10 +86,10 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     "GOL_Dynamic_Custom_Tank",
     "EDITBOX",
     [
-        "Custom Tanks",
-        "Comma-separated classnames for custom faction tanks."
+        "Override: Tanks",
+        "Replaces the selected faction's tanks.<br/>Format: vehicle classnames separated by commas, no quotes, no spaces needed (spaces are also tolerated).<br/>Example: UK3CB_TKA_O_T55,UK3CB_TKA_O_T34<br/>Filled = replaces the faction list. Empty = faction default."
     ],
-    ["GOL Dynamic", "Custom Faction"],
+    ["GOL Dynamic", "Vehicle Overrides"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -98,10 +98,10 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     "GOL_Dynamic_Custom_Artillery",
     "EDITBOX",
     [
-        "Custom Artillery",
-        "Comma-separated classnames for custom faction artillery."
+        "Override: Artillery",
+        "Replaces the selected faction's artillery (howitzers, mortars, rocket launchers).<br/>Format: vehicle classnames separated by commas, no quotes, no spaces needed (spaces are also tolerated).<br/>Example: UK3CB_TKA_O_D30,UK3CB_TKA_O_BM21<br/>Filled = replaces the faction list. Empty = faction default."
     ],
-    ["GOL Dynamic", "Custom Faction"],
+    ["GOL Dynamic", "Vehicle Overrides"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -110,10 +110,10 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     "GOL_Dynamic_Custom_AntiAir",
     "EDITBOX",
     [
-        "Custom Anti-Air",
-        "Comma-separated classnames for custom faction anti-air."
+        "Override: Anti-Air",
+        "Replaces the selected faction's anti-air vehicles and static AA.<br/>Format: vehicle classnames separated by commas, no quotes, no spaces needed (spaces are also tolerated).<br/>Example: UK3CB_TKA_O_ZsuTank,UK3CB_TKA_O_ZU23<br/>Filled = replaces the faction list. Empty = faction default."
     ],
-    ["GOL Dynamic", "Custom Faction"],
+    ["GOL Dynamic", "Vehicle Overrides"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -122,10 +122,10 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     "GOL_Dynamic_Custom_Helicopter",
     "EDITBOX",
     [
-        "Custom Helicopters",
-        "Comma-separated classnames for custom faction helicopters."
+        "Override: Helicopters",
+        "Replaces the selected faction's helicopters.<br/>Format: vehicle classnames separated by commas, no quotes, no spaces needed (spaces are also tolerated).<br/>Example: UK3CB_TKA_O_UH1H_M240,UK3CB_TKA_O_Bell412_Armed<br/>Filled = replaces the faction list. Empty = faction default."
     ],
-    ["GOL Dynamic", "Custom Faction"],
+    ["GOL Dynamic", "Vehicle Overrides"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -134,10 +134,10 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     "GOL_Dynamic_Custom_Transport",
     "EDITBOX",
     [
-        "Custom Transport",
-        "Comma-separated classnames for custom faction transport vehicles."
+        "Override: Transport",
+        "Replaces the selected faction's troop transport vehicles.<br/>Format: vehicle classnames separated by commas, no quotes, no spaces needed (spaces are also tolerated).<br/>Example: UK3CB_TKA_O_Ural,UK3CB_TKA_O_BTR40<br/>Filled = replaces the faction list. Empty = faction default."
     ],
-    ["GOL Dynamic", "Custom Faction"],
+    ["GOL Dynamic", "Vehicle Overrides"],
     "",
     1
 ] call CBA_fnc_addSetting;
@@ -146,10 +146,10 @@ diag_log "OKS_GOL_Misc: XEH_preInit_dynamic.sqf executed";
     "GOL_Dynamic_Custom_Supply",
     "EDITBOX",
     [
-        "Custom Supply",
-        "Comma-separated classnames for custom faction supply vehicles."
+        "Override: Supply Vehicles",
+        "Replaces the selected faction's supply vehicles (ammo, fuel, repair).<br/>Format: vehicle classnames separated by commas, no quotes, no spaces needed (spaces are also tolerated).<br/>Example: UK3CB_TKA_O_Ural_Ammo,UK3CB_TKA_O_Ural_Fuel<br/>Filled = replaces the faction list. Empty = faction default."
     ],
-    ["GOL Dynamic", "Custom Faction"],
+    ["GOL Dynamic", "Vehicle Overrides"],
     "",
     1
 ] call CBA_fnc_addSetting;
